@@ -10,9 +10,10 @@ type Enhancer interface {
 }
 
 type Hub struct {
-	dataLog *slog.Logger
-	infoLog *slog.Logger
-	enhance Enhancer
+	DataLog *slog.Logger
+	InfoLog *slog.Logger
+	Enhance Enhancer
+	Sender  *MQTTAction
 }
 
 func (h *Hub) HandleSyncDeviceInfo(ctx context.Context, data SyncData) error {
@@ -21,7 +22,7 @@ func (h *Hub) HandleSyncDeviceInfo(ctx context.Context, data SyncData) error {
 		return err
 	}
 	for _, di := range dl {
-		h.infoLog.DebugContext(ctx, "deviceInfo", slog.Any("data", di))
+		h.InfoLog.DebugContext(ctx, "deviceInfo", slog.Any("data", di))
 	}
 	return nil
 }
@@ -37,7 +38,8 @@ func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
 	}
 
 	for _, dd := range ddl {
-		h.dataLog.DebugContext(ctx, "deviceData", slog.Any("data", dd))
+		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", dd))
+		//_ = h.Sender.SendData(ctx, dd)
 	}
 
 	return nil
