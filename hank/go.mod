@@ -2,6 +2,8 @@ module github.com/twiglab/h2o/octopus
 
 go 1.25.5
 
+require gopkg.in/natefinch/lumberjack.v2 v2.2.1
+
 require (
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect

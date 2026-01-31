@@ -26,6 +26,8 @@ type DeviceInfo struct {
 	ProjectNo string `json:"projectNo"`
 
 	Status string `json:"status"`
+
+	UnknownFields map[string]any `json:",unknown"`
 }
 
 type DeviceList []DeviceInfo
@@ -36,13 +38,18 @@ type GatewayInfo struct {
 	// 网关名称，示例值为"网关 12"
 	GatewayName string
 	// 建筑编码，示例值为"123"
+
 	BuildingCode string `json:"buildingCode"`
 	// 网关 IP 地址，示例值为"192.168.3.101"
 	GatewayAddress string
+
+	UnknownFields map[string]any `json:",unknown"`
 }
 
 type JsonDataMix struct {
 	CurrentA string `json:"current-a"`
+
+	UnknownFields map[string]any `json:",unknown"`
 }
 
 type DeviceData struct {
@@ -62,6 +69,8 @@ type DeviceData struct {
 	DataCode string `json:"dataCode"`
 
 	DataJson JsonDataMix `json:"dataJson"`
+
+	UnknownFields map[string]any `json:",unknown"`
 }
 
 type DeviceDataList []DeviceData
@@ -69,6 +78,8 @@ type DeviceDataList []DeviceData
 type SyncData struct {
 	Type string         `json:"type"`
 	Data jsontext.Value `json:"data"`
+
+	UnknownFields map[string]any `json:",unknown"`
 }
 
 type ReturnMessage struct {
