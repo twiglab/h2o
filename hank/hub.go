@@ -18,6 +18,7 @@ func (e *Enh) Convert(dd DeviceData) kwh.Device {
 		Name: dd.No,
 
 		Time: dd.LastDataTime,
+		UUID: dd.DataCode,
 
 		Data: kwh.Data{},
 	}
@@ -52,9 +53,9 @@ func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
 	}
 
 	for _, dd := range ddl {
-		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", dd))
 		kwhd := h.Enh.Convert(dd)
-		_ = h.Sender.SendData(ctx, kwhd)
+		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", kwhd))
+		//_ = h.Sender.SendData(ctx, kwhd)
 	}
 
 	return nil

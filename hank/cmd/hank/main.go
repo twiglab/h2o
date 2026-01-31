@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 
-	hank "github.com/twiglab/h2o/octopus"
+	"github.com/twiglab/h2o/hank"
 )
 
 var (

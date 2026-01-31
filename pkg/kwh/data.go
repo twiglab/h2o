@@ -2,8 +2,6 @@ package kwh
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Device struct {
@@ -12,7 +10,7 @@ type Device struct {
 	Name string `json:"name"` // 设备名称, 空
 
 	Time time.Time `json:"time,format:RFC3339Nano"` // 采集时间
-	UUID uuid.UUID `json:"uuid"`                    // 采集的唯一标识, 全局唯一单调递增
+	UUID string    `json:"uuid"`                    // 采集的唯一标识, 全局唯一单调递增
 
 	Status string `json:"status"` // 设备状态, 网关,采集程序或设备自定义
 

@@ -59,16 +59,16 @@ type DeviceData struct {
 	Money    float64   `json:"dataMoney"`
 	DataTime time.Time `json:"dataTime,format:DateTime"`
 	Usage    float64   `json:"usage"`
-	Value    string
+	Value    string    `json:"dataValue"`
 
 	BuildingCode string `json:"buildingCode"`
 
-	LastDataTime  time.Time
-	LastDataValue string
+	LastDataTime  time.Time `json:"lastDataTime,format:DateTime"`
+	LastDataValue string    `json:"lastDataValue"`
 
 	DataCode string `json:"dataCode"`
 
-	DataJson JsonDataMix `json:"dataJson"`
+	DataJson JsonDataMix `json:"dataJson,omitzero"`
 
 	UnknownFields map[string]any `json:",unknown"`
 }
