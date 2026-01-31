@@ -4,15 +4,29 @@ import (
 	"context"
 	"encoding/json/v2"
 	"log/slog"
+
+	"github.com/twiglab/h2o/pkg/kwh"
 )
 
-type Enhancer interface {
+type Enh struct {
+}
+
+func (e *Enh) Convert(dd DeviceData) kwh.Device {
+	return kwh.Device{
+		Code: dd.No,
+		Type: dd.Type,
+		Name: dd.No,
+
+		Time: dd.LastDataTime,
+
+		Data: kwh.Data{},
+	}
 }
 
 type Hub struct {
 	DataLog *slog.Logger
 	InfoLog *slog.Logger
-	Enhance Enhancer
+	Enh     *Enh
 	Sender  *MQTTAction
 }
 
@@ -39,7 +53,8 @@ func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
 
 	for _, dd := range ddl {
 		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", dd))
-		//_ = h.Sender.SendData(ctx, dd)
+		kwhd := h.Enh.Convert(dd)
+		_ = h.Sender.SendData(ctx, kwhd)
 	}
 
 	return nil
