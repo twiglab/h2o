@@ -34,16 +34,12 @@ func (c *MQTTAction) SendData(ctx context.Context, data kwh.Device) error {
 	return pubToken.Error()
 }
 
-type MQTTConf struct {
-	ClientID string
-	Borkers  []string
-}
-
-func BuildMQTTCLient(conf MQTTConf) (mqtt.Client, error) {
+func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
-	opts.SetClientID(conf.ClientID)
+	opts.SetClientID(clientID)
 
-	for _, b := range conf.Borkers {
+	opts.AddBroker(broker)
+	for _, b := range others {
 		opts.AddBroker(b)
 	}
 

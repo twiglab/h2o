@@ -28,32 +28,3 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
 	return slog.New(h)
 }
-
-/*
-func buildRootLog(ctx context.Context, v *viper.Viper) (*slog.Logger, context.Context) {
-	logFile := v.GetString("log.root.file")
-	if logFile == "" {
-		logFile = "dcp.log"
-	}
-
-	var level slog.Level
-
-	l := v.GetString("log.root.level")
-
-	switch strings.ToLower(l) {
-	case "debug":
-		level = slog.LevelDebug
-	case "warn":
-		level = slog.LevelWarn
-	case "error":
-		level = slog.LevelError
-	default:
-		level = slog.LevelInfo
-	}
-
-	id := v.GetString("id")
-
-	logger := RootLog(id, logFile, level)
-	return logger, context.WithValue(ctx, keyRootLog, logger)
-}
-*/
