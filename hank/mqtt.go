@@ -8,10 +8,6 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-func pushTopic(uuid, typ string) string {
-	return "dcp/" + uuid + "/" + typ
-}
-
 type MQTTAction struct {
 	client mqtt.Client
 }
@@ -58,3 +54,8 @@ func BuildMQTTCLient(conf MQTTConf) (mqtt.Client, error) {
 
 	return client, nil
 }
+
+func pushTopic(code, typ string) string {
+	return "h2o/" + typ + "/" + code
+}
+
