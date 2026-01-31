@@ -1,0 +1,92 @@
+package hank
+
+import (
+	"encoding/json/jsontext"
+	"time"
+)
+
+type DeviceInfo struct {
+	BrandName    string `json:"brandName"`
+	BuildingCode string `json:"buildingCode"`
+
+	CreateTime time.Time `json:"createTime,format:DateTime"`
+
+	Address string `json:"deviceAddress"`
+	Name    string `json:"deviceName"`
+	No      string `json:"deviceNo"`
+	Type    string `json:"deviceType"`
+
+	GatewayIP string `json:"gatewayIp"`
+	GatewayNo string `json:"gatewayNo"`
+
+	IsControl bool   `json:"isControl"`
+	ModelName string `json:"modelName"`
+	OptStatus string `json:"optStatus"`
+
+	ProjectNo string `json:"projectNo"`
+
+	Status string `json:"status"`
+}
+
+type DeviceList []DeviceInfo
+
+type GatewayInfo struct {
+	// 网关编号，示例值为"g100"
+	GatewayNo string
+	// 网关名称，示例值为"网关 12"
+	GatewayName string
+	// 建筑编码，示例值为"123"
+	BuildingCode string `json:"buildingCode"`
+	// 网关 IP 地址，示例值为"192.168.3.101"
+	GatewayAddress string
+}
+
+type JsonDataMix struct {
+	CurrentA string `json:"current-a"`
+}
+
+type DeviceData struct {
+	No   string `json:"deviceNo"`
+	Type string `json:"deviceType"`
+
+	Money    float64   `json:"dataMoney"`
+	DataTime time.Time `json:"dataTime,format:DateTime"`
+	Usage    float64   `json:"usage"`
+	Value    string
+
+	BuildingCode string `json:"buildingCode"`
+
+	LastDataTime  time.Time
+	LastDataValue string
+
+	DataCode string `json:"dataCode"`
+
+	DataJson JsonDataMix `json:"dataJson"`
+}
+
+type DeviceDataList []DeviceData
+
+type SyncData struct {
+	Type string         `json:"type"`
+	Data jsontext.Value `json:"data"`
+}
+
+type ReturnMessage struct {
+	Type    string `json:"type"`
+	Message string `json:"message"`
+}
+
+func (r ReturnMessage) Error() string {
+	return r.Message
+}
+
+func Error(message string) ReturnMessage {
+	return ReturnMessage{Message: message, Type: "error"}
+}
+
+func Success(message string) ReturnMessage {
+	return ReturnMessage{Message: message, Type: "success"}
+}
+
+var OK = ReturnMessage{Type: "success"}
+var ErrNoRate = Error("no rate")
