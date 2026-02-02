@@ -41,16 +41,20 @@ type Electricity struct {
 
 	Frequency int64 `json:"frequency"` // 频率
 
-	TotalActivePower   int64 `json:"total_active_power"`   //总有功功率  P
-	TotalReactivePower int64 `json:"total_reactive_power"` //总无功功率  Q
-	TotalApperentPower int64 `json:"total_apperent_power"` //总视在功率  S
+	TotalActivePower   int64 `json:"total_active_power"`   // 总有功功率  P
+	TotalReactivePower int64 `json:"total_reactive_power"` // 总无功功率  Q
+	TotalApperentPower int64 `json:"total_apperent_power"` // 总视在功率  S
 	TotalPowerFactor   int64 `json:"total_power_factor"`   // 功率因数 PF = p/s
+
+	DataValue int64 `json:"data_value"` // 表显读数
 }
 
 type Water struct {
+	DataValue int64 `json:"data_value"` // 表显读数
+	OptStatus int64 `json:"opt_status"` // 开合状态
 }
 
 type DataMix struct {
-	Electricity `json:",inline"`
-	Water       `json:",inline"`
+	Electricity `json:"electricity,omitzero"`
+	Water       `json:"water,omitzero"`
 }
