@@ -1,22 +1,23 @@
-package kwh
+package data
 
 import (
 	"time"
 )
 
 type Device struct {
-	Code string `json:"code"` // 设备code，业务全局唯一
+	SN   string `json:"sn"`   // 电表的序列号,电表上有个条形码,如果没有就是空,或者自定义
+	Code string `json:"code"` // 设备code,业务全局唯一
 	Type string `json:"type"` // 设备类型
-	Name string `json:"name"` // 设备名称, 空
+	Name string `json:"name"` // 设备名称,可以为空
 
 	Time time.Time `json:"time,format:RFC3339Nano"` // 采集时间
-	UUID string    `json:"uuid"`                    // 采集的唯一标识, 全局唯一单调递增
+	UUID string    `json:"uuid"`                    // 采集的唯一标识,全局唯一单调递增
 
 	Status string `json:"status"` // 设备状态, 网关,采集程序或设备自定义
 
-	Data Data `json:"data"`
+	Data DataMix `json:"data"` // 设备数据
 
-	Pos Pos `json:"pos,omitzero"`
+	Pos Pos `json:"pos,omitzero"` // 设备所在的位置信息
 }
 
 type Pos struct {
@@ -46,6 +47,10 @@ type Electricity struct {
 	TotalPowerFactor   int64 `json:"total_power_factor"`   // 功率因数 PF = p/s
 }
 
-type Data struct {
+type Water struct {
+}
+
+type DataMix struct {
 	Electricity `json:",inline"`
+	Water       `json:",inline"`
 }

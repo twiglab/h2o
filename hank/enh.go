@@ -19,8 +19,8 @@ func (e *Enh) Convert(dd DeviceData) kwh.Device {
 		UUID: dd.DataCode,
 
 		Data: kwh.Data{
-			Voltage: kwh.Voltage{
-				VolA: str2I64(dd.DataJson.VoltageA, 100),
+			Electricity: kwh.Electricity{
+				VoltageA: str2I64(dd.DataJson.CurrentA, 100),
 			},
 		},
 	}
