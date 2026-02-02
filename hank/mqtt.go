@@ -6,7 +6,7 @@ import (
 	"encoding/json/v2"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/kwh"
+	"github.com/twiglab/h2o/pkg/data"
 )
 
 type MQTTAction struct {
@@ -17,7 +17,7 @@ func NewMQTTAction(client mqtt.Client) *MQTTAction {
 	return &MQTTAction{client: client}
 }
 
-func (c *MQTTAction) SendData(ctx context.Context, data kwh.Device) error {
+func (c *MQTTAction) SendData(ctx context.Context, data data.Device) error {
 	var bb bytes.Buffer
 	bb.Grow(1024)
 
@@ -26,7 +26,7 @@ func (c *MQTTAction) SendData(ctx context.Context, data kwh.Device) error {
 		return err
 	}
 
-	topic := pushTopic("", "")
+	topic := pushTopic(data.Code, data.Type)
 
 	pubToken := c.client.Publish(topic, 0x00, false, bb)
 	pubToken.Wait()
@@ -53,5 +53,5 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 }
 
 func pushTopic(code, typ string) string {
-	return "h2o/" + typ + "/" + code
+	return "h2o/" + code + "/" + typ
 }

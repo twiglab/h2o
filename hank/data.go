@@ -55,6 +55,8 @@ type JsonDataMix struct {
 	VoltageB string `json:"voltage-b"`
 	VoltageC string `json:"voltage-c"`
 
+	DataValue string `json:"data-value"`
+
 	Frequency   string `json:"frequency"`    // 频率
 	PowerFactor string `json:"power-factor"` // 功率因数
 
@@ -74,9 +76,6 @@ type DeviceData struct {
 	BuildingCode string `json:"buildingCode"`
 
 	LastDataTime time.Time `json:"lastDataTime,format:DateTime"` // 上一次数据记录时间
-
-	// Value    string    `json:"dataValue"`
-	// LastDataValue string    `json:"lastDataValue"`
 
 	DataCode string `json:"dataCode"`
 

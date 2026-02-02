@@ -3,14 +3,14 @@ package hank
 import (
 	"strconv"
 
-	"github.com/twiglab/h2o/pkg/kwh"
+	"github.com/twiglab/h2o/pkg/data"
 )
 
 type Enh struct {
 }
 
-func (e *Enh) Convert(dd DeviceData) kwh.Device {
-	return kwh.Device{
+func (e *Enh) Convert(dd DeviceData) data.Device {
+	return data.Device{
 		Code: dd.No,
 		Type: dd.Type,
 		Name: dd.No,
@@ -18,19 +18,17 @@ func (e *Enh) Convert(dd DeviceData) kwh.Device {
 		Time: dd.DataTime,
 		UUID: dd.DataCode,
 
-		Data: kwh.Data{
-			Electricity: kwh.Electricity{
-				VoltageA: str2I64(dd.DataJson.CurrentA, 100),
+		Data: data.DataMix{
+			Electricity: data.Electricity{
+				DataValue: str2I64(dd.DataJson.DataValue, 100),
 			},
 		},
 	}
 }
 
 func str2I64(s string, i float64) int64 {
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return -1
+	if f, err := strconv.ParseFloat(s, 64); err == nil {
+		return int64(f * i)
 	}
-
-	return int64(f * i)
+	return -1
 }
