@@ -29,29 +29,23 @@ type Pos struct {
 	PUID string `json:"puid"` // 全局唯一的poscode, 理论上 = project + poscode
 }
 
-type Voltage struct {
-	// 三相电压， 单位 1/1000 V
-	VolA int64 `json:"vol_a,omitzero"`
-	VolB int64 `json:"vol_b,omitzero"`
-	VolC int64 `json:"vol_c,omitzero"`
-}
+type Electricity struct {
+	VoltageA int64 `json:"voltage_a"`
+	VoltageB int64 `json:"voltage_b"`
+	VoltageC int64 `json:"voltage_c"`
 
-type Amp struct {
-	// 三相电流， 单位 1/1000 A
-	AmpA int64 `json:"apm_a,omitzero"`
-	AmpB int64 `json:"apm_b,omitzero"`
-	AmpC int64 `json:"apm_c,omitzero"`
-}
+	CurrentA int64 `json:"current_a"`
+	CurrentB int64 `json:"current_b"`
+	CurrentC int64 `json:"current_c"`
 
-type Power struct {
-	// 总有功 1wh (kwh 的 1/1000)
-	PowerP int64 `json:"power_p,omitzero"`
-	// Q uint64
-	// S uint64
+	Frequency int64 `json:"frequency"` // 频率
+
+	TotalActivePower   int64 `json:"total_active_power"`   //总有功功率  P
+	TotalReactivePower int64 `json:"total_reactive_power"` //总无功功率  Q
+	TotalApperentPower int64 `json:"total_apperent_power"` //总视在功率  S
+	TotalPowerFactor   int64 `json:"total_power_factor"`   // 功率因数 PF = p/s
 }
 
 type Data struct {
-	Voltage `json:",inline"`
-	Amp     `json:",inline"`
-	Power   `json:",inline"`
+	Electricity `json:",inline"`
 }
