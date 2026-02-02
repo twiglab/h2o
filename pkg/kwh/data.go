@@ -31,21 +31,21 @@ type Pos struct {
 
 type Voltage struct {
 	// 三相电压， 单位 1/1000 V
-	VolA uint64 `json:"vol_a,omitzero"`
-	VolB uint64 `json:"vol_b,omitzero"`
-	VolC uint64 `json:"vol_c,omitzero"`
+	VolA int64 `json:"vol_a,omitzero"`
+	VolB int64 `json:"vol_b,omitzero"`
+	VolC int64 `json:"vol_c,omitzero"`
 }
 
 type Amp struct {
 	// 三相电流， 单位 1/1000 A
-	AmpA uint64 `json:"apm_a,omitzero"`
-	AmpB uint64 `json:"apm_b,omitzero"`
-	AmpC uint64 `json:"apm_c,omitzero"`
+	AmpA int64 `json:"apm_a,omitzero"`
+	AmpB int64 `json:"apm_b,omitzero"`
+	AmpC int64 `json:"apm_c,omitzero"`
 }
 
 type Power struct {
 	// 总有功 1wh (kwh 的 1/1000)
-	PowerP uint64 `json:"power_p,omitzero"`
+	PowerP int64 `json:"power_p,omitzero"`
 	// Q uint64
 	// S uint64
 }

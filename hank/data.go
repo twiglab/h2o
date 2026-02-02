@@ -48,6 +48,17 @@ type GatewayInfo struct {
 
 type JsonDataMix struct {
 	CurrentA string `json:"current-a"`
+	CurrentB string `json:"current-b"`
+	CurrentC string `json:"current-c"`
+
+	VoltageA string `json:"voltage-a"`
+	VoltageB string `json:"voltage-b"`
+	VoltageC string `json:"voltage-c"`
+
+	Frequency   string `json:"frequency"`    // 频率
+	PowerFactor string `json:"power-factor"` // 功率因数
+
+	TotalActivePower string `json:"total-active-power"` //总有功功率
 
 	UnknownFields map[string]any `json:",unknown"`
 }
@@ -57,14 +68,15 @@ type DeviceData struct {
 	Type string `json:"deviceType"`
 
 	Money    float64   `json:"dataMoney"`
-	DataTime time.Time `json:"dataTime,format:DateTime"`
+	DataTime time.Time `json:"dataTime,format:DateTime"` // 数据记录时间
 	Usage    float64   `json:"usage"`
-	Value    string    `json:"dataValue"`
 
 	BuildingCode string `json:"buildingCode"`
 
-	LastDataTime  time.Time `json:"lastDataTime,format:DateTime"`
-	LastDataValue string    `json:"lastDataValue"`
+	LastDataTime time.Time `json:"lastDataTime,format:DateTime"` // 上一次数据记录时间
+
+	// Value    string    `json:"dataValue"`
+	// LastDataValue string    `json:"lastDataValue"`
 
 	DataCode string `json:"dataCode"`
 

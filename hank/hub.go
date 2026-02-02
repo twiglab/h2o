@@ -4,25 +4,7 @@ import (
 	"context"
 	"encoding/json/v2"
 	"log/slog"
-
-	"github.com/twiglab/h2o/pkg/kwh"
 )
-
-type Enh struct {
-}
-
-func (e *Enh) Convert(dd DeviceData) kwh.Device {
-	return kwh.Device{
-		Code: dd.No,
-		Type: dd.Type,
-		Name: dd.No,
-
-		Time: dd.LastDataTime,
-		UUID: dd.DataCode,
-
-		Data: kwh.Data{},
-	}
-}
 
 type Hub struct {
 	DataLog *slog.Logger
@@ -55,7 +37,9 @@ func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
 	for _, dd := range ddl {
 		kwhd := h.Enh.Convert(dd)
 		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", kwhd))
-		//_ = h.Sender.SendData(ctx, kwhd)
+		if h.Sender != nil {
+			_ = h.Sender.SendData(ctx, kwhd)
+		}
 	}
 
 	return nil
