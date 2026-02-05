@@ -6,8 +6,8 @@ import (
 )
 
 const (
-	ELECTRICITY = "Electricity"
-	WATER       = "Water"
+	ELECTRICITY = "electricity"
+	WATER       = "water"
 )
 
 type DeviceInfo struct {
