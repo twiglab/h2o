@@ -10,20 +10,20 @@ type Enh struct {
 }
 
 func (e *Enh) Convert(dd DeviceData) data.Device {
-	return data.Device{
+	d := data.Device{
 		Code: dd.No,
 		Type: dd.Type,
 		Name: dd.No,
 
 		Time: dd.DataTime,
 		UUID: dd.DataCode,
-
-		Data: data.DataMix{
-			Electricity: data.Electricity{
-				DataValue: str2I64(dd.DataJson.DataValue, 100),
-			},
-		},
 	}
+
+	if dd.Type == ELECTRICITY {
+		d.Data.Electricity.DataValue = str2I64(dd.DataJson.DataValue, 100)
+	}
+
+	return d
 }
 
 func str2I64(s string, i float64) int64 {

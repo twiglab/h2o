@@ -5,6 +5,11 @@ import (
 	"time"
 )
 
+const (
+	ELECTRICITY = "Electricity"
+	WATER       = "Water"
+)
+
 type DeviceInfo struct {
 	BrandName    string `json:"brandName"`
 	BuildingCode string `json:"buildingCode"`

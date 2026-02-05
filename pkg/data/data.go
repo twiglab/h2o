@@ -55,6 +55,6 @@ type Water struct {
 }
 
 type DataMix struct {
-	Electricity `json:"electricity,omitzero"`
-	Water       `json:"water,omitzero"`
+	Electricity Electricity `json:"electricity,omitzero"`
+	Water       Water       `json:"water,omitzero"`
 }
