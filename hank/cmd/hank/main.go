@@ -41,7 +41,7 @@ func main() {
 	}
 	h := hank.Handle(hub)
 
-	http.HandleFunc("/sync", h)
+	http.HandleFunc("/sync/data", h)
 
 	if err := http.ListenAndServe("0.0.0.0:20001", nil); err != nil {
 		log.Fatal(err)

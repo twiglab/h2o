@@ -5,7 +5,7 @@ import (
 )
 
 type Device struct {
-	SN   string `json:"sn"`   // 电表的序列号,电表上有个条形码,如果没有就是空,或者自定义
+	SN   string `json:"sn"`   // 仪表的序列号,仪表上有个条形码,如果没有就是空,或者自定义
 	Code string `json:"code"` // 设备code,业务全局唯一
 	Type string `json:"type"` // 设备类型
 	Name string `json:"name"` // 设备名称,可以为空

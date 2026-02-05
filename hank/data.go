@@ -46,23 +46,9 @@ type GatewayInfo struct {
 	UnknownFields map[string]any `json:",unknown"`
 }
 
-type JsonDataMix struct {
-	CurrentA string `json:"current-a"`
-	CurrentB string `json:"current-b"`
-	CurrentC string `json:"current-c"`
-
-	VoltageA string `json:"voltage-a"`
-	VoltageB string `json:"voltage-b"`
-	VoltageC string `json:"voltage-c"`
-
-	DataValue string `json:"data-value"`
-
-	Frequency   string `json:"frequency"`    // 频率
-	PowerFactor string `json:"power-factor"` // 功率因数
-
-	TotalActivePower string `json:"total-active-power"` //总有功功率
-
-	UnknownFields map[string]any `json:",unknown"`
+type DataMix struct {
+	DataValue string            `json:"data-value"`
+	ExtraData map[string]string `json:",unknown"`
 }
 
 type DeviceData struct {
@@ -79,7 +65,7 @@ type DeviceData struct {
 
 	DataCode string `json:"dataCode"`
 
-	DataJson JsonDataMix `json:"dataJson,omitzero"`
+	DataJson DataMix `json:"dataJson,omitzero"`
 
 	UnknownFields map[string]any `json:",unknown"`
 }
