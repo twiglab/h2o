@@ -14,12 +14,14 @@ import (
 var (
 	broker  string
 	logPath string
+	addr    string
 )
 
 func init() {
 	// flag.StringVar(&broker, "broker", "localhost:1883", "broker")
 	flag.StringVar(&broker, "broker", "log", "broker")
 	flag.StringVar(&logPath, "logpath", "logs", "logpath")
+	flag.StringVar(&addr, "addr", "0.0.0.0:10007", "addr")
 }
 
 func main() {
@@ -27,6 +29,7 @@ func main() {
 
 	fmt.Println(broker)
 	fmt.Println(logPath)
+	fmt.Println(addr)
 
 	datalog := filepath.Join(logPath, "data.log")
 	infolog := filepath.Join(logPath, "info.log")
@@ -44,7 +47,7 @@ func main() {
 
 	http.HandleFunc(hank.SERVER_URL_PATH, h)
 
-	if err := http.ListenAndServe("0.0.0.0:20001", nil); err != nil {
+	if err := http.ListenAndServe(addr, nil); err != nil {
 		log.Fatal(err)
 	}
 }
