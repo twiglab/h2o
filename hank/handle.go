@@ -12,6 +12,10 @@ const (
 	deviceData  = "deviceData"
 )
 
+const (
+	SERVER_URL_PATH = "/sync/device"
+)
+
 func Handle(h *Hub) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var data SyncData
