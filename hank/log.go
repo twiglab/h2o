@@ -1,12 +1,29 @@
 package hank
 
 import (
+	"context"
 	"io"
 	"log/slog"
 	"os"
 
+	"github.com/twiglab/h2o/pkg/data"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
+
+type LogAction struct {
+	log *slog.Logger
+}
+
+func NewLogAction() LogAction {
+	return LogAction{
+		log: NewLog("console", slog.LevelDebug),
+	}
+}
+
+func (c LogAction) SendData(ctx context.Context, data data.Device) error {
+	c.log.DebugContext(ctx, "sendData", slog.Any("data", data))
+	return nil
+}
 
 func isConsole(logFile string) bool {
 	if logFile == "" || logFile == "console" {

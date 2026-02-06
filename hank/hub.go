@@ -4,13 +4,19 @@ import (
 	"context"
 	"encoding/json/v2"
 	"log/slog"
+
+	"github.com/twiglab/h2o/pkg/data"
 )
+
+type Sender interface {
+	SendData(ctx context.Context, data data.Device) error
+}
 
 type Hub struct {
 	DataLog *slog.Logger
 	InfoLog *slog.Logger
 	Enh     *Enh
-	Sender  *MQTTAction
+	Sender  Sender
 }
 
 func (h *Hub) HandleSyncDeviceInfo(ctx context.Context, data SyncData) error {

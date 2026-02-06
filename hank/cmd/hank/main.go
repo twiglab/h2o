@@ -17,7 +17,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&broker, "broker", "localhost:1883", "broker")
+	// flag.StringVar(&broker, "broker", "localhost:1883", "broker")
+	flag.StringVar(&broker, "broker", "log", "broker")
 	flag.StringVar(&logPath, "logpath", "logs", "logpath")
 }
 
@@ -48,9 +49,9 @@ func main() {
 	}
 }
 
-func mqtt(borker string) *hank.MQTTAction {
-	if borker == "" || borker == "nil" || borker == "x" {
-		return nil
+func mqtt(borker string) hank.Sender {
+	if borker == "" || borker == "log" || borker == "x" {
+		return hank.NewLogAction()
 	}
 
 	c, err := hank.NewMQTTClient("hank-plugin", borker)
