@@ -66,7 +66,7 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 		}
 	}(ctx)
 
-	return reLoadCh, soptCh, nil
+	return nil
 }
 
 /*
