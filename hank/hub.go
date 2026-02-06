@@ -43,9 +43,7 @@ func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
 	for _, dd := range ddl {
 		kwhd := h.Enh.Convert(dd)
 		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", kwhd))
-		if h.Sender != nil {
-			_ = h.Sender.SendData(ctx, kwhd)
-		}
+		_ = h.Sender.SendData(ctx, kwhd)
 	}
 
 	return nil
