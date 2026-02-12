@@ -10,6 +10,22 @@ const (
 	WATER       = "water"
 )
 
+const (
+	TypeDeviceList   = "deviceList"
+	TypeGatewayInfo  = "gatewayInfo"
+	TypeRate         = "rate"
+	TypeDeviceData   = "deviceData"
+	TypeDeviceStatus = "deviceStatus"
+	TypeTime         = "time"
+)
+
+type DeviceStatus struct {
+	No     string `json:"deviceNo"`
+	Status string `json:"status"`
+}
+
+type DeviceStatusList []DeviceStatus
+
 type DeviceInfo struct {
 	BrandName    string `json:"brandName"`
 	BuildingCode string `json:"buildingCode"`
