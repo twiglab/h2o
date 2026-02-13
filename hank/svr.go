@@ -20,12 +20,12 @@ type connKey struct {
 
 var ckey = connKey{"__conn_key__"}
 
-type svr struct {
+type sid struct {
 	s  *Server
 	id string
 }
 
-func (s svr) String() string {
+func (s sid) String() string {
 	return s.id
 }
 
@@ -50,9 +50,8 @@ func (s *Server) RunAt(l net.Listener) error {
 				fmt.Println("closing ...")
 				return nil
 			})
-			id := uuid.NewString()
-			fmt.Println("connect... ", conn.RemoteAddr(), "key...", id)
-			sk := &svr{s: s, id: id}
+			sk := &sid{s: s, id: uuid.NewString()}
+			fmt.Println("connect... ", conn.RemoteAddr(), "key...", sk)
 			return context.WithValue(ctx, ckey, sk)
 		}),
 
@@ -95,7 +94,7 @@ func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
 
 func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
-		v := ctx.Value(ckey).(*svr)
+		v := ctx.Value(ckey).(*sid)
 		return f(ctx, conn, v.s)
 	}
 }
