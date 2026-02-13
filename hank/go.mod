@@ -1,6 +1,6 @@
 module github.com/twiglab/h2o/hank
 
-go 1.25.5
+go 1.26.0
 
 require (
 	github.com/cloudwego/netpoll v0.7.2

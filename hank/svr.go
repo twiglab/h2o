@@ -11,7 +11,14 @@ import (
 	"encoding/json/v2"
 
 	"github.com/cloudwego/netpoll"
+	"github.com/google/uuid"
 )
+
+type connKey struct {
+	name string
+}
+
+var ckey = connKey{"__conn_key__"}
 
 type Server struct {
 	Addr string
@@ -19,7 +26,6 @@ type Server struct {
 	Enh  *Enh
 
 	BaseCtx func(netpoll.Connection) context.Context
-	ConnCtx func(context.Context, netpoll.Connection) context.Context
 }
 
 func (s *Server) RunAt(l net.Listener) error {
@@ -27,14 +33,14 @@ func (s *Server) RunAt(l net.Listener) error {
 		at(s.serv),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
-			fmt.Println("Dis .....")
+			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(ckey))
 		}),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
-			if s.ConnCtx != nil {
-				return s.ConnCtx(ctx, conn)
-			}
-			return ctx
+			id := uuid.NewString()
+			fmt.Println("connect... ", conn.RemoteAddr(), "key...", id)
+			fmt.Println("enh...", s.Enh)
+			return context.WithValue(ctx, ckey, id)
 		}),
 
 		netpoll.WithOnPrepare(func(conn netpoll.Connection) context.Context {
@@ -43,8 +49,6 @@ func (s *Server) RunAt(l net.Listener) error {
 			}
 			return context.Background()
 		}),
-
-		//netpoll.WithReadTimeout(30*time.Second),
 	)
 	if err != nil {
 		return err
@@ -60,8 +64,8 @@ func (s *Server) Run() error {
 	return s.RunAt(ln)
 }
 
-func (s *Server) serv(ctx context.Context, rw io.ReadWriteCloser) error {
-	sc := bufio.NewScanner(rw)
+func (s *Server) serv(ctx context.Context, rwc io.ReadWriteCloser) error {
+	sc := bufio.NewScanner(rwc)
 	for sc.Scan() {
 		d := &SyncData{}
 		if err := json.Unmarshal(sc.Bytes(), d); err != nil {
@@ -70,7 +74,7 @@ func (s *Server) serv(ctx context.Context, rw io.ReadWriteCloser) error {
 		}
 
 		if d.Type == TypeRate {
-			_ = json.MarshalWrite(rw, ErrNoRate)
+			_ = json.MarshalWrite(rwc, ErrNoRate)
 			continue
 		}
 
@@ -80,8 +84,7 @@ func (s *Server) serv(ctx context.Context, rw io.ReadWriteCloser) error {
 				log.Println(err, "ddl")
 				continue
 			}
-
-			doHandleDeviceDataList(ctx, ddl, s.Hub)
+			go s.doDeviceDataList(ctx, ddl)
 		}
 
 		if d.Type == TypeDeviceStatus {
@@ -90,12 +93,28 @@ func (s *Server) serv(ctx context.Context, rw io.ReadWriteCloser) error {
 				log.Println(err, "dsl")
 				continue
 			}
-			doHandleDeviceStatusList(ctx, dsl, s.Hub)
+			go s.doDeviceStatusList(ctx, dsl)
 		}
 
-		_ = json.MarshalWrite(rw, OK)
+		_ = json.MarshalWrite(rwc, OK)
 	}
 	return sc.Err()
+}
+
+func (s *Server) doDeviceDataList(ctx context.Context, ddl DeviceDataList) {
+	for _, dd := range ddl {
+		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func (s *Server) doDeviceStatusList(ctx context.Context, dsl DeviceStatusList) {
+	for _, ds := range dsl {
+		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
+			log.Println(err)
+		}
+	}
 }
 
 func at(f func(context.Context, io.ReadWriteCloser) error) netpoll.OnRequest {
