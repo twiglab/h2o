@@ -2,6 +2,7 @@ package hank
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/twiglab/h2o/pkg/data"
 )
@@ -15,7 +16,7 @@ func (e *Enh) Convert(dd DeviceData) data.Device {
 		Type: dd.Type,
 		Name: dd.No,
 
-		Time: dd.DataTime,
+		Time: parseTime(dd.DataTime),
 		UUID: dd.DataCode,
 	}
 
@@ -31,4 +32,12 @@ func str2I64(s string, i float64) int64 {
 		return int64(f * i)
 	}
 	return -1
+}
+
+func parseTime(s string) time.Time {
+	t, err := time.ParseInLocation(time.DateTime, s, time.Local)
+	if err != nil {
+		return time.Date(2000, 0, 0, 0, 0, 0, 0, time.Local)
+	}
+	return t
 }

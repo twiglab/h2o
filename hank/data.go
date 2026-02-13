@@ -2,7 +2,6 @@ package hank
 
 import (
 	"encoding/json/jsontext"
-	"time"
 )
 
 const (
@@ -31,7 +30,8 @@ type DeviceInfo struct {
 	BrandName    string `json:"brandName"`
 	BuildingCode string `json:"buildingCode"`
 
-	CreateTime time.Time `json:"createTime,format:DateTime"`
+	//CreateTime time.Time `json:"createTime,format:DateTime"`
+	CreateTime string `json:"createTime"`
 
 	Address string `json:"deviceAddress"`
 	Name    string `json:"deviceName"`
@@ -77,13 +77,15 @@ type DeviceData struct {
 	No   string `json:"deviceNo"`
 	Type string `json:"deviceType"`
 
-	Money    float64   `json:"dataMoney"`
-	DataTime time.Time `json:"dataTime,format:DateTime"` // 数据记录时间
-	Usage    float64   `json:"usage"`
+	Money float64 `json:"dataMoney"`
+	//DataTime time.Time `json:"dataTime,format:DateTime"` // 数据记录时间
+	DataTime string  `json:"dataTime"` // 数据记录时间
+	Usage    float64 `json:"usage"`
 
 	BuildingCode string `json:"buildingCode"`
 
-	LastDataTime time.Time `json:"lastDataTime,format:DateTime"` // 上一次数据记录时间
+	//LastDataTime time.Time `json:"lastDataTime,format:DateTime"` // 上一次数据记录时间
+	LastDataTime string `json:"lastDataTime"` // 上一次数据记录时间
 
 	DataCode string `json:"dataCode"`
 
