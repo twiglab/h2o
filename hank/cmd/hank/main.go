@@ -11,7 +11,7 @@ import (
 
 func main() {
 	s := &hank.Server{
-		Addr: "0.0.0.0:10004",
+		Addr: "0.0.0.0:10003",
 		Hub:  &hank.Hub{},
 	}
 

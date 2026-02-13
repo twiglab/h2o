@@ -93,25 +93,24 @@ func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
 	}
 }
 
-func at(f func(context.Context, io.ReadWriter, *Server) error) netpoll.OnRequest {
+func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
 		v := ctx.Value(ckey).(*svr)
 		return f(ctx, conn, v.s)
 	}
 }
 
-func serve(ctx context.Context, conn io.ReadWriter, s *Server) error {
+func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
-		d := &SyncData{}
-		if err := json.Unmarshal(sc.Bytes(), d); err != nil {
+		var d SyncData
+		if err := json.Unmarshal(sc.Bytes(), &d); err != nil {
 			log.Println(err, "SD")
 			continue
 		}
 
-		log.Println(d.Type)
-
 		if d.Type == TypeRate {
+			log.Println(d.Type)
 			_ = json.MarshalWrite(conn, ErrNoRate)
 			continue
 		}
