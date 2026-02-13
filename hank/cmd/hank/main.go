@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/twiglab/octopus/hank"
+	"github.com/twiglab/h2o/hank"
 )
 
 func main() {
