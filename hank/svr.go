@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 
@@ -38,13 +39,17 @@ type Server struct {
 
 func (s *Server) RunAt(l net.Listener) error {
 	loop, err := netpoll.NewEventLoop(
-		at(serv),
+		at(serve),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
 			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(ckey))
 		}),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
+			_ = conn.AddCloseCallback(func(conn netpoll.Connection) error {
+				fmt.Println("closing ...")
+				return nil
+			})
 			id := uuid.NewString()
 			fmt.Println("connect... ", conn.RemoteAddr(), "key...", id)
 			sk := &svr{s: s, id: id}
@@ -88,14 +93,14 @@ func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
 	}
 }
 
-func at(f func(context.Context, netpoll.Connection, *Server) error) netpoll.OnRequest {
+func at(f func(context.Context, io.ReadWriter, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
 		v := ctx.Value(ckey).(*svr)
 		return f(ctx, conn, v.s)
 	}
 }
 
-func serv(ctx context.Context, conn netpoll.Connection, s *Server) error {
+func serve(ctx context.Context, conn io.ReadWriter, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
 		d := &SyncData{}
@@ -103,6 +108,8 @@ func serv(ctx context.Context, conn netpoll.Connection, s *Server) error {
 			log.Println(err, "SD")
 			continue
 		}
+
+		log.Println(d.Type)
 
 		if d.Type == TypeRate {
 			_ = json.MarshalWrite(conn, ErrNoRate)
