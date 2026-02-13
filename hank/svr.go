@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net"
 
@@ -20,6 +19,15 @@ type connKey struct {
 
 var ckey = connKey{"__conn_key__"}
 
+type svr struct {
+	s  *Server
+	id string
+}
+
+func (s svr) String() string {
+	return s.id
+}
+
 type Server struct {
 	Addr string
 	Hub  *Hub
@@ -30,7 +38,7 @@ type Server struct {
 
 func (s *Server) RunAt(l net.Listener) error {
 	loop, err := netpoll.NewEventLoop(
-		at(s.serv),
+		at(serv),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
 			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(ckey))
@@ -39,8 +47,8 @@ func (s *Server) RunAt(l net.Listener) error {
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
 			id := uuid.NewString()
 			fmt.Println("connect... ", conn.RemoteAddr(), "key...", id)
-			fmt.Println("enh...", s.Enh)
-			return context.WithValue(ctx, ckey, id)
+			sk := &svr{s: s, id: id}
+			return context.WithValue(ctx, ckey, sk)
 		}),
 
 		netpoll.WithOnPrepare(func(conn netpoll.Connection) context.Context {
@@ -57,24 +65,47 @@ func (s *Server) RunAt(l net.Listener) error {
 }
 
 func (s *Server) Run() error {
-	ln, err := netpoll.CreateListener("tcp4", s.Addr)
+	ln, err := netpoll.CreateListener("tcp", s.Addr)
 	if err != nil {
 		return err
 	}
 	return s.RunAt(ln)
 }
 
-func (s *Server) serv(ctx context.Context, rwc io.ReadWriteCloser) error {
-	sc := bufio.NewScanner(rwc)
+func doDataList(ctx context.Context, ddl DeviceDataList, s *Server) {
+	for _, dd := range ddl {
+		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
+	for _, ds := range dsl {
+		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func at(f func(context.Context, netpoll.Connection, *Server) error) netpoll.OnRequest {
+	return func(ctx context.Context, conn netpoll.Connection) error {
+		v := ctx.Value(ckey).(*svr)
+		return f(ctx, conn, v.s)
+	}
+}
+
+func serv(ctx context.Context, conn netpoll.Connection, s *Server) error {
+	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
 		d := &SyncData{}
 		if err := json.Unmarshal(sc.Bytes(), d); err != nil {
 			log.Println(err, "SD")
-			return err
+			continue
 		}
 
 		if d.Type == TypeRate {
-			_ = json.MarshalWrite(rwc, ErrNoRate)
+			_ = json.MarshalWrite(conn, ErrNoRate)
 			continue
 		}
 
@@ -84,7 +115,7 @@ func (s *Server) serv(ctx context.Context, rwc io.ReadWriteCloser) error {
 				log.Println(err, "ddl")
 				continue
 			}
-			go s.doDeviceDataList(ctx, ddl)
+			go doDataList(ctx, ddl, s)
 		}
 
 		if d.Type == TypeDeviceStatus {
@@ -93,32 +124,12 @@ func (s *Server) serv(ctx context.Context, rwc io.ReadWriteCloser) error {
 				log.Println(err, "dsl")
 				continue
 			}
-			go s.doDeviceStatusList(ctx, dsl)
+			go doStatusList(ctx, dsl, s)
 		}
 
-		_ = json.MarshalWrite(rwc, OK)
+		if err := json.MarshalWrite(conn, OK); err != nil {
+			log.Print(err, "marshalWriter")
+		}
 	}
 	return sc.Err()
-}
-
-func (s *Server) doDeviceDataList(ctx context.Context, ddl DeviceDataList) {
-	for _, dd := range ddl {
-		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
-			log.Println(err)
-		}
-	}
-}
-
-func (s *Server) doDeviceStatusList(ctx context.Context, dsl DeviceStatusList) {
-	for _, ds := range dsl {
-		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
-			log.Println(err)
-		}
-	}
-}
-
-func at(f func(context.Context, io.ReadWriteCloser) error) netpoll.OnRequest {
-	return func(ctx context.Context, conn netpoll.Connection) error {
-		return f(ctx, conn)
-	}
 }
