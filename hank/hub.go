@@ -2,7 +2,8 @@ package hank
 
 import (
 	"context"
-	"encoding/json/v2"
+	"fmt"
+	"log"
 	"log/slog"
 
 	"github.com/twiglab/h2o/pkg/data"
@@ -19,32 +20,37 @@ type Hub struct {
 	Sender  Sender
 }
 
-func (h *Hub) HandleSyncDeviceInfo(ctx context.Context, data SyncData) error {
-	var dl DeviceList
-	if err := json.Unmarshal(data.Data, &dl); err != nil {
-		return err
-	}
-	for _, di := range dl {
-		h.InfoLog.DebugContext(ctx, "deviceInfo", slog.Any("data", di))
-	}
+func (h *Hub) HandleDeviceStatus(ctx context.Context, data DeviceStatus) error {
+	fmt.Println(data)
 	return nil
 }
 
-func (h *Hub) HandleUploadGatewayInfo(ctx context.Context, data SyncData) error {
+func (h *Hub) HandleUploadGatewayInfo(ctx context.Context, data GatewayInfo) error {
+	fmt.Println(data)
 	return nil
 }
 
-func (h *Hub) HandleSyncDeviceData(ctx context.Context, data SyncData) error {
-	var ddl DeviceDataList
-	if err := json.Unmarshal(data.Data, &ddl); err != nil {
-		return err
-	}
-
-	for _, dd := range ddl {
-		kwhd := h.Enh.Convert(dd)
-		h.DataLog.DebugContext(ctx, "deviceData", slog.Any("data", kwhd))
-		_ = h.Sender.SendData(ctx, kwhd)
-	}
-
+func (h *Hub) HandleDeviceData(ctx context.Context, data DeviceData) error {
+	fmt.Println(data.Type, data.No, data.DataCode, data.DataTime, data.DataJson.DataValue)
 	return nil
+}
+
+func doHandleDeviceStatusList(ctx context.Context, dsl DeviceStatusList, h *Hub) {
+	go func() {
+		for _, ds := range dsl {
+			if err := h.HandleDeviceStatus(ctx, ds); err != nil {
+				log.Println(err)
+			}
+		}
+	}()
+}
+
+func doHandleDeviceDataList(ctx context.Context, ddl DeviceDataList, h *Hub) {
+	go func() {
+		for _, dd := range ddl {
+			if err := h.HandleDeviceData(ctx, dd); err != nil {
+				log.Println(err)
+			}
+		}
+	}()
 }

@@ -21,6 +21,7 @@ const (
 
 type DeviceStatus struct {
 	No     string `json:"deviceNo"`
+	Type   string `json:"deviceType"`
 	Status string `json:"status"`
 }
 
@@ -105,17 +106,13 @@ type ReturnMessage struct {
 	Message string `json:"message"`
 }
 
-func (r ReturnMessage) Error() string {
-	return r.Message
+func Error(message string) *ReturnMessage {
+	return &ReturnMessage{Message: message, Type: "error"}
 }
 
-func Error(message string) ReturnMessage {
-	return ReturnMessage{Message: message, Type: "error"}
+func Success() *ReturnMessage {
+	return &ReturnMessage{Type: "success"}
 }
 
-func Success(message string) ReturnMessage {
-	return ReturnMessage{Message: message, Type: "success"}
-}
-
-var OK = ReturnMessage{Type: "success"}
-var ErrNoRate = Error("no rate")
+var OK = Success()
+var ErrNoRate = Error("没有待同步的费率数据")
