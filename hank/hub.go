@@ -21,6 +21,6 @@ func (h *Hub) HandleDeviceStatus(ctx context.Context, data DeviceStatus) error {
 }
 
 func (h *Hub) HandleDeviceData(ctx context.Context, data data.Device) error {
-	h.DataLog.InfoContext(ctx, "deviceData", slog.Any("data", data))
+	h.DataLog.InfoContext(ctx, "deviceData", slog.String("log", "datalog"), slog.String("type", data.Type), slog.Any("data", data))
 	return h.Sender.SendData(ctx, data)
 }
