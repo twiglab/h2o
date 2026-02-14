@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"log/slog"
 	"net"
 
 	"github.com/cloudwego/netpoll"
@@ -33,6 +34,8 @@ type Server struct {
 	Enh  *Enh
 
 	BaseCtx func(netpoll.Connection) context.Context
+
+	Logger *slog.Logger
 }
 
 func (s *Server) RunAt(l net.Listener) error {
@@ -74,22 +77,6 @@ func (s *Server) Run() error {
 	return s.RunAt(ln)
 }
 
-func doDataList(ctx context.Context, ddl DeviceDataList, s *Server) {
-	for _, dd := range ddl {
-		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
-			log.Println(err)
-		}
-	}
-}
-
-func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
-	for _, ds := range dsl {
-		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
-			log.Println(err)
-		}
-	}
-}
-
 func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
 		v := ctx.Value(sidKey).(*sid)
@@ -100,34 +87,24 @@ func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRe
 func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
-		var d SyncData
-		if err := unmarshal(sc.Bytes(), &d); err != nil {
+		var sd SyncData
+		if err := unmarshal(sc.Bytes(), &sd); err != nil {
 			log.Println(err, "SD")
 			continue
 		}
 
-		if d.Type == TypeRate {
-			log.Println(d.Type)
+		if sd.Type == TypeRate {
 			_ = marshalWrite(conn, ErrNoRate)
 			continue
 		}
 
-		if d.Type == TypeDeviceData {
-			var ddl DeviceDataList
-			if err := unmarshal(d.Data, &ddl); err != nil {
-				log.Println(err, "ddl")
-				continue
-			}
-			go doDataList(ctx, ddl, s)
-		}
-
-		if d.Type == TypeDeviceStatus {
-			var dsl DeviceStatusList
-			if err := unmarshal(d.Data, &dsl); err != nil {
-				log.Println(err, "dsl")
-				continue
-			}
-			go doStatusList(ctx, dsl, s)
+		switch sd.Type {
+		case TypeDeviceData:
+			go doDeviceData(ctx, sd, s)
+		case TypeDeviceStatus:
+			go doDeviceStatus(ctx, sd, s)
+		default:
+			fmt.Println(sd.Type)
 		}
 
 		if err := marshalWrite(conn, OK); err != nil {
@@ -135,4 +112,31 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 		}
 	}
 	return sc.Err()
+}
+
+func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
+	var ddl DeviceDataList
+	if err := unmarshal(sd.Data, &ddl); err != nil {
+		log.Println(err, "ddl")
+		return
+	}
+
+	for _, dd := range ddl {
+		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
+			log.Println(err)
+		}
+	}
+}
+
+func doDeviceStatus(ctx context.Context, sd SyncData, s *Server) {
+	var dsl DeviceStatusList
+	if err := unmarshal(sd.Data, &dsl); err != nil {
+		log.Println(err, "dsl")
+		return
+	}
+	for _, ds := range dsl {
+		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
+			log.Println(err)
+		}
+	}
 }
