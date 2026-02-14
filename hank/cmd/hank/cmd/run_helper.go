@@ -57,7 +57,7 @@ func sender() hank.Sender {
 		return hank.LogAction{}
 	}
 	log.Println("using mqttAction ... broker", broker)
-	cli, err := hank.NewMQTTClient("hank-plugin", broker)
+	cli, err := hank.NewMQTTClient(hank.CLIENT_ID, broker)
 	if err != nil {
 		log.Fatal(err)
 	}
