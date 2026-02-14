@@ -3,7 +3,6 @@ package hank
 import (
 	"bufio"
 	"context"
-	"log"
 	"log/slog"
 	"net"
 
@@ -15,15 +14,15 @@ type connKey struct {
 	name string
 }
 
-var sidKey = connKey{"__conn_sid_key__"}
+var ck = connKey{"__conn_id"}
 
-type sid struct {
+type cid struct {
 	s  *Server
 	id string
 }
 
-func (s sid) String() string {
-	return s.id
+func (c cid) String() string {
+	return c.id
 }
 
 type Server struct {
@@ -31,7 +30,7 @@ type Server struct {
 	Hub  *Hub
 	Enh  *Enh
 
-	BaseCtx func(netpoll.Connection) context.Context
+	BaseCtx func(net.Conn) context.Context
 
 	Logger *slog.Logger
 }
@@ -41,17 +40,22 @@ func (s *Server) RunAt(l net.Listener) error {
 		at(serve),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
-			log.Println("disconnect ... ", conn.RemoteAddr(), "sid ...", ctx.Value(sidKey))
+			id := fromCtx[*cid](ctx, ck)
+			s.Logger.DebugContext(ctx, "onConnect",
+				slog.String("remoteAddr", conn.RemoteAddr().String()),
+				slog.String("cid", id.String()),
+			)
 		}),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
-			_ = conn.AddCloseCallback(func(conn netpoll.Connection) error {
-				log.Println("closing ... ", conn.RemoteAddr())
-				return nil
-			})
-			sk := &sid{s: s, id: uuid.NewString()}
-			log.Println("connect ... ", conn.RemoteAddr(), "sid...", sk)
-			return context.WithValue(ctx, sidKey, sk)
+			sk := &cid{s: s, id: uuid.NewString()}
+
+			s.Logger.DebugContext(ctx, "onConnect",
+				slog.String("remoteAddr", conn.RemoteAddr().String()),
+				slog.String("cid", sk.String()),
+			)
+
+			return context.WithValue(ctx, ck, sk)
 		}),
 
 		netpoll.WithOnPrepare(func(conn netpoll.Connection) context.Context {
@@ -77,17 +81,26 @@ func (s *Server) Run() error {
 
 func at(f func(context.Context, net.Conn, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
-		v := ctx.Value(sidKey).(*sid)
-		return f(ctx, conn, v.s)
+		id := fromCtx[*cid](ctx, ck)
+		return f(ctx, conn, id.s)
 	}
+}
+
+func fromCtx[T any](ctx context.Context, key any) T {
+	return ctx.Value(key).(T)
 }
 
 func serve(ctx context.Context, conn net.Conn, s *Server) error {
 	sc := bufio.NewScanner(conn)
+	sk := fromCtx[*cid](ctx, ck)
 	for sc.Scan() {
 		var sd SyncData
 		if err := unmarshal(sc.Bytes(), &sd); err != nil {
-			s.Logger.ErrorContext(ctx, "unmarshal SyncData error", slog.Any("error", err))
+			s.Logger.ErrorContext(ctx, "unmarshal SyncData error",
+				slog.String("remoteAddr", conn.RemoteAddr().String()),
+				slog.String("cid", sk.String()),
+				slog.Any("error", err),
+			)
 			continue
 		}
 
