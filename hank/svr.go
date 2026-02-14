@@ -41,7 +41,7 @@ func (s *Server) RunAt(l net.Listener) error {
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
 			id := fromCtx[*cid](ctx, ck)
-			s.Logger.DebugContext(ctx, "onConnect",
+			s.Logger.DebugContext(ctx, "onDisconnect",
 				slog.String("remoteAddr", conn.RemoteAddr().String()),
 				slog.String("cid", id.String()),
 			)
