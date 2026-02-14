@@ -3,7 +3,6 @@ package hank
 import (
 	"bufio"
 	"context"
-	"io"
 	"log"
 	"log/slog"
 	"net"
@@ -76,14 +75,14 @@ func (s *Server) Run() error {
 	return s.RunAt(ln)
 }
 
-func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRequest {
+func at(f func(context.Context, net.Conn, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
 		v := ctx.Value(sidKey).(*sid)
 		return f(ctx, conn, v.s)
 	}
 }
 
-func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
+func serve(ctx context.Context, conn net.Conn, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
 		var sd SyncData
