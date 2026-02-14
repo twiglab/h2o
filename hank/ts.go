@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
 func (s *Server) RunX() error {
@@ -20,21 +21,24 @@ func (s *Server) RunX() error {
 			return err
 		}
 
-		go func() {
-			bio := bufio.NewReader(conn)
-			for {
-				bs, err := bio.ReadBytes('\n')
-				if err != nil {
-					log.Print(err)
-					break
-				}
-
-				fmt.Println(string(bs))
-				fmt.Println()
-				fmt.Println()
-				json.MarshalWrite(conn, OK)
-			}
-			fmt.Println("Break")
-		}()
+		go xserve(conn)
 	}
+}
+
+func xserve(conn net.Conn) {
+	bio := bufio.NewReader(conn)
+	for {
+		bs, err := bio.ReadBytes('\n')
+		if err != nil {
+			log.Print(err)
+			break
+		}
+
+		fmt.Println(string(bs))
+		fmt.Println()
+		fmt.Println(time.Now())
+		fmt.Println()
+		json.MarshalWrite(conn, OK)
+	}
+	fmt.Println("Break")
 }

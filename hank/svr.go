@@ -8,8 +8,6 @@ import (
 	"log"
 	"net"
 
-	"encoding/json/v2"
-
 	"github.com/cloudwego/netpoll"
 	"github.com/google/uuid"
 )
@@ -18,7 +16,7 @@ type connKey struct {
 	name string
 }
 
-var ckey = connKey{"__conn_key__"}
+var sidKey = connKey{"__conn_sid_key__"}
 
 type sid struct {
 	s  *Server
@@ -42,7 +40,7 @@ func (s *Server) RunAt(l net.Listener) error {
 		at(serve),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
-			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(ckey))
+			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(sidKey))
 		}),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
@@ -52,7 +50,7 @@ func (s *Server) RunAt(l net.Listener) error {
 			})
 			sk := &sid{s: s, id: uuid.NewString()}
 			fmt.Println("connect... ", conn.RemoteAddr(), "key...", sk)
-			return context.WithValue(ctx, ckey, sk)
+			return context.WithValue(ctx, sidKey, sk)
 		}),
 
 		netpoll.WithOnPrepare(func(conn netpoll.Connection) context.Context {
@@ -94,7 +92,7 @@ func doStatusList(ctx context.Context, dsl DeviceStatusList, s *Server) {
 
 func at(f func(context.Context, io.ReadWriteCloser, *Server) error) netpoll.OnRequest {
 	return func(ctx context.Context, conn netpoll.Connection) error {
-		v := ctx.Value(ckey).(*sid)
+		v := ctx.Value(sidKey).(*sid)
 		return f(ctx, conn, v.s)
 	}
 }
@@ -103,20 +101,20 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	for sc.Scan() {
 		var d SyncData
-		if err := json.Unmarshal(sc.Bytes(), &d); err != nil {
+		if err := unmarshal(sc.Bytes(), &d); err != nil {
 			log.Println(err, "SD")
 			continue
 		}
 
 		if d.Type == TypeRate {
 			log.Println(d.Type)
-			_ = json.MarshalWrite(conn, ErrNoRate)
+			_ = marshalWrite(conn, ErrNoRate)
 			continue
 		}
 
 		if d.Type == TypeDeviceData {
 			var ddl DeviceDataList
-			if err := json.Unmarshal(d.Data, &ddl); err != nil {
+			if err := unmarshal(d.Data, &ddl); err != nil {
 				log.Println(err, "ddl")
 				continue
 			}
@@ -125,14 +123,14 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 
 		if d.Type == TypeDeviceStatus {
 			var dsl DeviceStatusList
-			if err := json.Unmarshal(d.Data, &dsl); err != nil {
+			if err := unmarshal(d.Data, &dsl); err != nil {
 				log.Println(err, "dsl")
 				continue
 			}
 			go doStatusList(ctx, dsl, s)
 		}
 
-		if err := json.MarshalWrite(conn, OK); err != nil {
+		if err := marshalWrite(conn, OK); err != nil {
 			log.Print(err, "marshalWriter")
 		}
 	}
