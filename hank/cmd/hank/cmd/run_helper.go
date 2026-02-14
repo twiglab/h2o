@@ -44,7 +44,7 @@ func serverLog() *slog.Logger {
 func dataLog() *slog.Logger {
 	logF := viper.GetString("datalog.file")
 	if logF == "" {
-		logF = "logs/datalog.log"
+		log.Fatalln("datalog file is null. ***MUST*** set datalog.file")
 	}
 	log.Println("datalog file:", logF)
 	return hank.NewLog(logF, slog.LevelInfo)
