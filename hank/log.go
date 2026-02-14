@@ -45,3 +45,17 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
 	return slog.New(h)
 }
+
+func NewDataLog(logF string) *slog.Logger {
+	logFile := logF
+
+	out := &lumberjack.Logger{
+		Filename:   logFile,
+		MaxSize:    10, // megabytes
+		MaxBackups: 10,
+		MaxAge:     10, //days
+	}
+	h := slog.NewJSONHandler(out, nil)
+
+	return slog.New(h)
+}

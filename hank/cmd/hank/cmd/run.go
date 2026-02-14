@@ -33,7 +33,10 @@ func run() error {
 
 	s := &hank.Server{
 		Addr: viper.GetString("server.addr"),
-		Hub:  &hank.Hub{},
+		Hub: &hank.Hub{
+			DataLog: buildDataLog(),
+			Sender:  buildSender(),
+		},
 	}
 
 	go http.ListenAndServe(viper.GetString("web.addr"), nil)

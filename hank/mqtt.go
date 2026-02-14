@@ -3,7 +3,6 @@ package hank
 import (
 	"bytes"
 	"context"
-	"encoding/json/v2"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/pkg/data"
@@ -21,7 +20,7 @@ func (c *MQTTAction) SendData(ctx context.Context, data data.Device) error {
 	var bb bytes.Buffer
 	bb.Grow(1024)
 
-	err := json.MarshalWrite(&bb, &data)
+	err := marshalWrite(&bb, &data)
 	if err != nil {
 		return err
 	}
@@ -44,7 +43,6 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	}
 
 	client := mqtt.NewClient(opts)
-	// 连接到 Broker
 	if token := client.Connect(); token.Wait() && token.Error() != nil {
 		return nil, token.Error()
 	}
