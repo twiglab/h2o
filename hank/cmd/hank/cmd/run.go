@@ -31,12 +31,15 @@ func init() {
 
 func run() error {
 
+	_ = rootLog()
+
 	s := &hank.Server{
 		Addr: viper.GetString("server.addr"),
 		Hub: &hank.Hub{
-			DataLog: buildDataLog(),
-			Sender:  buildSender(),
+			DataLog: dataLog(),
+			Sender:  sender(),
 		},
+		Logger: serverLog(),
 	}
 
 	go http.ListenAndServe(viper.GetString("web.addr"), nil)

@@ -3,7 +3,6 @@ package hank
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"log/slog"
@@ -43,16 +42,16 @@ func (s *Server) RunAt(l net.Listener) error {
 		at(serve),
 
 		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
-			fmt.Println("disconnect ..... ", conn.RemoteAddr(), "key ...", ctx.Value(sidKey))
+			log.Println("disconnect ... ", conn.RemoteAddr(), "sid ...", ctx.Value(sidKey))
 		}),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
 			_ = conn.AddCloseCallback(func(conn netpoll.Connection) error {
-				fmt.Println("closing ...")
+				log.Println("closing ... ", conn.RemoteAddr())
 				return nil
 			})
 			sk := &sid{s: s, id: uuid.NewString()}
-			fmt.Println("connect... ", conn.RemoteAddr(), "key...", sk)
+			log.Println("connect ... ", conn.RemoteAddr(), "sid...", sk)
 			return context.WithValue(ctx, sidKey, sk)
 		}),
 
@@ -104,11 +103,11 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 		case TypeDeviceStatus:
 			go doDeviceStatus(ctx, sd, s)
 		default:
-			fmt.Println(sd.Type)
+			log.Println("ignore type = ", sd.Type)
 		}
 
 		if err := marshalWrite(conn, OK); err != nil {
-			log.Print(err, "marshalWriter")
+			log.Println(err, "marshalWriter")
 		}
 	}
 	return sc.Err()
