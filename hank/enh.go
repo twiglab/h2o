@@ -34,10 +34,12 @@ func str2I64(s string, i float64) int64 {
 	return -1
 }
 
+var xdate = time.Date(2000, 0, 0, 0, 0, 0, 0, time.Local)
+
 func parseTime(s string) time.Time {
 	t, err := time.ParseInLocation(time.DateTime, s, time.Local)
 	if err != nil {
-		return time.Date(2000, 0, 0, 0, 0, 0, 0, time.Local)
+		return xdate
 	}
 	return t
 }
