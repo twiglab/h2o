@@ -11,17 +11,10 @@ import (
 )
 
 type LogAction struct {
-	log *slog.Logger
-}
-
-func NewLogAction() LogAction {
-	return LogAction{
-		log: NewLog("console", slog.LevelDebug),
-	}
 }
 
 func (c LogAction) SendData(ctx context.Context, data data.Device) error {
-	c.log.DebugContext(ctx, "sendData", slog.Any("data", data))
+	slog.DebugContext(ctx, "logAction", slog.Any("data", data))
 	return nil
 }
 

@@ -23,8 +23,8 @@ func logLevel(s string) slog.Level {
 }
 
 func rootLog() *slog.Logger {
-	logF := viper.GetString("log.file")
-	logL := viper.GetString("log.level")
+	logF := viper.GetString("log.root.file")
+	logL := viper.GetString("log.root.level")
 
 	level := logLevel(logL)
 	log := hank.NewLog(logF, level)
@@ -42,16 +42,22 @@ func serverLog() *slog.Logger {
 }
 
 func dataLog() *slog.Logger {
-	return hank.NewLog("logs/datalog.log", slog.LevelInfo)
+	logF := viper.GetString("datalog.file")
+	if logF == "" {
+		logF = "logs/datalog.log"
+	}
+	log.Println("datalog file:", logF)
+	return hank.NewLog(logF, slog.LevelInfo)
 }
 
 func sender() hank.Sender {
-	borker := viper.GetString("mqtt.borker")
-	if borker == "" {
-		log.Println("using logAction")
-		return hank.NewLogAction()
+	broker := viper.GetString("mqtt.broker")
+	if broker == "" {
+		log.Println("using logAction ...")
+		return hank.LogAction{}
 	}
-	cli, err := hank.NewMQTTClient("hank-plugin", borker)
+	log.Println("using mqttAction ... broker", broker)
+	cli, err := hank.NewMQTTClient("hank-plugin", broker)
 	if err != nil {
 		log.Fatal(err)
 	}

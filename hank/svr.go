@@ -88,12 +88,13 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 	for sc.Scan() {
 		var sd SyncData
 		if err := unmarshal(sc.Bytes(), &sd); err != nil {
-			log.Println(err, "SD")
+			s.Logger.ErrorContext(ctx, "unmarshal SyncData error", slog.Any("error", err))
 			continue
 		}
 
 		if sd.Type == TypeRate {
-			_ = marshalWrite(conn, ErrNoRate)
+			err := marshalWrite(conn, ErrNoRate)
+			s.Logger.InfoContext(ctx, "rate type", slog.String("type", sd.Type), slog.Any("error", err))
 			continue
 		}
 
@@ -103,11 +104,11 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 		case TypeDeviceStatus:
 			go doDeviceStatus(ctx, sd, s)
 		default:
-			log.Println("ignore type = ", sd.Type)
+			s.Logger.InfoContext(ctx, "ignore type", slog.String("type", sd.Type))
 		}
 
 		if err := marshalWrite(conn, OK); err != nil {
-			log.Println(err, "marshalWriter")
+			s.Logger.ErrorContext(ctx, "unmarshalWriter OK error", slog.Any("error", err))
 		}
 	}
 	return sc.Err()
@@ -116,13 +117,13 @@ func serve(ctx context.Context, conn io.ReadWriteCloser, s *Server) error {
 func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
 	var ddl DeviceDataList
 	if err := unmarshal(sd.Data, &ddl); err != nil {
-		log.Println(err, "ddl")
+		s.Logger.ErrorContext(ctx, "unmarshal deviceDataList error", slog.Any("error", err))
 		return
 	}
 
 	for _, dd := range ddl {
 		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
-			log.Println(err)
+			s.Logger.ErrorContext(ctx, "handleDeviceData error", slog.Any("error", err))
 		}
 	}
 }
@@ -130,12 +131,12 @@ func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
 func doDeviceStatus(ctx context.Context, sd SyncData, s *Server) {
 	var dsl DeviceStatusList
 	if err := unmarshal(sd.Data, &dsl); err != nil {
-		log.Println(err, "dsl")
+		s.Logger.ErrorContext(ctx, "unmarshal deviceStatusList error", slog.Any("error", err))
 		return
 	}
 	for _, ds := range dsl {
 		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
-			log.Println(err)
+			s.Logger.ErrorContext(ctx, "handleDeviceStatus error", slog.Any("error", err))
 		}
 	}
 }
