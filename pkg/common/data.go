@@ -16,6 +16,10 @@ type Device struct {
 	Status int `json:"status"` // 设备状态, 网关,采集程序或设备自定义
 }
 
+func (d Device) Topic() string {
+	return "h2o/" + d.Code + "/" + d.Type
+}
+
 type Pos struct {
 	Project   string `json:"project"`  // 所属项目编号
 	PosCode   string `json:"pos_code"` // 位置编号

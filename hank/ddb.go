@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
+	"log/slog"
 	"time"
 
 	_ "github.com/duckdb/duckdb-go/v2"
@@ -80,7 +80,11 @@ func NewDDB(from, q string) (*DuckDB, error) {
 
 func (d *DuckDB) Load(ctx context.Context) error {
 	nextTbl, cr := losdSql(d.tbl, d.from)
-	log.Println(d.tbl, nextTbl, cr)
+	slog.DebugContext(ctx, "ddbLoad",
+		slog.String("tbl", d.tbl),
+		slog.String("nextTbl", nextTbl),
+		slog.String("create", cr),
+	)
 	if _, err := d.db.ExecContext(ctx, cr); err != nil {
 		return err
 	}

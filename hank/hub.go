@@ -2,15 +2,10 @@ package hank
 
 import (
 	"context"
-	"encoding"
 	"log/slog"
 
 	"github.com/twiglab/h2o/pkg/common"
 )
-
-type Sender interface {
-	SendData(ctx context.Context, data encoding.BinaryMarshaler) error
-}
 
 type Hub struct {
 	DataLog *slog.Logger

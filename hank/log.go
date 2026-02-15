@@ -2,7 +2,6 @@ package hank
 
 import (
 	"context"
-	"encoding"
 	"io"
 	"log/slog"
 	"os"
@@ -13,8 +12,8 @@ import (
 type LogAction struct {
 }
 
-func (c LogAction) SendData(ctx context.Context, data encoding.BinaryMarshaler) error {
-	slog.DebugContext(ctx, "logAction", slog.Any("data", data))
+func (c LogAction) SendData(ctx context.Context, obj SendObject) error {
+	slog.DebugContext(ctx, "logAction", slog.Any("data", obj), slog.String("topic", obj.Topic()))
 	return nil
 }
 

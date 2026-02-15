@@ -7,6 +7,15 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
+type SendObject interface {
+	encoding.BinaryMarshaler
+	Topic() string
+}
+
+type Sender interface {
+	SendData(ctx context.Context, obj SendObject) error
+}
+
 type MQTTAction struct {
 	client mqtt.Client
 }
@@ -15,15 +24,13 @@ func NewMQTTAction(client mqtt.Client) *MQTTAction {
 	return &MQTTAction{client: client}
 }
 
-func (c *MQTTAction) SendData(ctx context.Context, data encoding.BinaryMarshaler) error {
-	bb, err := data.MarshalBinary()
+func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
+	bb, err := obj.MarshalBinary()
 	if err != nil {
 		return err
 	}
 
-	topic := ""
-
-	pubToken := c.client.Publish(topic, 0x00, false, bb)
+	pubToken := c.client.Publish(obj.Topic(), 0x00, false, bb)
 	pubToken.Wait()
 
 	return pubToken.Error()
@@ -44,8 +51,4 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	}
 
 	return client, nil
-}
-
-func pushTopic(code, typ string) string {
-	return "h2o/" + code + "/" + typ
 }
