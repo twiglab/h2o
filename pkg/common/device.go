@@ -5,10 +5,10 @@ import "encoding/json"
 type ElectricityMeter struct {
 	Device
 
-	Pos  Pos         `json:"pos"`
+	Pos  Pos         `json:"pos,omitzero"`
 	Data Electricity `json:"data"`
 
-	Flag Flag `json:"flag"`
+	Flag Flag `json:"flag,omitzero"`
 }
 
 func (m ElectricityMeter) MarshalBinary() ([]byte, error) {
@@ -18,10 +18,10 @@ func (m ElectricityMeter) MarshalBinary() ([]byte, error) {
 type WaterMeter struct {
 	Device
 
-	Pos  Pos   `json:"pos"`
+	Pos  Pos   `json:"pos,omitzero"`
 	Data Water `json:"data"`
 
-	Flag Flag `json:"flag"`
+	Flag Flag `json:"flag,omitzero"`
 }
 
 func (m WaterMeter) MarshalBinary() (data []byte, err error) {
