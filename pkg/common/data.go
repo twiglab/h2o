@@ -21,25 +21,25 @@ func (d Device) Topic() string {
 }
 
 type Pos struct {
-	Project   string `json:"project"`  // 所属项目编号
-	PosCode   string `json:"pos_code"` // 位置编号
-	Building  string `json:"building"` // 大楼
-	FloorCode string `json:"floor_code"`
-	AreaCode  string `json:"area_code"`
+	Project   string `json:"project,omitempty"`  // 所属项目编号
+	PosCode   string `json:"pos_code,omitempty"` // 位置编号
+	Building  string `json:"building,omitempty"` // 大楼
+	FloorCode string `json:"floor_code,omitempty"`
+	AreaCode  string `json:"area_code,omitempty"`
 
-	PUID string `json:"puid"` // 全局唯一的poscode, 理论上 = project + poscode
+	PUID string `json:"puid,omitempty"` // 全局唯一的poscode, 理论上 = project + poscode
 }
 
 type Electricity struct {
-	VoltageA int64 `json:"voltage_a"`
-	VoltageB int64 `json:"voltage_b"`
-	VoltageC int64 `json:"voltage_c"`
+	VoltageA int64 `json:"voltage_a,omitempty"`
+	VoltageB int64 `json:"voltage_b,omitempty"`
+	VoltageC int64 `json:"voltage_c,omitempty"`
 
-	CurrentA int64 `json:"current_a"`
-	CurrentB int64 `json:"current_b"`
-	CurrentC int64 `json:"current_c"`
+	CurrentA int64 `json:"current_a,omitempty"`
+	CurrentB int64 `json:"current_b,omitempty"`
+	CurrentC int64 `json:"current_c,omitempty"`
 
-	DataValue int64 `json:"data_value"` // 表显读数
+	DataValue int64 `json:"data_value,omitempty"` // 表显读数
 
 	/*
 		Frequency int64 `json:"frequency"` // 频率
@@ -51,14 +51,14 @@ type Electricity struct {
 }
 
 type Water struct {
-	DataValue int64 `json:"data_value"` // 表显读数
-	OptStatus int64 `json:"opt_status"` // 开合状态
+	DataValue int64 `json:"data_value,omitempty"` // 表显读数
+	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 type Flag struct {
-	P1 string `json:"p1"`
-	P2 string `json:"p2"`
-	P3 string `json:"p3"`
-	P4 string `json:"p4"`
-	P5 string `json:"p5"`
+	P1 string `json:"p1,omitempty"`
+	P2 string `json:"p2,omitempty"`
+	P3 string `json:"p3,omitempty"`
+	P4 string `json:"p4,omitempty"`
+	P5 string `json:"p5,omitempty"`
 }
