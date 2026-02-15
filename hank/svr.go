@@ -134,8 +134,17 @@ func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
 	}
 
 	for _, dd := range ddl {
-		if err := s.Hub.HandleDeviceData(ctx, s.Enh.Convert(dd)); err != nil {
-			s.Logger.ErrorContext(ctx, "handleDeviceData error", slog.Any("error", err))
+		switch dd.Type {
+		case ELECTRICITY:
+			if err := s.Hub.HandleElectricity(ctx, s.Enh.ToElectricity(dd)); err != nil {
+				s.Logger.ErrorContext(ctx, "handleElectricity error", slog.Any("error", err))
+			}
+		case WATER:
+			if err := s.Hub.HandleWater(ctx, s.Enh.ToWater(dd)); err != nil {
+				s.Logger.ErrorContext(ctx, "handleWater error", slog.Any("error", err))
+			}
+		default:
+			s.Logger.ErrorContext(ctx, "unknow device type", slog.String("type", dd.Type))
 		}
 	}
 }

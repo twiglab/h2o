@@ -40,6 +40,7 @@ func run() error {
 			Sender:  sender(),
 		},
 		Logger: serverLog(),
+		Enh:    enh(),
 	}
 
 	go http.ListenAndServe(viper.GetString("web.addr"), nil)

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"log/slog"
 
@@ -63,4 +64,19 @@ func sender() hank.Sender {
 	}
 
 	return hank.NewMQTTAction(cli)
+}
+
+func enh() *hank.Enh {
+	from := viper.GetString("ddb.from")
+	q := viper.GetString("ddb.q")
+
+	db, err := hank.NewDDB(from, q)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.Loop(context.Background()); err != nil {
+		log.Fatal(err)
+	}
+	return &hank.Enh{DDB: db}
 }

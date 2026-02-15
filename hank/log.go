@@ -2,18 +2,18 @@ package hank
 
 import (
 	"context"
+	"encoding"
 	"io"
 	"log/slog"
 	"os"
 
-	"github.com/twiglab/h2o/pkg/data"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 type LogAction struct {
 }
 
-func (c LogAction) SendData(ctx context.Context, data data.Device) error {
+func (c LogAction) SendData(ctx context.Context, data encoding.BinaryMarshaler) error {
 	slog.DebugContext(ctx, "logAction", slog.Any("data", data))
 	return nil
 }

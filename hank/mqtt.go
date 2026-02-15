@@ -1,11 +1,10 @@
 package hank
 
 import (
-	"bytes"
 	"context"
+	"encoding"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/data"
 )
 
 type MQTTAction struct {
@@ -16,16 +15,13 @@ func NewMQTTAction(client mqtt.Client) *MQTTAction {
 	return &MQTTAction{client: client}
 }
 
-func (c *MQTTAction) SendData(ctx context.Context, data data.Device) error {
-	var bb bytes.Buffer
-	bb.Grow(1024)
-
-	err := marshalWrite(&bb, &data)
+func (c *MQTTAction) SendData(ctx context.Context, data encoding.BinaryMarshaler) error {
+	bb, err := data.MarshalBinary()
 	if err != nil {
 		return err
 	}
 
-	topic := pushTopic(data.Code, data.Type)
+	topic := ""
 
 	pubToken := c.client.Publish(topic, 0x00, false, bb)
 	pubToken.Wait()

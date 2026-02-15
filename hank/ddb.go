@@ -3,20 +3,64 @@ package hank
 import (
 	"context"
 	"database/sql"
-	"sync"
+	"fmt"
+	"log"
 	"time"
 
 	_ "github.com/duckdb/duckdb-go/v2"
 )
 
-type DuckDB struct {
-	db   *sql.DB
-	from string
-	tbl  string
-	mu   sync.Mutex
+const (
+	createSql = "create or replace table %s as %s "
+)
+
+func qry(q, tbl string) string {
+	return fmt.Sprintf(q, tbl)
 }
 
-func New(from string) (*DuckDB, error) {
+func nextTbl(curr string) string {
+	if curr == "db_a" {
+		return "db_b"
+	}
+
+	return "db_a"
+}
+
+func losdSql(t, load string) (tbl string, from string) {
+	tbl = nextTbl(t)
+	from = fmt.Sprintf(createSql, tbl, load)
+	return
+}
+
+type MetaData struct {
+	SN   string `json:"sn,omitempty"`   // 仪表的序列号,仪表上有个条形码,如果没有就是空,或者自定义
+	Code string `json:"code"`           // 设备code,业务全局唯一
+	Name string `json:"name,omitempty"` // 设备名称,可以为空
+
+	Project   string `json:"project"`  // 所属项目编号
+	PosCode   string `json:"pos_code"` // 位置编号
+	Building  string `json:"building"` // 大楼
+	FloorCode string `json:"floor_code"`
+	AreaCode  string `json:"area_code"`
+
+	P1 string `json:"p1"`
+	P2 string `json:"p2"`
+	P3 string `json:"p3"`
+	P4 string `json:"p4"`
+	P5 string `json:"p5"`
+}
+
+type DuckDB struct {
+	db *sql.DB
+
+	from string
+	q    string
+
+	tbl    string
+	getQry string
+}
+
+func NewDDB(from, q string) (*DuckDB, error) {
 	db, err := sql.Open("duckdb", "")
 	if err != nil {
 		return nil, err
@@ -26,23 +70,23 @@ func New(from string) (*DuckDB, error) {
 	}
 
 	return &DuckDB{
-		db:   db,
+		db:  db,
+		tbl: "x",
+
 		from: from,
-		tbl:  "x",
+		q:    q,
 	}, nil
 }
 
 func (d *DuckDB) Load(ctx context.Context) error {
-
 	nextTbl, cr := losdSql(d.tbl, d.from)
+	log.Println(d.tbl, nextTbl, cr)
 	if _, err := d.db.ExecContext(ctx, cr); err != nil {
 		return err
 	}
 
-	d.mu.Lock()
-	defer d.mu.Unlock()
-
 	d.tbl = nextTbl
+	d.getQry = qry(d.q, d.tbl)
 	return nil
 }
 
@@ -52,7 +96,6 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 	}
 
 	go func(ctx context.Context) {
-
 		ticker := time.NewTicker(time.Hour)
 		defer ticker.Stop()
 
@@ -69,43 +112,15 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 	return nil
 }
 
-/*
-func (d *DuckDB) List(ctx context.Context) (rs []pf.ChannelUserData, err error) {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-
-	listsql := listSql(d.tbl)
-
-	var rows *sql.Rows
-	if rows, err = d.db.QueryContext(ctx, listsql); err != nil {
-		return
-	}
-	defer func() { _ = rows.Close() }()
-
-	for rows.Next() {
-		var data pf.ChannelUserData
-		if err = rows.Scan(&data.SN, &data.UUID, &data.Code, &data.X, &data.Y, &data.Z); err != nil {
-			return
-		}
-		rs = append(rs, data)
-	}
-	return
-}
-
-func (d *DuckDB) TblName(ctx context.Context) string {
-	d.mu.Lock()
-	defer d.mu.Unlock()
-	return d.tbl
-}
-
-func (d *DuckDB) Get(ctx context.Context, id string) (data pf.ChannelUserData, ok bool, err error) {
-	tblname := d.TblName(ctx)
-	sql := querySql(tblname)
-	row := d.db.QueryRowContext(ctx, sql, id)
-	err = row.Scan(&data.SN, &data.UUID, &data.Code, &data.X, &data.Y, &data.Z)
+func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, err error) {
+	row := d.db.QueryRowContext(ctx, d.getQry, code)
+	err = row.Scan(
+		&data.SN, &data.Code, &data.Name, &data.Project,
+		&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
+		&data.P1, &data.P2, &data.P3, &data.P4, &data.P5,
+	)
 	ok = err == nil
 	return
 }
 
-func (d *DuckDB) Set(_ context.Context, _ string, _ pf.ChannelUserData) error { return nil }
-*/
+func (d *DuckDB) Set(_ context.Context, _ string, _ MetaData) error { return nil }
