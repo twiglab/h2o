@@ -2,18 +2,21 @@ package chrgg
 
 import (
 	"context"
-	"time"
 
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/pkg/common"
 )
 
-type ChargeData struct {
-	Code      string
-	Type      string
-	DataTime  time.Time
-	DataCode  string
+type Data struct {
 	DataValue int64
+}
+
+type ChargeData struct {
+	common.Device
+	Pos  common.Pos  `json:"pos,omitzero"`
+	Data Data        `json:"data"`
+	Flag common.Flag `json:"flag,omitzero"`
 }
 
 func cr1(cd ChargeData) CDR {
@@ -21,11 +24,11 @@ func cr1(cd ChargeData) CDR {
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
 
-		LastDataTime: cd.DataTime,
-		DataTime:     cd.DataTime,
+		LastDataTime: cd.Time,
+		DataTime:     cd.Time,
 
-		LastDataValue: cd.DataValue,
-		DataValue:     cd.DataValue,
+		LastDataValue: cd.Data.DataValue,
+		DataValue:     cd.Data.DataValue,
 
 		LastDataCode: cd.DataCode,
 		DataCode:     cd.DataCode,
