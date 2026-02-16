@@ -9,6 +9,8 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+var Nil CDR
+
 type ChargeData struct {
 	common.Device
 	Pos  common.Pos   `json:"pos,omitzero"`
@@ -70,7 +72,7 @@ func FirstCDR(cd ChargeData) CDR {
 	}
 }
 
-func NewCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
+func CalcCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
 	value, fee := calc(last.DataValue, cd.Data.DataValue, pl.UnitFee)
 	return CDR{
 		DeviceCode: cd.Code,

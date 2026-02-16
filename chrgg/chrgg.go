@@ -6,8 +6,6 @@ import (
 
 	"github.com/twiglab/h2o/chrgg/cdr"
 	"github.com/twiglab/h2o/chrgg/orm"
-	"github.com/twiglab/h2o/chrgg/orm/ent"
-	"github.com/twiglab/h2o/chrgg/ploy"
 )
 
 type ChangeServer struct {
@@ -17,33 +15,27 @@ type ChangeServer struct {
 	re RulerEngine
 }
 
-func (s *ChangeServer) DoChange(ctx context.Context, cd cdr.ChargeData) (newCDR cdr.CDR, err error) {
-	var (
-		last     *ent.CDR
-		notfound bool
-		ru       ploy.Ruler
-	)
-
-	last, notfound, err = s.dbx.LoadLast(ctx, cd.Code, cd.Type)
-
+func (s *ChangeServer) calc(ctx context.Context, cd cdr.ChargeData) (cdr.CDR, error) {
+	last, notfound, err := s.dbx.LoadLast(ctx, cd.Code, cd.Type)
 	if err != nil {
-		return
+		return cdr.Nil, err
 	}
 
 	if notfound {
-		newCDR = cdr.FirstCDR(cd)
-		return
+		return cdr.FirstCDR(cd), nil
 	}
 
-	if ru, err = s.re.GetResult(ctx, cd); err != nil {
-		return
+	ru, err := s.re.GetResult(ctx, cd)
+	if err != nil {
+		return cdr.Nil, err
 	}
 
-	newCDR = cdr.NewCDR(last, cd, ru)
+	return cdr.CalcCDR(last, cd, ru), nil
+}
 
-	// log cdr
-
-	_, err = s.dbx.SaveCurrent(ctx, newCDR)
-
+func (s *ChangeServer) DoChange(ctx context.Context, cd cdr.ChargeData) (nc cdr.CDR, err error) {
+	if nc, err = s.calc(ctx, cd); err == nil { // err == nil
+		_, err = s.dbx.SaveCurrent(ctx, nc)
+	}
 	return
 }
