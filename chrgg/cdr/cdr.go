@@ -33,7 +33,7 @@ type CDR struct {
 	LastDataValue int64 // 上次表显
 	DataValue     int64 // 当前表显
 
-	Value int64 // 两次表显的差值, 用于计算费用的数值
+	Value int64 // 计量值,两次表显的差值,用于计算费用的数值
 
 	PloyID  string
 	RuleID  string
@@ -71,7 +71,7 @@ func FirstCDR(cd ChargeData) CDR {
 }
 
 func NewCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
-	v, f := calc(last.DataValue, cd.Data.DataValue, pl.UnitFee)
+	value, fee := calc(last.DataValue, cd.Data.DataValue, pl.UnitFee)
 	return CDR{
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
@@ -88,9 +88,9 @@ func NewCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
 		PloyID: pl.PloyID,
 		RuleID: pl.ID,
 
-		Value:   v,
+		Value:   value,
 		UnitFee: pl.UnitFee,
-		Fee:     f,
+		Fee:     fee,
 
 		PosCode: cd.Pos.PosCode,
 		Project: cd.Pos.Project,
