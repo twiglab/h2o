@@ -1,26 +1,13 @@
-package cdr
+package chrgg
 
 import (
-	"encoding/json/v2"
 	"time"
 
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/chrgg/ploy"
-	"github.com/twiglab/h2o/pkg/common"
 )
 
 var Nil CDR
-
-type ChargeData struct {
-	common.Device
-	Pos  common.Pos   `json:"pos,omitzero"`
-	Data common.DataV `json:"data"`
-	Flag common.Flag  `json:"flag,omitzero"`
-}
-
-func (d *ChargeData) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, d)
-}
 
 type CDR struct {
 	DeviceCode string

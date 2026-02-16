@@ -2,21 +2,33 @@ package chrgg
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/chrgg/cdr"
+	"github.com/twiglab/h2o/pkg/common"
 )
+
+type OrgiData struct {
+	common.Device
+	Pos  common.Pos   `json:"pos,omitzero"`
+	Data common.DataV `json:"data"`
+	Flag common.Flag  `json:"flag,omitzero"`
+}
+
+func (d *OrgiData) UnmarshalBinary(data []byte) error {
+	return json.Unmarshal(data, d)
+}
 
 func HandleChange(s *ChangeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		var cd cdr.ChargeData
-		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
+		var od OrgiData
+		if err := od.UnmarshalBinary(msg.Payload()); err != nil {
 			log.Print(err)
 			return
 		}
 
-		if _, err := s.DoChange(context.Background(), cd); err != nil {
+		if _, err := s.DoChange(context.Background(), od); err != nil {
 			log.Print(err)
 			return
 		}
@@ -25,7 +37,7 @@ func HandleChange(s *ChangeServer) mqtt.MessageHandler {
 
 func RawHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		var cd cdr.ChargeData
+		var cd ChargeData
 		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
 			log.Print(err)
 			return
