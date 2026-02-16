@@ -8,7 +8,7 @@ import (
 	"github.com/twiglab/h2o/chrgg/cdr"
 )
 
-func Handle(s *ChangeServer) mqtt.MessageHandler {
+func HandleChange(s *ChangeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		var cd cdr.ChargeData
 		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
@@ -20,6 +20,17 @@ func Handle(s *ChangeServer) mqtt.MessageHandler {
 			log.Print(err)
 			return
 		}
+	}
+}
+
+func RawHandle() mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		var cd cdr.ChargeData
+		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
+			log.Print(err)
+			return
+		}
+		log.Print(cd)
 	}
 }
 

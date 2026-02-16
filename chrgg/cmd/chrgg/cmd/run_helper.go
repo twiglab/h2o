@@ -28,7 +28,7 @@ func run() error {
 		log.Fatal(err)
 	}
 
-	c.Subscribe("h2o/+/electricity", 0, chrgg.H)
+	c.Subscribe("h2o/+/electricity", 0, chrgg.RawHandle)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {})
 	return http.ListenAndServe(addr, nil)
