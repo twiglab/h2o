@@ -20,9 +20,10 @@ func (e *Enh) ToWater(dd DeviceData) common.WaterMeter {
 			Type: dd.Type,
 			Name: dd.No,
 
-			Time:     parseTime(dd.DataTime),
+			DataTime: parseTime(dd.DataTime),
 			DataCode: dd.DataCode,
 
+			Time:   now(),
 			Status: 0,
 		},
 		Pos: common.Pos{
@@ -62,9 +63,10 @@ func (e *Enh) ToElectricity(dd DeviceData) common.ElectricityMeter {
 			Type: dd.Type,
 			Name: meta.Name,
 
-			Time:     parseTime(dd.DataTime),
+			DataTime: parseTime(dd.DataTime),
 			DataCode: dd.DataCode,
 
+			Time:   now(),
 			Status: 0,
 		},
 
@@ -114,4 +116,8 @@ func parseTime(s string) time.Time {
 
 func puid(project, posCode string) string {
 	return posCode + "@" + project
+}
+
+func now() time.Time {
+	return time.Now()
 }

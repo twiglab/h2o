@@ -10,10 +10,11 @@ type Device struct {
 	Type string `json:"type"`           // 设备类型
 	Name string `json:"name,omitempty"` // 设备名称,可以为空
 
-	Time     time.Time `json:"time"`      // 采集时间
+	DataTime time.Time `json:"data_time"` // 采集时间
 	DataCode string    `json:"data_code"` // 采集的唯一标识,全局唯一单调递增
 
-	Status int `json:"status"` // 设备状态, 网关,采集程序或设备自定义
+	Time   time.Time `json:"time"`   // 处理时间
+	Status int       `json:"status"` // 设备状态, 网关,采集程序或设备自定义
 }
 
 func (d Device) Topic() string {
