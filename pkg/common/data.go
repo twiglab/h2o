@@ -31,6 +31,8 @@ type Pos struct {
 }
 
 type Electricity struct {
+	DataValue
+
 	VoltageA int64 `json:"voltage_a,omitempty"`
 	VoltageB int64 `json:"voltage_b,omitempty"`
 	VoltageC int64 `json:"voltage_c,omitempty"`
@@ -38,8 +40,6 @@ type Electricity struct {
 	CurrentA int64 `json:"current_a,omitempty"`
 	CurrentB int64 `json:"current_b,omitempty"`
 	CurrentC int64 `json:"current_c,omitempty"`
-
-	DataValue int64 `json:"data_value,omitempty"` // 表显读数
 
 	/*
 		Frequency int64 `json:"frequency"` // 频率
@@ -51,8 +51,12 @@ type Electricity struct {
 }
 
 type Water struct {
-	DataValue int64 `json:"data_value,omitempty"` // 表显读数
+	DataValue
 	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
+}
+
+type DataValue struct {
+	DataValue int64 `json:"data_value,omitempty"` // 表显读数
 }
 
 type Flag struct {
