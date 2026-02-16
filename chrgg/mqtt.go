@@ -9,28 +9,30 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-type OrgiData struct {
+type RawData struct {
 	common.Device
 	Pos  common.Pos   `json:"pos,omitzero"`
 	Data common.DataV `json:"data"`
 	Flag common.Flag  `json:"flag,omitzero"`
 }
 
-func (d *OrgiData) UnmarshalBinary(data []byte) error {
+func (d *RawData) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, d)
 }
 
 func HandleChange(s *ChangeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		var od OrgiData
-		if err := od.UnmarshalBinary(msg.Payload()); err != nil {
+		if msg.Duplicate() {
+			return
+		}
+		var rd RawData
+		if err := rd.UnmarshalBinary(msg.Payload()); err != nil {
 			log.Print(err)
 			return
 		}
 
-		if _, err := s.DoChange(context.Background(), od); err != nil {
+		if _, err := s.DoChange(context.Background(), rd); err != nil {
 			log.Print(err)
-			return
 		}
 	}
 }

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/twiglab/h2o/chrgg/orm/ent"
-	"github.com/twiglab/h2o/chrgg/ploy"
 )
 
 var Nil CDR
@@ -59,8 +58,8 @@ func FirstCDR(cd ChargeData) CDR {
 	}
 }
 
-func CalcCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
-	value, fee := calc(last.DataValue, cd.Data.DataValue, pl.UnitFee)
+func CalcCDR(last *ent.CDR, cd ChargeData, ru Ruler) CDR {
+	value, fee := calc(last.DataValue, cd.Data.DataValue, ru.UnitFee)
 	return CDR{
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
@@ -74,11 +73,11 @@ func CalcCDR(last *ent.CDR, cd ChargeData, pl ploy.Ruler) CDR {
 		LastDataCode: last.DataCode,
 		DataCode:     cd.DataCode,
 
-		PloyID: pl.PloyID,
-		RuleID: pl.ID,
+		PloyID: ru.PloyID,
+		RuleID: ru.ID,
 
 		Value:   value,
-		UnitFee: pl.UnitFee,
+		UnitFee: ru.UnitFee,
 		Fee:     fee,
 
 		PosCode: cd.Pos.PosCode,

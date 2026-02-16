@@ -3,10 +3,12 @@ package chrgg
 import (
 	"context"
 	"log/slog"
+
+	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
 type ChargeData struct {
-	OrgiData
+	RawData
 }
 
 type ChangeServer struct {
@@ -16,8 +18,12 @@ type ChangeServer struct {
 	re RulerEngine
 }
 
-func (s *ChangeServer) pre(ctx context.Context, bcd OrgiData) (ChargeData, error) {
-	return ChargeData{OrgiData: bcd}, nil
+func (s *ChangeServer) pre(_ context.Context, rd RawData) (ChargeData, error) {
+	return ChargeData{RawData: rd}, nil
+}
+
+func (s ChangeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) error {
+	return nil
 }
 
 func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
@@ -30,6 +36,10 @@ func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
 		return FirstCDR(cd), nil
 	}
 
+	if err := s.check(ctx, last, cd); err != nil {
+		return Nil, err
+	}
+
 	ru, err := s.re.GetResult(ctx, cd)
 	if err != nil {
 		return Nil, err
@@ -38,13 +48,16 @@ func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
 	return CalcCDR(last, cd, ru), nil
 }
 
-func (s *ChangeServer) DoChange(ctx context.Context, bd OrgiData) (nc CDR, err error) {
+func (s *ChangeServer) DoChange(ctx context.Context, bd RawData) (nc CDR, err error) {
 	var cd ChargeData
 	if cd, err = s.pre(ctx, bd); err != nil {
 		return
 	}
-	if nc, err = s.calc(ctx, cd); err == nil { // err == nil
-		_, err = s.dbx.SaveCurrent(ctx, nc)
+
+	nc, err = s.calc(ctx, cd)
+	if err != nil { // err == nil
+		return
 	}
+	_, err = s.dbx.SaveCurrent(ctx, nc)
 	return
 }
