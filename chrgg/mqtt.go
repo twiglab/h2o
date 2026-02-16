@@ -1,14 +1,26 @@
 package chrgg
 
 import (
+	"context"
+	"log"
+
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/tidwall/gjson"
+	"github.com/twiglab/h2o/chrgg/cdr"
 )
 
-func H(cli mqtt.Client, msg mqtt.Message) {
+func Handle(s *ChangeServer) mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		var cd cdr.ChargeData
+		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
+			log.Print(err)
+			return
+		}
 
-	r := gjson.GetBytes(msg.Payload(), "")
-	r.Time()
+		if _, err := s.DoChange(context.Background(), cd); err != nil {
+			log.Print(err)
+			return
+		}
+	}
 }
 
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
