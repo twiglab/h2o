@@ -21,10 +21,13 @@ func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.CDR, notfo
 	q.Where(cdr.DeviceCodeEQ(code), cdr.DeviceTypeEQ(typ))
 	q.Limit(1)
 	q.Order(ent.Desc(cdr.FieldDataTime))
+
 	//q.Order(ent.Desc(cdr.FieldID))
 
-	r, err = q.Only(ctx)
-	notfound = ent.IsNotFound(err)
+	if r, err = q.Only(ctx); ent.IsNotFound(err) {
+		notfound = true
+		err = nil
+	}
 
 	return
 }

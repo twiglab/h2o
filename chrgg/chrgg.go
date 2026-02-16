@@ -24,13 +24,12 @@ func (s *ChangeServer) DoChange(ctx context.Context, cd cdr.ChargeData) (newCDR 
 
 	r, notfound, err = s.dbx.LoadLast(ctx, cd.Code, cd.Type)
 
-	if notfound {
-		newCDR = cdr.FirstCDR(cd)
-		err = nil
+	if err != nil {
 		return
 	}
 
-	if err != nil {
+	if notfound {
+		newCDR = cdr.FirstCDR(cd)
 		return
 	}
 
