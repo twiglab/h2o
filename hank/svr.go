@@ -95,8 +95,8 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 	sk := fromCtx[*cid](ctx, ck)
 
 	slog.DebugContext(ctx, "serve",
+		slog.String("remoteAddr", conn.RemoteAddr().String()),
 		slog.String("cid", sk.String()),
-		slog.String("addr", conn.RemoteAddr().String()),
 	)
 
 	for sc.Scan() {
