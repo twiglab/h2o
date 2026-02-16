@@ -93,6 +93,12 @@ func fromCtx[T any](ctx context.Context, key any) T {
 func serve(ctx context.Context, conn net.Conn, s *Server) error {
 	sc := bufio.NewScanner(conn)
 	sk := fromCtx[*cid](ctx, ck)
+
+	slog.DebugContext(ctx, "serve",
+		slog.String("cid", sk.String()),
+		slog.String("addr", conn.RemoteAddr().String()),
+	)
+
 	for sc.Scan() {
 		var sd SyncData
 		if err := unmarshal(sc.Bytes(), &sd); err != nil {
