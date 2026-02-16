@@ -28,6 +28,12 @@ func (_u *CDRUpdate) Where(ps ...predicate.CDR) *CDRUpdate {
 	return _u
 }
 
+// SetUpdateTime sets the "update_time" field.
+func (_u *CDRUpdate) SetUpdateTime(v time.Time) *CDRUpdate {
+	_u.mutation.SetUpdateTime(v)
+	return _u
+}
+
 // SetDeviceCode sets the "device_code" field.
 func (_u *CDRUpdate) SetDeviceCode(v string) *CDRUpdate {
 	_u.mutation.SetDeviceCode(v)
@@ -273,6 +279,20 @@ func (_u *CDRUpdate) SetNillableProject(v *string) *CDRUpdate {
 	return _u
 }
 
+// SetTime sets the "time" field.
+func (_u *CDRUpdate) SetTime(v time.Time) *CDRUpdate {
+	_u.mutation.SetTime(v)
+	return _u
+}
+
+// SetNillableTime sets the "time" field if the given value is not nil.
+func (_u *CDRUpdate) SetNillableTime(v *time.Time) *CDRUpdate {
+	if v != nil {
+		_u.SetTime(*v)
+	}
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *CDRUpdate) SetRemark(v string) *CDRUpdate {
 	_u.mutation.SetRemark(v)
@@ -294,6 +314,7 @@ func (_u *CDRUpdate) Mutation() *CDRMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (_u *CDRUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -319,6 +340,14 @@ func (_u *CDRUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (_u *CDRUpdate) defaults() {
+	if _, ok := _u.mutation.UpdateTime(); !ok {
+		v := cdr.UpdateDefaultUpdateTime()
+		_u.mutation.SetUpdateTime(v)
+	}
+}
+
 func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(cdr.Table, cdr.Columns, sqlgraph.NewFieldSpec(cdr.FieldID, field.TypeString))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
@@ -327,6 +356,9 @@ func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdateTime(); ok {
+		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.DeviceCode(); ok {
 		_spec.SetField(cdr.FieldDeviceCode, field.TypeString, value)
@@ -388,6 +420,9 @@ func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Project(); ok {
 		_spec.SetField(cdr.FieldProject, field.TypeString, value)
 	}
+	if value, ok := _u.mutation.Time(); ok {
+		_spec.SetField(cdr.FieldTime, field.TypeTime, value)
+	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)
 	}
@@ -409,6 +444,12 @@ type CDRUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *CDRMutation
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (_u *CDRUpdateOne) SetUpdateTime(v time.Time) *CDRUpdateOne {
+	_u.mutation.SetUpdateTime(v)
+	return _u
 }
 
 // SetDeviceCode sets the "device_code" field.
@@ -656,6 +697,20 @@ func (_u *CDRUpdateOne) SetNillableProject(v *string) *CDRUpdateOne {
 	return _u
 }
 
+// SetTime sets the "time" field.
+func (_u *CDRUpdateOne) SetTime(v time.Time) *CDRUpdateOne {
+	_u.mutation.SetTime(v)
+	return _u
+}
+
+// SetNillableTime sets the "time" field if the given value is not nil.
+func (_u *CDRUpdateOne) SetNillableTime(v *time.Time) *CDRUpdateOne {
+	if v != nil {
+		_u.SetTime(*v)
+	}
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *CDRUpdateOne) SetRemark(v string) *CDRUpdateOne {
 	_u.mutation.SetRemark(v)
@@ -690,6 +745,7 @@ func (_u *CDRUpdateOne) Select(field string, fields ...string) *CDRUpdateOne {
 
 // Save executes the query and returns the updated CDR entity.
 func (_u *CDRUpdateOne) Save(ctx context.Context) (*CDR, error) {
+	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
@@ -712,6 +768,14 @@ func (_u *CDRUpdateOne) Exec(ctx context.Context) error {
 func (_u *CDRUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (_u *CDRUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdateTime(); !ok {
+		v := cdr.UpdateDefaultUpdateTime()
+		_u.mutation.SetUpdateTime(v)
 	}
 }
 
@@ -740,6 +804,9 @@ func (_u *CDRUpdateOne) sqlSave(ctx context.Context) (_node *CDR, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdateTime(); ok {
+		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.DeviceCode(); ok {
 		_spec.SetField(cdr.FieldDeviceCode, field.TypeString, value)
@@ -800,6 +867,9 @@ func (_u *CDRUpdateOne) sqlSave(ctx context.Context) (_node *CDR, err error) {
 	}
 	if value, ok := _u.mutation.Project(); ok {
 		_spec.SetField(cdr.FieldProject, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Time(); ok {
+		_spec.SetField(cdr.FieldTime, field.TypeTime, value)
 	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)

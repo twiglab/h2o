@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"time"
+
 	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
 	"github.com/twiglab/h2o/chrgg/orm/schema"
 )
@@ -11,10 +13,19 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	cdrMixin := schema.CDR{}.Mixin()
+	cdrMixinFields0 := cdrMixin[0].Fields()
+	_ = cdrMixinFields0
 	cdrFields := schema.CDR{}.Fields()
 	_ = cdrFields
-	// cdrDescRemark is the schema descriptor for remark field.
-	cdrDescRemark := cdrFields[16].Descriptor()
-	// cdr.DefaultRemark holds the default value on creation for the remark field.
-	cdr.DefaultRemark = cdrDescRemark.Default.(string)
+	// cdrDescCreateTime is the schema descriptor for create_time field.
+	cdrDescCreateTime := cdrMixinFields0[0].Descriptor()
+	// cdr.DefaultCreateTime holds the default value on creation for the create_time field.
+	cdr.DefaultCreateTime = cdrDescCreateTime.Default.(func() time.Time)
+	// cdrDescUpdateTime is the schema descriptor for update_time field.
+	cdrDescUpdateTime := cdrMixinFields0[1].Descriptor()
+	// cdr.DefaultUpdateTime holds the default value on creation for the update_time field.
+	cdr.DefaultUpdateTime = cdrDescUpdateTime.Default.(func() time.Time)
+	// cdr.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	cdr.UpdateDefaultUpdateTime = cdrDescUpdateTime.UpdateDefault.(func() time.Time)
 }

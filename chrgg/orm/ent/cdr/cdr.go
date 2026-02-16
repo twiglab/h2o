@@ -3,6 +3,8 @@
 package cdr
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -11,6 +13,10 @@ const (
 	Label = "cdr"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldCreateTime holds the string denoting the create_time field in the database.
+	FieldCreateTime = "create_time"
+	// FieldUpdateTime holds the string denoting the update_time field in the database.
+	FieldUpdateTime = "update_time"
 	// FieldDeviceCode holds the string denoting the device_code field in the database.
 	FieldDeviceCode = "device_code"
 	// FieldDeviceType holds the string denoting the device_type field in the database.
@@ -41,15 +47,19 @@ const (
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
+	// FieldTime holds the string denoting the time field in the database.
+	FieldTime = "time"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
 	// Table holds the table name of the cdr in the database.
-	Table = "cd_rs"
+	Table = "t_cdr"
 )
 
 // Columns holds all SQL columns for cdr fields.
 var Columns = []string{
 	FieldID,
+	FieldCreateTime,
+	FieldUpdateTime,
 	FieldDeviceCode,
 	FieldDeviceType,
 	FieldLastDataValue,
@@ -65,6 +75,7 @@ var Columns = []string{
 	FieldFee,
 	FieldPosCode,
 	FieldProject,
+	FieldTime,
 	FieldRemark,
 }
 
@@ -79,8 +90,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultRemark holds the default value on creation for the "remark" field.
-	DefaultRemark string
+	// DefaultCreateTime holds the default value on creation for the "create_time" field.
+	DefaultCreateTime func() time.Time
+	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
+	DefaultUpdateTime func() time.Time
+	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
+	UpdateDefaultUpdateTime func() time.Time
 )
 
 // OrderOption defines the ordering options for the CDR queries.
@@ -89,6 +104,16 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByCreateTime orders the results by the create_time field.
+func ByCreateTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreateTime, opts...).ToFunc()
+}
+
+// ByUpdateTime orders the results by the update_time field.
+func ByUpdateTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdateTime, opts...).ToFunc()
 }
 
 // ByDeviceCode orders the results by the device_code field.
@@ -164,6 +189,11 @@ func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 // ByProject orders the results by the project field.
 func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
+}
+
+// ByTime orders the results by the time field.
+func ByTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTime, opts...).ToFunc()
 }
 
 // ByRemark orders the results by the remark field.

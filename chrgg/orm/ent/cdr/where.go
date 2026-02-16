@@ -64,6 +64,16 @@ func IDContainsFold(id string) predicate.CDR {
 	return predicate.CDR(sql.FieldContainsFold(FieldID, id))
 }
 
+// CreateTime applies equality check predicate on the "create_time" field. It's identical to CreateTimeEQ.
+func CreateTime(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldCreateTime, v))
+}
+
+// UpdateTime applies equality check predicate on the "update_time" field. It's identical to UpdateTimeEQ.
+func UpdateTime(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldUpdateTime, v))
+}
+
 // DeviceCode applies equality check predicate on the "device_code" field. It's identical to DeviceCodeEQ.
 func DeviceCode(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldDeviceCode, v))
@@ -139,9 +149,94 @@ func Project(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldProject, v))
 }
 
+// Time applies equality check predicate on the "time" field. It's identical to TimeEQ.
+func Time(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldTime, v))
+}
+
 // Remark applies equality check predicate on the "remark" field. It's identical to RemarkEQ.
 func Remark(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldRemark, v))
+}
+
+// CreateTimeEQ applies the EQ predicate on the "create_time" field.
+func CreateTimeEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldCreateTime, v))
+}
+
+// CreateTimeNEQ applies the NEQ predicate on the "create_time" field.
+func CreateTimeNEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldCreateTime, v))
+}
+
+// CreateTimeIn applies the In predicate on the "create_time" field.
+func CreateTimeIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldCreateTime, vs...))
+}
+
+// CreateTimeNotIn applies the NotIn predicate on the "create_time" field.
+func CreateTimeNotIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldCreateTime, vs...))
+}
+
+// CreateTimeGT applies the GT predicate on the "create_time" field.
+func CreateTimeGT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldCreateTime, v))
+}
+
+// CreateTimeGTE applies the GTE predicate on the "create_time" field.
+func CreateTimeGTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldCreateTime, v))
+}
+
+// CreateTimeLT applies the LT predicate on the "create_time" field.
+func CreateTimeLT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldCreateTime, v))
+}
+
+// CreateTimeLTE applies the LTE predicate on the "create_time" field.
+func CreateTimeLTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldCreateTime, v))
+}
+
+// UpdateTimeEQ applies the EQ predicate on the "update_time" field.
+func UpdateTimeEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldUpdateTime, v))
+}
+
+// UpdateTimeNEQ applies the NEQ predicate on the "update_time" field.
+func UpdateTimeNEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldUpdateTime, v))
+}
+
+// UpdateTimeIn applies the In predicate on the "update_time" field.
+func UpdateTimeIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldUpdateTime, vs...))
+}
+
+// UpdateTimeNotIn applies the NotIn predicate on the "update_time" field.
+func UpdateTimeNotIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldUpdateTime, vs...))
+}
+
+// UpdateTimeGT applies the GT predicate on the "update_time" field.
+func UpdateTimeGT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldUpdateTime, v))
+}
+
+// UpdateTimeGTE applies the GTE predicate on the "update_time" field.
+func UpdateTimeGTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldUpdateTime, v))
+}
+
+// UpdateTimeLT applies the LT predicate on the "update_time" field.
+func UpdateTimeLT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldUpdateTime, v))
+}
+
+// UpdateTimeLTE applies the LTE predicate on the "update_time" field.
+func UpdateTimeLTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldUpdateTime, v))
 }
 
 // DeviceCodeEQ applies the EQ predicate on the "device_code" field.
@@ -942,6 +1037,46 @@ func ProjectEqualFold(v string) predicate.CDR {
 // ProjectContainsFold applies the ContainsFold predicate on the "project" field.
 func ProjectContainsFold(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldContainsFold(FieldProject, v))
+}
+
+// TimeEQ applies the EQ predicate on the "time" field.
+func TimeEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldTime, v))
+}
+
+// TimeNEQ applies the NEQ predicate on the "time" field.
+func TimeNEQ(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldTime, v))
+}
+
+// TimeIn applies the In predicate on the "time" field.
+func TimeIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldTime, vs...))
+}
+
+// TimeNotIn applies the NotIn predicate on the "time" field.
+func TimeNotIn(vs ...time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldTime, vs...))
+}
+
+// TimeGT applies the GT predicate on the "time" field.
+func TimeGT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldTime, v))
+}
+
+// TimeGTE applies the GTE predicate on the "time" field.
+func TimeGTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldTime, v))
+}
+
+// TimeLT applies the LT predicate on the "time" field.
+func TimeLT(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldTime, v))
+}
+
+// TimeLTE applies the LTE predicate on the "time" field.
+func TimeLTE(v time.Time) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldTime, v))
 }
 
 // RemarkEQ applies the EQ predicate on the "remark" field.

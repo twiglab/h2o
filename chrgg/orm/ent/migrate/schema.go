@@ -3,14 +3,17 @@
 package migrate
 
 import (
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/dialect/sql/schema"
 	"entgo.io/ent/schema/field"
 )
 
 var (
-	// CdRsColumns holds the columns for the "cd_rs" table.
-	CdRsColumns = []*schema.Column{
+	// TCdrColumns holds the columns for the "t_cdr" table.
+	TCdrColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
 		{Name: "device_code", Type: field.TypeString},
 		{Name: "device_type", Type: field.TypeString},
 		{Name: "last_data_value", Type: field.TypeInt64},
@@ -26,41 +29,45 @@ var (
 		{Name: "fee", Type: field.TypeInt64},
 		{Name: "pos_code", Type: field.TypeString},
 		{Name: "project", Type: field.TypeString},
-		{Name: "remark", Type: field.TypeString, Default: ""},
+		{Name: "time", Type: field.TypeTime},
+		{Name: "remark", Type: field.TypeString},
 	}
-	// CdRsTable holds the schema information for the "cd_rs" table.
-	CdRsTable = &schema.Table{
-		Name:       "cd_rs",
-		Columns:    CdRsColumns,
-		PrimaryKey: []*schema.Column{CdRsColumns[0]},
+	// TCdrTable holds the schema information for the "t_cdr" table.
+	TCdrTable = &schema.Table{
+		Name:       "t_cdr",
+		Columns:    TCdrColumns,
+		PrimaryKey: []*schema.Column{TCdrColumns[0]},
 		Indexes: []*schema.Index{
 			{
 				Name:    "cdr_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{CdRsColumns[1]},
+				Columns: []*schema.Column{TCdrColumns[3]},
 			},
 			{
 				Name:    "cdr_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{CdRsColumns[2]},
+				Columns: []*schema.Column{TCdrColumns[4]},
 			},
 			{
 				Name:    "cdr_data_code",
 				Unique:  false,
-				Columns: []*schema.Column{CdRsColumns[6]},
+				Columns: []*schema.Column{TCdrColumns[8]},
 			},
 			{
 				Name:    "cdr_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{CdRsColumns[8]},
+				Columns: []*schema.Column{TCdrColumns[10]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		CdRsTable,
+		TCdrTable,
 	}
 )
 
 func init() {
+	TCdrTable.Annotation = &entsql.Annotation{
+		Table: "t_cdr",
+	}
 }

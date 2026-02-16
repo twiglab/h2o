@@ -19,12 +19,12 @@ type ChangeServer struct {
 
 func (s *ChangeServer) DoChange(ctx context.Context, cd cdr.ChargeData) (newCDR cdr.CDR, err error) {
 	var (
-		r        *ent.CDR
+		last     *ent.CDR
 		notfound bool
 		ru       ploy.Ruler
 	)
 
-	r, notfound, err = s.dbx.LoadLast(ctx, cd.Code, cd.Type)
+	last, notfound, err = s.dbx.LoadLast(ctx, cd.Code, cd.Type)
 
 	if err != nil {
 		return
@@ -39,7 +39,7 @@ func (s *ChangeServer) DoChange(ctx context.Context, cd cdr.ChargeData) (newCDR 
 		return
 	}
 
-	newCDR = cdr.NewCDR(r, cd, ru)
+	newCDR = cdr.NewCDR(last, cd, ru)
 
 	// log cdr
 

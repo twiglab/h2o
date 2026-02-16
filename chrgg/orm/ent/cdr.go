@@ -17,6 +17,10 @@ type CDR struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
+	// CreateTime holds the value of the "create_time" field.
+	CreateTime time.Time `json:"create_time,omitempty"`
+	// UpdateTime holds the value of the "update_time" field.
+	UpdateTime time.Time `json:"update_time,omitempty"`
 	// 设备号
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
@@ -37,7 +41,7 @@ type CDR struct {
 	PloyID string `json:"ploy_id,omitempty"`
 	// 计费规则ID
 	RuleID string `json:"rule_id,omitempty"`
-	// 计费数值
+	// 计量数值
 	Value int64 `json:"value,omitempty"`
 	// 计费单价
 	UnitFee int64 `json:"unit_fee,omitempty"`
@@ -47,6 +51,8 @@ type CDR struct {
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
 	Project string `json:"project,omitempty"`
+	// 处理时间
+	Time time.Time `json:"time,omitempty"`
 	// 备注
 	Remark       string `json:"remark,omitempty"`
 	selectValues sql.SelectValues
@@ -61,7 +67,7 @@ func (*CDR) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldRemark:
 			values[i] = new(sql.NullString)
-		case cdr.FieldLastDataTime, cdr.FieldDataTime:
+		case cdr.FieldCreateTime, cdr.FieldUpdateTime, cdr.FieldLastDataTime, cdr.FieldDataTime, cdr.FieldTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -83,6 +89,18 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				_m.ID = value.String
+			}
+		case cdr.FieldCreateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
+			} else if value.Valid {
+				_m.CreateTime = value.Time
+			}
+		case cdr.FieldUpdateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
+			} else if value.Valid {
+				_m.UpdateTime = value.Time
 			}
 		case cdr.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -174,6 +192,12 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Project = value.String
 			}
+		case cdr.FieldTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field time", values[i])
+			} else if value.Valid {
+				_m.Time = value.Time
+			}
 		case cdr.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
@@ -216,6 +240,12 @@ func (_m *CDR) String() string {
 	var builder strings.Builder
 	builder.WriteString("CDR(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("create_time=")
+	builder.WriteString(_m.CreateTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("update_time=")
+	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
+	builder.WriteString(", ")
 	builder.WriteString("device_code=")
 	builder.WriteString(_m.DeviceCode)
 	builder.WriteString(", ")
@@ -260,6 +290,9 @@ func (_m *CDR) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)
+	builder.WriteString(", ")
+	builder.WriteString("time=")
+	builder.WriteString(_m.Time.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(_m.Remark)

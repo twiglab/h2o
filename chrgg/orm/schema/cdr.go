@@ -2,8 +2,11 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
+	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
+	"entgo.io/ent/schema/mixin"
 )
 
 type CDR struct {
@@ -29,14 +32,21 @@ func (CDR) Fields() []ent.Field {
 		field.String("ploy_id").Comment("计费方案ID"),
 		field.String("rule_id").Comment("计费规则ID"),
 
-		field.Int64("value").Comment("计费数值"),
+		field.Int64("value").Comment("计量数值"),
 		field.Int64("unit_fee").Comment("计费单价"),
 		field.Int64("fee").Comment("当次费用"),
 
 		field.String("pos_code").Comment("位置编号"),
 		field.String("project").Comment("项目编号"),
 
-		field.String("remark").Default("").Comment("备注"),
+		field.Time("time").Comment("处理时间"),
+
+		field.String("remark").Comment("备注"),
+	}
+}
+func (CDR) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		mixin.Time{},
 	}
 }
 
@@ -46,5 +56,11 @@ func (CDR) Indexes() []ent.Index {
 		index.Fields("device_type"),
 		index.Fields("data_code"),
 		index.Fields("data_time"),
+	}
+}
+
+func (CDR) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entsql.Annotation{Table: "t_cdr"},
 	}
 }

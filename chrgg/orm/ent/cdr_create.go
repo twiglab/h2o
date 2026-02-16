@@ -20,6 +20,34 @@ type CDRCreate struct {
 	hooks    []Hook
 }
 
+// SetCreateTime sets the "create_time" field.
+func (_c *CDRCreate) SetCreateTime(v time.Time) *CDRCreate {
+	_c.mutation.SetCreateTime(v)
+	return _c
+}
+
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableCreateTime(v *time.Time) *CDRCreate {
+	if v != nil {
+		_c.SetCreateTime(*v)
+	}
+	return _c
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (_c *CDRCreate) SetUpdateTime(v time.Time) *CDRCreate {
+	_c.mutation.SetUpdateTime(v)
+	return _c
+}
+
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableUpdateTime(v *time.Time) *CDRCreate {
+	if v != nil {
+		_c.SetUpdateTime(*v)
+	}
+	return _c
+}
+
 // SetDeviceCode sets the "device_code" field.
 func (_c *CDRCreate) SetDeviceCode(v string) *CDRCreate {
 	_c.mutation.SetDeviceCode(v)
@@ -110,17 +138,15 @@ func (_c *CDRCreate) SetProject(v string) *CDRCreate {
 	return _c
 }
 
-// SetRemark sets the "remark" field.
-func (_c *CDRCreate) SetRemark(v string) *CDRCreate {
-	_c.mutation.SetRemark(v)
+// SetTime sets the "time" field.
+func (_c *CDRCreate) SetTime(v time.Time) *CDRCreate {
+	_c.mutation.SetTime(v)
 	return _c
 }
 
-// SetNillableRemark sets the "remark" field if the given value is not nil.
-func (_c *CDRCreate) SetNillableRemark(v *string) *CDRCreate {
-	if v != nil {
-		_c.SetRemark(*v)
-	}
+// SetRemark sets the "remark" field.
+func (_c *CDRCreate) SetRemark(v string) *CDRCreate {
+	_c.mutation.SetRemark(v)
 	return _c
 }
 
@@ -165,14 +191,24 @@ func (_c *CDRCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (_c *CDRCreate) defaults() {
-	if _, ok := _c.mutation.Remark(); !ok {
-		v := cdr.DefaultRemark
-		_c.mutation.SetRemark(v)
+	if _, ok := _c.mutation.CreateTime(); !ok {
+		v := cdr.DefaultCreateTime()
+		_c.mutation.SetCreateTime(v)
+	}
+	if _, ok := _c.mutation.UpdateTime(); !ok {
+		v := cdr.DefaultUpdateTime()
+		_c.mutation.SetUpdateTime(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *CDRCreate) check() error {
+	if _, ok := _c.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "CDR.create_time"`)}
+	}
+	if _, ok := _c.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "CDR.update_time"`)}
+	}
 	if _, ok := _c.mutation.DeviceCode(); !ok {
 		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "CDR.device_code"`)}
 	}
@@ -218,6 +254,9 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "CDR.project"`)}
 	}
+	if _, ok := _c.mutation.Time(); !ok {
+		return &ValidationError{Name: "time", err: errors.New(`ent: missing required field "CDR.time"`)}
+	}
 	if _, ok := _c.mutation.Remark(); !ok {
 		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "CDR.remark"`)}
 	}
@@ -255,6 +294,14 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.CreateTime(); ok {
+		_spec.SetField(cdr.FieldCreateTime, field.TypeTime, value)
+		_node.CreateTime = value
+	}
+	if value, ok := _c.mutation.UpdateTime(); ok {
+		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
+		_node.UpdateTime = value
 	}
 	if value, ok := _c.mutation.DeviceCode(); ok {
 		_spec.SetField(cdr.FieldDeviceCode, field.TypeString, value)
@@ -315,6 +362,10 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Project(); ok {
 		_spec.SetField(cdr.FieldProject, field.TypeString, value)
 		_node.Project = value
+	}
+	if value, ok := _c.mutation.Time(); ok {
+		_spec.SetField(cdr.FieldTime, field.TypeTime, value)
+		_node.Time = value
 	}
 	if value, ok := _c.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)

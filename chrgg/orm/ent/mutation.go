@@ -33,6 +33,8 @@ type CDRMutation struct {
 	op                 Op
 	typ                string
 	id                 *string
+	create_time        *time.Time
+	update_time        *time.Time
 	device_code        *string
 	device_type        *string
 	last_data_value    *int64
@@ -53,6 +55,7 @@ type CDRMutation struct {
 	addfee             *int64
 	pos_code           *string
 	project            *string
+	time               *time.Time
 	remark             *string
 	clearedFields      map[string]struct{}
 	done               bool
@@ -162,6 +165,78 @@ func (m *CDRMutation) IDs(ctx context.Context) ([]string, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetCreateTime sets the "create_time" field.
+func (m *CDRMutation) SetCreateTime(t time.Time) {
+	m.create_time = &t
+}
+
+// CreateTime returns the value of the "create_time" field in the mutation.
+func (m *CDRMutation) CreateTime() (r time.Time, exists bool) {
+	v := m.create_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreateTime returns the old "create_time" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreateTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
+	}
+	return oldValue.CreateTime, nil
+}
+
+// ResetCreateTime resets all changes to the "create_time" field.
+func (m *CDRMutation) ResetCreateTime() {
+	m.create_time = nil
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (m *CDRMutation) SetUpdateTime(t time.Time) {
+	m.update_time = &t
+}
+
+// UpdateTime returns the value of the "update_time" field in the mutation.
+func (m *CDRMutation) UpdateTime() (r time.Time, exists bool) {
+	v := m.update_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdateTime returns the old "update_time" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdateTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
+	}
+	return oldValue.UpdateTime, nil
+}
+
+// ResetUpdateTime resets all changes to the "update_time" field.
+func (m *CDRMutation) ResetUpdateTime() {
+	m.update_time = nil
 }
 
 // SetDeviceCode sets the "device_code" field.
@@ -804,6 +879,42 @@ func (m *CDRMutation) ResetProject() {
 	m.project = nil
 }
 
+// SetTime sets the "time" field.
+func (m *CDRMutation) SetTime(t time.Time) {
+	m.time = &t
+}
+
+// Time returns the value of the "time" field in the mutation.
+func (m *CDRMutation) Time() (r time.Time, exists bool) {
+	v := m.time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTime returns the old "time" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTime: %w", err)
+	}
+	return oldValue.Time, nil
+}
+
+// ResetTime resets all changes to the "time" field.
+func (m *CDRMutation) ResetTime() {
+	m.time = nil
+}
+
 // SetRemark sets the "remark" field.
 func (m *CDRMutation) SetRemark(s string) {
 	m.remark = &s
@@ -874,7 +985,13 @@ func (m *CDRMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CDRMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 19)
+	if m.create_time != nil {
+		fields = append(fields, cdr.FieldCreateTime)
+	}
+	if m.update_time != nil {
+		fields = append(fields, cdr.FieldUpdateTime)
+	}
 	if m.device_code != nil {
 		fields = append(fields, cdr.FieldDeviceCode)
 	}
@@ -920,6 +1037,9 @@ func (m *CDRMutation) Fields() []string {
 	if m.project != nil {
 		fields = append(fields, cdr.FieldProject)
 	}
+	if m.time != nil {
+		fields = append(fields, cdr.FieldTime)
+	}
 	if m.remark != nil {
 		fields = append(fields, cdr.FieldRemark)
 	}
@@ -931,6 +1051,10 @@ func (m *CDRMutation) Fields() []string {
 // schema.
 func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case cdr.FieldCreateTime:
+		return m.CreateTime()
+	case cdr.FieldUpdateTime:
+		return m.UpdateTime()
 	case cdr.FieldDeviceCode:
 		return m.DeviceCode()
 	case cdr.FieldDeviceType:
@@ -961,6 +1085,8 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 		return m.PosCode()
 	case cdr.FieldProject:
 		return m.Project()
+	case cdr.FieldTime:
+		return m.Time()
 	case cdr.FieldRemark:
 		return m.Remark()
 	}
@@ -972,6 +1098,10 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case cdr.FieldCreateTime:
+		return m.OldCreateTime(ctx)
+	case cdr.FieldUpdateTime:
+		return m.OldUpdateTime(ctx)
 	case cdr.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
 	case cdr.FieldDeviceType:
@@ -1002,6 +1132,8 @@ func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldPosCode(ctx)
 	case cdr.FieldProject:
 		return m.OldProject(ctx)
+	case cdr.FieldTime:
+		return m.OldTime(ctx)
 	case cdr.FieldRemark:
 		return m.OldRemark(ctx)
 	}
@@ -1013,6 +1145,20 @@ func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, err
 // type.
 func (m *CDRMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case cdr.FieldCreateTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreateTime(v)
+		return nil
+	case cdr.FieldUpdateTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdateTime(v)
+		return nil
 	case cdr.FieldDeviceCode:
 		v, ok := value.(string)
 		if !ok {
@@ -1117,6 +1263,13 @@ func (m *CDRMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProject(v)
+		return nil
+	case cdr.FieldTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTime(v)
 		return nil
 	case cdr.FieldRemark:
 		v, ok := value.(string)
@@ -1237,6 +1390,12 @@ func (m *CDRMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *CDRMutation) ResetField(name string) error {
 	switch name {
+	case cdr.FieldCreateTime:
+		m.ResetCreateTime()
+		return nil
+	case cdr.FieldUpdateTime:
+		m.ResetUpdateTime()
+		return nil
 	case cdr.FieldDeviceCode:
 		m.ResetDeviceCode()
 		return nil
@@ -1281,6 +1440,9 @@ func (m *CDRMutation) ResetField(name string) error {
 		return nil
 	case cdr.FieldProject:
 		m.ResetProject()
+		return nil
+	case cdr.FieldTime:
+		m.ResetTime()
 		return nil
 	case cdr.FieldRemark:
 		m.ResetRemark()

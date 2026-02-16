@@ -262,12 +262,12 @@ func (_q *CDRQuery) Clone() *CDRQuery {
 // Example:
 //
 //	var v []struct {
-//		DeviceCode string `json:"device_code,omitempty"`
+//		CreateTime time.Time `json:"create_time,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.CDR.Query().
-//		GroupBy(cdr.FieldDeviceCode).
+//		GroupBy(cdr.FieldCreateTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *CDRQuery) GroupBy(field string, fields ...string) *CDRGroupBy {
@@ -285,11 +285,11 @@ func (_q *CDRQuery) GroupBy(field string, fields ...string) *CDRGroupBy {
 // Example:
 //
 //	var v []struct {
-//		DeviceCode string `json:"device_code,omitempty"`
+//		CreateTime time.Time `json:"create_time,omitempty"`
 //	}
 //
 //	client.CDR.Query().
-//		Select(cdr.FieldDeviceCode).
+//		Select(cdr.FieldCreateTime).
 //		Scan(ctx, &v)
 func (_q *CDRQuery) Select(fields ...string) *CDRSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
