@@ -14,7 +14,7 @@ func init() {
 	cdrFields := schema.CDR{}.Fields()
 	_ = cdrFields
 	// cdrDescRemark is the schema descriptor for remark field.
-	cdrDescRemark := cdrFields[14].Descriptor()
+	cdrDescRemark := cdrFields[16].Descriptor()
 	// cdr.DefaultRemark holds the default value on creation for the remark field.
 	cdr.DefaultRemark = cdrDescRemark.Default.(string)
 }

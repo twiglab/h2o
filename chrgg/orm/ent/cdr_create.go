@@ -98,6 +98,18 @@ func (_c *CDRCreate) SetFee(v int64) *CDRCreate {
 	return _c
 }
 
+// SetPosCode sets the "pos_code" field.
+func (_c *CDRCreate) SetPosCode(v string) *CDRCreate {
+	_c.mutation.SetPosCode(v)
+	return _c
+}
+
+// SetProject sets the "project" field.
+func (_c *CDRCreate) SetProject(v string) *CDRCreate {
+	_c.mutation.SetProject(v)
+	return _c
+}
+
 // SetRemark sets the "remark" field.
 func (_c *CDRCreate) SetRemark(v string) *CDRCreate {
 	_c.mutation.SetRemark(v)
@@ -200,6 +212,12 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.Fee(); !ok {
 		return &ValidationError{Name: "fee", err: errors.New(`ent: missing required field "CDR.fee"`)}
 	}
+	if _, ok := _c.mutation.PosCode(); !ok {
+		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "CDR.pos_code"`)}
+	}
+	if _, ok := _c.mutation.Project(); !ok {
+		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "CDR.project"`)}
+	}
 	if _, ok := _c.mutation.Remark(); !ok {
 		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "CDR.remark"`)}
 	}
@@ -289,6 +307,14 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Fee(); ok {
 		_spec.SetField(cdr.FieldFee, field.TypeInt64, value)
 		_node.Fee = value
+	}
+	if value, ok := _c.mutation.PosCode(); ok {
+		_spec.SetField(cdr.FieldPosCode, field.TypeString, value)
+		_node.PosCode = value
+	}
+	if value, ok := _c.mutation.Project(); ok {
+		_spec.SetField(cdr.FieldProject, field.TypeString, value)
+		_node.Project = value
 	}
 	if value, ok := _c.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)

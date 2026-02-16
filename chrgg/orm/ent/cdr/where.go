@@ -129,6 +129,16 @@ func Fee(v int64) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldFee, v))
 }
 
+// PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
+func PosCode(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldPosCode, v))
+}
+
+// Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
+func Project(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldProject, v))
+}
+
 // Remark applies equality check predicate on the "remark" field. It's identical to RemarkEQ.
 func Remark(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldRemark, v))
@@ -802,6 +812,136 @@ func FeeLT(v int64) predicate.CDR {
 // FeeLTE applies the LTE predicate on the "fee" field.
 func FeeLTE(v int64) predicate.CDR {
 	return predicate.CDR(sql.FieldLTE(FieldFee, v))
+}
+
+// PosCodeEQ applies the EQ predicate on the "pos_code" field.
+func PosCodeEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldPosCode, v))
+}
+
+// PosCodeNEQ applies the NEQ predicate on the "pos_code" field.
+func PosCodeNEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldPosCode, v))
+}
+
+// PosCodeIn applies the In predicate on the "pos_code" field.
+func PosCodeIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldPosCode, vs...))
+}
+
+// PosCodeNotIn applies the NotIn predicate on the "pos_code" field.
+func PosCodeNotIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldPosCode, vs...))
+}
+
+// PosCodeGT applies the GT predicate on the "pos_code" field.
+func PosCodeGT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldPosCode, v))
+}
+
+// PosCodeGTE applies the GTE predicate on the "pos_code" field.
+func PosCodeGTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldPosCode, v))
+}
+
+// PosCodeLT applies the LT predicate on the "pos_code" field.
+func PosCodeLT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldPosCode, v))
+}
+
+// PosCodeLTE applies the LTE predicate on the "pos_code" field.
+func PosCodeLTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldPosCode, v))
+}
+
+// PosCodeContains applies the Contains predicate on the "pos_code" field.
+func PosCodeContains(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContains(FieldPosCode, v))
+}
+
+// PosCodeHasPrefix applies the HasPrefix predicate on the "pos_code" field.
+func PosCodeHasPrefix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasPrefix(FieldPosCode, v))
+}
+
+// PosCodeHasSuffix applies the HasSuffix predicate on the "pos_code" field.
+func PosCodeHasSuffix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasSuffix(FieldPosCode, v))
+}
+
+// PosCodeEqualFold applies the EqualFold predicate on the "pos_code" field.
+func PosCodeEqualFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEqualFold(FieldPosCode, v))
+}
+
+// PosCodeContainsFold applies the ContainsFold predicate on the "pos_code" field.
+func PosCodeContainsFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContainsFold(FieldPosCode, v))
+}
+
+// ProjectEQ applies the EQ predicate on the "project" field.
+func ProjectEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldProject, v))
+}
+
+// ProjectNEQ applies the NEQ predicate on the "project" field.
+func ProjectNEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldProject, v))
+}
+
+// ProjectIn applies the In predicate on the "project" field.
+func ProjectIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldProject, vs...))
+}
+
+// ProjectNotIn applies the NotIn predicate on the "project" field.
+func ProjectNotIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldProject, vs...))
+}
+
+// ProjectGT applies the GT predicate on the "project" field.
+func ProjectGT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldProject, v))
+}
+
+// ProjectGTE applies the GTE predicate on the "project" field.
+func ProjectGTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldProject, v))
+}
+
+// ProjectLT applies the LT predicate on the "project" field.
+func ProjectLT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldProject, v))
+}
+
+// ProjectLTE applies the LTE predicate on the "project" field.
+func ProjectLTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldProject, v))
+}
+
+// ProjectContains applies the Contains predicate on the "project" field.
+func ProjectContains(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContains(FieldProject, v))
+}
+
+// ProjectHasPrefix applies the HasPrefix predicate on the "project" field.
+func ProjectHasPrefix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasPrefix(FieldProject, v))
+}
+
+// ProjectHasSuffix applies the HasSuffix predicate on the "project" field.
+func ProjectHasSuffix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasSuffix(FieldProject, v))
+}
+
+// ProjectEqualFold applies the EqualFold predicate on the "project" field.
+func ProjectEqualFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEqualFold(FieldProject, v))
+}
+
+// ProjectContainsFold applies the ContainsFold predicate on the "project" field.
+func ProjectContainsFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContainsFold(FieldProject, v))
 }
 
 // RemarkEQ applies the EQ predicate on the "remark" field.

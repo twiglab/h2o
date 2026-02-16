@@ -21,6 +21,10 @@ type CDR struct {
 	RuleID  string
 	UnitFee int64
 
-	Fee    int64
+	Fee int64
+
+	PosCode string
+	Project string
+
 	Remark string
 }

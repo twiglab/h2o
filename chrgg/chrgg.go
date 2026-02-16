@@ -8,15 +8,11 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-type Data struct {
-	DataValue int64
-}
-
 type ChargeData struct {
 	common.Device
-	Pos  common.Pos  `json:"pos,omitzero"`
-	Data Data        `json:"data"`
-	Flag common.Flag `json:"flag,omitzero"`
+	Pos  common.Pos   `json:"pos,omitzero"`
+	Data common.DataV `json:"data"`
+	Flag common.Flag  `json:"flag,omitzero"`
 }
 
 func cr1(cd ChargeData) CDR {
@@ -36,6 +32,9 @@ func cr1(cd ChargeData) CDR {
 		Value:   0,
 		UnitFee: 0,
 		Fee:     0,
+
+		PosCode: cd.Pos.PosCode,
+		Project: cd.Pos.Project,
 	}
 }
 
@@ -46,15 +45,16 @@ type Ploy struct {
 }
 
 func cr2(last *ent.CDR, cd ChargeData, ploy Ploy) CDR {
+	v, f := calc(last.DataValue, cd.Data.DataValue, ploy.UnitFee)
 	return CDR{
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
 
 		LastDataTime: last.DataTime,
-		DataTime:     cd.DataTime,
+		DataTime:     cd.Time,
 
 		LastDataValue: last.DataValue,
-		DataValue:     cd.DataValue,
+		DataValue:     cd.Data.DataValue,
 
 		LastDataCode: last.DataCode,
 		DataCode:     cd.DataCode,
@@ -62,10 +62,16 @@ func cr2(last *ent.CDR, cd ChargeData, ploy Ploy) CDR {
 		PloyID: ploy.PloyID,
 		RuleID: ploy.RulerID,
 
-		Value:   cd.DataValue - last.DataValue,
+		Value:   v,
 		UnitFee: ploy.UnitFee,
-		Fee:     (cd.DataValue - last.DataValue) * ploy.UnitFee,
+		Fee:     f,
 	}
+}
+
+func calc(lastV, currV int64, unit int64) (v int64, f int64) {
+	v = currV - lastV
+	f = v * unit / 100
+	return
 }
 
 type Server struct {

@@ -24,6 +24,8 @@ var (
 		{Name: "value", Type: field.TypeInt64},
 		{Name: "unit_fee", Type: field.TypeInt64},
 		{Name: "fee", Type: field.TypeInt64},
+		{Name: "pos_code", Type: field.TypeString},
+		{Name: "project", Type: field.TypeString},
 		{Name: "remark", Type: field.TypeString, Default: ""},
 	}
 	// CdRsTable holds the schema information for the "cd_rs" table.

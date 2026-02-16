@@ -51,6 +51,8 @@ type CDRMutation struct {
 	addunit_fee        *int64
 	fee                *int64
 	addfee             *int64
+	pos_code           *string
+	project            *string
 	remark             *string
 	clearedFields      map[string]struct{}
 	done               bool
@@ -730,6 +732,78 @@ func (m *CDRMutation) ResetFee() {
 	m.addfee = nil
 }
 
+// SetPosCode sets the "pos_code" field.
+func (m *CDRMutation) SetPosCode(s string) {
+	m.pos_code = &s
+}
+
+// PosCode returns the value of the "pos_code" field in the mutation.
+func (m *CDRMutation) PosCode() (r string, exists bool) {
+	v := m.pos_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPosCode returns the old "pos_code" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldPosCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPosCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPosCode: %w", err)
+	}
+	return oldValue.PosCode, nil
+}
+
+// ResetPosCode resets all changes to the "pos_code" field.
+func (m *CDRMutation) ResetPosCode() {
+	m.pos_code = nil
+}
+
+// SetProject sets the "project" field.
+func (m *CDRMutation) SetProject(s string) {
+	m.project = &s
+}
+
+// Project returns the value of the "project" field in the mutation.
+func (m *CDRMutation) Project() (r string, exists bool) {
+	v := m.project
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProject returns the old "project" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldProject(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProject is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProject requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProject: %w", err)
+	}
+	return oldValue.Project, nil
+}
+
+// ResetProject resets all changes to the "project" field.
+func (m *CDRMutation) ResetProject() {
+	m.project = nil
+}
+
 // SetRemark sets the "remark" field.
 func (m *CDRMutation) SetRemark(s string) {
 	m.remark = &s
@@ -800,7 +874,7 @@ func (m *CDRMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CDRMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 16)
 	if m.device_code != nil {
 		fields = append(fields, cdr.FieldDeviceCode)
 	}
@@ -840,6 +914,12 @@ func (m *CDRMutation) Fields() []string {
 	if m.fee != nil {
 		fields = append(fields, cdr.FieldFee)
 	}
+	if m.pos_code != nil {
+		fields = append(fields, cdr.FieldPosCode)
+	}
+	if m.project != nil {
+		fields = append(fields, cdr.FieldProject)
+	}
 	if m.remark != nil {
 		fields = append(fields, cdr.FieldRemark)
 	}
@@ -877,6 +957,10 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 		return m.UnitFee()
 	case cdr.FieldFee:
 		return m.Fee()
+	case cdr.FieldPosCode:
+		return m.PosCode()
+	case cdr.FieldProject:
+		return m.Project()
 	case cdr.FieldRemark:
 		return m.Remark()
 	}
@@ -914,6 +998,10 @@ func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldUnitFee(ctx)
 	case cdr.FieldFee:
 		return m.OldFee(ctx)
+	case cdr.FieldPosCode:
+		return m.OldPosCode(ctx)
+	case cdr.FieldProject:
+		return m.OldProject(ctx)
 	case cdr.FieldRemark:
 		return m.OldRemark(ctx)
 	}
@@ -1015,6 +1103,20 @@ func (m *CDRMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetFee(v)
+		return nil
+	case cdr.FieldPosCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPosCode(v)
+		return nil
+	case cdr.FieldProject:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProject(v)
 		return nil
 	case cdr.FieldRemark:
 		v, ok := value.(string)
@@ -1173,6 +1275,12 @@ func (m *CDRMutation) ResetField(name string) error {
 		return nil
 	case cdr.FieldFee:
 		m.ResetFee()
+		return nil
+	case cdr.FieldPosCode:
+		m.ResetPosCode()
+		return nil
+	case cdr.FieldProject:
+		m.ResetProject()
 		return nil
 	case cdr.FieldRemark:
 		m.ResetRemark()

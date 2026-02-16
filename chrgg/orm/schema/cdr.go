@@ -23,8 +23,8 @@ func (CDR) Fields() []ent.Field {
 		field.String("last_data_code").Comment("用户ID"),
 		field.String("data_code").Comment("用户ID"),
 
-		field.Time("last_data_time").Comment("签到时间"),
-		field.Time("data_time").Comment("签到时间"),
+		field.Time("last_data_time").Comment("上一次时间"),
+		field.Time("data_time").Comment("当前时间"),
 
 		field.String("ploy_id").Comment("计费方案ID"),
 		field.String("rule_id").Comment("计费规则ID"),
@@ -32,6 +32,9 @@ func (CDR) Fields() []ent.Field {
 		field.Int64("value").Comment("计费数值"),
 		field.Int64("unit_fee").Comment("计费单价"),
 		field.Int64("fee").Comment("当次费用"),
+
+		field.String("pos_code").Comment("位置编号"),
+		field.String("project").Comment("项目编号"),
 
 		field.String("remark").Default("").Comment("备注"),
 	}

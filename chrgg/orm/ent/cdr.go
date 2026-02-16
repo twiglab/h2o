@@ -29,9 +29,9 @@ type CDR struct {
 	LastDataCode string `json:"last_data_code,omitempty"`
 	// 用户ID
 	DataCode string `json:"data_code,omitempty"`
-	// 签到时间
+	// 上一次时间
 	LastDataTime time.Time `json:"last_data_time,omitempty"`
-	// 签到时间
+	// 当前时间
 	DataTime time.Time `json:"data_time,omitempty"`
 	// 计费方案ID
 	PloyID string `json:"ploy_id,omitempty"`
@@ -43,6 +43,10 @@ type CDR struct {
 	UnitFee int64 `json:"unit_fee,omitempty"`
 	// 当次费用
 	Fee int64 `json:"fee,omitempty"`
+	// 位置编号
+	PosCode string `json:"pos_code,omitempty"`
+	// 项目编号
+	Project string `json:"project,omitempty"`
 	// 备注
 	Remark       string `json:"remark,omitempty"`
 	selectValues sql.SelectValues
@@ -55,7 +59,7 @@ func (*CDR) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case cdr.FieldLastDataValue, cdr.FieldDataValue, cdr.FieldValue, cdr.FieldUnitFee, cdr.FieldFee:
 			values[i] = new(sql.NullInt64)
-		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldRemark:
+		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldRemark:
 			values[i] = new(sql.NullString)
 		case cdr.FieldLastDataTime, cdr.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -158,6 +162,18 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Fee = value.Int64
 			}
+		case cdr.FieldPosCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
+			} else if value.Valid {
+				_m.PosCode = value.String
+			}
+		case cdr.FieldProject:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field project", values[i])
+			} else if value.Valid {
+				_m.Project = value.String
+			}
 		case cdr.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
@@ -238,6 +254,12 @@ func (_m *CDR) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("fee=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Fee))
+	builder.WriteString(", ")
+	builder.WriteString("pos_code=")
+	builder.WriteString(_m.PosCode)
+	builder.WriteString(", ")
+	builder.WriteString("project=")
+	builder.WriteString(_m.Project)
 	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(_m.Remark)

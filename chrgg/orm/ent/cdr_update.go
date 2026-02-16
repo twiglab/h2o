@@ -245,6 +245,34 @@ func (_u *CDRUpdate) AddFee(v int64) *CDRUpdate {
 	return _u
 }
 
+// SetPosCode sets the "pos_code" field.
+func (_u *CDRUpdate) SetPosCode(v string) *CDRUpdate {
+	_u.mutation.SetPosCode(v)
+	return _u
+}
+
+// SetNillablePosCode sets the "pos_code" field if the given value is not nil.
+func (_u *CDRUpdate) SetNillablePosCode(v *string) *CDRUpdate {
+	if v != nil {
+		_u.SetPosCode(*v)
+	}
+	return _u
+}
+
+// SetProject sets the "project" field.
+func (_u *CDRUpdate) SetProject(v string) *CDRUpdate {
+	_u.mutation.SetProject(v)
+	return _u
+}
+
+// SetNillableProject sets the "project" field if the given value is not nil.
+func (_u *CDRUpdate) SetNillableProject(v *string) *CDRUpdate {
+	if v != nil {
+		_u.SetProject(*v)
+	}
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *CDRUpdate) SetRemark(v string) *CDRUpdate {
 	_u.mutation.SetRemark(v)
@@ -353,6 +381,12 @@ func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedFee(); ok {
 		_spec.AddField(cdr.FieldFee, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.PosCode(); ok {
+		_spec.SetField(cdr.FieldPosCode, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Project(); ok {
+		_spec.SetField(cdr.FieldProject, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)
@@ -594,6 +628,34 @@ func (_u *CDRUpdateOne) AddFee(v int64) *CDRUpdateOne {
 	return _u
 }
 
+// SetPosCode sets the "pos_code" field.
+func (_u *CDRUpdateOne) SetPosCode(v string) *CDRUpdateOne {
+	_u.mutation.SetPosCode(v)
+	return _u
+}
+
+// SetNillablePosCode sets the "pos_code" field if the given value is not nil.
+func (_u *CDRUpdateOne) SetNillablePosCode(v *string) *CDRUpdateOne {
+	if v != nil {
+		_u.SetPosCode(*v)
+	}
+	return _u
+}
+
+// SetProject sets the "project" field.
+func (_u *CDRUpdateOne) SetProject(v string) *CDRUpdateOne {
+	_u.mutation.SetProject(v)
+	return _u
+}
+
+// SetNillableProject sets the "project" field if the given value is not nil.
+func (_u *CDRUpdateOne) SetNillableProject(v *string) *CDRUpdateOne {
+	if v != nil {
+		_u.SetProject(*v)
+	}
+	return _u
+}
+
 // SetRemark sets the "remark" field.
 func (_u *CDRUpdateOne) SetRemark(v string) *CDRUpdateOne {
 	_u.mutation.SetRemark(v)
@@ -732,6 +794,12 @@ func (_u *CDRUpdateOne) sqlSave(ctx context.Context) (_node *CDR, err error) {
 	}
 	if value, ok := _u.mutation.AddedFee(); ok {
 		_spec.AddField(cdr.FieldFee, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.PosCode(); ok {
+		_spec.SetField(cdr.FieldPosCode, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.Project(); ok {
+		_spec.SetField(cdr.FieldProject, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Remark(); ok {
 		_spec.SetField(cdr.FieldRemark, field.TypeString, value)

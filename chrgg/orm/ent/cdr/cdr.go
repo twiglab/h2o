@@ -37,6 +37,10 @@ const (
 	FieldUnitFee = "unit_fee"
 	// FieldFee holds the string denoting the fee field in the database.
 	FieldFee = "fee"
+	// FieldPosCode holds the string denoting the pos_code field in the database.
+	FieldPosCode = "pos_code"
+	// FieldProject holds the string denoting the project field in the database.
+	FieldProject = "project"
 	// FieldRemark holds the string denoting the remark field in the database.
 	FieldRemark = "remark"
 	// Table holds the table name of the cdr in the database.
@@ -59,6 +63,8 @@ var Columns = []string{
 	FieldValue,
 	FieldUnitFee,
 	FieldFee,
+	FieldPosCode,
+	FieldProject,
 	FieldRemark,
 }
 
@@ -148,6 +154,16 @@ func ByUnitFee(opts ...sql.OrderTermOption) OrderOption {
 // ByFee orders the results by the fee field.
 func ByFee(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldFee, opts...).ToFunc()
+}
+
+// ByPosCode orders the results by the pos_code field.
+func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
+}
+
+// ByProject orders the results by the project field.
+func ByProject(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProject, opts...).ToFunc()
 }
 
 // ByRemark orders the results by the remark field.
