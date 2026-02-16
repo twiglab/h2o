@@ -34,8 +34,18 @@ func (e *Enh) ToWater(dd DeviceData) common.WaterMeter {
 			PUID:      puid(meta.Project, meta.PosCode),
 		},
 
+		Flag: common.Flag{
+			F1: meta.F1,
+			F2: meta.F2,
+			F3: meta.F3,
+			F4: meta.F4,
+			F5: meta.F5,
+		},
+
 		Data: common.Water{
-			DataValue: str2I64(dd.DataJson.DataValue, 100),
+			DataV: common.DataV{
+				DataValue: str2I64(dd.DataJson.DataValue, 100),
+			},
 		},
 	}
 
@@ -68,15 +78,17 @@ func (e *Enh) ToElectricity(dd DeviceData) common.ElectricityMeter {
 		},
 
 		Flag: common.Flag{
-			P1: meta.P1,
-			P2: meta.P2,
-			P3: meta.P3,
-			P4: meta.P4,
-			P5: meta.P5,
+			F1: meta.F1,
+			F2: meta.F2,
+			F3: meta.F3,
+			F4: meta.F4,
+			F5: meta.F5,
 		},
 
 		Data: common.Electricity{
-			DataValue: str2I64(dd.DataJson.DataValue, 100),
+			DataV: common.DataV{
+				DataValue: str2I64(dd.DataJson.DataValue, 100),
+			},
 		},
 	}
 

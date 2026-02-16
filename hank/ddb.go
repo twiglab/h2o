@@ -43,11 +43,11 @@ type MetaData struct {
 	FloorCode string `json:"floor_code"`
 	AreaCode  string `json:"area_code"`
 
-	P1 string `json:"p1"`
-	P2 string `json:"p2"`
-	P3 string `json:"p3"`
-	P4 string `json:"p4"`
-	P5 string `json:"p5"`
+	F1 string `json:"f1"`
+	F2 string `json:"f2"`
+	F3 string `json:"f3"`
+	F4 string `json:"f4"`
+	F5 string `json:"f5"`
 }
 
 type DuckDB struct {
@@ -121,7 +121,7 @@ func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, 
 	err = row.Scan(
 		&data.SN, &data.Code, &data.Name, &data.Project,
 		&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
-		&data.P1, &data.P2, &data.P3, &data.P4, &data.P5,
+		&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
 	)
 	ok = err == nil
 	return

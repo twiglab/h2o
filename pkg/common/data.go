@@ -31,7 +31,7 @@ type Pos struct {
 }
 
 type Electricity struct {
-	DataValue
+	DataV
 
 	VoltageA int64 `json:"voltage_a,omitempty"`
 	VoltageB int64 `json:"voltage_b,omitempty"`
@@ -51,18 +51,18 @@ type Electricity struct {
 }
 
 type Water struct {
-	DataValue
+	DataV
 	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
-type DataValue struct {
+type DataV struct {
 	DataValue int64 `json:"data_value,omitempty"` // 表显读数
 }
 
 type Flag struct {
-	P1 string `json:"p1,omitempty"`
-	P2 string `json:"p2,omitempty"`
-	P3 string `json:"p3,omitempty"`
-	P4 string `json:"p4,omitempty"`
-	P5 string `json:"p5,omitempty"`
+	F1 string `json:"f1,omitempty"`
+	F2 string `json:"f2,omitempty"`
+	F3 string `json:"f3,omitempty"`
+	F4 string `json:"f4,omitempty"`
+	F5 string `json:"f5,omitempty"`
 }
