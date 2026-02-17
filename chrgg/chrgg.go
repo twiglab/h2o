@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
@@ -34,14 +35,26 @@ func (s *ChangeServer) pre(_ context.Context, md MeterData) (ChargeData, error) 
 }
 
 func (s ChangeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) error {
-	if last.DataCode == cd.DataCode {
+	if cd.DataCode == last.DataCode {
 		return &ChargeErr{Message: "same datacode"}
 	}
 
-	if cd.DataTime.Compare(last.DataTime) < 1 {
+	if !cd.DataTime.After(last.DataTime) {
 		return &ChargeErr{Message: "time"}
 	}
 	return nil
+}
+
+func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData) bool {
+	if isInTimeRange(cd.DataTime) {
+		return true
+	}
+
+	if cd.Data.DataValue-last.Value < 100 { // 小于一个读数
+		return false
+	}
+
+	return true
 }
 
 func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
@@ -56,6 +69,10 @@ func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
 
 	if err := s.check(ctx, last, cd); err != nil {
 		return Nil, err
+	}
+
+	if !s.Verify(ctx, last, cd) {
+		return Nil, nil
 	}
 
 	ru, err := s.re.GetResult(ctx, cd)
@@ -73,9 +90,15 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (nc CDR, err 
 	}
 
 	nc, err = s.calc(ctx, cd)
-	if err != nil { // err == nil
+	if err != nil {
 		return
 	}
 	_, err = s.dbx.SaveCurrent(ctx, nc)
 	return
+}
+
+func isInTimeRange(t time.Time) bool {
+	start := time.Date(t.Year(), t.Month(), t.Day(), 22, 15, 0, 0, t.Location())
+	end := start.Add(time.Hour)
+	return !t.Before(start) && !t.After(end)
 }
