@@ -17,10 +17,6 @@ type Device struct {
 	Status int       `json:"status"` // 设备状态, 网关,采集程序或设备自定义
 }
 
-func (d Device) Topic() string {
-	return "h2o/" + d.Code + "/" + d.Type
-}
-
 type Pos struct {
 	Project   string `json:"project,omitempty"`  // 所属项目编号
 	PosCode   string `json:"pos_code,omitempty"` // 位置编号
@@ -32,7 +28,7 @@ type Pos struct {
 }
 
 type Electricity struct {
-	DataV
+	MeterValue
 
 	VoltageA int64 `json:"voltage_a,omitempty"`
 	VoltageB int64 `json:"voltage_b,omitempty"`
@@ -52,11 +48,11 @@ type Electricity struct {
 }
 
 type Water struct {
-	DataV
+	MeterValue
 	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
-type DataV struct {
+type MeterValue struct {
 	DataValue int64 `json:"data_value,omitempty"` // 表显读数
 }
 

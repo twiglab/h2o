@@ -12,39 +12,40 @@ type Enh struct {
 	DDB *DuckDB
 }
 
-func (e *Enh) ToWater(dd DeviceData) common.WaterMeter {
+func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
-	d := common.WaterMeter{
-		Device: common.Device{
-			Code: dd.No,
-			Type: dd.Type,
-			Name: dd.No,
+	d := WaterMeter{
+		Meter: Meter{
+			Device: common.Device{
+				Code: dd.No,
+				Type: dd.Type,
+				Name: dd.No,
 
-			DataTime: parseTime(dd.DataTime),
-			DataCode: dd.DataCode,
+				DataTime: parseTime(dd.DataTime),
+				DataCode: dd.DataCode,
 
-			Time:   now(),
-			Status: 0,
+				Time:   now(),
+				Status: 0,
+			},
+			Pos: common.Pos{
+				Project:   meta.Project,
+				PosCode:   meta.PosCode,
+				Building:  meta.Building,
+				FloorCode: meta.FloorCode,
+				AreaCode:  meta.AreaCode,
+				PUID:      puid(meta.Project, meta.PosCode),
+			},
+
+			Flag: common.Flag{
+				F1: meta.F1,
+				F2: meta.F2,
+				F3: meta.F3,
+				F4: meta.F4,
+				F5: meta.F5,
+			},
 		},
-		Pos: common.Pos{
-			Project:   meta.Project,
-			PosCode:   meta.PosCode,
-			Building:  meta.Building,
-			FloorCode: meta.FloorCode,
-			AreaCode:  meta.AreaCode,
-			PUID:      puid(meta.Project, meta.PosCode),
-		},
-
-		Flag: common.Flag{
-			F1: meta.F1,
-			F2: meta.F2,
-			F3: meta.F3,
-			F4: meta.F4,
-			F5: meta.F5,
-		},
-
 		Data: common.Water{
-			DataV: common.DataV{
+			MeterValue: common.MeterValue{
 				DataValue: str2I64(dd.DataJson.DataValue, 100),
 			},
 		},
@@ -53,42 +54,44 @@ func (e *Enh) ToWater(dd DeviceData) common.WaterMeter {
 	return d
 }
 
-func (e *Enh) ToElectricity(dd DeviceData) common.ElectricityMeter {
+func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
 
-	d := common.ElectricityMeter{
-		Device: common.Device{
-			SN:   meta.SN,
-			Code: dd.No,
-			Type: dd.Type,
-			Name: meta.Name,
+	d := ElectricityMeter{
+		Meter: Meter{
+			Device: common.Device{
+				SN:   meta.SN,
+				Code: dd.No,
+				Type: dd.Type,
+				Name: meta.Name,
 
-			DataTime: parseTime(dd.DataTime),
-			DataCode: dd.DataCode,
+				DataTime: parseTime(dd.DataTime),
+				DataCode: dd.DataCode,
 
-			Time:   now(),
-			Status: 0,
-		},
+				Time:   now(),
+				Status: 0,
+			},
 
-		Pos: common.Pos{
-			Project:   meta.Project,
-			PosCode:   meta.PosCode,
-			Building:  meta.Building,
-			FloorCode: meta.FloorCode,
-			AreaCode:  meta.AreaCode,
-			PUID:      puid(meta.Project, meta.PosCode),
-		},
+			Pos: common.Pos{
+				Project:   meta.Project,
+				PosCode:   meta.PosCode,
+				Building:  meta.Building,
+				FloorCode: meta.FloorCode,
+				AreaCode:  meta.AreaCode,
+				PUID:      puid(meta.Project, meta.PosCode),
+			},
 
-		Flag: common.Flag{
-			F1: meta.F1,
-			F2: meta.F2,
-			F3: meta.F3,
-			F4: meta.F4,
-			F5: meta.F5,
+			Flag: common.Flag{
+				F1: meta.F1,
+				F2: meta.F2,
+				F3: meta.F3,
+				F4: meta.F4,
+				F5: meta.F5,
+			},
 		},
 
 		Data: common.Electricity{
-			DataV: common.DataV{
+			MeterValue: common.MeterValue{
 				DataValue: str2I64(dd.DataJson.DataValue, 100),
 			},
 		},

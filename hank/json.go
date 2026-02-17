@@ -12,3 +12,7 @@ func unmarshal(in []byte, out any) error {
 func marshalWrite(out io.Writer, in any) error {
 	return json.MarshalWrite(out, in)
 }
+
+func marshal(in any) ([]byte, error) {
+	return json.Marshal(in)
+}
