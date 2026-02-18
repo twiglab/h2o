@@ -55,52 +55,57 @@ func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 	if cd.Data.DataValue-last.Value < 100 { // 小于一个读数
 		return false
 	}
-
 	return true
 }
 
-func (s *ChangeServer) calc(ctx context.Context, cd ChargeData) (CDR, error) {
+func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) {
+	// setp 1 prepare
+	cd, err := s.pre(ctx, bd)
+	if err != nil {
+		return Nil, err
+	}
+
+	// step 2 load
 	last, notfound, err := s.dbx.LoadLast(ctx, cd.Code, cd.Type)
 	if err != nil {
 		return Nil, err
 	}
 
+	// step 2.1 save first
 	if notfound {
-		return FirstCDR(cd), nil
+		nc := FirstCDR(cd)
+		_, err = s.dbx.SaveCurrent(ctx, nc)
+		return nc, err
 	}
 
-	if err := s.check(ctx, last, cd); err != nil {
-		return Nil, err
-	}
-
+	// step 3 verify and check
 	if !s.Verify(ctx, last, cd) {
 		return Nil, nil
 	}
 
+	if err = s.check(ctx, last, cd); err != nil {
+		return Nil, err
+	}
+
+	// setp 4 calc
 	ru, err := s.re.GetResult(ctx, cd)
 	if err != nil {
 		return Nil, err
 	}
 
-	return CalcCDR(last, cd, ru), nil
-}
+	nc := CalcCDR(last, cd, ru)
 
-func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (nc CDR, err error) {
-	var cd ChargeData
-	if cd, err = s.pre(ctx, bd); err != nil {
-		return
-	}
+	// step 5 write cdr
 
-	nc, err = s.calc(ctx, cd)
-	if err != nil {
-		return
-	}
+	// step 6 save
 	_, err = s.dbx.SaveCurrent(ctx, nc)
-	return
+	return nc, err
 }
 
 func isInTimeRange(t time.Time) bool {
-	start := time.Date(t.Year(), t.Month(), t.Day(), 22, 15, 0, 0, t.Location())
-	end := start.Add(time.Hour)
-	return !t.Before(start) && !t.After(end)
+	h, m, _ := t.Clock()
+	if h*60+m > 1365 { // > 22:45
+		return true
+	}
+	return false
 }
