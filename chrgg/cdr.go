@@ -49,6 +49,9 @@ func FirstCDR(cd ChargeData) CDR {
 		LastDataCode: cd.DataCode,
 		DataCode:     cd.DataCode,
 
+		PloyID: "new",
+		RuleID: "new",
+
 		Value:   0,
 		UnitFee: 0,
 		Fee:     0,
@@ -74,7 +77,7 @@ func CalcCDR(last *ent.CDR, cd ChargeData, ru Ruler) CDR {
 		DataCode:     cd.DataCode,
 
 		PloyID: ru.PloyID,
-		RuleID: ru.ID,
+		RuleID: ru.RulerID,
 
 		Value:   value,
 		UnitFee: ru.UnitFee,

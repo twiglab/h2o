@@ -29,8 +29,8 @@ func (CDR) Fields() []ent.Field {
 		field.Time("last_data_time").Immutable().Comment("上次时间"),
 		field.Time("data_time").Immutable().Comment("当前时间"),
 
-		field.String("ploy_id").Immutable().Comment("计费方案ID"),
-		field.String("rule_id").Immutable().Comment("计费规则ID"),
+		field.String("ploy_id").Immutable().NotEmpty().Comment("计费方案ID"),
+		field.String("rule_id").Immutable().NotEmpty().Comment("计费规则ID"),
 
 		field.Int64("value").Default(0).Immutable().Comment("计量数值"),
 		field.Int64("unit_fee").Default(0).Immutable().Comment("计费单价"),

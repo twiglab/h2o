@@ -5,25 +5,25 @@ import (
 )
 
 type Ruler struct {
-	ID     string
-	PloyID string
+	RulerID string
+	PloyID  string
 
 	UnitFee int64
 
-	Descr string
+	Memo string
 }
 
-type RulerEngine interface {
+type Ploy interface {
 	GetResult(context.Context, ChargeData) (Ruler, error)
 }
 
-type defRE struct {
+type ZeroPloy struct {
 }
 
-func (defRE) GetRuler(context.Context, ChargeData) (Ruler, error) {
+func (ZeroPloy) GetRuler(context.Context, ChargeData) (Ruler, error) {
 	return Ruler{
-		ID:     "NIL",
-		PloyID: "NIL",
-		Descr:  "NIL",
+		RulerID: "zero",
+		PloyID:  "zero",
+		Memo:    "zero",
 	}, nil
 }
