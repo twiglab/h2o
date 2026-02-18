@@ -105,6 +105,10 @@ var (
 	LastDataCodeValidator func(string) error
 	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	DataCodeValidator func(string) error
+	// PloyIDValidator is a validator for the "ploy_id" field. It is called by the builders before save.
+	PloyIDValidator func(string) error
+	// RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.
+	RuleIDValidator func(string) error
 	// DefaultValue holds the default value on creation for the "value" field.
 	DefaultValue int64
 	// DefaultUnitFee holds the default value on creation for the "unit_fee" field.

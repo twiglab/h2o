@@ -52,6 +52,14 @@ func init() {
 	cdrDescDataCode := cdrFields[6].Descriptor()
 	// cdr.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	cdr.DataCodeValidator = cdrDescDataCode.Validators[0].(func(string) error)
+	// cdrDescPloyID is the schema descriptor for ploy_id field.
+	cdrDescPloyID := cdrFields[9].Descriptor()
+	// cdr.PloyIDValidator is a validator for the "ploy_id" field. It is called by the builders before save.
+	cdr.PloyIDValidator = cdrDescPloyID.Validators[0].(func(string) error)
+	// cdrDescRuleID is the schema descriptor for rule_id field.
+	cdrDescRuleID := cdrFields[10].Descriptor()
+	// cdr.RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.
+	cdr.RuleIDValidator = cdrDescRuleID.Validators[0].(func(string) error)
 	// cdrDescValue is the schema descriptor for value field.
 	cdrDescValue := cdrFields[11].Descriptor()
 	// cdr.DefaultValue holds the default value on creation for the value field.

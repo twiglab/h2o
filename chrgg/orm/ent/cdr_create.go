@@ -318,8 +318,18 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.PloyID(); !ok {
 		return &ValidationError{Name: "ploy_id", err: errors.New(`ent: missing required field "CDR.ploy_id"`)}
 	}
+	if v, ok := _c.mutation.PloyID(); ok {
+		if err := cdr.PloyIDValidator(v); err != nil {
+			return &ValidationError{Name: "ploy_id", err: fmt.Errorf(`ent: validator failed for field "CDR.ploy_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.RuleID(); !ok {
 		return &ValidationError{Name: "rule_id", err: errors.New(`ent: missing required field "CDR.rule_id"`)}
+	}
+	if v, ok := _c.mutation.RuleID(); ok {
+		if err := cdr.RuleIDValidator(v); err != nil {
+			return &ValidationError{Name: "rule_id", err: fmt.Errorf(`ent: validator failed for field "CDR.rule_id": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "CDR.value"`)}
