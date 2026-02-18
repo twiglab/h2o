@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/pkg/common"
@@ -49,7 +50,7 @@ func RawHandle() mqtt.MessageHandler {
 			log.Print(err)
 			return
 		}
-		log.Print(cd)
+		slog.Debug("raw", slog.Any("chargeDate", cd))
 	}
 }
 

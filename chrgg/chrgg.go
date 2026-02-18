@@ -9,6 +9,8 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
+const CLIENT_ID = "chrgg"
+
 type ChargeErr struct {
 	Code    string
 	Type    string
