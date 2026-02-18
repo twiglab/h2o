@@ -8,9 +8,9 @@ import (
 )
 
 type ChangeServer struct {
-	dbx    *DBx
-	cdrLog *slog.Logger
-	ploy   Ploy
+	DBx    *DBx
+	CDRLog *slog.Logger
+	Ploy   Ploy
 }
 
 func (s *ChangeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
@@ -41,8 +41,8 @@ func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 
 func (s *ChangeServer) doNewCDR(ctx context.Context, cd ChargeData) (CDR, error) {
 	nc := FirstCDR(cd)
-	s.cdrLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
-	_, err := s.dbx.SaveCurrent(ctx, nc)
+	s.CDRLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
+	_, err := s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
 }
 
@@ -54,7 +54,7 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	}
 
 	// step 2 load
-	last, notfound, err := s.dbx.LoadLast(ctx, cd.Code, cd.Type)
+	last, notfound, err := s.DBx.LoadLast(ctx, cd.Code, cd.Type)
 	if err != nil {
 		return Nil, err
 	}
@@ -74,7 +74,7 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	}
 
 	// setp 4 calc
-	ru, err := s.ploy.GetResult(ctx, cd)
+	ru, err := s.Ploy.GetResult(ctx, cd)
 	if err != nil {
 		return Nil, err
 	}
@@ -82,9 +82,9 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	nc := CalcCDR(last, cd, ru)
 
 	// step 5 write cdr
-	s.cdrLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
+	s.CDRLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
 
 	// step 6 save
-	_, err = s.dbx.SaveCurrent(ctx, nc)
+	_, err = s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
 }

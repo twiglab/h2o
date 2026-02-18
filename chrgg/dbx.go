@@ -9,11 +9,11 @@ import (
 )
 
 type DBx struct {
-	cli *ent.Client
+	Cli *ent.Client
 }
 
 func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.CDR, notfound bool, err error) {
-	q := d.cli.CDR.Query()
+	q := d.Cli.CDR.Query()
 
 	q.Where(cdr.DeviceCodeEQ(code), cdr.DeviceTypeEQ(typ))
 	q.Limit(1)
@@ -28,7 +28,7 @@ func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.CDR, notfo
 }
 
 func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) {
-	cr := d.cli.CDR.Create()
+	cr := d.Cli.CDR.Create()
 
 	cr.SetID(cdrid())
 	cr.SetDeviceCode(cdr.DeviceCode)

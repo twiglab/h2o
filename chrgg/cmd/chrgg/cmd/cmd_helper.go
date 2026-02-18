@@ -7,6 +7,8 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/chrgg"
+	"github.com/twiglab/h2o/chrgg/orm"
+	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
 func logLevel(s string) slog.Level {
@@ -42,12 +44,12 @@ func serverLog() *slog.Logger {
 	return l
 }
 
-func dataLog() *slog.Logger {
-	logF := viper.GetString("datalog.file")
+func cdrlog() *slog.Logger {
+	logF := viper.GetString("chargg.cdr.file")
 	if logF == "" {
-		log.Fatalln("datalog file is null. ***MUST*** set datalog.file")
+		log.Fatalln("cdr file is null. ***MUST*** set chrgg.cdr.file")
 	}
-	log.Println("datalog file:", logF)
+	log.Println("cdr file:", logF)
 	return chrgg.NewLog(logF, slog.LevelInfo)
 }
 
@@ -81,4 +83,15 @@ func topics() map[string]byte {
 		m[t] = 0x00
 	}
 	return m
+}
+
+func entCli() *ent.Client {
+	name := viper.GetString("chrgg.db.name")
+	dsn := viper.GetString("chrgg.db.dsn")
+
+	cli, err := orm.OpenEntClient(name, dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cli
 }

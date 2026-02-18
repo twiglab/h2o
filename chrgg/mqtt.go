@@ -3,7 +3,6 @@ package chrgg
 import (
 	"context"
 	"encoding/json"
-	"log"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -29,12 +28,12 @@ func HandleChange(s *ChangeServer) mqtt.MessageHandler {
 
 		var md MeterData
 		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
-			log.Print(err)
+			slog.Error("unmarshal error", slog.Any("error", err))
 			return
 		}
 
 		if _, err := s.DoChange(context.Background(), md); err != nil {
-			log.Print(err)
+			slog.Error("change error", slog.Any("error", err))
 		}
 	}
 }
@@ -47,10 +46,10 @@ func RawHandle() mqtt.MessageHandler {
 
 		var cd ChargeData
 		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
-			log.Print(err)
+			slog.Error("unmarshal error", slog.Any("error", err))
 			return
 		}
-		slog.Debug("raw", slog.Any("chargeDate", cd))
+		slog.Info("raw", slog.Any("chargeDate", cd))
 	}
 }
 

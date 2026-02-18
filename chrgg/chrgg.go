@@ -22,9 +22,13 @@ type ChargeData struct {
 }
 
 func isInTimeRange(t time.Time) bool {
-	h, m, _ := t.Clock()
-	if h*60+m > 1365 { // > 22:45
+	if DayMinute(t) > 1365 { // > 22:45
 		return true
 	}
 	return false
+}
+
+func DayMinute(t time.Time) int {
+	h, m, _ := t.Clock()
+	return h*60 + m
 }
