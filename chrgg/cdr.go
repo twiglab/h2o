@@ -40,8 +40,8 @@ func FirstCDR(cd ChargeData) CDR {
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
 
-		LastDataTime: cd.Time,
-		DataTime:     cd.Time,
+		LastDataTime: cd.DataTime,
+		DataTime:     cd.DataTime,
 
 		LastDataValue: cd.Data.DataValue,
 		DataValue:     cd.Data.DataValue,
@@ -65,7 +65,7 @@ func CalcCDR(last *ent.CDR, cd ChargeData, ru Ruler) CDR {
 		DeviceType: cd.Type,
 
 		LastDataTime: last.DataTime,
-		DataTime:     cd.Time,
+		DataTime:     cd.DataTime,
 
 		LastDataValue: last.DataValue,
 		DataValue:     cd.Data.DataValue,

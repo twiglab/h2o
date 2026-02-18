@@ -24,7 +24,6 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 				DataTime: parseTime(dd.DataTime),
 				DataCode: dd.DataCode,
 
-				Time:   now(),
 				Status: 0,
 			},
 			Pos: common.Pos{
@@ -68,7 +67,6 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 				DataTime: parseTime(dd.DataTime),
 				DataCode: dd.DataCode,
 
-				Time:   now(),
 				Status: 0,
 			},
 
