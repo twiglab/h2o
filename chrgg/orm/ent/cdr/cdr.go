@@ -47,10 +47,8 @@ const (
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
-	// FieldTime holds the string denoting the time field in the database.
-	FieldTime = "time"
-	// FieldRemark holds the string denoting the remark field in the database.
-	FieldRemark = "remark"
+	// FieldMemo holds the string denoting the memo field in the database.
+	FieldMemo = "memo"
 	// Table holds the table name of the cdr in the database.
 	Table = "t_cdr"
 )
@@ -75,8 +73,7 @@ var Columns = []string{
 	FieldFee,
 	FieldPosCode,
 	FieldProject,
-	FieldTime,
-	FieldRemark,
+	FieldMemo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -96,6 +93,30 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
+	// DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
+	DeviceCodeValidator func(string) error
+	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
+	DeviceTypeValidator func(string) error
+	// DefaultLastDataValue holds the default value on creation for the "last_data_value" field.
+	DefaultLastDataValue int64
+	// DefaultDataValue holds the default value on creation for the "data_value" field.
+	DefaultDataValue int64
+	// LastDataCodeValidator is a validator for the "last_data_code" field. It is called by the builders before save.
+	LastDataCodeValidator func(string) error
+	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
+	DataCodeValidator func(string) error
+	// DefaultValue holds the default value on creation for the "value" field.
+	DefaultValue int64
+	// DefaultUnitFee holds the default value on creation for the "unit_fee" field.
+	DefaultUnitFee int64
+	// DefaultFee holds the default value on creation for the "fee" field.
+	DefaultFee int64
+	// PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
+	PosCodeValidator func(string) error
+	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
+	ProjectValidator func(string) error
+	// IDValidator is a validator for the "id" field. It is called by the builders before save.
+	IDValidator func(string) error
 )
 
 // OrderOption defines the ordering options for the CDR queries.
@@ -191,12 +212,7 @@ func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
 }
 
-// ByTime orders the results by the time field.
-func ByTime(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTime, opts...).ToFunc()
-}
-
-// ByRemark orders the results by the remark field.
-func ByRemark(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldRemark, opts...).ToFunc()
+// ByMemo orders the results by the memo field.
+func ByMemo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMemo, opts...).ToFunc()
 }

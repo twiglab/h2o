@@ -55,8 +55,7 @@ type CDRMutation struct {
 	addfee             *int64
 	pos_code           *string
 	project            *string
-	time               *time.Time
-	remark             *string
+	memo               *string
 	clearedFields      map[string]struct{}
 	done               bool
 	oldValue           func(context.Context) (*CDR, error)
@@ -879,76 +878,53 @@ func (m *CDRMutation) ResetProject() {
 	m.project = nil
 }
 
-// SetTime sets the "time" field.
-func (m *CDRMutation) SetTime(t time.Time) {
-	m.time = &t
+// SetMemo sets the "memo" field.
+func (m *CDRMutation) SetMemo(s string) {
+	m.memo = &s
 }
 
-// Time returns the value of the "time" field in the mutation.
-func (m *CDRMutation) Time() (r time.Time, exists bool) {
-	v := m.time
+// Memo returns the value of the "memo" field in the mutation.
+func (m *CDRMutation) Memo() (r string, exists bool) {
+	v := m.memo
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTime returns the old "time" field's value of the CDR entity.
+// OldMemo returns the old "memo" field's value of the CDR entity.
 // If the CDR object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldTime(ctx context.Context) (v time.Time, err error) {
+func (m *CDRMutation) OldMemo(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTime is only allowed on UpdateOne operations")
+		return v, errors.New("OldMemo is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTime requires an ID field in the mutation")
+		return v, errors.New("OldMemo requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTime: %w", err)
+		return v, fmt.Errorf("querying old value for OldMemo: %w", err)
 	}
-	return oldValue.Time, nil
+	return oldValue.Memo, nil
 }
 
-// ResetTime resets all changes to the "time" field.
-func (m *CDRMutation) ResetTime() {
-	m.time = nil
+// ClearMemo clears the value of the "memo" field.
+func (m *CDRMutation) ClearMemo() {
+	m.memo = nil
+	m.clearedFields[cdr.FieldMemo] = struct{}{}
 }
 
-// SetRemark sets the "remark" field.
-func (m *CDRMutation) SetRemark(s string) {
-	m.remark = &s
+// MemoCleared returns if the "memo" field was cleared in this mutation.
+func (m *CDRMutation) MemoCleared() bool {
+	_, ok := m.clearedFields[cdr.FieldMemo]
+	return ok
 }
 
-// Remark returns the value of the "remark" field in the mutation.
-func (m *CDRMutation) Remark() (r string, exists bool) {
-	v := m.remark
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRemark returns the old "remark" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldRemark(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRemark is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRemark requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRemark: %w", err)
-	}
-	return oldValue.Remark, nil
-}
-
-// ResetRemark resets all changes to the "remark" field.
-func (m *CDRMutation) ResetRemark() {
-	m.remark = nil
+// ResetMemo resets all changes to the "memo" field.
+func (m *CDRMutation) ResetMemo() {
+	m.memo = nil
+	delete(m.clearedFields, cdr.FieldMemo)
 }
 
 // Where appends a list predicates to the CDRMutation builder.
@@ -985,7 +961,7 @@ func (m *CDRMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CDRMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 18)
 	if m.create_time != nil {
 		fields = append(fields, cdr.FieldCreateTime)
 	}
@@ -1037,11 +1013,8 @@ func (m *CDRMutation) Fields() []string {
 	if m.project != nil {
 		fields = append(fields, cdr.FieldProject)
 	}
-	if m.time != nil {
-		fields = append(fields, cdr.FieldTime)
-	}
-	if m.remark != nil {
-		fields = append(fields, cdr.FieldRemark)
+	if m.memo != nil {
+		fields = append(fields, cdr.FieldMemo)
 	}
 	return fields
 }
@@ -1085,10 +1058,8 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 		return m.PosCode()
 	case cdr.FieldProject:
 		return m.Project()
-	case cdr.FieldTime:
-		return m.Time()
-	case cdr.FieldRemark:
-		return m.Remark()
+	case cdr.FieldMemo:
+		return m.Memo()
 	}
 	return nil, false
 }
@@ -1132,10 +1103,8 @@ func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldPosCode(ctx)
 	case cdr.FieldProject:
 		return m.OldProject(ctx)
-	case cdr.FieldTime:
-		return m.OldTime(ctx)
-	case cdr.FieldRemark:
-		return m.OldRemark(ctx)
+	case cdr.FieldMemo:
+		return m.OldMemo(ctx)
 	}
 	return nil, fmt.Errorf("unknown CDR field %s", name)
 }
@@ -1264,19 +1233,12 @@ func (m *CDRMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProject(v)
 		return nil
-	case cdr.FieldTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTime(v)
-		return nil
-	case cdr.FieldRemark:
+	case cdr.FieldMemo:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetRemark(v)
+		m.SetMemo(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CDR field %s", name)
@@ -1370,7 +1332,11 @@ func (m *CDRMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CDRMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(cdr.FieldMemo) {
+		fields = append(fields, cdr.FieldMemo)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1383,6 +1349,11 @@ func (m *CDRMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CDRMutation) ClearField(name string) error {
+	switch name {
+	case cdr.FieldMemo:
+		m.ClearMemo()
+		return nil
+	}
 	return fmt.Errorf("unknown CDR nullable field %s", name)
 }
 
@@ -1441,11 +1412,8 @@ func (m *CDRMutation) ResetField(name string) error {
 	case cdr.FieldProject:
 		m.ResetProject()
 		return nil
-	case cdr.FieldTime:
-		m.ResetTime()
-		return nil
-	case cdr.FieldRemark:
-		m.ResetRemark()
+	case cdr.FieldMemo:
+		m.ResetMemo()
 		return nil
 	}
 	return fmt.Errorf("unknown CDR field %s", name)

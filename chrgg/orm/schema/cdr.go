@@ -15,33 +15,31 @@ type CDR struct {
 
 func (CDR) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id"),
+		field.String("id").Immutable().NotEmpty(),
 
-		field.String("device_code").Comment("设备号"),
-		field.String("device_type").Comment("设备类型"),
+		field.String("device_code").Immutable().NotEmpty().Comment("设备号"),
+		field.String("device_type").Immutable().NotEmpty().Comment("设备类型"),
 
-		field.Int64("last_data_value").Comment("最后一次读数"),
-		field.Int64("data_value").Comment("当前读数"),
+		field.Int64("last_data_value").Immutable().Default(0).Comment("上次次读数"),
+		field.Int64("data_value").Immutable().Default(0).Comment("当前读数"),
 
-		field.String("last_data_code").Comment("用户ID"),
-		field.String("data_code").Comment("用户ID"),
+		field.String("last_data_code").Immutable().Unique().NotEmpty().Comment("上次datacode"),
+		field.String("data_code").Immutable().Unique().NotEmpty().Comment("当前datacode"),
 
-		field.Time("last_data_time").Comment("上一次时间"),
-		field.Time("data_time").Comment("当前时间"),
+		field.Time("last_data_time").Immutable().Comment("上次时间"),
+		field.Time("data_time").Immutable().Comment("当前时间"),
 
-		field.String("ploy_id").Comment("计费方案ID"),
-		field.String("rule_id").Comment("计费规则ID"),
+		field.String("ploy_id").Immutable().Comment("计费方案ID"),
+		field.String("rule_id").Immutable().Comment("计费规则ID"),
 
-		field.Int64("value").Comment("计量数值"),
-		field.Int64("unit_fee").Comment("计费单价"),
-		field.Int64("fee").Comment("当次费用"),
+		field.Int64("value").Default(0).Immutable().Comment("计量数值"),
+		field.Int64("unit_fee").Default(0).Immutable().Comment("计费单价"),
+		field.Int64("fee").Default(0).Immutable().Comment("当次费用(fen)"),
 
-		field.String("pos_code").Comment("位置编号"),
-		field.String("project").Comment("项目编号"),
+		field.String("pos_code").Immutable().NotEmpty().Comment("位置编号"),
+		field.String("project").Immutable().NotEmpty().Comment("项目编号"),
 
-		field.Time("time").Comment("处理时间"),
-
-		field.String("remark").Comment("备注"),
+		field.String("memo").Optional().Comment("备注"),
 	}
 }
 func (CDR) Mixin() []ent.Mixin {
@@ -54,7 +52,7 @@ func (CDR) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("device_code"),
 		index.Fields("device_type"),
-		index.Fields("data_code"),
+		index.Fields("data_code").Unique(),
 		index.Fields("data_time"),
 	}
 }

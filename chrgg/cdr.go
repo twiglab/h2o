@@ -32,7 +32,7 @@ type CDR struct {
 	PosCode string
 	Project string
 
-	Remark string
+	Momo string
 }
 
 func FirstCDR(cd ChargeData) CDR {

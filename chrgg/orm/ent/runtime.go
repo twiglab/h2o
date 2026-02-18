@@ -28,4 +28,52 @@ func init() {
 	cdr.DefaultUpdateTime = cdrDescUpdateTime.Default.(func() time.Time)
 	// cdr.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	cdr.UpdateDefaultUpdateTime = cdrDescUpdateTime.UpdateDefault.(func() time.Time)
+	// cdrDescDeviceCode is the schema descriptor for device_code field.
+	cdrDescDeviceCode := cdrFields[1].Descriptor()
+	// cdr.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
+	cdr.DeviceCodeValidator = cdrDescDeviceCode.Validators[0].(func(string) error)
+	// cdrDescDeviceType is the schema descriptor for device_type field.
+	cdrDescDeviceType := cdrFields[2].Descriptor()
+	// cdr.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
+	cdr.DeviceTypeValidator = cdrDescDeviceType.Validators[0].(func(string) error)
+	// cdrDescLastDataValue is the schema descriptor for last_data_value field.
+	cdrDescLastDataValue := cdrFields[3].Descriptor()
+	// cdr.DefaultLastDataValue holds the default value on creation for the last_data_value field.
+	cdr.DefaultLastDataValue = cdrDescLastDataValue.Default.(int64)
+	// cdrDescDataValue is the schema descriptor for data_value field.
+	cdrDescDataValue := cdrFields[4].Descriptor()
+	// cdr.DefaultDataValue holds the default value on creation for the data_value field.
+	cdr.DefaultDataValue = cdrDescDataValue.Default.(int64)
+	// cdrDescLastDataCode is the schema descriptor for last_data_code field.
+	cdrDescLastDataCode := cdrFields[5].Descriptor()
+	// cdr.LastDataCodeValidator is a validator for the "last_data_code" field. It is called by the builders before save.
+	cdr.LastDataCodeValidator = cdrDescLastDataCode.Validators[0].(func(string) error)
+	// cdrDescDataCode is the schema descriptor for data_code field.
+	cdrDescDataCode := cdrFields[6].Descriptor()
+	// cdr.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
+	cdr.DataCodeValidator = cdrDescDataCode.Validators[0].(func(string) error)
+	// cdrDescValue is the schema descriptor for value field.
+	cdrDescValue := cdrFields[11].Descriptor()
+	// cdr.DefaultValue holds the default value on creation for the value field.
+	cdr.DefaultValue = cdrDescValue.Default.(int64)
+	// cdrDescUnitFee is the schema descriptor for unit_fee field.
+	cdrDescUnitFee := cdrFields[12].Descriptor()
+	// cdr.DefaultUnitFee holds the default value on creation for the unit_fee field.
+	cdr.DefaultUnitFee = cdrDescUnitFee.Default.(int64)
+	// cdrDescFee is the schema descriptor for fee field.
+	cdrDescFee := cdrFields[13].Descriptor()
+	// cdr.DefaultFee holds the default value on creation for the fee field.
+	cdr.DefaultFee = cdrDescFee.Default.(int64)
+	// cdrDescPosCode is the schema descriptor for pos_code field.
+	cdrDescPosCode := cdrFields[14].Descriptor()
+	// cdr.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
+	cdr.PosCodeValidator = cdrDescPosCode.Validators[0].(func(string) error)
+	// cdrDescProject is the schema descriptor for project field.
+	cdrDescProject := cdrFields[15].Descriptor()
+	// cdr.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
+	cdr.ProjectValidator = cdrDescProject.Validators[0].(func(string) error)
+	// cdrDescID is the schema descriptor for id field.
+	cdrDescID := cdrFields[0].Descriptor()
+	// cdr.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	cdr.IDValidator = cdrDescID.Validators[0].(func(string) error)
 }

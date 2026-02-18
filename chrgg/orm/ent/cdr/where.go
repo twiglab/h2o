@@ -149,14 +149,9 @@ func Project(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldProject, v))
 }
 
-// Time applies equality check predicate on the "time" field. It's identical to TimeEQ.
-func Time(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldTime, v))
-}
-
-// Remark applies equality check predicate on the "remark" field. It's identical to RemarkEQ.
-func Remark(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldRemark, v))
+// Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
+func Memo(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldMemo, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -1039,109 +1034,79 @@ func ProjectContainsFold(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldContainsFold(FieldProject, v))
 }
 
-// TimeEQ applies the EQ predicate on the "time" field.
-func TimeEQ(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldTime, v))
+// MemoEQ applies the EQ predicate on the "memo" field.
+func MemoEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldMemo, v))
 }
 
-// TimeNEQ applies the NEQ predicate on the "time" field.
-func TimeNEQ(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldNEQ(FieldTime, v))
+// MemoNEQ applies the NEQ predicate on the "memo" field.
+func MemoNEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldMemo, v))
 }
 
-// TimeIn applies the In predicate on the "time" field.
-func TimeIn(vs ...time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldIn(FieldTime, vs...))
+// MemoIn applies the In predicate on the "memo" field.
+func MemoIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldMemo, vs...))
 }
 
-// TimeNotIn applies the NotIn predicate on the "time" field.
-func TimeNotIn(vs ...time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldNotIn(FieldTime, vs...))
+// MemoNotIn applies the NotIn predicate on the "memo" field.
+func MemoNotIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldMemo, vs...))
 }
 
-// TimeGT applies the GT predicate on the "time" field.
-func TimeGT(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldGT(FieldTime, v))
+// MemoGT applies the GT predicate on the "memo" field.
+func MemoGT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldMemo, v))
 }
 
-// TimeGTE applies the GTE predicate on the "time" field.
-func TimeGTE(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldGTE(FieldTime, v))
+// MemoGTE applies the GTE predicate on the "memo" field.
+func MemoGTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldMemo, v))
 }
 
-// TimeLT applies the LT predicate on the "time" field.
-func TimeLT(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldLT(FieldTime, v))
+// MemoLT applies the LT predicate on the "memo" field.
+func MemoLT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldMemo, v))
 }
 
-// TimeLTE applies the LTE predicate on the "time" field.
-func TimeLTE(v time.Time) predicate.CDR {
-	return predicate.CDR(sql.FieldLTE(FieldTime, v))
+// MemoLTE applies the LTE predicate on the "memo" field.
+func MemoLTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldMemo, v))
 }
 
-// RemarkEQ applies the EQ predicate on the "remark" field.
-func RemarkEQ(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldRemark, v))
+// MemoContains applies the Contains predicate on the "memo" field.
+func MemoContains(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContains(FieldMemo, v))
 }
 
-// RemarkNEQ applies the NEQ predicate on the "remark" field.
-func RemarkNEQ(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldNEQ(FieldRemark, v))
+// MemoHasPrefix applies the HasPrefix predicate on the "memo" field.
+func MemoHasPrefix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasPrefix(FieldMemo, v))
 }
 
-// RemarkIn applies the In predicate on the "remark" field.
-func RemarkIn(vs ...string) predicate.CDR {
-	return predicate.CDR(sql.FieldIn(FieldRemark, vs...))
+// MemoHasSuffix applies the HasSuffix predicate on the "memo" field.
+func MemoHasSuffix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasSuffix(FieldMemo, v))
 }
 
-// RemarkNotIn applies the NotIn predicate on the "remark" field.
-func RemarkNotIn(vs ...string) predicate.CDR {
-	return predicate.CDR(sql.FieldNotIn(FieldRemark, vs...))
+// MemoIsNil applies the IsNil predicate on the "memo" field.
+func MemoIsNil() predicate.CDR {
+	return predicate.CDR(sql.FieldIsNull(FieldMemo))
 }
 
-// RemarkGT applies the GT predicate on the "remark" field.
-func RemarkGT(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldGT(FieldRemark, v))
+// MemoNotNil applies the NotNil predicate on the "memo" field.
+func MemoNotNil() predicate.CDR {
+	return predicate.CDR(sql.FieldNotNull(FieldMemo))
 }
 
-// RemarkGTE applies the GTE predicate on the "remark" field.
-func RemarkGTE(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldGTE(FieldRemark, v))
+// MemoEqualFold applies the EqualFold predicate on the "memo" field.
+func MemoEqualFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEqualFold(FieldMemo, v))
 }
 
-// RemarkLT applies the LT predicate on the "remark" field.
-func RemarkLT(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldLT(FieldRemark, v))
-}
-
-// RemarkLTE applies the LTE predicate on the "remark" field.
-func RemarkLTE(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldLTE(FieldRemark, v))
-}
-
-// RemarkContains applies the Contains predicate on the "remark" field.
-func RemarkContains(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldContains(FieldRemark, v))
-}
-
-// RemarkHasPrefix applies the HasPrefix predicate on the "remark" field.
-func RemarkHasPrefix(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldHasPrefix(FieldRemark, v))
-}
-
-// RemarkHasSuffix applies the HasSuffix predicate on the "remark" field.
-func RemarkHasSuffix(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldHasSuffix(FieldRemark, v))
-}
-
-// RemarkEqualFold applies the EqualFold predicate on the "remark" field.
-func RemarkEqualFold(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEqualFold(FieldRemark, v))
-}
-
-// RemarkContainsFold applies the ContainsFold predicate on the "remark" field.
-func RemarkContainsFold(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldContainsFold(FieldRemark, v))
+// MemoContainsFold applies the ContainsFold predicate on the "memo" field.
+func MemoContainsFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContainsFold(FieldMemo, v))
 }
 
 // And groups predicates with the AND operator between them.

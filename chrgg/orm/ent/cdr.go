@@ -25,15 +25,15 @@ type CDR struct {
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
 	DeviceType string `json:"device_type,omitempty"`
-	// 最后一次读数
+	// 上次次读数
 	LastDataValue int64 `json:"last_data_value,omitempty"`
 	// 当前读数
 	DataValue int64 `json:"data_value,omitempty"`
-	// 用户ID
+	// 上次datacode
 	LastDataCode string `json:"last_data_code,omitempty"`
-	// 用户ID
+	// 当前datacode
 	DataCode string `json:"data_code,omitempty"`
-	// 上一次时间
+	// 上次时间
 	LastDataTime time.Time `json:"last_data_time,omitempty"`
 	// 当前时间
 	DataTime time.Time `json:"data_time,omitempty"`
@@ -45,16 +45,14 @@ type CDR struct {
 	Value int64 `json:"value,omitempty"`
 	// 计费单价
 	UnitFee int64 `json:"unit_fee,omitempty"`
-	// 当次费用
+	// 当次费用(fen)
 	Fee int64 `json:"fee,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
 	Project string `json:"project,omitempty"`
-	// 处理时间
-	Time time.Time `json:"time,omitempty"`
 	// 备注
-	Remark       string `json:"remark,omitempty"`
+	Memo         string `json:"memo,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -65,9 +63,9 @@ func (*CDR) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case cdr.FieldLastDataValue, cdr.FieldDataValue, cdr.FieldValue, cdr.FieldUnitFee, cdr.FieldFee:
 			values[i] = new(sql.NullInt64)
-		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldRemark:
+		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldMemo:
 			values[i] = new(sql.NullString)
-		case cdr.FieldCreateTime, cdr.FieldUpdateTime, cdr.FieldLastDataTime, cdr.FieldDataTime, cdr.FieldTime:
+		case cdr.FieldCreateTime, cdr.FieldUpdateTime, cdr.FieldLastDataTime, cdr.FieldDataTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -192,17 +190,11 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Project = value.String
 			}
-		case cdr.FieldTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field time", values[i])
-			} else if value.Valid {
-				_m.Time = value.Time
-			}
-		case cdr.FieldRemark:
+		case cdr.FieldMemo:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field remark", values[i])
+				return fmt.Errorf("unexpected type %T for field memo", values[i])
 			} else if value.Valid {
-				_m.Remark = value.String
+				_m.Memo = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -291,11 +283,8 @@ func (_m *CDR) String() string {
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)
 	builder.WriteString(", ")
-	builder.WriteString("time=")
-	builder.WriteString(_m.Time.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("remark=")
-	builder.WriteString(_m.Remark)
+	builder.WriteString("memo=")
+	builder.WriteString(_m.Memo)
 	builder.WriteByte(')')
 	return builder.String()
 }

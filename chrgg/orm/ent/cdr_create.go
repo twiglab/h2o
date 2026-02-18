@@ -66,9 +66,25 @@ func (_c *CDRCreate) SetLastDataValue(v int64) *CDRCreate {
 	return _c
 }
 
+// SetNillableLastDataValue sets the "last_data_value" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableLastDataValue(v *int64) *CDRCreate {
+	if v != nil {
+		_c.SetLastDataValue(*v)
+	}
+	return _c
+}
+
 // SetDataValue sets the "data_value" field.
 func (_c *CDRCreate) SetDataValue(v int64) *CDRCreate {
 	_c.mutation.SetDataValue(v)
+	return _c
+}
+
+// SetNillableDataValue sets the "data_value" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableDataValue(v *int64) *CDRCreate {
+	if v != nil {
+		_c.SetDataValue(*v)
+	}
 	return _c
 }
 
@@ -114,15 +130,39 @@ func (_c *CDRCreate) SetValue(v int64) *CDRCreate {
 	return _c
 }
 
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableValue(v *int64) *CDRCreate {
+	if v != nil {
+		_c.SetValue(*v)
+	}
+	return _c
+}
+
 // SetUnitFee sets the "unit_fee" field.
 func (_c *CDRCreate) SetUnitFee(v int64) *CDRCreate {
 	_c.mutation.SetUnitFee(v)
 	return _c
 }
 
+// SetNillableUnitFee sets the "unit_fee" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableUnitFee(v *int64) *CDRCreate {
+	if v != nil {
+		_c.SetUnitFee(*v)
+	}
+	return _c
+}
+
 // SetFee sets the "fee" field.
 func (_c *CDRCreate) SetFee(v int64) *CDRCreate {
 	_c.mutation.SetFee(v)
+	return _c
+}
+
+// SetNillableFee sets the "fee" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableFee(v *int64) *CDRCreate {
+	if v != nil {
+		_c.SetFee(*v)
+	}
 	return _c
 }
 
@@ -138,15 +178,17 @@ func (_c *CDRCreate) SetProject(v string) *CDRCreate {
 	return _c
 }
 
-// SetTime sets the "time" field.
-func (_c *CDRCreate) SetTime(v time.Time) *CDRCreate {
-	_c.mutation.SetTime(v)
+// SetMemo sets the "memo" field.
+func (_c *CDRCreate) SetMemo(v string) *CDRCreate {
+	_c.mutation.SetMemo(v)
 	return _c
 }
 
-// SetRemark sets the "remark" field.
-func (_c *CDRCreate) SetRemark(v string) *CDRCreate {
-	_c.mutation.SetRemark(v)
+// SetNillableMemo sets the "memo" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableMemo(v *string) *CDRCreate {
+	if v != nil {
+		_c.SetMemo(*v)
+	}
 	return _c
 }
 
@@ -199,6 +241,26 @@ func (_c *CDRCreate) defaults() {
 		v := cdr.DefaultUpdateTime()
 		_c.mutation.SetUpdateTime(v)
 	}
+	if _, ok := _c.mutation.LastDataValue(); !ok {
+		v := cdr.DefaultLastDataValue
+		_c.mutation.SetLastDataValue(v)
+	}
+	if _, ok := _c.mutation.DataValue(); !ok {
+		v := cdr.DefaultDataValue
+		_c.mutation.SetDataValue(v)
+	}
+	if _, ok := _c.mutation.Value(); !ok {
+		v := cdr.DefaultValue
+		_c.mutation.SetValue(v)
+	}
+	if _, ok := _c.mutation.UnitFee(); !ok {
+		v := cdr.DefaultUnitFee
+		_c.mutation.SetUnitFee(v)
+	}
+	if _, ok := _c.mutation.Fee(); !ok {
+		v := cdr.DefaultFee
+		_c.mutation.SetFee(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -212,8 +274,18 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.DeviceCode(); !ok {
 		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "CDR.device_code"`)}
 	}
+	if v, ok := _c.mutation.DeviceCode(); ok {
+		if err := cdr.DeviceCodeValidator(v); err != nil {
+			return &ValidationError{Name: "device_code", err: fmt.Errorf(`ent: validator failed for field "CDR.device_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.DeviceType(); !ok {
 		return &ValidationError{Name: "device_type", err: errors.New(`ent: missing required field "CDR.device_type"`)}
+	}
+	if v, ok := _c.mutation.DeviceType(); ok {
+		if err := cdr.DeviceTypeValidator(v); err != nil {
+			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "CDR.device_type": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.LastDataValue(); !ok {
 		return &ValidationError{Name: "last_data_value", err: errors.New(`ent: missing required field "CDR.last_data_value"`)}
@@ -224,8 +296,18 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.LastDataCode(); !ok {
 		return &ValidationError{Name: "last_data_code", err: errors.New(`ent: missing required field "CDR.last_data_code"`)}
 	}
+	if v, ok := _c.mutation.LastDataCode(); ok {
+		if err := cdr.LastDataCodeValidator(v); err != nil {
+			return &ValidationError{Name: "last_data_code", err: fmt.Errorf(`ent: validator failed for field "CDR.last_data_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.DataCode(); !ok {
 		return &ValidationError{Name: "data_code", err: errors.New(`ent: missing required field "CDR.data_code"`)}
+	}
+	if v, ok := _c.mutation.DataCode(); ok {
+		if err := cdr.DataCodeValidator(v); err != nil {
+			return &ValidationError{Name: "data_code", err: fmt.Errorf(`ent: validator failed for field "CDR.data_code": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.LastDataTime(); !ok {
 		return &ValidationError{Name: "last_data_time", err: errors.New(`ent: missing required field "CDR.last_data_time"`)}
@@ -251,14 +333,23 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.PosCode(); !ok {
 		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "CDR.pos_code"`)}
 	}
+	if v, ok := _c.mutation.PosCode(); ok {
+		if err := cdr.PosCodeValidator(v); err != nil {
+			return &ValidationError{Name: "pos_code", err: fmt.Errorf(`ent: validator failed for field "CDR.pos_code": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "CDR.project"`)}
 	}
-	if _, ok := _c.mutation.Time(); !ok {
-		return &ValidationError{Name: "time", err: errors.New(`ent: missing required field "CDR.time"`)}
+	if v, ok := _c.mutation.Project(); ok {
+		if err := cdr.ProjectValidator(v); err != nil {
+			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "CDR.project": %w`, err)}
+		}
 	}
-	if _, ok := _c.mutation.Remark(); !ok {
-		return &ValidationError{Name: "remark", err: errors.New(`ent: missing required field "CDR.remark"`)}
+	if v, ok := _c.mutation.ID(); ok {
+		if err := cdr.IDValidator(v); err != nil {
+			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "CDR.id": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -363,13 +454,9 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 		_spec.SetField(cdr.FieldProject, field.TypeString, value)
 		_node.Project = value
 	}
-	if value, ok := _c.mutation.Time(); ok {
-		_spec.SetField(cdr.FieldTime, field.TypeTime, value)
-		_node.Time = value
-	}
-	if value, ok := _c.mutation.Remark(); ok {
-		_spec.SetField(cdr.FieldRemark, field.TypeString, value)
-		_node.Remark = value
+	if value, ok := _c.mutation.Memo(); ok {
+		_spec.SetField(cdr.FieldMemo, field.TypeString, value)
+		_node.Memo = value
 	}
 	return _node, _spec
 }

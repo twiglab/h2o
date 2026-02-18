@@ -16,21 +16,20 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "device_code", Type: field.TypeString},
 		{Name: "device_type", Type: field.TypeString},
-		{Name: "last_data_value", Type: field.TypeInt64},
-		{Name: "data_value", Type: field.TypeInt64},
-		{Name: "last_data_code", Type: field.TypeString},
-		{Name: "data_code", Type: field.TypeString},
+		{Name: "last_data_value", Type: field.TypeInt64, Default: 0},
+		{Name: "data_value", Type: field.TypeInt64, Default: 0},
+		{Name: "last_data_code", Type: field.TypeString, Unique: true},
+		{Name: "data_code", Type: field.TypeString, Unique: true},
 		{Name: "last_data_time", Type: field.TypeTime},
 		{Name: "data_time", Type: field.TypeTime},
 		{Name: "ploy_id", Type: field.TypeString},
 		{Name: "rule_id", Type: field.TypeString},
-		{Name: "value", Type: field.TypeInt64},
-		{Name: "unit_fee", Type: field.TypeInt64},
-		{Name: "fee", Type: field.TypeInt64},
+		{Name: "value", Type: field.TypeInt64, Default: 0},
+		{Name: "unit_fee", Type: field.TypeInt64, Default: 0},
+		{Name: "fee", Type: field.TypeInt64, Default: 0},
 		{Name: "pos_code", Type: field.TypeString},
 		{Name: "project", Type: field.TypeString},
-		{Name: "time", Type: field.TypeTime},
-		{Name: "remark", Type: field.TypeString},
+		{Name: "memo", Type: field.TypeString, Nullable: true},
 	}
 	// TCdrTable holds the schema information for the "t_cdr" table.
 	TCdrTable = &schema.Table{
@@ -50,7 +49,7 @@ var (
 			},
 			{
 				Name:    "cdr_data_code",
-				Unique:  false,
+				Unique:  true,
 				Columns: []*schema.Column{TCdrColumns[8]},
 			},
 			{

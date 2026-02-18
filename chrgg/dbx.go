@@ -27,9 +27,33 @@ func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.CDR, notfo
 	return
 }
 
-func (d *DBx) SaveCurrent(ctx context.Context, ccdr CDR) (r *ent.CDR, err error) {
+func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) {
 	cr := d.cli.CDR.Create()
+
 	cr.SetID(cdrid())
+	cr.SetDeviceCode(cdr.DeviceCode)
+	cr.SetDeviceType(cdr.DeviceType)
+
+	cr.SetLastDataCode(cdr.LastDataCode)
+	cr.SetDataCode(cdr.DataCode)
+
+	cr.SetLastDataTime(cdr.LastDataTime)
+	cr.SetDataTime(cdr.DataTime)
+
+	cr.SetLastDataValue(cdr.LastDataValue)
+	cr.SetDataValue(cdr.DataValue)
+
+	cr.SetValue(cdr.Value)
+
+	cr.SetPloyID(cdr.PloyID)
+	cr.SetRuleID(cdr.RuleID)
+	cr.SetUnitFee(cdr.UnitFee)
+
+	cr.SetPosCode(cdr.PosCode)
+	cr.SetProject(cdr.Project)
+
+	cr.SetMemo(cdr.Momo)
+
 	r, err = cr.Save(ctx)
 	return
 }
