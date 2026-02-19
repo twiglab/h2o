@@ -3,7 +3,6 @@ package chrgg
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
 )
@@ -30,7 +29,6 @@ func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.CDR, notfo
 func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) {
 	cr := d.Cli.CDR.Create()
 
-	cr.SetID(cdrid())
 	cr.SetDeviceCode(cdr.DeviceCode)
 	cr.SetDeviceType(cdr.DeviceType)
 
@@ -56,9 +54,4 @@ func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) 
 
 	r, err = cr.Save(ctx)
 	return
-}
-
-func cdrid() string {
-	u, _ := uuid.NewV7()
-	return u.String()
 }

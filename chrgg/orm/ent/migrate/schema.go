@@ -11,25 +11,25 @@ import (
 var (
 	// TCdrColumns holds the columns for the "t_cdr" table.
 	TCdrColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString},
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "device_code", Type: field.TypeString},
-		{Name: "device_type", Type: field.TypeString},
+		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_data_value", Type: field.TypeInt64, Default: 0},
 		{Name: "data_value", Type: field.TypeInt64, Default: 0},
-		{Name: "last_data_code", Type: field.TypeString, Unique: true},
-		{Name: "data_code", Type: field.TypeString, Unique: true},
+		{Name: "last_data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_data_time", Type: field.TypeTime},
 		{Name: "data_time", Type: field.TypeTime},
-		{Name: "ploy_id", Type: field.TypeString},
-		{Name: "rule_id", Type: field.TypeString},
+		{Name: "ploy_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "rule_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "value", Type: field.TypeInt64, Default: 0},
 		{Name: "unit_fee", Type: field.TypeInt64, Default: 0},
 		{Name: "fee", Type: field.TypeInt64, Default: 0},
-		{Name: "pos_code", Type: field.TypeString},
-		{Name: "project", Type: field.TypeString},
-		{Name: "memo", Type: field.TypeString, Nullable: true},
+		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// TCdrTable holds the schema information for the "t_cdr" table.
 	TCdrTable = &schema.Table{

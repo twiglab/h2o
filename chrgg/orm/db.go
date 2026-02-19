@@ -1,5 +1,7 @@
 package orm
 
+//go:generate go tool ent generate ./schema --target ./ent --feature sql/execquery,sql/upsert,privacy,sql/lock
+
 import (
 	"context"
 
@@ -15,8 +17,6 @@ import (
 
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
-
-//go:generate go tool ent generate ./schema --target ./ent
 
 func OpenEntClient(name, dns string) (*ent.Client, error) {
 	if name == "pgx" {

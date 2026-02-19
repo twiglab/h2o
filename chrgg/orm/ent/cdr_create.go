@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
@@ -18,6 +20,7 @@ type CDRCreate struct {
 	config
 	mutation *CDRMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreateTime sets the "create_time" field.
@@ -198,6 +201,14 @@ func (_c *CDRCreate) SetID(v string) *CDRCreate {
 	return _c
 }
 
+// SetNillableID sets the "id" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableID(v *string) *CDRCreate {
+	if v != nil {
+		_c.SetID(*v)
+	}
+	return _c
+}
+
 // Mutation returns the CDRMutation object of the builder.
 func (_c *CDRCreate) Mutation() *CDRMutation {
 	return _c.mutation
@@ -260,6 +271,10 @@ func (_c *CDRCreate) defaults() {
 	if _, ok := _c.mutation.Fee(); !ok {
 		v := cdr.DefaultFee
 		_c.mutation.SetFee(v)
+	}
+	if _, ok := _c.mutation.ID(); !ok {
+		v := cdr.DefaultID()
+		_c.mutation.SetID(v)
 	}
 }
 
@@ -392,6 +407,7 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 		_node = &CDR{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(cdr.Table, sqlgraph.NewFieldSpec(cdr.FieldID, field.TypeString))
 	)
+	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
@@ -471,11 +487,260 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CDR.Create().
+//		SetCreateTime(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CDRUpsert) {
+//			SetCreateTime(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CDRCreate) OnConflict(opts ...sql.ConflictOption) *CDRUpsertOne {
+	_c.conflict = opts
+	return &CDRUpsertOne{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CDRCreate) OnConflictColumns(columns ...string) *CDRUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CDRUpsertOne{
+		create: _c,
+	}
+}
+
+type (
+	// CDRUpsertOne is the builder for "upsert"-ing
+	//  one CDR node.
+	CDRUpsertOne struct {
+		create *CDRCreate
+	}
+
+	// CDRUpsert is the "OnConflict" setter.
+	CDRUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdateTime sets the "update_time" field.
+func (u *CDRUpsert) SetUpdateTime(v time.Time) *CDRUpsert {
+	u.Set(cdr.FieldUpdateTime, v)
+	return u
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *CDRUpsert) UpdateUpdateTime() *CDRUpsert {
+	u.SetExcluded(cdr.FieldUpdateTime)
+	return u
+}
+
+// SetMemo sets the "memo" field.
+func (u *CDRUpsert) SetMemo(v string) *CDRUpsert {
+	u.Set(cdr.FieldMemo, v)
+	return u
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *CDRUpsert) UpdateMemo() *CDRUpsert {
+	u.SetExcluded(cdr.FieldMemo)
+	return u
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *CDRUpsert) ClearMemo() *CDRUpsert {
+	u.SetNull(cdr.FieldMemo)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
+// Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cdr.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *CDRUpsertOne) UpdateNewValues() *CDRUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.ID(); exists {
+			s.SetIgnore(cdr.FieldID)
+		}
+		if _, exists := u.create.mutation.CreateTime(); exists {
+			s.SetIgnore(cdr.FieldCreateTime)
+		}
+		if _, exists := u.create.mutation.DeviceCode(); exists {
+			s.SetIgnore(cdr.FieldDeviceCode)
+		}
+		if _, exists := u.create.mutation.DeviceType(); exists {
+			s.SetIgnore(cdr.FieldDeviceType)
+		}
+		if _, exists := u.create.mutation.LastDataValue(); exists {
+			s.SetIgnore(cdr.FieldLastDataValue)
+		}
+		if _, exists := u.create.mutation.DataValue(); exists {
+			s.SetIgnore(cdr.FieldDataValue)
+		}
+		if _, exists := u.create.mutation.LastDataCode(); exists {
+			s.SetIgnore(cdr.FieldLastDataCode)
+		}
+		if _, exists := u.create.mutation.DataCode(); exists {
+			s.SetIgnore(cdr.FieldDataCode)
+		}
+		if _, exists := u.create.mutation.LastDataTime(); exists {
+			s.SetIgnore(cdr.FieldLastDataTime)
+		}
+		if _, exists := u.create.mutation.DataTime(); exists {
+			s.SetIgnore(cdr.FieldDataTime)
+		}
+		if _, exists := u.create.mutation.PloyID(); exists {
+			s.SetIgnore(cdr.FieldPloyID)
+		}
+		if _, exists := u.create.mutation.RuleID(); exists {
+			s.SetIgnore(cdr.FieldRuleID)
+		}
+		if _, exists := u.create.mutation.Value(); exists {
+			s.SetIgnore(cdr.FieldValue)
+		}
+		if _, exists := u.create.mutation.UnitFee(); exists {
+			s.SetIgnore(cdr.FieldUnitFee)
+		}
+		if _, exists := u.create.mutation.Fee(); exists {
+			s.SetIgnore(cdr.FieldFee)
+		}
+		if _, exists := u.create.mutation.PosCode(); exists {
+			s.SetIgnore(cdr.FieldPosCode)
+		}
+		if _, exists := u.create.mutation.Project(); exists {
+			s.SetIgnore(cdr.FieldProject)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *CDRUpsertOne) Ignore() *CDRUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CDRUpsertOne) DoNothing() *CDRUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CDRCreate.OnConflict
+// documentation for more info.
+func (u *CDRUpsertOne) Update(set func(*CDRUpsert)) *CDRUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CDRUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (u *CDRUpsertOne) SetUpdateTime(v time.Time) *CDRUpsertOne {
+	return u.Update(func(s *CDRUpsert) {
+		s.SetUpdateTime(v)
+	})
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *CDRUpsertOne) UpdateUpdateTime() *CDRUpsertOne {
+	return u.Update(func(s *CDRUpsert) {
+		s.UpdateUpdateTime()
+	})
+}
+
+// SetMemo sets the "memo" field.
+func (u *CDRUpsertOne) SetMemo(v string) *CDRUpsertOne {
+	return u.Update(func(s *CDRUpsert) {
+		s.SetMemo(v)
+	})
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *CDRUpsertOne) UpdateMemo() *CDRUpsertOne {
+	return u.Update(func(s *CDRUpsert) {
+		s.UpdateMemo()
+	})
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *CDRUpsertOne) ClearMemo() *CDRUpsertOne {
+	return u.Update(func(s *CDRUpsert) {
+		s.ClearMemo()
+	})
+}
+
+// Exec executes the query.
+func (u *CDRUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CDRCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CDRUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *CDRUpsertOne) ID(ctx context.Context) (id string, err error) {
+	if u.create.driver.Dialect() == dialect.MySQL {
+		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
+		// fields from the database since MySQL does not support the RETURNING clause.
+		return id, errors.New("ent: CDRUpsertOne.ID is not supported by MySQL driver. Use CDRUpsertOne.Exec instead")
+	}
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *CDRUpsertOne) IDX(ctx context.Context) string {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // CDRCreateBulk is the builder for creating many CDR entities in bulk.
 type CDRCreateBulk struct {
 	config
 	err      error
 	builders []*CDRCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the CDR entities in the database.
@@ -505,6 +770,7 @@ func (_c *CDRCreateBulk) Save(ctx context.Context) ([]*CDR, error) {
 					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -551,6 +817,203 @@ func (_c *CDRCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (_c *CDRCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.CDR.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.CDRUpsert) {
+//			SetCreateTime(v+v).
+//		}).
+//		Exec(ctx)
+func (_c *CDRCreateBulk) OnConflict(opts ...sql.ConflictOption) *CDRUpsertBulk {
+	_c.conflict = opts
+	return &CDRUpsertBulk{
+		create: _c,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (_c *CDRCreateBulk) OnConflictColumns(columns ...string) *CDRUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
+	return &CDRUpsertBulk{
+		create: _c,
+	}
+}
+
+// CDRUpsertBulk is the builder for "upsert"-ing
+// a bulk of CDR nodes.
+type CDRUpsertBulk struct {
+	create *CDRCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//			sql.ResolveWith(func(u *sql.UpdateSet) {
+//				u.SetIgnore(cdr.FieldID)
+//			}),
+//		).
+//		Exec(ctx)
+func (u *CDRUpsertBulk) UpdateNewValues() *CDRUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.ID(); exists {
+				s.SetIgnore(cdr.FieldID)
+			}
+			if _, exists := b.mutation.CreateTime(); exists {
+				s.SetIgnore(cdr.FieldCreateTime)
+			}
+			if _, exists := b.mutation.DeviceCode(); exists {
+				s.SetIgnore(cdr.FieldDeviceCode)
+			}
+			if _, exists := b.mutation.DeviceType(); exists {
+				s.SetIgnore(cdr.FieldDeviceType)
+			}
+			if _, exists := b.mutation.LastDataValue(); exists {
+				s.SetIgnore(cdr.FieldLastDataValue)
+			}
+			if _, exists := b.mutation.DataValue(); exists {
+				s.SetIgnore(cdr.FieldDataValue)
+			}
+			if _, exists := b.mutation.LastDataCode(); exists {
+				s.SetIgnore(cdr.FieldLastDataCode)
+			}
+			if _, exists := b.mutation.DataCode(); exists {
+				s.SetIgnore(cdr.FieldDataCode)
+			}
+			if _, exists := b.mutation.LastDataTime(); exists {
+				s.SetIgnore(cdr.FieldLastDataTime)
+			}
+			if _, exists := b.mutation.DataTime(); exists {
+				s.SetIgnore(cdr.FieldDataTime)
+			}
+			if _, exists := b.mutation.PloyID(); exists {
+				s.SetIgnore(cdr.FieldPloyID)
+			}
+			if _, exists := b.mutation.RuleID(); exists {
+				s.SetIgnore(cdr.FieldRuleID)
+			}
+			if _, exists := b.mutation.Value(); exists {
+				s.SetIgnore(cdr.FieldValue)
+			}
+			if _, exists := b.mutation.UnitFee(); exists {
+				s.SetIgnore(cdr.FieldUnitFee)
+			}
+			if _, exists := b.mutation.Fee(); exists {
+				s.SetIgnore(cdr.FieldFee)
+			}
+			if _, exists := b.mutation.PosCode(); exists {
+				s.SetIgnore(cdr.FieldPosCode)
+			}
+			if _, exists := b.mutation.Project(); exists {
+				s.SetIgnore(cdr.FieldProject)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.CDR.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *CDRUpsertBulk) Ignore() *CDRUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *CDRUpsertBulk) DoNothing() *CDRUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the CDRCreateBulk.OnConflict
+// documentation for more info.
+func (u *CDRUpsertBulk) Update(set func(*CDRUpsert)) *CDRUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&CDRUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (u *CDRUpsertBulk) SetUpdateTime(v time.Time) *CDRUpsertBulk {
+	return u.Update(func(s *CDRUpsert) {
+		s.SetUpdateTime(v)
+	})
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *CDRUpsertBulk) UpdateUpdateTime() *CDRUpsertBulk {
+	return u.Update(func(s *CDRUpsert) {
+		s.UpdateUpdateTime()
+	})
+}
+
+// SetMemo sets the "memo" field.
+func (u *CDRUpsertBulk) SetMemo(v string) *CDRUpsertBulk {
+	return u.Update(func(s *CDRUpsert) {
+		s.SetMemo(v)
+	})
+}
+
+// UpdateMemo sets the "memo" field to the value that was provided on create.
+func (u *CDRUpsertBulk) UpdateMemo() *CDRUpsertBulk {
+	return u.Update(func(s *CDRUpsert) {
+		s.UpdateMemo()
+	})
+}
+
+// ClearMemo clears the value of the "memo" field.
+func (u *CDRUpsertBulk) ClearMemo() *CDRUpsertBulk {
+	return u.Update(func(s *CDRUpsert) {
+		s.ClearMemo()
+	})
+}
+
+// Exec executes the query.
+func (u *CDRUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the CDRCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for CDRCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *CDRUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

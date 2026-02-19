@@ -82,6 +82,8 @@ func init() {
 	cdr.ProjectValidator = cdrDescProject.Validators[0].(func(string) error)
 	// cdrDescID is the schema descriptor for id field.
 	cdrDescID := cdrFields[0].Descriptor()
+	// cdr.DefaultID holds the default value on creation for the id field.
+	cdr.DefaultID = cdrDescID.Default.(func() string)
 	// cdr.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	cdr.IDValidator = cdrDescID.Validators[0].(func(string) error)
 }
