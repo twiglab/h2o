@@ -85,7 +85,7 @@ func topics() map[string]byte {
 	return m
 }
 
-func entCli() *ent.Client {
+func entcli() *ent.Client {
 	name := viper.GetString("chrgg.db.name")
 	dsn := viper.GetString("chrgg.db.dsn")
 

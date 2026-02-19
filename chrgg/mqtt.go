@@ -2,7 +2,7 @@ package chrgg
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"

@@ -33,7 +33,13 @@ func run() error {
 
 	c := mqttcli()
 
-	c.SubscribeMultiple(topics(), chrgg.RawHandle())
+	cs := &chrgg.ChangeServer{
+		CDRLog: cdrlog(),
+		DBx:    &chrgg.DBx{Cli: entcli()},
+		Ploy:   chrgg.ZeroPloy{},
+	}
+
+	c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
 
 	return http.ListenAndServe(webaddr(), nil)
 }

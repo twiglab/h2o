@@ -20,7 +20,7 @@ type Ploy interface {
 type ZeroPloy struct {
 }
 
-func (ZeroPloy) GetRuler(context.Context, ChargeData) (Ruler, error) {
+func (ZeroPloy) GetResult(context.Context, ChargeData) (Ruler, error) {
 	return Ruler{
 		RulerID: "zero",
 		PloyID:  "zero",

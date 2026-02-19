@@ -30,7 +30,7 @@ func init() {
 }
 
 func showSql() error {
-	cli := entCli()
+	cli := entcli()
 	defer cli.Close()
 
 	return cli.Schema.WriteTo(context.Background(), os.Stdout)
