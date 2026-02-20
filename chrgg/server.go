@@ -29,7 +29,7 @@ func (s ChangeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) e
 }
 
 func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData) bool {
-	if isInTimeRange(cd.DataTime) {
+	if MinOfDay(hourMin(cd.DataTime)) >= 1365 {
 		return true
 	}
 

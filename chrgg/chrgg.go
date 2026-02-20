@@ -21,14 +21,11 @@ type ChargeData struct {
 	MeterData
 }
 
-func isInTimeRange(t time.Time) bool {
-	if DayMinute(t) > 1365 { // > 22:45
-		return true
-	}
-	return false
+func MinOfDay(h, m int) int {
+	return h*60 + m
 }
 
-func DayMinute(t time.Time) int {
-	h, m, _ := t.Clock()
-	return h*60 + m
+func hourMin(t time.Time) (h, m int) {
+	h, m, _ = t.Clock()
+	return
 }
