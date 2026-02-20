@@ -10,7 +10,7 @@ import (
 type ChangeServer struct {
 	DBx    *DBx
 	CDRLog *slog.Logger
-	Ploy   Ploy
+	Eng    ChargeEngine
 }
 
 func (s *ChangeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
@@ -74,7 +74,7 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	}
 
 	// setp 4 calc
-	ru, err := s.Ploy.GetResult(ctx, cd)
+	ru, err := s.Eng.GetResult(ctx, cd)
 	if err != nil {
 		return Nil, err
 	}

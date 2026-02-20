@@ -18,16 +18,19 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-func OpenEntClient(name, dns string) (*ent.Client, error) {
+func OpenEntClient(name, dsn string) (*ent.Client, error) {
 	if name == "pgx" {
-		pool, err := pgxpool.New(context.Background(), dns)
-		if err != nil {
-			return nil, err
-		}
-		db := stdlib.OpenDBFromPool(pool)
-		drv := entsql.OpenDB(dialect.Postgres, db)
-		return ent.NewClient(ent.Driver(drv)), nil
+		return pgx(dsn)
 	}
+	return ent.Open(name, dsn)
+}
 
-	return ent.Open(name, dns)
+func pgx(dsn string) (*ent.Client, error) {
+	pool, err := pgxpool.New(context.Background(), dsn)
+	if err != nil {
+		return nil, err
+	}
+	db := stdlib.OpenDBFromPool(pool)
+	drv := entsql.OpenDB(dialect.Postgres, db)
+	return ent.NewClient(ent.Driver(drv)), nil
 }

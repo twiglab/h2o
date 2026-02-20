@@ -13,14 +13,14 @@ type Ruler struct {
 	Memo string
 }
 
-type Ploy interface {
+type ChargeEngine interface {
 	GetResult(context.Context, ChargeData) (Ruler, error)
 }
 
-type ZeroPloy struct {
+type ZeroCe struct {
 }
 
-func (ZeroPloy) GetResult(context.Context, ChargeData) (Ruler, error) {
+func (ZeroCe) GetResult(context.Context, ChargeData) (Ruler, error) {
 	return Ruler{
 		RulerID: "zero",
 		PloyID:  "zero",

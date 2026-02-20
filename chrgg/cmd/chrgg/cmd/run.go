@@ -36,7 +36,7 @@ func run() error {
 	cs := &chrgg.ChangeServer{
 		CDRLog: cdrlog(),
 		DBx:    &chrgg.DBx{Cli: entcli()},
-		Ploy:   chrgg.ZeroPloy{},
+		Eng:   chrgg.ZeroCe{},
 	}
 
 	c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
