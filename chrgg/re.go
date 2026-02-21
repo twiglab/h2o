@@ -18,7 +18,7 @@ type ChargeEngine interface {
 
 type ZeroRuler string
 
-func (z ZeroRuler) GetResult(_ context.Context, _ ChargeData) (ChargeRuler, error) {
+func (z ZeroRuler) GetRuler(_ context.Context, _ ChargeData) (ChargeRuler, error) {
 	return z, nil
 }
 
