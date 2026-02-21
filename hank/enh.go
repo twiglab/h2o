@@ -32,7 +32,6 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
-				PUID:      puid(meta.Project, meta.PosCode),
 			},
 
 			Flag: common.Flag{
@@ -76,7 +75,6 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
-				PUID:      puid(meta.Project, meta.PosCode),
 			},
 
 			Flag: common.Flag{
@@ -113,12 +111,4 @@ func parseTime(s string) time.Time {
 		return xdate
 	}
 	return t
-}
-
-func puid(project, posCode string) string {
-	return posCode + "@" + project
-}
-
-func now() time.Time {
-	return time.Now()
 }

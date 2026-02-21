@@ -22,8 +22,6 @@ type Pos struct {
 	Building  string `json:"building,omitempty"` // 大楼
 	FloorCode string `json:"floor_code,omitempty"`
 	AreaCode  string `json:"area_code,omitempty"`
-
-	PUID string `json:"puid,omitempty"` // 全局唯一的poscode, 理论上 = project + poscode
 }
 
 type Electricity struct {
