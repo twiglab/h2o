@@ -114,14 +114,19 @@ func DataTime(v time.Time) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldDataTime, v))
 }
 
-// PloyID applies equality check predicate on the "ploy_id" field. It's identical to PloyIDEQ.
-func PloyID(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldPloyID, v))
-}
-
 // RuleID applies equality check predicate on the "rule_id" field. It's identical to RuleIDEQ.
 func RuleID(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldRuleID, v))
+}
+
+// RuleType applies equality check predicate on the "rule_type" field. It's identical to RuleTypeEQ.
+func RuleType(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldRuleType, v))
+}
+
+// RuleCtg applies equality check predicate on the "rule_ctg" field. It's identical to RuleCtgEQ.
+func RuleCtg(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldRuleCtg, v))
 }
 
 // Value applies equality check predicate on the "value" field. It's identical to ValueEQ.
@@ -129,14 +134,14 @@ func Value(v int64) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldValue, v))
 }
 
-// UnitFee applies equality check predicate on the "unit_fee" field. It's identical to UnitFeeEQ.
-func UnitFee(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldUnitFee, v))
+// UnitFeeFen applies equality check predicate on the "unit_fee_fen" field. It's identical to UnitFeeFenEQ.
+func UnitFeeFen(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldUnitFeeFen, v))
 }
 
-// Fee applies equality check predicate on the "fee" field. It's identical to FeeEQ.
-func Fee(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldFee, v))
+// FeeFen applies equality check predicate on the "fee_fen" field. It's identical to FeeFenEQ.
+func FeeFen(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldFeeFen, v))
 }
 
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
@@ -654,71 +659,6 @@ func DataTimeLTE(v time.Time) predicate.CDR {
 	return predicate.CDR(sql.FieldLTE(FieldDataTime, v))
 }
 
-// PloyIDEQ applies the EQ predicate on the "ploy_id" field.
-func PloyIDEQ(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldPloyID, v))
-}
-
-// PloyIDNEQ applies the NEQ predicate on the "ploy_id" field.
-func PloyIDNEQ(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldNEQ(FieldPloyID, v))
-}
-
-// PloyIDIn applies the In predicate on the "ploy_id" field.
-func PloyIDIn(vs ...string) predicate.CDR {
-	return predicate.CDR(sql.FieldIn(FieldPloyID, vs...))
-}
-
-// PloyIDNotIn applies the NotIn predicate on the "ploy_id" field.
-func PloyIDNotIn(vs ...string) predicate.CDR {
-	return predicate.CDR(sql.FieldNotIn(FieldPloyID, vs...))
-}
-
-// PloyIDGT applies the GT predicate on the "ploy_id" field.
-func PloyIDGT(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldGT(FieldPloyID, v))
-}
-
-// PloyIDGTE applies the GTE predicate on the "ploy_id" field.
-func PloyIDGTE(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldGTE(FieldPloyID, v))
-}
-
-// PloyIDLT applies the LT predicate on the "ploy_id" field.
-func PloyIDLT(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldLT(FieldPloyID, v))
-}
-
-// PloyIDLTE applies the LTE predicate on the "ploy_id" field.
-func PloyIDLTE(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldLTE(FieldPloyID, v))
-}
-
-// PloyIDContains applies the Contains predicate on the "ploy_id" field.
-func PloyIDContains(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldContains(FieldPloyID, v))
-}
-
-// PloyIDHasPrefix applies the HasPrefix predicate on the "ploy_id" field.
-func PloyIDHasPrefix(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldHasPrefix(FieldPloyID, v))
-}
-
-// PloyIDHasSuffix applies the HasSuffix predicate on the "ploy_id" field.
-func PloyIDHasSuffix(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldHasSuffix(FieldPloyID, v))
-}
-
-// PloyIDEqualFold applies the EqualFold predicate on the "ploy_id" field.
-func PloyIDEqualFold(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldEqualFold(FieldPloyID, v))
-}
-
-// PloyIDContainsFold applies the ContainsFold predicate on the "ploy_id" field.
-func PloyIDContainsFold(v string) predicate.CDR {
-	return predicate.CDR(sql.FieldContainsFold(FieldPloyID, v))
-}
-
 // RuleIDEQ applies the EQ predicate on the "rule_id" field.
 func RuleIDEQ(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldRuleID, v))
@@ -784,6 +724,136 @@ func RuleIDContainsFold(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldContainsFold(FieldRuleID, v))
 }
 
+// RuleTypeEQ applies the EQ predicate on the "rule_type" field.
+func RuleTypeEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldRuleType, v))
+}
+
+// RuleTypeNEQ applies the NEQ predicate on the "rule_type" field.
+func RuleTypeNEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldRuleType, v))
+}
+
+// RuleTypeIn applies the In predicate on the "rule_type" field.
+func RuleTypeIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldRuleType, vs...))
+}
+
+// RuleTypeNotIn applies the NotIn predicate on the "rule_type" field.
+func RuleTypeNotIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldRuleType, vs...))
+}
+
+// RuleTypeGT applies the GT predicate on the "rule_type" field.
+func RuleTypeGT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldRuleType, v))
+}
+
+// RuleTypeGTE applies the GTE predicate on the "rule_type" field.
+func RuleTypeGTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldRuleType, v))
+}
+
+// RuleTypeLT applies the LT predicate on the "rule_type" field.
+func RuleTypeLT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldRuleType, v))
+}
+
+// RuleTypeLTE applies the LTE predicate on the "rule_type" field.
+func RuleTypeLTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldRuleType, v))
+}
+
+// RuleTypeContains applies the Contains predicate on the "rule_type" field.
+func RuleTypeContains(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContains(FieldRuleType, v))
+}
+
+// RuleTypeHasPrefix applies the HasPrefix predicate on the "rule_type" field.
+func RuleTypeHasPrefix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasPrefix(FieldRuleType, v))
+}
+
+// RuleTypeHasSuffix applies the HasSuffix predicate on the "rule_type" field.
+func RuleTypeHasSuffix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasSuffix(FieldRuleType, v))
+}
+
+// RuleTypeEqualFold applies the EqualFold predicate on the "rule_type" field.
+func RuleTypeEqualFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEqualFold(FieldRuleType, v))
+}
+
+// RuleTypeContainsFold applies the ContainsFold predicate on the "rule_type" field.
+func RuleTypeContainsFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContainsFold(FieldRuleType, v))
+}
+
+// RuleCtgEQ applies the EQ predicate on the "rule_ctg" field.
+func RuleCtgEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldRuleCtg, v))
+}
+
+// RuleCtgNEQ applies the NEQ predicate on the "rule_ctg" field.
+func RuleCtgNEQ(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldRuleCtg, v))
+}
+
+// RuleCtgIn applies the In predicate on the "rule_ctg" field.
+func RuleCtgIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldRuleCtg, vs...))
+}
+
+// RuleCtgNotIn applies the NotIn predicate on the "rule_ctg" field.
+func RuleCtgNotIn(vs ...string) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldRuleCtg, vs...))
+}
+
+// RuleCtgGT applies the GT predicate on the "rule_ctg" field.
+func RuleCtgGT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldRuleCtg, v))
+}
+
+// RuleCtgGTE applies the GTE predicate on the "rule_ctg" field.
+func RuleCtgGTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldRuleCtg, v))
+}
+
+// RuleCtgLT applies the LT predicate on the "rule_ctg" field.
+func RuleCtgLT(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldRuleCtg, v))
+}
+
+// RuleCtgLTE applies the LTE predicate on the "rule_ctg" field.
+func RuleCtgLTE(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldRuleCtg, v))
+}
+
+// RuleCtgContains applies the Contains predicate on the "rule_ctg" field.
+func RuleCtgContains(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContains(FieldRuleCtg, v))
+}
+
+// RuleCtgHasPrefix applies the HasPrefix predicate on the "rule_ctg" field.
+func RuleCtgHasPrefix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasPrefix(FieldRuleCtg, v))
+}
+
+// RuleCtgHasSuffix applies the HasSuffix predicate on the "rule_ctg" field.
+func RuleCtgHasSuffix(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldHasSuffix(FieldRuleCtg, v))
+}
+
+// RuleCtgEqualFold applies the EqualFold predicate on the "rule_ctg" field.
+func RuleCtgEqualFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldEqualFold(FieldRuleCtg, v))
+}
+
+// RuleCtgContainsFold applies the ContainsFold predicate on the "rule_ctg" field.
+func RuleCtgContainsFold(v string) predicate.CDR {
+	return predicate.CDR(sql.FieldContainsFold(FieldRuleCtg, v))
+}
+
 // ValueEQ applies the EQ predicate on the "value" field.
 func ValueEQ(v int64) predicate.CDR {
 	return predicate.CDR(sql.FieldEQ(FieldValue, v))
@@ -824,84 +894,84 @@ func ValueLTE(v int64) predicate.CDR {
 	return predicate.CDR(sql.FieldLTE(FieldValue, v))
 }
 
-// UnitFeeEQ applies the EQ predicate on the "unit_fee" field.
-func UnitFeeEQ(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldUnitFee, v))
+// UnitFeeFenEQ applies the EQ predicate on the "unit_fee_fen" field.
+func UnitFeeFenEQ(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldUnitFeeFen, v))
 }
 
-// UnitFeeNEQ applies the NEQ predicate on the "unit_fee" field.
-func UnitFeeNEQ(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldNEQ(FieldUnitFee, v))
+// UnitFeeFenNEQ applies the NEQ predicate on the "unit_fee_fen" field.
+func UnitFeeFenNEQ(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldUnitFeeFen, v))
 }
 
-// UnitFeeIn applies the In predicate on the "unit_fee" field.
-func UnitFeeIn(vs ...int64) predicate.CDR {
-	return predicate.CDR(sql.FieldIn(FieldUnitFee, vs...))
+// UnitFeeFenIn applies the In predicate on the "unit_fee_fen" field.
+func UnitFeeFenIn(vs ...int64) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldUnitFeeFen, vs...))
 }
 
-// UnitFeeNotIn applies the NotIn predicate on the "unit_fee" field.
-func UnitFeeNotIn(vs ...int64) predicate.CDR {
-	return predicate.CDR(sql.FieldNotIn(FieldUnitFee, vs...))
+// UnitFeeFenNotIn applies the NotIn predicate on the "unit_fee_fen" field.
+func UnitFeeFenNotIn(vs ...int64) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldUnitFeeFen, vs...))
 }
 
-// UnitFeeGT applies the GT predicate on the "unit_fee" field.
-func UnitFeeGT(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldGT(FieldUnitFee, v))
+// UnitFeeFenGT applies the GT predicate on the "unit_fee_fen" field.
+func UnitFeeFenGT(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldUnitFeeFen, v))
 }
 
-// UnitFeeGTE applies the GTE predicate on the "unit_fee" field.
-func UnitFeeGTE(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldGTE(FieldUnitFee, v))
+// UnitFeeFenGTE applies the GTE predicate on the "unit_fee_fen" field.
+func UnitFeeFenGTE(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldUnitFeeFen, v))
 }
 
-// UnitFeeLT applies the LT predicate on the "unit_fee" field.
-func UnitFeeLT(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldLT(FieldUnitFee, v))
+// UnitFeeFenLT applies the LT predicate on the "unit_fee_fen" field.
+func UnitFeeFenLT(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldUnitFeeFen, v))
 }
 
-// UnitFeeLTE applies the LTE predicate on the "unit_fee" field.
-func UnitFeeLTE(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldLTE(FieldUnitFee, v))
+// UnitFeeFenLTE applies the LTE predicate on the "unit_fee_fen" field.
+func UnitFeeFenLTE(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldUnitFeeFen, v))
 }
 
-// FeeEQ applies the EQ predicate on the "fee" field.
-func FeeEQ(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldEQ(FieldFee, v))
+// FeeFenEQ applies the EQ predicate on the "fee_fen" field.
+func FeeFenEQ(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldEQ(FieldFeeFen, v))
 }
 
-// FeeNEQ applies the NEQ predicate on the "fee" field.
-func FeeNEQ(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldNEQ(FieldFee, v))
+// FeeFenNEQ applies the NEQ predicate on the "fee_fen" field.
+func FeeFenNEQ(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldNEQ(FieldFeeFen, v))
 }
 
-// FeeIn applies the In predicate on the "fee" field.
-func FeeIn(vs ...int64) predicate.CDR {
-	return predicate.CDR(sql.FieldIn(FieldFee, vs...))
+// FeeFenIn applies the In predicate on the "fee_fen" field.
+func FeeFenIn(vs ...int64) predicate.CDR {
+	return predicate.CDR(sql.FieldIn(FieldFeeFen, vs...))
 }
 
-// FeeNotIn applies the NotIn predicate on the "fee" field.
-func FeeNotIn(vs ...int64) predicate.CDR {
-	return predicate.CDR(sql.FieldNotIn(FieldFee, vs...))
+// FeeFenNotIn applies the NotIn predicate on the "fee_fen" field.
+func FeeFenNotIn(vs ...int64) predicate.CDR {
+	return predicate.CDR(sql.FieldNotIn(FieldFeeFen, vs...))
 }
 
-// FeeGT applies the GT predicate on the "fee" field.
-func FeeGT(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldGT(FieldFee, v))
+// FeeFenGT applies the GT predicate on the "fee_fen" field.
+func FeeFenGT(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldGT(FieldFeeFen, v))
 }
 
-// FeeGTE applies the GTE predicate on the "fee" field.
-func FeeGTE(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldGTE(FieldFee, v))
+// FeeFenGTE applies the GTE predicate on the "fee_fen" field.
+func FeeFenGTE(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldGTE(FieldFeeFen, v))
 }
 
-// FeeLT applies the LT predicate on the "fee" field.
-func FeeLT(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldLT(FieldFee, v))
+// FeeFenLT applies the LT predicate on the "fee_fen" field.
+func FeeFenLT(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldLT(FieldFeeFen, v))
 }
 
-// FeeLTE applies the LTE predicate on the "fee" field.
-func FeeLTE(v int64) predicate.CDR {
-	return predicate.CDR(sql.FieldLTE(FieldFee, v))
+// FeeFenLTE applies the LTE predicate on the "fee_fen" field.
+func FeeFenLTE(v int64) predicate.CDR {
+	return predicate.CDR(sql.FieldLTE(FieldFeeFen, v))
 }
 
 // PosCodeEQ applies the EQ predicate on the "pos_code" field.

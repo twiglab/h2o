@@ -23,11 +23,12 @@ type CDR struct {
 
 	Value int64 // 计量值,两次表显的差值,用于计算费用的数值
 
-	PloyID  string
-	RuleID  string
-	UnitFee int64
+	RuleID     string
+	RuleCtg    string
+	RuleType   string
+	UnitFeeFen int64
 
-	Fee int64
+	FeeFen int64
 
 	PosCode string
 	Project string
@@ -35,7 +36,7 @@ type CDR struct {
 	Momo string
 }
 
-func FirstCDR(cd ChargeData) CDR {
+func FirstCDR(cd ChargeData, cr ChargeRuler) CDR {
 	return CDR{
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
@@ -49,20 +50,21 @@ func FirstCDR(cd ChargeData) CDR {
 		LastDataCode: cd.DataCode,
 		DataCode:     cd.DataCode,
 
-		PloyID: "new",
-		RuleID: "new",
+		RuleID:   cr.ID(),
+		RuleType: cr.Type(),
+		RuleCtg:  cr.Category(),
 
-		Value:   0,
-		UnitFee: 0,
-		Fee:     0,
+		Value:      0,
+		UnitFeeFen: cr.UnitFeeFen(),
+		FeeFen:     0,
 
 		PosCode: cd.Pos.PosCode,
 		Project: cd.Pos.Project,
 	}
 }
 
-func CalcCDR(last *ent.CDR, cd ChargeData, ru Ruler) CDR {
-	value, fee := calc(last.DataValue, cd.Data.DataValue, ru.UnitFee)
+func CalcCDR(last *ent.CDR, cd ChargeData, cr ChargeRuler) CDR {
+	value, fee := calc(last.DataValue, cd.Data.DataValue, cr.UnitFeeFen())
 	return CDR{
 		DeviceCode: cd.Code,
 		DeviceType: cd.Type,
@@ -76,12 +78,13 @@ func CalcCDR(last *ent.CDR, cd ChargeData, ru Ruler) CDR {
 		LastDataCode: last.DataCode,
 		DataCode:     cd.DataCode,
 
-		PloyID: ru.PloyID,
-		RuleID: ru.RulerID,
+		RuleID:   cr.ID(),
+		RuleType: cr.Type(),
+		RuleCtg:  cr.Category(),
 
-		Value:   value,
-		UnitFee: ru.UnitFee,
-		Fee:     fee,
+		Value:      value,
+		UnitFeeFen: cr.UnitFeeFen(),
+		FeeFen:     fee,
 
 		PosCode: cd.Pos.PosCode,
 		Project: cd.Pos.Project,

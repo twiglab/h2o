@@ -33,16 +33,18 @@ const (
 	FieldLastDataTime = "last_data_time"
 	// FieldDataTime holds the string denoting the data_time field in the database.
 	FieldDataTime = "data_time"
-	// FieldPloyID holds the string denoting the ploy_id field in the database.
-	FieldPloyID = "ploy_id"
 	// FieldRuleID holds the string denoting the rule_id field in the database.
 	FieldRuleID = "rule_id"
+	// FieldRuleType holds the string denoting the rule_type field in the database.
+	FieldRuleType = "rule_type"
+	// FieldRuleCtg holds the string denoting the rule_ctg field in the database.
+	FieldRuleCtg = "rule_ctg"
 	// FieldValue holds the string denoting the value field in the database.
 	FieldValue = "value"
-	// FieldUnitFee holds the string denoting the unit_fee field in the database.
-	FieldUnitFee = "unit_fee"
-	// FieldFee holds the string denoting the fee field in the database.
-	FieldFee = "fee"
+	// FieldUnitFeeFen holds the string denoting the unit_fee_fen field in the database.
+	FieldUnitFeeFen = "unit_fee_fen"
+	// FieldFeeFen holds the string denoting the fee_fen field in the database.
+	FieldFeeFen = "fee_fen"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
@@ -50,7 +52,7 @@ const (
 	// FieldMemo holds the string denoting the memo field in the database.
 	FieldMemo = "memo"
 	// Table holds the table name of the cdr in the database.
-	Table = "t_cdr"
+	Table = "t_nh_cdr"
 )
 
 // Columns holds all SQL columns for cdr fields.
@@ -66,11 +68,12 @@ var Columns = []string{
 	FieldDataCode,
 	FieldLastDataTime,
 	FieldDataTime,
-	FieldPloyID,
 	FieldRuleID,
+	FieldRuleType,
+	FieldRuleCtg,
 	FieldValue,
-	FieldUnitFee,
-	FieldFee,
+	FieldUnitFeeFen,
+	FieldFeeFen,
 	FieldPosCode,
 	FieldProject,
 	FieldMemo,
@@ -105,16 +108,18 @@ var (
 	LastDataCodeValidator func(string) error
 	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	DataCodeValidator func(string) error
-	// PloyIDValidator is a validator for the "ploy_id" field. It is called by the builders before save.
-	PloyIDValidator func(string) error
 	// RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.
 	RuleIDValidator func(string) error
+	// RuleTypeValidator is a validator for the "rule_type" field. It is called by the builders before save.
+	RuleTypeValidator func(string) error
+	// RuleCtgValidator is a validator for the "rule_ctg" field. It is called by the builders before save.
+	RuleCtgValidator func(string) error
 	// DefaultValue holds the default value on creation for the "value" field.
 	DefaultValue int64
-	// DefaultUnitFee holds the default value on creation for the "unit_fee" field.
-	DefaultUnitFee int64
-	// DefaultFee holds the default value on creation for the "fee" field.
-	DefaultFee int64
+	// DefaultUnitFeeFen holds the default value on creation for the "unit_fee_fen" field.
+	DefaultUnitFeeFen int64
+	// DefaultFeeFen holds the default value on creation for the "fee_fen" field.
+	DefaultFeeFen int64
 	// PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
 	PosCodeValidator func(string) error
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
@@ -183,14 +188,19 @@ func ByDataTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDataTime, opts...).ToFunc()
 }
 
-// ByPloyID orders the results by the ploy_id field.
-func ByPloyID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPloyID, opts...).ToFunc()
-}
-
 // ByRuleID orders the results by the rule_id field.
 func ByRuleID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRuleID, opts...).ToFunc()
+}
+
+// ByRuleType orders the results by the rule_type field.
+func ByRuleType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRuleType, opts...).ToFunc()
+}
+
+// ByRuleCtg orders the results by the rule_ctg field.
+func ByRuleCtg(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRuleCtg, opts...).ToFunc()
 }
 
 // ByValue orders the results by the value field.
@@ -198,14 +208,14 @@ func ByValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldValue, opts...).ToFunc()
 }
 
-// ByUnitFee orders the results by the unit_fee field.
-func ByUnitFee(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldUnitFee, opts...).ToFunc()
+// ByUnitFeeFen orders the results by the unit_fee_fen field.
+func ByUnitFeeFen(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUnitFeeFen, opts...).ToFunc()
 }
 
-// ByFee orders the results by the fee field.
-func ByFee(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFee, opts...).ToFunc()
+// ByFeeFen orders the results by the fee_fen field.
+func ByFeeFen(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFeeFen, opts...).ToFunc()
 }
 
 // ByPosCode orders the results by the pos_code field.

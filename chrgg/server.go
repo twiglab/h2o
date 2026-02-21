@@ -40,7 +40,7 @@ func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 }
 
 func (s *ChangeServer) doNewCDR(ctx context.Context, cd ChargeData) (CDR, error) {
-	nc := FirstCDR(cd)
+	nc := FirstCDR(cd, ZeroRuler("new"))
 	s.CDRLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
 	_, err := s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
@@ -74,7 +74,7 @@ func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	}
 
 	// setp 4 calc
-	ru, err := s.Eng.GetResult(ctx, cd)
+	ru, err := s.Eng.GetRuler(ctx, cd)
 	if err != nil {
 		return Nil, err
 	}

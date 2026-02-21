@@ -45,14 +45,15 @@ type CDRMutation struct {
 	data_code          *string
 	last_data_time     *time.Time
 	data_time          *time.Time
-	ploy_id            *string
 	rule_id            *string
+	rule_type          *string
+	rule_ctg           *string
 	value              *int64
 	addvalue           *int64
-	unit_fee           *int64
-	addunit_fee        *int64
-	fee                *int64
-	addfee             *int64
+	unit_fee_fen       *int64
+	addunit_fee_fen    *int64
+	fee_fen            *int64
+	addfee_fen         *int64
 	pos_code           *string
 	project            *string
 	memo               *string
@@ -566,42 +567,6 @@ func (m *CDRMutation) ResetDataTime() {
 	m.data_time = nil
 }
 
-// SetPloyID sets the "ploy_id" field.
-func (m *CDRMutation) SetPloyID(s string) {
-	m.ploy_id = &s
-}
-
-// PloyID returns the value of the "ploy_id" field in the mutation.
-func (m *CDRMutation) PloyID() (r string, exists bool) {
-	v := m.ploy_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPloyID returns the old "ploy_id" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldPloyID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPloyID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPloyID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPloyID: %w", err)
-	}
-	return oldValue.PloyID, nil
-}
-
-// ResetPloyID resets all changes to the "ploy_id" field.
-func (m *CDRMutation) ResetPloyID() {
-	m.ploy_id = nil
-}
-
 // SetRuleID sets the "rule_id" field.
 func (m *CDRMutation) SetRuleID(s string) {
 	m.rule_id = &s
@@ -636,6 +601,78 @@ func (m *CDRMutation) OldRuleID(ctx context.Context) (v string, err error) {
 // ResetRuleID resets all changes to the "rule_id" field.
 func (m *CDRMutation) ResetRuleID() {
 	m.rule_id = nil
+}
+
+// SetRuleType sets the "rule_type" field.
+func (m *CDRMutation) SetRuleType(s string) {
+	m.rule_type = &s
+}
+
+// RuleType returns the value of the "rule_type" field in the mutation.
+func (m *CDRMutation) RuleType() (r string, exists bool) {
+	v := m.rule_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRuleType returns the old "rule_type" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldRuleType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRuleType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRuleType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRuleType: %w", err)
+	}
+	return oldValue.RuleType, nil
+}
+
+// ResetRuleType resets all changes to the "rule_type" field.
+func (m *CDRMutation) ResetRuleType() {
+	m.rule_type = nil
+}
+
+// SetRuleCtg sets the "rule_ctg" field.
+func (m *CDRMutation) SetRuleCtg(s string) {
+	m.rule_ctg = &s
+}
+
+// RuleCtg returns the value of the "rule_ctg" field in the mutation.
+func (m *CDRMutation) RuleCtg() (r string, exists bool) {
+	v := m.rule_ctg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRuleCtg returns the old "rule_ctg" field's value of the CDR entity.
+// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CDRMutation) OldRuleCtg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRuleCtg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRuleCtg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRuleCtg: %w", err)
+	}
+	return oldValue.RuleCtg, nil
+}
+
+// ResetRuleCtg resets all changes to the "rule_ctg" field.
+func (m *CDRMutation) ResetRuleCtg() {
+	m.rule_ctg = nil
 }
 
 // SetValue sets the "value" field.
@@ -694,116 +731,116 @@ func (m *CDRMutation) ResetValue() {
 	m.addvalue = nil
 }
 
-// SetUnitFee sets the "unit_fee" field.
-func (m *CDRMutation) SetUnitFee(i int64) {
-	m.unit_fee = &i
-	m.addunit_fee = nil
+// SetUnitFeeFen sets the "unit_fee_fen" field.
+func (m *CDRMutation) SetUnitFeeFen(i int64) {
+	m.unit_fee_fen = &i
+	m.addunit_fee_fen = nil
 }
 
-// UnitFee returns the value of the "unit_fee" field in the mutation.
-func (m *CDRMutation) UnitFee() (r int64, exists bool) {
-	v := m.unit_fee
+// UnitFeeFen returns the value of the "unit_fee_fen" field in the mutation.
+func (m *CDRMutation) UnitFeeFen() (r int64, exists bool) {
+	v := m.unit_fee_fen
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUnitFee returns the old "unit_fee" field's value of the CDR entity.
+// OldUnitFeeFen returns the old "unit_fee_fen" field's value of the CDR entity.
 // If the CDR object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldUnitFee(ctx context.Context) (v int64, err error) {
+func (m *CDRMutation) OldUnitFeeFen(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUnitFee is only allowed on UpdateOne operations")
+		return v, errors.New("OldUnitFeeFen is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUnitFee requires an ID field in the mutation")
+		return v, errors.New("OldUnitFeeFen requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUnitFee: %w", err)
+		return v, fmt.Errorf("querying old value for OldUnitFeeFen: %w", err)
 	}
-	return oldValue.UnitFee, nil
+	return oldValue.UnitFeeFen, nil
 }
 
-// AddUnitFee adds i to the "unit_fee" field.
-func (m *CDRMutation) AddUnitFee(i int64) {
-	if m.addunit_fee != nil {
-		*m.addunit_fee += i
+// AddUnitFeeFen adds i to the "unit_fee_fen" field.
+func (m *CDRMutation) AddUnitFeeFen(i int64) {
+	if m.addunit_fee_fen != nil {
+		*m.addunit_fee_fen += i
 	} else {
-		m.addunit_fee = &i
+		m.addunit_fee_fen = &i
 	}
 }
 
-// AddedUnitFee returns the value that was added to the "unit_fee" field in this mutation.
-func (m *CDRMutation) AddedUnitFee() (r int64, exists bool) {
-	v := m.addunit_fee
+// AddedUnitFeeFen returns the value that was added to the "unit_fee_fen" field in this mutation.
+func (m *CDRMutation) AddedUnitFeeFen() (r int64, exists bool) {
+	v := m.addunit_fee_fen
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetUnitFee resets all changes to the "unit_fee" field.
-func (m *CDRMutation) ResetUnitFee() {
-	m.unit_fee = nil
-	m.addunit_fee = nil
+// ResetUnitFeeFen resets all changes to the "unit_fee_fen" field.
+func (m *CDRMutation) ResetUnitFeeFen() {
+	m.unit_fee_fen = nil
+	m.addunit_fee_fen = nil
 }
 
-// SetFee sets the "fee" field.
-func (m *CDRMutation) SetFee(i int64) {
-	m.fee = &i
-	m.addfee = nil
+// SetFeeFen sets the "fee_fen" field.
+func (m *CDRMutation) SetFeeFen(i int64) {
+	m.fee_fen = &i
+	m.addfee_fen = nil
 }
 
-// Fee returns the value of the "fee" field in the mutation.
-func (m *CDRMutation) Fee() (r int64, exists bool) {
-	v := m.fee
+// FeeFen returns the value of the "fee_fen" field in the mutation.
+func (m *CDRMutation) FeeFen() (r int64, exists bool) {
+	v := m.fee_fen
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldFee returns the old "fee" field's value of the CDR entity.
+// OldFeeFen returns the old "fee_fen" field's value of the CDR entity.
 // If the CDR object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldFee(ctx context.Context) (v int64, err error) {
+func (m *CDRMutation) OldFeeFen(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFee is only allowed on UpdateOne operations")
+		return v, errors.New("OldFeeFen is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFee requires an ID field in the mutation")
+		return v, errors.New("OldFeeFen requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFee: %w", err)
+		return v, fmt.Errorf("querying old value for OldFeeFen: %w", err)
 	}
-	return oldValue.Fee, nil
+	return oldValue.FeeFen, nil
 }
 
-// AddFee adds i to the "fee" field.
-func (m *CDRMutation) AddFee(i int64) {
-	if m.addfee != nil {
-		*m.addfee += i
+// AddFeeFen adds i to the "fee_fen" field.
+func (m *CDRMutation) AddFeeFen(i int64) {
+	if m.addfee_fen != nil {
+		*m.addfee_fen += i
 	} else {
-		m.addfee = &i
+		m.addfee_fen = &i
 	}
 }
 
-// AddedFee returns the value that was added to the "fee" field in this mutation.
-func (m *CDRMutation) AddedFee() (r int64, exists bool) {
-	v := m.addfee
+// AddedFeeFen returns the value that was added to the "fee_fen" field in this mutation.
+func (m *CDRMutation) AddedFeeFen() (r int64, exists bool) {
+	v := m.addfee_fen
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetFee resets all changes to the "fee" field.
-func (m *CDRMutation) ResetFee() {
-	m.fee = nil
-	m.addfee = nil
+// ResetFeeFen resets all changes to the "fee_fen" field.
+func (m *CDRMutation) ResetFeeFen() {
+	m.fee_fen = nil
+	m.addfee_fen = nil
 }
 
 // SetPosCode sets the "pos_code" field.
@@ -961,7 +998,7 @@ func (m *CDRMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CDRMutation) Fields() []string {
-	fields := make([]string, 0, 18)
+	fields := make([]string, 0, 19)
 	if m.create_time != nil {
 		fields = append(fields, cdr.FieldCreateTime)
 	}
@@ -992,20 +1029,23 @@ func (m *CDRMutation) Fields() []string {
 	if m.data_time != nil {
 		fields = append(fields, cdr.FieldDataTime)
 	}
-	if m.ploy_id != nil {
-		fields = append(fields, cdr.FieldPloyID)
-	}
 	if m.rule_id != nil {
 		fields = append(fields, cdr.FieldRuleID)
+	}
+	if m.rule_type != nil {
+		fields = append(fields, cdr.FieldRuleType)
+	}
+	if m.rule_ctg != nil {
+		fields = append(fields, cdr.FieldRuleCtg)
 	}
 	if m.value != nil {
 		fields = append(fields, cdr.FieldValue)
 	}
-	if m.unit_fee != nil {
-		fields = append(fields, cdr.FieldUnitFee)
+	if m.unit_fee_fen != nil {
+		fields = append(fields, cdr.FieldUnitFeeFen)
 	}
-	if m.fee != nil {
-		fields = append(fields, cdr.FieldFee)
+	if m.fee_fen != nil {
+		fields = append(fields, cdr.FieldFeeFen)
 	}
 	if m.pos_code != nil {
 		fields = append(fields, cdr.FieldPosCode)
@@ -1044,16 +1084,18 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 		return m.LastDataTime()
 	case cdr.FieldDataTime:
 		return m.DataTime()
-	case cdr.FieldPloyID:
-		return m.PloyID()
 	case cdr.FieldRuleID:
 		return m.RuleID()
+	case cdr.FieldRuleType:
+		return m.RuleType()
+	case cdr.FieldRuleCtg:
+		return m.RuleCtg()
 	case cdr.FieldValue:
 		return m.Value()
-	case cdr.FieldUnitFee:
-		return m.UnitFee()
-	case cdr.FieldFee:
-		return m.Fee()
+	case cdr.FieldUnitFeeFen:
+		return m.UnitFeeFen()
+	case cdr.FieldFeeFen:
+		return m.FeeFen()
 	case cdr.FieldPosCode:
 		return m.PosCode()
 	case cdr.FieldProject:
@@ -1089,16 +1131,18 @@ func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldLastDataTime(ctx)
 	case cdr.FieldDataTime:
 		return m.OldDataTime(ctx)
-	case cdr.FieldPloyID:
-		return m.OldPloyID(ctx)
 	case cdr.FieldRuleID:
 		return m.OldRuleID(ctx)
+	case cdr.FieldRuleType:
+		return m.OldRuleType(ctx)
+	case cdr.FieldRuleCtg:
+		return m.OldRuleCtg(ctx)
 	case cdr.FieldValue:
 		return m.OldValue(ctx)
-	case cdr.FieldUnitFee:
-		return m.OldUnitFee(ctx)
-	case cdr.FieldFee:
-		return m.OldFee(ctx)
+	case cdr.FieldUnitFeeFen:
+		return m.OldUnitFeeFen(ctx)
+	case cdr.FieldFeeFen:
+		return m.OldFeeFen(ctx)
 	case cdr.FieldPosCode:
 		return m.OldPosCode(ctx)
 	case cdr.FieldProject:
@@ -1184,19 +1228,26 @@ func (m *CDRMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDataTime(v)
 		return nil
-	case cdr.FieldPloyID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPloyID(v)
-		return nil
 	case cdr.FieldRuleID:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRuleID(v)
+		return nil
+	case cdr.FieldRuleType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRuleType(v)
+		return nil
+	case cdr.FieldRuleCtg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRuleCtg(v)
 		return nil
 	case cdr.FieldValue:
 		v, ok := value.(int64)
@@ -1205,19 +1256,19 @@ func (m *CDRMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetValue(v)
 		return nil
-	case cdr.FieldUnitFee:
+	case cdr.FieldUnitFeeFen:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUnitFee(v)
+		m.SetUnitFeeFen(v)
 		return nil
-	case cdr.FieldFee:
+	case cdr.FieldFeeFen:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetFee(v)
+		m.SetFeeFen(v)
 		return nil
 	case cdr.FieldPosCode:
 		v, ok := value.(string)
@@ -1257,11 +1308,11 @@ func (m *CDRMutation) AddedFields() []string {
 	if m.addvalue != nil {
 		fields = append(fields, cdr.FieldValue)
 	}
-	if m.addunit_fee != nil {
-		fields = append(fields, cdr.FieldUnitFee)
+	if m.addunit_fee_fen != nil {
+		fields = append(fields, cdr.FieldUnitFeeFen)
 	}
-	if m.addfee != nil {
-		fields = append(fields, cdr.FieldFee)
+	if m.addfee_fen != nil {
+		fields = append(fields, cdr.FieldFeeFen)
 	}
 	return fields
 }
@@ -1277,10 +1328,10 @@ func (m *CDRMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedDataValue()
 	case cdr.FieldValue:
 		return m.AddedValue()
-	case cdr.FieldUnitFee:
-		return m.AddedUnitFee()
-	case cdr.FieldFee:
-		return m.AddedFee()
+	case cdr.FieldUnitFeeFen:
+		return m.AddedUnitFeeFen()
+	case cdr.FieldFeeFen:
+		return m.AddedFeeFen()
 	}
 	return nil, false
 }
@@ -1311,19 +1362,19 @@ func (m *CDRMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddValue(v)
 		return nil
-	case cdr.FieldUnitFee:
+	case cdr.FieldUnitFeeFen:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddUnitFee(v)
+		m.AddUnitFeeFen(v)
 		return nil
-	case cdr.FieldFee:
+	case cdr.FieldFeeFen:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddFee(v)
+		m.AddFeeFen(v)
 		return nil
 	}
 	return fmt.Errorf("unknown CDR numeric field %s", name)
@@ -1391,20 +1442,23 @@ func (m *CDRMutation) ResetField(name string) error {
 	case cdr.FieldDataTime:
 		m.ResetDataTime()
 		return nil
-	case cdr.FieldPloyID:
-		m.ResetPloyID()
-		return nil
 	case cdr.FieldRuleID:
 		m.ResetRuleID()
+		return nil
+	case cdr.FieldRuleType:
+		m.ResetRuleType()
+		return nil
+	case cdr.FieldRuleCtg:
+		m.ResetRuleCtg()
 		return nil
 	case cdr.FieldValue:
 		m.ResetValue()
 		return nil
-	case cdr.FieldUnitFee:
-		m.ResetUnitFee()
+	case cdr.FieldUnitFeeFen:
+		m.ResetUnitFeeFen()
 		return nil
-	case cdr.FieldFee:
-		m.ResetFee()
+	case cdr.FieldFeeFen:
+		m.ResetFeeFen()
 		return nil
 	case cdr.FieldPosCode:
 		m.ResetPosCode()

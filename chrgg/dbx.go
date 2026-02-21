@@ -43,9 +43,10 @@ func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) 
 
 	cr.SetValue(cdr.Value)
 
-	cr.SetPloyID(cdr.PloyID)
 	cr.SetRuleID(cdr.RuleID)
-	cr.SetUnitFee(cdr.UnitFee)
+	cr.SetRuleCtg(cdr.RuleCtg)
+	cr.SetRuleType(cdr.RuleType)
+	cr.SetUnitFeeFen(cdr.UnitFeeFen)
 
 	cr.SetPosCode(cdr.PosCode)
 	cr.SetProject(cdr.Project)

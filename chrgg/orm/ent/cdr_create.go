@@ -115,15 +115,21 @@ func (_c *CDRCreate) SetDataTime(v time.Time) *CDRCreate {
 	return _c
 }
 
-// SetPloyID sets the "ploy_id" field.
-func (_c *CDRCreate) SetPloyID(v string) *CDRCreate {
-	_c.mutation.SetPloyID(v)
-	return _c
-}
-
 // SetRuleID sets the "rule_id" field.
 func (_c *CDRCreate) SetRuleID(v string) *CDRCreate {
 	_c.mutation.SetRuleID(v)
+	return _c
+}
+
+// SetRuleType sets the "rule_type" field.
+func (_c *CDRCreate) SetRuleType(v string) *CDRCreate {
+	_c.mutation.SetRuleType(v)
+	return _c
+}
+
+// SetRuleCtg sets the "rule_ctg" field.
+func (_c *CDRCreate) SetRuleCtg(v string) *CDRCreate {
+	_c.mutation.SetRuleCtg(v)
 	return _c
 }
 
@@ -141,30 +147,30 @@ func (_c *CDRCreate) SetNillableValue(v *int64) *CDRCreate {
 	return _c
 }
 
-// SetUnitFee sets the "unit_fee" field.
-func (_c *CDRCreate) SetUnitFee(v int64) *CDRCreate {
-	_c.mutation.SetUnitFee(v)
+// SetUnitFeeFen sets the "unit_fee_fen" field.
+func (_c *CDRCreate) SetUnitFeeFen(v int64) *CDRCreate {
+	_c.mutation.SetUnitFeeFen(v)
 	return _c
 }
 
-// SetNillableUnitFee sets the "unit_fee" field if the given value is not nil.
-func (_c *CDRCreate) SetNillableUnitFee(v *int64) *CDRCreate {
+// SetNillableUnitFeeFen sets the "unit_fee_fen" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableUnitFeeFen(v *int64) *CDRCreate {
 	if v != nil {
-		_c.SetUnitFee(*v)
+		_c.SetUnitFeeFen(*v)
 	}
 	return _c
 }
 
-// SetFee sets the "fee" field.
-func (_c *CDRCreate) SetFee(v int64) *CDRCreate {
-	_c.mutation.SetFee(v)
+// SetFeeFen sets the "fee_fen" field.
+func (_c *CDRCreate) SetFeeFen(v int64) *CDRCreate {
+	_c.mutation.SetFeeFen(v)
 	return _c
 }
 
-// SetNillableFee sets the "fee" field if the given value is not nil.
-func (_c *CDRCreate) SetNillableFee(v *int64) *CDRCreate {
+// SetNillableFeeFen sets the "fee_fen" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableFeeFen(v *int64) *CDRCreate {
 	if v != nil {
-		_c.SetFee(*v)
+		_c.SetFeeFen(*v)
 	}
 	return _c
 }
@@ -264,13 +270,13 @@ func (_c *CDRCreate) defaults() {
 		v := cdr.DefaultValue
 		_c.mutation.SetValue(v)
 	}
-	if _, ok := _c.mutation.UnitFee(); !ok {
-		v := cdr.DefaultUnitFee
-		_c.mutation.SetUnitFee(v)
+	if _, ok := _c.mutation.UnitFeeFen(); !ok {
+		v := cdr.DefaultUnitFeeFen
+		_c.mutation.SetUnitFeeFen(v)
 	}
-	if _, ok := _c.mutation.Fee(); !ok {
-		v := cdr.DefaultFee
-		_c.mutation.SetFee(v)
+	if _, ok := _c.mutation.FeeFen(); !ok {
+		v := cdr.DefaultFeeFen
+		_c.mutation.SetFeeFen(v)
 	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := cdr.DefaultID()
@@ -330,14 +336,6 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.DataTime(); !ok {
 		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "CDR.data_time"`)}
 	}
-	if _, ok := _c.mutation.PloyID(); !ok {
-		return &ValidationError{Name: "ploy_id", err: errors.New(`ent: missing required field "CDR.ploy_id"`)}
-	}
-	if v, ok := _c.mutation.PloyID(); ok {
-		if err := cdr.PloyIDValidator(v); err != nil {
-			return &ValidationError{Name: "ploy_id", err: fmt.Errorf(`ent: validator failed for field "CDR.ploy_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.RuleID(); !ok {
 		return &ValidationError{Name: "rule_id", err: errors.New(`ent: missing required field "CDR.rule_id"`)}
 	}
@@ -346,14 +344,30 @@ func (_c *CDRCreate) check() error {
 			return &ValidationError{Name: "rule_id", err: fmt.Errorf(`ent: validator failed for field "CDR.rule_id": %w`, err)}
 		}
 	}
+	if _, ok := _c.mutation.RuleType(); !ok {
+		return &ValidationError{Name: "rule_type", err: errors.New(`ent: missing required field "CDR.rule_type"`)}
+	}
+	if v, ok := _c.mutation.RuleType(); ok {
+		if err := cdr.RuleTypeValidator(v); err != nil {
+			return &ValidationError{Name: "rule_type", err: fmt.Errorf(`ent: validator failed for field "CDR.rule_type": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.RuleCtg(); !ok {
+		return &ValidationError{Name: "rule_ctg", err: errors.New(`ent: missing required field "CDR.rule_ctg"`)}
+	}
+	if v, ok := _c.mutation.RuleCtg(); ok {
+		if err := cdr.RuleCtgValidator(v); err != nil {
+			return &ValidationError{Name: "rule_ctg", err: fmt.Errorf(`ent: validator failed for field "CDR.rule_ctg": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "CDR.value"`)}
 	}
-	if _, ok := _c.mutation.UnitFee(); !ok {
-		return &ValidationError{Name: "unit_fee", err: errors.New(`ent: missing required field "CDR.unit_fee"`)}
+	if _, ok := _c.mutation.UnitFeeFen(); !ok {
+		return &ValidationError{Name: "unit_fee_fen", err: errors.New(`ent: missing required field "CDR.unit_fee_fen"`)}
 	}
-	if _, ok := _c.mutation.Fee(); !ok {
-		return &ValidationError{Name: "fee", err: errors.New(`ent: missing required field "CDR.fee"`)}
+	if _, ok := _c.mutation.FeeFen(); !ok {
+		return &ValidationError{Name: "fee_fen", err: errors.New(`ent: missing required field "CDR.fee_fen"`)}
 	}
 	if _, ok := _c.mutation.PosCode(); !ok {
 		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "CDR.pos_code"`)}
@@ -452,25 +466,29 @@ func (_c *CDRCreate) createSpec() (*CDR, *sqlgraph.CreateSpec) {
 		_spec.SetField(cdr.FieldDataTime, field.TypeTime, value)
 		_node.DataTime = value
 	}
-	if value, ok := _c.mutation.PloyID(); ok {
-		_spec.SetField(cdr.FieldPloyID, field.TypeString, value)
-		_node.PloyID = value
-	}
 	if value, ok := _c.mutation.RuleID(); ok {
 		_spec.SetField(cdr.FieldRuleID, field.TypeString, value)
 		_node.RuleID = value
+	}
+	if value, ok := _c.mutation.RuleType(); ok {
+		_spec.SetField(cdr.FieldRuleType, field.TypeString, value)
+		_node.RuleType = value
+	}
+	if value, ok := _c.mutation.RuleCtg(); ok {
+		_spec.SetField(cdr.FieldRuleCtg, field.TypeString, value)
+		_node.RuleCtg = value
 	}
 	if value, ok := _c.mutation.Value(); ok {
 		_spec.SetField(cdr.FieldValue, field.TypeInt64, value)
 		_node.Value = value
 	}
-	if value, ok := _c.mutation.UnitFee(); ok {
-		_spec.SetField(cdr.FieldUnitFee, field.TypeInt64, value)
-		_node.UnitFee = value
+	if value, ok := _c.mutation.UnitFeeFen(); ok {
+		_spec.SetField(cdr.FieldUnitFeeFen, field.TypeInt64, value)
+		_node.UnitFeeFen = value
 	}
-	if value, ok := _c.mutation.Fee(); ok {
-		_spec.SetField(cdr.FieldFee, field.TypeInt64, value)
-		_node.Fee = value
+	if value, ok := _c.mutation.FeeFen(); ok {
+		_spec.SetField(cdr.FieldFeeFen, field.TypeInt64, value)
+		_node.FeeFen = value
 	}
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(cdr.FieldPosCode, field.TypeString, value)
@@ -610,20 +628,23 @@ func (u *CDRUpsertOne) UpdateNewValues() *CDRUpsertOne {
 		if _, exists := u.create.mutation.DataTime(); exists {
 			s.SetIgnore(cdr.FieldDataTime)
 		}
-		if _, exists := u.create.mutation.PloyID(); exists {
-			s.SetIgnore(cdr.FieldPloyID)
-		}
 		if _, exists := u.create.mutation.RuleID(); exists {
 			s.SetIgnore(cdr.FieldRuleID)
+		}
+		if _, exists := u.create.mutation.RuleType(); exists {
+			s.SetIgnore(cdr.FieldRuleType)
+		}
+		if _, exists := u.create.mutation.RuleCtg(); exists {
+			s.SetIgnore(cdr.FieldRuleCtg)
 		}
 		if _, exists := u.create.mutation.Value(); exists {
 			s.SetIgnore(cdr.FieldValue)
 		}
-		if _, exists := u.create.mutation.UnitFee(); exists {
-			s.SetIgnore(cdr.FieldUnitFee)
+		if _, exists := u.create.mutation.UnitFeeFen(); exists {
+			s.SetIgnore(cdr.FieldUnitFeeFen)
 		}
-		if _, exists := u.create.mutation.Fee(); exists {
-			s.SetIgnore(cdr.FieldFee)
+		if _, exists := u.create.mutation.FeeFen(); exists {
+			s.SetIgnore(cdr.FieldFeeFen)
 		}
 		if _, exists := u.create.mutation.PosCode(); exists {
 			s.SetIgnore(cdr.FieldPosCode)
@@ -907,20 +928,23 @@ func (u *CDRUpsertBulk) UpdateNewValues() *CDRUpsertBulk {
 			if _, exists := b.mutation.DataTime(); exists {
 				s.SetIgnore(cdr.FieldDataTime)
 			}
-			if _, exists := b.mutation.PloyID(); exists {
-				s.SetIgnore(cdr.FieldPloyID)
-			}
 			if _, exists := b.mutation.RuleID(); exists {
 				s.SetIgnore(cdr.FieldRuleID)
+			}
+			if _, exists := b.mutation.RuleType(); exists {
+				s.SetIgnore(cdr.FieldRuleType)
+			}
+			if _, exists := b.mutation.RuleCtg(); exists {
+				s.SetIgnore(cdr.FieldRuleCtg)
 			}
 			if _, exists := b.mutation.Value(); exists {
 				s.SetIgnore(cdr.FieldValue)
 			}
-			if _, exists := b.mutation.UnitFee(); exists {
-				s.SetIgnore(cdr.FieldUnitFee)
+			if _, exists := b.mutation.UnitFeeFen(); exists {
+				s.SetIgnore(cdr.FieldUnitFeeFen)
 			}
-			if _, exists := b.mutation.Fee(); exists {
-				s.SetIgnore(cdr.FieldFee)
+			if _, exists := b.mutation.FeeFen(); exists {
+				s.SetIgnore(cdr.FieldFeeFen)
 			}
 			if _, exists := b.mutation.PosCode(); exists {
 				s.SetIgnore(cdr.FieldPosCode)

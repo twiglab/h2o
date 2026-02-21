@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// TCdrColumns holds the columns for the "t_cdr" table.
-	TCdrColumns = []*schema.Column{
+	// TNhCdrColumns holds the columns for the "t_nh_cdr" table.
+	TNhCdrColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
@@ -22,51 +22,52 @@ var (
 		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_data_time", Type: field.TypeTime},
 		{Name: "data_time", Type: field.TypeTime},
-		{Name: "ploy_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "rule_id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "rule_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "rule_ctg", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "value", Type: field.TypeInt64, Default: 0},
-		{Name: "unit_fee", Type: field.TypeInt64, Default: 0},
-		{Name: "fee", Type: field.TypeInt64, Default: 0},
+		{Name: "unit_fee_fen", Type: field.TypeInt64, Default: 0},
+		{Name: "fee_fen", Type: field.TypeInt64, Default: 0},
 		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
-	// TCdrTable holds the schema information for the "t_cdr" table.
-	TCdrTable = &schema.Table{
-		Name:       "t_cdr",
-		Columns:    TCdrColumns,
-		PrimaryKey: []*schema.Column{TCdrColumns[0]},
+	// TNhCdrTable holds the schema information for the "t_nh_cdr" table.
+	TNhCdrTable = &schema.Table{
+		Name:       "t_nh_cdr",
+		Columns:    TNhCdrColumns,
+		PrimaryKey: []*schema.Column{TNhCdrColumns[0]},
 		Indexes: []*schema.Index{
 			{
 				Name:    "cdr_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{TCdrColumns[3]},
+				Columns: []*schema.Column{TNhCdrColumns[3]},
 			},
 			{
 				Name:    "cdr_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{TCdrColumns[4]},
+				Columns: []*schema.Column{TNhCdrColumns[4]},
 			},
 			{
 				Name:    "cdr_data_code",
 				Unique:  true,
-				Columns: []*schema.Column{TCdrColumns[8]},
+				Columns: []*schema.Column{TNhCdrColumns[8]},
 			},
 			{
 				Name:    "cdr_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{TCdrColumns[10]},
+				Columns: []*schema.Column{TNhCdrColumns[10]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		TCdrTable,
+		TNhCdrTable,
 	}
 )
 
 func init() {
-	TCdrTable.Annotation = &entsql.Annotation{
-		Table: "t_cdr",
+	TNhCdrTable.Annotation = &entsql.Annotation{
+		Table: "t_nh_cdr",
 	}
 }

@@ -52,32 +52,36 @@ func init() {
 	cdrDescDataCode := cdrFields[6].Descriptor()
 	// cdr.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	cdr.DataCodeValidator = cdrDescDataCode.Validators[0].(func(string) error)
-	// cdrDescPloyID is the schema descriptor for ploy_id field.
-	cdrDescPloyID := cdrFields[9].Descriptor()
-	// cdr.PloyIDValidator is a validator for the "ploy_id" field. It is called by the builders before save.
-	cdr.PloyIDValidator = cdrDescPloyID.Validators[0].(func(string) error)
 	// cdrDescRuleID is the schema descriptor for rule_id field.
-	cdrDescRuleID := cdrFields[10].Descriptor()
+	cdrDescRuleID := cdrFields[9].Descriptor()
 	// cdr.RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.
 	cdr.RuleIDValidator = cdrDescRuleID.Validators[0].(func(string) error)
+	// cdrDescRuleType is the schema descriptor for rule_type field.
+	cdrDescRuleType := cdrFields[10].Descriptor()
+	// cdr.RuleTypeValidator is a validator for the "rule_type" field. It is called by the builders before save.
+	cdr.RuleTypeValidator = cdrDescRuleType.Validators[0].(func(string) error)
+	// cdrDescRuleCtg is the schema descriptor for rule_ctg field.
+	cdrDescRuleCtg := cdrFields[11].Descriptor()
+	// cdr.RuleCtgValidator is a validator for the "rule_ctg" field. It is called by the builders before save.
+	cdr.RuleCtgValidator = cdrDescRuleCtg.Validators[0].(func(string) error)
 	// cdrDescValue is the schema descriptor for value field.
-	cdrDescValue := cdrFields[11].Descriptor()
+	cdrDescValue := cdrFields[12].Descriptor()
 	// cdr.DefaultValue holds the default value on creation for the value field.
 	cdr.DefaultValue = cdrDescValue.Default.(int64)
-	// cdrDescUnitFee is the schema descriptor for unit_fee field.
-	cdrDescUnitFee := cdrFields[12].Descriptor()
-	// cdr.DefaultUnitFee holds the default value on creation for the unit_fee field.
-	cdr.DefaultUnitFee = cdrDescUnitFee.Default.(int64)
-	// cdrDescFee is the schema descriptor for fee field.
-	cdrDescFee := cdrFields[13].Descriptor()
-	// cdr.DefaultFee holds the default value on creation for the fee field.
-	cdr.DefaultFee = cdrDescFee.Default.(int64)
+	// cdrDescUnitFeeFen is the schema descriptor for unit_fee_fen field.
+	cdrDescUnitFeeFen := cdrFields[13].Descriptor()
+	// cdr.DefaultUnitFeeFen holds the default value on creation for the unit_fee_fen field.
+	cdr.DefaultUnitFeeFen = cdrDescUnitFeeFen.Default.(int64)
+	// cdrDescFeeFen is the schema descriptor for fee_fen field.
+	cdrDescFeeFen := cdrFields[14].Descriptor()
+	// cdr.DefaultFeeFen holds the default value on creation for the fee_fen field.
+	cdr.DefaultFeeFen = cdrDescFeeFen.Default.(int64)
 	// cdrDescPosCode is the schema descriptor for pos_code field.
-	cdrDescPosCode := cdrFields[14].Descriptor()
+	cdrDescPosCode := cdrFields[15].Descriptor()
 	// cdr.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
 	cdr.PosCodeValidator = cdrDescPosCode.Validators[0].(func(string) error)
 	// cdrDescProject is the schema descriptor for project field.
-	cdrDescProject := cdrFields[15].Descriptor()
+	cdrDescProject := cdrFields[16].Descriptor()
 	// cdr.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	cdr.ProjectValidator = cdrDescProject.Validators[0].(func(string) error)
 	// cdrDescID is the schema descriptor for id field.

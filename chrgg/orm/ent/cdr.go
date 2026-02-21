@@ -37,16 +37,18 @@ type CDR struct {
 	LastDataTime time.Time `json:"last_data_time,omitempty"`
 	// 当前时间
 	DataTime time.Time `json:"data_time,omitempty"`
-	// 计费方案ID
-	PloyID string `json:"ploy_id,omitempty"`
 	// 计费规则ID
 	RuleID string `json:"rule_id,omitempty"`
+	// 规则类型
+	RuleType string `json:"rule_type,omitempty"`
+	// 计费方案
+	RuleCtg string `json:"rule_ctg,omitempty"`
 	// 计量数值
 	Value int64 `json:"value,omitempty"`
 	// 计费单价
-	UnitFee int64 `json:"unit_fee,omitempty"`
+	UnitFeeFen int64 `json:"unit_fee_fen,omitempty"`
 	// 当次费用(fen)
-	Fee int64 `json:"fee,omitempty"`
+	FeeFen int64 `json:"fee_fen,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
@@ -61,9 +63,9 @@ func (*CDR) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case cdr.FieldLastDataValue, cdr.FieldDataValue, cdr.FieldValue, cdr.FieldUnitFee, cdr.FieldFee:
+		case cdr.FieldLastDataValue, cdr.FieldDataValue, cdr.FieldValue, cdr.FieldUnitFeeFen, cdr.FieldFeeFen:
 			values[i] = new(sql.NullInt64)
-		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldPloyID, cdr.FieldRuleID, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldMemo:
+		case cdr.FieldID, cdr.FieldDeviceCode, cdr.FieldDeviceType, cdr.FieldLastDataCode, cdr.FieldDataCode, cdr.FieldRuleID, cdr.FieldRuleType, cdr.FieldRuleCtg, cdr.FieldPosCode, cdr.FieldProject, cdr.FieldMemo:
 			values[i] = new(sql.NullString)
 		case cdr.FieldCreateTime, cdr.FieldUpdateTime, cdr.FieldLastDataTime, cdr.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -148,17 +150,23 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.DataTime = value.Time
 			}
-		case cdr.FieldPloyID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field ploy_id", values[i])
-			} else if value.Valid {
-				_m.PloyID = value.String
-			}
 		case cdr.FieldRuleID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field rule_id", values[i])
 			} else if value.Valid {
 				_m.RuleID = value.String
+			}
+		case cdr.FieldRuleType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field rule_type", values[i])
+			} else if value.Valid {
+				_m.RuleType = value.String
+			}
+		case cdr.FieldRuleCtg:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field rule_ctg", values[i])
+			} else if value.Valid {
+				_m.RuleCtg = value.String
 			}
 		case cdr.FieldValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -166,17 +174,17 @@ func (_m *CDR) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Value = value.Int64
 			}
-		case cdr.FieldUnitFee:
+		case cdr.FieldUnitFeeFen:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field unit_fee", values[i])
+				return fmt.Errorf("unexpected type %T for field unit_fee_fen", values[i])
 			} else if value.Valid {
-				_m.UnitFee = value.Int64
+				_m.UnitFeeFen = value.Int64
 			}
-		case cdr.FieldFee:
+		case cdr.FieldFeeFen:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field fee", values[i])
+				return fmt.Errorf("unexpected type %T for field fee_fen", values[i])
 			} else if value.Valid {
-				_m.Fee = value.Int64
+				_m.FeeFen = value.Int64
 			}
 		case cdr.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -262,20 +270,23 @@ func (_m *CDR) String() string {
 	builder.WriteString("data_time=")
 	builder.WriteString(_m.DataTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("ploy_id=")
-	builder.WriteString(_m.PloyID)
-	builder.WriteString(", ")
 	builder.WriteString("rule_id=")
 	builder.WriteString(_m.RuleID)
+	builder.WriteString(", ")
+	builder.WriteString("rule_type=")
+	builder.WriteString(_m.RuleType)
+	builder.WriteString(", ")
+	builder.WriteString("rule_ctg=")
+	builder.WriteString(_m.RuleCtg)
 	builder.WriteString(", ")
 	builder.WriteString("value=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Value))
 	builder.WriteString(", ")
-	builder.WriteString("unit_fee=")
-	builder.WriteString(fmt.Sprintf("%v", _m.UnitFee))
+	builder.WriteString("unit_fee_fen=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UnitFeeFen))
 	builder.WriteString(", ")
-	builder.WriteString("fee=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Fee))
+	builder.WriteString("fee_fen=")
+	builder.WriteString(fmt.Sprintf("%v", _m.FeeFen))
 	builder.WriteString(", ")
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
