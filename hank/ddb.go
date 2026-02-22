@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	_ "github.com/duckdb/duckdb-go/v2"
@@ -30,6 +31,14 @@ func losdSql(t, load string) (tbl string, from string) {
 	tbl = nextTbl(t)
 	from = fmt.Sprintf(createSql, tbl, load)
 	return
+}
+
+func cutWhere(s string) string {
+	b, _, ok := strings.Cut(s, "where")
+	if !ok {
+		panic(s)
+	}
+	return strings.TrimSpace(b)
 }
 
 type MetaData struct {
@@ -114,6 +123,30 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 	}(ctx)
 
 	return nil
+}
+
+func (d *DuckDB) List(ctx context.Context) ([]MetaData, error) {
+	s := cutWhere(d.getQry)
+
+	rows, err := d.db.QueryContext(ctx, s)
+	if err != nil {
+		return nil, err
+	}
+	var mds []MetaData
+	for rows.Next() {
+		var data MetaData
+		err = rows.Scan(
+			&data.SN, &data.Code, &data.Name, &data.Project,
+			&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
+			&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
+		)
+		if err != nil {
+			return mds, err
+		}
+		mds = append(mds, data)
+	}
+
+	return mds, nil
 }
 
 func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, err error) {
