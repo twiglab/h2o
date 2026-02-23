@@ -60,6 +60,13 @@ type MetaData struct {
 	F5 string `json:"f5"`
 }
 
+func (m MetaData) ToStrings() []string {
+	return []string{
+		m.SN, m.Code, m.Name, m.Project, m.PosCode, m.Building, m.FloorCode, m.AreaCode,
+		m.F1, m.F2, m.F3, m.F4, m.F5,
+	}
+}
+
 type DuckDB struct {
 	db *sqlx.DB
 
@@ -71,11 +78,8 @@ type DuckDB struct {
 }
 
 func NewDDB(from, q string) (*DuckDB, error) {
-	db, err := sqlx.Open("duckdb", "")
+	db, err := sqlx.Connect("duckdb", "")
 	if err != nil {
-		return nil, err
-	}
-	if err := db.Ping(); err != nil {
 		return nil, err
 	}
 
@@ -126,37 +130,15 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 	return nil
 }
 
-func (d *DuckDB) List(ctx context.Context) ([]MetaData, error) {
+func (d *DuckDB) List(ctx context.Context) (mds []MetaData, err error) {
 	s := cutWhere(d.getQry)
-
-	rows, err := d.db.QueryxContext(ctx, s)
-	if err != nil {
-		return nil, err
-	}
-	var mds []MetaData
-	for rows.Next() {
-		var data MetaData
-		err = rows.StructScan(&data)
-		if err != nil {
-			return mds, err
-		}
-		mds = append(mds, data)
-	}
-
-	return mds, nil
+	err = d.db.SelectContext(ctx, &mds, s)
+	return
 }
 
 func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, err error) {
-	row := d.db.QueryRowxContext(ctx, d.getQry, code)
-	/*
-		err = row.Scan(
-			&data.SN, &data.Code, &data.Name, &data.Project,
-			&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
-			&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
-		)
-	*/
-	err = row.StructScan(&data)
-	ok = err == nil
+	err = d.db.GetContext(ctx, &data, d.getQry, code)
+	ok = (err == nil)
 	return
 }
 
