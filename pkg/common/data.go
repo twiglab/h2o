@@ -58,9 +58,14 @@ type Flag struct {
 	F5 string `json:"f5,omitempty"`
 }
 
+type Gateway struct {
+	GatewayAddr string `json:"gateway_addr,omitempty"`
+	GatewayNo   string `json:"gateway_no,omitempty"`
+}
+
 type ModbusGw struct {
-	Unit        uint8  `json:"unit,omitempty"`
-	GateWayAddr string `json:"gateway_addr,omitempty"`
+	Gateway
+	Unit uint8 `json:"uint"`
 }
 
 type Site struct {
