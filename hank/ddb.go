@@ -142,4 +142,6 @@ func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, 
 	return
 }
 
-func (d *DuckDB) Set(_ context.Context, _ string, _ MetaData) error { return nil }
+func (d *DuckDB) Set(_ context.Context, _ string, _ MetaData) (err error)               { return }
+func (d *DuckDB) Clear(_ context.Context) (err error)                                   { return }
+func (d *DuckDB) Forget(_ context.Context, _ string) (val MetaData, ok bool, err error) { return }

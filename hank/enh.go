@@ -9,7 +9,7 @@ import (
 )
 
 type Enh struct {
-	DDB *DuckDB
+	DDB Cache[string, MetaData]
 }
 
 func (e *Enh) ToWater(dd DeviceData) WaterMeter {
