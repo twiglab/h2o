@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"context"
 	"fmt"
@@ -40,11 +39,7 @@ func init() {
 
 func csv() {
 
-	load := viper.GetString("hank.abm.load")
-	get := viper.GetString("hank.abm.get")
-	list := viper.GetString("hank.abm.list")
-
-	db := ddb()
+	db, c := ddb()
 
 	ctx := context.Background()
 
@@ -52,11 +47,11 @@ func csv() {
 		log.Fatal("load", err)
 	}
 
-	fmt.Println("load sql:", strings.TrimSpace(load))
+	fmt.Println("load sql:", strings.TrimSpace(c.LoadSQL))
 	fmt.Println("----------------------------------")
-	fmt.Println("get sql:", strings.TrimSpace(get))
+	fmt.Println("get sql:", strings.TrimSpace(c.GetSQL))
 	fmt.Println("----------------------------------")
-	fmt.Println("list sql:", strings.TrimSpace(list))
+	fmt.Println("list sql:", strings.TrimSpace(c.ListSQL))
 	fmt.Println("----------------------------------")
 
 	rs, err := db.List(ctx)

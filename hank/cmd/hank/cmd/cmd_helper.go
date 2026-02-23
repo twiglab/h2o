@@ -69,16 +69,19 @@ func sender() hank.Sender {
 	return hank.NewMQTTAction(cli)
 }
 
-func ddb() *abm.DuckABM[string, hank.MetaData] {
+func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
 	load := viper.GetString("hank.abm.load")
 	get := viper.GetString("hank.abm.get")
 	list := viper.GetString("hank.abm.list")
 
-	db, err := abm.NewDuckABM[string, hank.MetaData](abm.Conf{
+	c := abm.Conf{
 		LoadSQL: load,
 		GetSQL:  get,
 		ListSQL: list,
-	})
+		Period:  60,
+	}
+
+	db, err := abm.NewDuckABM[string, hank.MetaData](c)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -86,9 +89,10 @@ func ddb() *abm.DuckABM[string, hank.MetaData] {
 	if err := db.Loop(context.Background()); err != nil {
 		log.Fatal(err)
 	}
-	return db
+	return db, c
 }
 
 func enh() *hank.Enh {
-	return &hank.Enh{DDB: ddb()}
+	m, _ := ddb()
+	return &hank.Enh{DDB: m}
 }
