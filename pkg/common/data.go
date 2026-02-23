@@ -35,13 +35,10 @@ type Electricity struct {
 	CurrentB int64 `json:"current_b,omitempty"`
 	CurrentC int64 `json:"current_c,omitempty"`
 
-	/*
-		Frequency int64 `json:"frequency"` // 频率
-		TotalActivePower   int64 `json:"total_active_power"`   // 总有功功率  P
-		TotalReactivePower int64 `json:"total_reactive_power"` // 总无功功率  Q
-		TotalApperentPower int64 `json:"total_apperent_power"` // 总视在功率  S
-		TotalPowerFactor   int64 `json:"total_power_factor"`   // 功率因数 PF = p/s
-	*/
+	TotalActivePower   int64 `json:"total_active_power,omitempty"`   // 总有功功率  P
+	TotalReactivePower int64 `json:"total_reactive_power,omitempty"` // 总无功功率  Q
+	TotalApperentPower int64 `json:"total_apperent_power,omitempty"` // 总视在功率  S
+	TotalPowerFactor   int64 `json:"total_power_factor,omitempty"`   // 功率因数 PF = p/s
 }
 
 type Water struct {
@@ -61,8 +58,11 @@ type Flag struct {
 	F5 string `json:"f5,omitempty"`
 }
 
-type Modbus struct {
+type ModbusGw struct {
+	Unit        uint8  `json:"unit,omitempty"`
+	GateWayAddr string `json:"gateway_addr,omitempty"`
 }
 
-type Sys struct {
+type Site struct {
+	SiteCode string `json:"site_code,omitempty"`
 }
