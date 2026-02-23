@@ -20,7 +20,7 @@ func (d *MeterData) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, d)
 }
 
-func HandleChange(s *ChangeServer) mqtt.MessageHandler {
+func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
 			return

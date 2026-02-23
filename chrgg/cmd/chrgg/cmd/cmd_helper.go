@@ -45,11 +45,11 @@ func serverLog() *slog.Logger {
 }
 
 func cdrlog() *slog.Logger {
-	logF := viper.GetString("chargg.cdr.file")
+	logF := viper.GetString("chrgg.wal.file")
 	if logF == "" {
-		log.Fatalln("cdr file is null. ***MUST*** set chrgg.cdr.file")
+		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
 	}
-	log.Println("cdr file:", logF)
+	log.Println("wal file:", logF)
 	return chrgg.NewLog(logF, slog.LevelInfo)
 }
 

@@ -7,17 +7,17 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-type ChangeServer struct {
+type ChargeServer struct {
 	DBx    *DBx
 	CDRLog *slog.Logger
 	Eng    ChargeEngine
 }
 
-func (s *ChangeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
+func (s *ChargeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
 	return ChargeData{MeterData: md}, nil
 }
 
-func (s ChangeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) error {
+func (s ChargeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) error {
 	if cd.DataCode == last.DataCode {
 		return &ChargeErr{Message: "same datacode"}
 	}
@@ -28,7 +28,7 @@ func (s ChangeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) e
 	return nil
 }
 
-func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData) bool {
+func (s *ChargeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData) bool {
 	if MinOfDay(hourMin(cd.DataTime)) >= 1365 {
 		return true
 	}
@@ -39,14 +39,14 @@ func (s *ChangeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 	return true
 }
 
-func (s *ChangeServer) doNewCDR(ctx context.Context, cd ChargeData) (CDR, error) {
+func (s *ChargeServer) doNewCDR(ctx context.Context, cd ChargeData) (CDR, error) {
 	nc := FirstCDR(cd, ZeroRuler("new"))
 	s.CDRLog.InfoContext(ctx, "cdr", slog.Any("cdr", nc))
 	_, err := s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
 }
 
-func (s *ChangeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) {
+func (s *ChargeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) {
 	// setp 1 prepare
 	cd, err := s.pre(ctx, bd)
 	if err != nil {
