@@ -66,7 +66,7 @@ func sender() hank.Sender {
 	return hank.NewMQTTAction(cli)
 }
 
-func enh() *hank.Enh {
+func ddb() *hank.DuckDB {
 	from := viper.GetString("ddb.from")
 	q := viper.GetString("ddb.q")
 
@@ -78,5 +78,9 @@ func enh() *hank.Enh {
 	if err := db.Loop(context.Background()); err != nil {
 		log.Fatal(err)
 	}
-	return &hank.Enh{DDB: db}
+	return db
+}
+
+func enh() *hank.Enh {
+	return &hank.Enh{DDB: ddb()}
 }
