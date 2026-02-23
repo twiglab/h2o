@@ -60,3 +60,9 @@ type Flag struct {
 	F4 string `json:"f4,omitempty"`
 	F5 string `json:"f5,omitempty"`
 }
+
+type Modbus struct {
+}
+
+type Sys struct {
+}
