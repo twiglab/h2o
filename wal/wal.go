@@ -6,13 +6,12 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func NewLog(logFile string) *slog.Logger {
+func NewHandle(logFile string) slog.Handler {
 	out := &lumberjack.Logger{
 		Filename:   logFile,
 		MaxSize:    10, // megabytes
 		MaxBackups: 10,
 		MaxAge:     10, //days
 	}
-	h := slog.NewJSONHandler(out, nil)
-	return slog.New(h)
+	return slog.NewJSONHandler(out, nil)
 }

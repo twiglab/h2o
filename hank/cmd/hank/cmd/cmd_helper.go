@@ -6,7 +6,9 @@ import (
 	"log/slog"
 
 	"github.com/spf13/viper"
+	"github.com/twiglab/h2o/abm"
 	"github.com/twiglab/h2o/hank"
+	"github.com/twiglab/h2o/wal"
 )
 
 func logLevel(s string) slog.Level {
@@ -42,17 +44,18 @@ func serverLog() *slog.Logger {
 	return l
 }
 
-func dataLog() *slog.Logger {
-	logF := viper.GetString("datalog.file")
+func walLog() *slog.Logger {
+	logF := viper.GetString("hank.wal.file")
 	if logF == "" {
-		log.Fatalln("datalog file is null. ***MUST*** set datalog.file")
+		log.Fatalln("wal file is null. ***MUST*** set datalog.file")
 	}
-	log.Println("datalog file:", logF)
-	return hank.NewLog(logF, slog.LevelInfo)
+	log.Println("wal file:", logF)
+	h := wal.NewHandle(logF)
+	return slog.New(h)
 }
 
 func sender() hank.Sender {
-	broker := viper.GetString("mqtt.broker")
+	broker := viper.GetString("hank.mqtt.broker")
 	if broker == "" {
 		log.Println("using logAction ...")
 		return hank.LogAction{}
@@ -66,11 +69,16 @@ func sender() hank.Sender {
 	return hank.NewMQTTAction(cli)
 }
 
-func ddb() *hank.DuckDB {
-	from := viper.GetString("ddb.from")
-	q := viper.GetString("ddb.q")
+func ddb() *abm.DuckABM[string, hank.MetaData] {
+	load := viper.GetString("hank.abm.load")
+	get := viper.GetString("hank.abm.get")
+	list := viper.GetString("hank.abm.list")
 
-	db, err := hank.NewDDB(from, q)
+	db, err := abm.NewDuckABM[string, hank.MetaData](abm.Conf{
+		LoadSQL: load,
+		GetSQL:  get,
+		ListSQL: list,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

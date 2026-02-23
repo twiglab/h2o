@@ -34,16 +34,16 @@ func run() error {
 	_ = rootLog()
 
 	s := &hank.Server{
-		Addr: viper.GetString("server.addr"),
+		Addr: viper.GetString("hank.server.addr"),
 		Hub: &hank.Hub{
-			DataLog: dataLog(),
+			WAL: walLog(),
 			Sender:  sender(),
 		},
 		Logger: serverLog(),
 		Enh:    enh(),
 	}
 
-	go http.ListenAndServe(viper.GetString("web.addr"), nil)
+	go http.ListenAndServe(viper.GetString("hank.web.addr"), nil)
 
 	return s.Run()
 }

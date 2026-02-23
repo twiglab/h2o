@@ -40,8 +40,9 @@ func init() {
 
 func csv() {
 
-	from := viper.GetString("ddb.from")
-	q := viper.GetString("ddb.q")
+	load := viper.GetString("hank.abm.load")
+	get := viper.GetString("hank.abm.get")
+	list := viper.GetString("hank.abm.list")
 
 	db := ddb()
 
@@ -51,13 +52,16 @@ func csv() {
 		log.Fatal("load", err)
 	}
 
-	fmt.Println("from sql:", strings.TrimSpace(from))
+	fmt.Println("load sql:", strings.TrimSpace(load))
 	fmt.Println("----------------------------------")
-	fmt.Println("qry sql:", strings.TrimSpace(q))
+	fmt.Println("get sql:", strings.TrimSpace(get))
+	fmt.Println("----------------------------------")
+	fmt.Println("list sql:", strings.TrimSpace(list))
+	fmt.Println("----------------------------------")
 
 	rs, err := db.List(ctx)
 	if err != nil {
-		log.Fatal("list", err)
+		log.Fatal("list ", err)
 	}
 
 	table := tablewriter.NewTable(os.Stdout,
