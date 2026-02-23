@@ -2,11 +2,12 @@ package hank
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"log/slog"
 	"strings"
 	"time"
+
+	"github.com/jmoiron/sqlx"
 
 	_ "github.com/duckdb/duckdb-go/v2"
 )
@@ -46,11 +47,11 @@ type MetaData struct {
 	Code string `json:"code"`           // 设备code,业务全局唯一
 	Name string `json:"name,omitempty"` // 设备名称,可以为空
 
-	Project   string `json:"project"`  // 所属项目编号
-	PosCode   string `json:"pos_code"` // 位置编号
-	Building  string `json:"building"` // 大楼
-	FloorCode string `json:"floor_code"`
-	AreaCode  string `json:"area_code"`
+	Project   string `json:"project"`                // 所属项目编号
+	PosCode   string `json:"pos_code" db:"pos_code"` // 位置编号
+	Building  string `json:"building"`               // 大楼
+	FloorCode string `json:"floor_code" db:"floor_code"`
+	AreaCode  string `json:"area_code" db:"area_code"`
 
 	F1 string `json:"f1"`
 	F2 string `json:"f2"`
@@ -60,7 +61,7 @@ type MetaData struct {
 }
 
 type DuckDB struct {
-	db *sql.DB
+	db *sqlx.DB
 
 	from string
 	q    string
@@ -70,7 +71,7 @@ type DuckDB struct {
 }
 
 func NewDDB(from, q string) (*DuckDB, error) {
-	db, err := sql.Open("duckdb", "")
+	db, err := sqlx.Open("duckdb", "")
 	if err != nil {
 		return nil, err
 	}
@@ -128,18 +129,14 @@ func (d *DuckDB) Loop(ctx context.Context) error {
 func (d *DuckDB) List(ctx context.Context) ([]MetaData, error) {
 	s := cutWhere(d.getQry)
 
-	rows, err := d.db.QueryContext(ctx, s)
+	rows, err := d.db.QueryxContext(ctx, s)
 	if err != nil {
 		return nil, err
 	}
 	var mds []MetaData
 	for rows.Next() {
 		var data MetaData
-		err = rows.Scan(
-			&data.SN, &data.Code, &data.Name, &data.Project,
-			&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
-			&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
-		)
+		err = rows.StructScan(&data)
 		if err != nil {
 			return mds, err
 		}
@@ -150,12 +147,15 @@ func (d *DuckDB) List(ctx context.Context) ([]MetaData, error) {
 }
 
 func (d *DuckDB) Get(ctx context.Context, code string) (data MetaData, ok bool, err error) {
-	row := d.db.QueryRowContext(ctx, d.getQry, code)
-	err = row.Scan(
-		&data.SN, &data.Code, &data.Name, &data.Project,
-		&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
-		&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
-	)
+	row := d.db.QueryRowxContext(ctx, d.getQry, code)
+	/*
+		err = row.Scan(
+			&data.SN, &data.Code, &data.Name, &data.Project,
+			&data.PosCode, &data.Building, &data.FloorCode, &data.AreaCode,
+			&data.F1, &data.F2, &data.F3, &data.F4, &data.F5,
+		)
+	*/
+	err = row.StructScan(&data)
 	ok = err == nil
 	return
 }
