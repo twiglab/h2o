@@ -17,6 +17,9 @@ func (e ChargeErr) Error() string {
 	return fmt.Sprintf("Charge Error: code = %s, type = %s, message = %s", e.Code, e.Type, e.Message)
 }
 
+var ErrDataCodeDup = &ChargeErr{Code: "check-datacode", Type: "check", Message: "DataCode重复"}
+var ErrTimeBefore = &ChargeErr{Code: "check-datatime", Type: "check", Message: "时间小于之前"}
+
 type ChargeData struct {
 	MeterData
 }

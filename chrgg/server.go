@@ -19,11 +19,11 @@ func (s *ChargeServer) pre(_ context.Context, md MeterData) (ChargeData, error) 
 
 func (s ChargeServer) check(ctx context.Context, last *ent.CDR, cd ChargeData) error {
 	if cd.DataCode == last.DataCode {
-		return &ChargeErr{Message: "same datacode"}
+		return ErrDataCodeDup
 	}
 
 	if !cd.DataTime.After(last.DataTime) {
-		return &ChargeErr{Message: "time"}
+		return ErrTimeBefore
 	}
 	return nil
 }
