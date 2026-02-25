@@ -32,17 +32,20 @@ func init() {
 func run() error {
 
 	_ = rootLog()
+	ep := hank.NewElectricityPacket()
 
 	s := &hank.Server{
 		Addr: viper.GetString("hank.server.addr"),
 		Hub: &hank.Hub{
-			WAL: walLog(),
-			Sender:  sender(),
+			WAL:    walLog(),
+			Sender: sender(),
+			EP:     ep,
 		},
 		Logger: serverLog(),
 		Enh:    enh(),
 	}
 
+	http.HandleFunc("/eyes/all", hank.EyesAll(ep))
 	go http.ListenAndServe(viper.GetString("hank.web.addr"), nil)
 
 	return s.Run()
