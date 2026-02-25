@@ -7,8 +7,9 @@ import (
 )
 
 type AloneRuler struct {
-	Code string
-	Fee  int64
+	Code    string
+	Fee     int64
+	PosCode string `db:"pos_code"`
 }
 
 func (l AloneRuler) UnitFeeFen() int64 {
@@ -31,11 +32,15 @@ func (l AloneRuler) Memo() string {
 	return l.Code
 }
 
-type AloneEng struct {
+type AloneEngine struct {
 	knowledge *abm.DuckABM[string, AloneRuler]
 }
 
-func (l *AloneEng) GetRuler(ctx context.Context, cd ChargeData) (ChargeRuler, error) {
+func NewAloneEngine(knowledge *abm.DuckABM[string, AloneRuler]) *AloneEngine {
+	return &AloneEngine{knowledge: knowledge}
+}
+
+func (l *AloneEngine) GetRuler(ctx context.Context, cd ChargeData) (ChargeRuler, error) {
 	a, ok, err := l.knowledge.Get(ctx, cd.Code)
 	if err != nil {
 		return ZeroRuler("err"), nil
