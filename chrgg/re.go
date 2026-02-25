@@ -2,8 +2,6 @@ package chrgg
 
 import (
 	"context"
-
-	"github.com/twiglab/h2o/abm"
 )
 
 type ChargeRuler interface {
@@ -42,45 +40,4 @@ func (ZeroRuler) Category() string {
 
 func (z ZeroRuler) Memo() string {
 	return string(z)
-}
-
-type AloneRuler struct {
-	code string
-	fee  uint64
-}
-
-func (l AloneRuler) UnitFeeFen() int64 {
-	return 0
-}
-
-func (l AloneRuler) ID() string {
-	return "zero"
-}
-
-func (l AloneRuler) Type() string {
-	return "zero"
-}
-
-func (l AloneRuler) Category() string {
-	return "zero"
-}
-
-func (l AloneRuler) Memo() string {
-	return ""
-}
-
-type LocAloneEng struct {
-	knowledge *abm.DuckABM[string, AloneRuler]
-}
-
-func (l *LocAloneEng) GetRuler(ctx context.Context, cd ChargeData) (ChargeRuler, error) {
-	a, ok, err := l.knowledge.Get(ctx, cd.Code)
-	if err != nil {
-		return ZeroRuler("err"), nil
-	}
-
-	if ok {
-		return a, nil
-	}
-	return ZeroRuler("err"), nil
 }
