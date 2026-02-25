@@ -42,14 +42,17 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 				F5: meta.F5,
 			},
 		},
-		Data: common.Water{
-			MeterValue: common.MeterValue{
-				DataValue: str2I64(dd.DataJson.DataValue, 100),
-			},
+		Data: waterData(dd.DataJson),
+	}
+	return d
+}
+
+func waterData(dm DataMix) common.Water {
+	return common.Water{
+		MeterValue: common.MeterValue{
+			DataValue: str2I64(dm.DataValue, 100),
 		},
 	}
-
-	return d
 }
 
 func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
@@ -86,14 +89,41 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 			},
 		},
 
-		Data: common.Electricity{
-			MeterValue: common.MeterValue{
-				DataValue: str2I64(dd.DataJson.DataValue, 100),
-			},
-		},
+		Data: electricityData(dd.DataJson),
+	}
+	return d
+}
+
+func electricityData(dm DataMix) common.Electricity {
+	var ele common.Electricity
+
+	ele.DataValue = str2I64(dm.DataValue, 100)
+
+	if v, ok := dm.ExtraData["voltage-a"]; ok {
+		ele.VoltageA = str2I64(v, 100)
+	}
+	if v, ok := dm.ExtraData["voltage-b"]; ok {
+		ele.VoltageB = str2I64(v, 100)
+	}
+	if v, ok := dm.ExtraData["voltage-c"]; ok {
+		ele.VoltageC = str2I64(v, 100)
 	}
 
-	return d
+	if v, ok := dm.ExtraData["current-a"]; ok {
+		ele.CurrentA = str2I64(v, 100)
+	}
+	if v, ok := dm.ExtraData["current-b"]; ok {
+		ele.CurrentB = str2I64(v, 100)
+	}
+	if v, ok := dm.ExtraData["current-c"]; ok {
+		ele.CurrentC = str2I64(v, 100)
+	}
+
+	if v, ok := dm.ExtraData["total-active-power"]; ok {
+		ele.TotalActivePower = str2I64(v, 100)
+	}
+
+	return ele
 }
 
 func str2I64(s string, i float64) int64 {

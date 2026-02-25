@@ -18,10 +18,22 @@ const (
 	TypeTime         = "time"
 )
 
+const (
+	offline = "offline"
+	online  = "online"
+)
+
 type DeviceStatus struct {
 	No     string `json:"deviceNo"`
 	Type   string `json:"deviceType"`
 	Status string `json:"status"`
+}
+
+func Online(s string) int {
+	if s == online {
+		return 0
+	}
+	return -1
 }
 
 type DeviceStatusList []DeviceStatus
@@ -77,14 +89,12 @@ type DeviceData struct {
 	No   string `json:"deviceNo"`
 	Type string `json:"deviceType"`
 
-	Money float64 `json:"dataMoney"`
-	//DataTime time.Time `json:"dataTime,format:DateTime"` // 数据记录时间
+	Money    float64 `json:"dataMoney"`
 	DataTime string  `json:"dataTime"` // 数据记录时间
 	Usage    float64 `json:"usage"`
 
 	BuildingCode string `json:"buildingCode"`
 
-	//LastDataTime time.Time `json:"lastDataTime,format:DateTime"` // 上一次数据记录时间
 	LastDataTime string `json:"lastDataTime"` // 上一次数据记录时间
 
 	DataCode string `json:"dataCode"`
