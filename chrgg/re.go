@@ -45,8 +45,28 @@ func (z ZeroRuler) Memo() string {
 }
 
 type AloneRuler struct {
-	Code       string
-	UnitFeeFen uint64
+	code string
+	fee  uint64
+}
+
+func (l AloneRuler) UnitFeeFen() int64 {
+	return 0
+}
+
+func (l AloneRuler) ID() string {
+	return "zero"
+}
+
+func (l AloneRuler) Type() string {
+	return "zero"
+}
+
+func (l AloneRuler) Category() string {
+	return "zero"
+}
+
+func (l AloneRuler) Memo() string {
+	return ""
 }
 
 type LocAloneEng struct {
@@ -60,7 +80,7 @@ func (l *LocAloneEng) GetRuler(ctx context.Context, cd ChargeData) (ChargeRuler,
 	}
 
 	if ok {
-		return &AloneRuler{Code: a.Code, UnitFeeFen: a.UnitFeeFen}, nil
+		return a, nil
 	}
 	return ZeroRuler("err"), nil
 }
