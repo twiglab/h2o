@@ -9,23 +9,29 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+const windowSize = 10
+
 type window struct {
-	candidate []common.Electricity
-	pos       int
+	Candidate []common.Electricity
+	c         int
 	l         int
 }
 
 func newWin(l int) *window {
 	return &window{
-		candidate: make([]common.Electricity, l, l),
+		Candidate: make([]common.Electricity, l),
 		l:         l,
 	}
 }
 
 func (w *window) Add(ele common.Electricity) {
-	np := w.pos % w.l
-	w.candidate[np] = ele
-	w.pos = np + 1
+	np := w.c % w.l
+	w.Candidate[np] = ele
+	w.c = np + 1
+}
+
+func (w *window) Clear() {
+	clear(w.Candidate)
 }
 
 type ElectricityItem struct {
@@ -35,10 +41,14 @@ type ElectricityItem struct {
 	TimeOut    time.Duration `json:"timeout,format:sec"`
 
 	window *window `json:"-"`
+
+	C int
+	P int
 }
 
 func (ei *ElectricityItem) fill() {
-	for _, ele := range ei.window.candidate {
+	ei.Data = common.Electricity{} // clear
+	for _, ele := range ei.window.Candidate {
 		ei.Data.DataValue = max(ei.Data.DataValue, ele.DataValue)
 
 		ei.Data.VoltageA = max(ei.Data.VoltageA, ele.VoltageA)
@@ -51,6 +61,9 @@ func (ei *ElectricityItem) fill() {
 
 		ei.Data.TotalActivePower = max(ei.Data.TotalActivePower, ele.TotalActivePower)
 	}
+
+	ei.C = ei.window.l
+	ei.P = ei.window.c
 }
 
 type ElectricityPacket struct {
@@ -70,7 +83,7 @@ func (e *ElectricityPacket) Merge(m ElectricityMeter) {
 	)
 
 	if i, ok = e.Items[m.Code]; !ok {
-		i = &ElectricityItem{ElectricityMeter: m, AcceptTime: time.Now(), window: newWin(10)}
+		i = &ElectricityItem{ElectricityMeter: m, AcceptTime: time.Now(), window: newWin(windowSize)}
 		i.window.Add(m.Data)
 		e.Items[i.Code] = i
 		return
