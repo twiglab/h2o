@@ -100,23 +100,23 @@ func electricityData(dm DataMix) common.Electricity {
 	ele.DataValue = str2I64(dm.DataValue, 100)
 
 	if v, ok := dm.ExtraData["voltage-a"]; ok {
-		ele.VoltageA = str2I64(v, 100)
+		ele.VoltageA = str2I64(v, 10)
 	}
 	if v, ok := dm.ExtraData["voltage-b"]; ok {
-		ele.VoltageB = str2I64(v, 100)
+		ele.VoltageB = str2I64(v, 10)
 	}
 	if v, ok := dm.ExtraData["voltage-c"]; ok {
-		ele.VoltageC = str2I64(v, 100)
+		ele.VoltageC = str2I64(v, 10)
 	}
 
 	if v, ok := dm.ExtraData["current-a"]; ok {
-		ele.CurrentA = str2I64(v, 100)
+		ele.CurrentA = str2I64(v, 1)
 	}
 	if v, ok := dm.ExtraData["current-b"]; ok {
-		ele.CurrentB = str2I64(v, 100)
+		ele.CurrentB = str2I64(v, 1)
 	}
 	if v, ok := dm.ExtraData["current-c"]; ok {
-		ele.CurrentC = str2I64(v, 100)
+		ele.CurrentC = str2I64(v, 1)
 	}
 
 	if v, ok := dm.ExtraData["total-active-power"]; ok {

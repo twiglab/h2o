@@ -21,7 +21,7 @@ func (h *Hub) HandleDeviceStatus(ctx context.Context, data DeviceStatus) error {
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
 	h.WAL.WriteLogContext(ctx, wal.Type(data.Type), wal.Data(data))
 
-	h.EP.Add(data)
+	h.EP.Merge(data)
 
 	return h.Sender.SendData(ctx, data)
 }
