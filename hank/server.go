@@ -111,7 +111,7 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 		}
 
 		if sd.Type == TypeRate {
-			err := marshalWrite(conn, ErrNoRate)
+			err := writeReturn(conn, ErrNoRate)
 			s.Logger.InfoContext(ctx, "rate type", slog.String("type", sd.Type), slog.Any("error", err))
 			continue
 		}
@@ -125,7 +125,7 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 			s.Logger.InfoContext(ctx, "ignore type", slog.String("type", sd.Type))
 		}
 
-		if err := marshalWrite(conn, OK); err != nil {
+		if err := writeReturn(conn, OK); err != nil {
 			s.Logger.ErrorContext(ctx, "unmarshalWriter OK error", slog.Any("error", err))
 		}
 	}
