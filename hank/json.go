@@ -1,7 +1,6 @@
 package hank
 
 import (
-	"bytes"
 	"encoding/json/v2"
 	"io"
 )
@@ -18,19 +17,12 @@ func marshal(in any) ([]byte, error) {
 	return json.Marshal(in)
 }
 
+var newline = []byte{'\n'}
+
 func writeReturn(out io.Writer, in any) error {
-	var bf bytes.Buffer
-	bf.Grow(256)
-
-	if err := json.MarshalWrite(&bf, in); err != nil {
+	if err := json.MarshalWrite(out, in); err != nil {
 		return err
 	}
-
-	if err := bf.WriteByte('\n'); err != nil {
-		return err
-	}
-
-	_, err := bf.WriteTo(out)
-
+	_, err := out.Write(newline)
 	return err
 }
