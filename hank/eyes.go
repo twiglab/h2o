@@ -42,8 +42,8 @@ type ElectricityItem struct {
 
 	window *window `json:"-"`
 
+	L int
 	C int
-	P int
 }
 
 func (ei *ElectricityItem) fill() {
@@ -62,8 +62,8 @@ func (ei *ElectricityItem) fill() {
 		ei.Data.TotalActivePower = max(ei.Data.TotalActivePower, ele.TotalActivePower)
 	}
 
-	ei.C = ei.window.l
-	ei.P = ei.window.c
+	ei.L = ei.window.l
+	ei.C = ei.window.c
 }
 
 type ElectricityPacket struct {
