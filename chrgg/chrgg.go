@@ -3,6 +3,8 @@ package chrgg
 import (
 	"fmt"
 	"time"
+
+	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
 const CLIENT_ID = "chrgg"
@@ -31,4 +33,14 @@ func MinOfDay(h, m int) int {
 func hourMin(t time.Time) (h, m int) {
 	h, m, _ = t.Clock()
 	return
+}
+
+func checkDup(last *ent.CDR, cd ChargeData) error {
+	if cd.DataCode == last.DataCode {
+		return ErrDataCodeDup
+	}
+	if !cd.DataTime.After(last.DataTime) {
+		return ErrTimeBefore
+	}
+	return nil
 }

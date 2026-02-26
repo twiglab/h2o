@@ -44,14 +44,13 @@ func serverLog() *slog.Logger {
 	return l
 }
 
-func walLog() *slog.Logger {
-	logF := viper.GetString("hank.wal.file")
-	if logF == "" {
+func wallog() *wal.WAL {
+	logf := viper.GetString("hank.wal.file")
+	if logf == "" {
 		log.Fatalln("wal file is null. ***MUST*** set datalog.file")
 	}
-	log.Println("wal file:", logF)
-	h := wal.NewHandle(logF)
-	return slog.New(h)
+	log.Println("wal file:", logf)
+	return wal.New(wal.Conf{Filename: logf})
 }
 
 func sender() hank.Sender {

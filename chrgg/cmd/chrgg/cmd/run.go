@@ -34,7 +34,7 @@ func run() error {
 	c := mqttcli()
 
 	cs := &chrgg.ChargeServer{
-		CDRLog: cdrlog(),
+		CdrWAL: cdrWal(),
 		DBx:    &chrgg.DBx{Cli: entcli()},
 		Eng:    chrgg.ZeroRuler("x"),
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/wal"
 )
 
 func logLevel(s string) slog.Level {
@@ -44,13 +45,13 @@ func serverLog() *slog.Logger {
 	return l
 }
 
-func cdrlog() *slog.Logger {
+func cdrWal() *wal.WAL {
 	logF := viper.GetString("chrgg.wal.file")
 	if logF == "" {
 		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
 	}
 	log.Println("wal file:", logF)
-	return chrgg.NewLog(logF, slog.LevelInfo)
+	return wal.New(wal.Conf{Filename: logF})
 }
 
 func mqttcli() mqtt.Client {
