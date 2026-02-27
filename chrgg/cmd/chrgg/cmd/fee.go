@@ -58,7 +58,7 @@ func csv() {
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.Header([]any{"code", "fee", "pos_code"}...)
+	table.SetHeader([]string{"code", "fee_fen", "pos_code"})
 
 	for _, emp := range rs {
 		table.Append(emp.ToStrings())

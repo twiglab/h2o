@@ -1,11 +1,13 @@
 package cmd
 
 import (
+	"context"
 	"log"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
+	"github.com/twiglab/h2o/abm"
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
@@ -95,4 +97,27 @@ func entcli() *ent.Client {
 		log.Fatal(err)
 	}
 	return cli
+}
+
+func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
+	load := viper.GetString("chrgg.abm.load")
+	get := viper.GetString("chrgg.abm.get")
+	list := viper.GetString("chrgg.abm.list")
+
+	c := abm.Conf{
+		LoadSQL: load,
+		GetSQL:  get,
+		ListSQL: list,
+		Period:  60,
+	}
+
+	db, err := abm.NewDuckABM[string, chrgg.AloneRuler](c)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := db.Loop(context.Background()); err != nil {
+		log.Fatal(err)
+	}
+	return db, c
 }

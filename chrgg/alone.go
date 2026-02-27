@@ -2,21 +2,22 @@ package chrgg
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/twiglab/h2o/abm"
 )
 
-var RulAloneErr = zr{t: "err", c: "alone"}
-var RulAloneNoFound = zr{t: "nf", c: "alone"}
+var RulAloneErr = zr{t: "error", c: "alone"}
+var RulAloneNoFound = zr{t: "notfound", c: "alone"}
 
 type AloneRuler struct {
 	Code    string
-	Fee     int64
+	FeeFen  int64  `db:"fee_fen"`
 	PosCode string `db:"pos_code"`
 }
 
 func (l AloneRuler) UnitFeeFen() int64 {
-	return l.Fee
+	return l.FeeFen
 }
 
 func (l AloneRuler) ID() string {
@@ -24,15 +25,19 @@ func (l AloneRuler) ID() string {
 }
 
 func (l AloneRuler) Type() string {
-	return "alone"
+	return l.PosCode
 }
 
 func (l AloneRuler) Category() string {
-	return l.Code
+	return "alone"
 }
 
 func (l AloneRuler) Memo() string {
-	return l.Code
+	return l.PosCode
+}
+
+func (l AloneRuler) ToStrings() []string {
+	return []string{l.Code, strconv.FormatInt(l.FeeFen, 10), l.PosCode}
 }
 
 type AloneEngine struct {
