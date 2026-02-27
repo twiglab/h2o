@@ -6,7 +6,9 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-var Nil CDR
+var nilCDR CDR
+
+var first *ent.CDR = new(ent.CDR)
 
 type CDR struct {
 	DeviceCode string
@@ -34,33 +36,6 @@ type CDR struct {
 	Project string
 
 	Momo string
-}
-
-func FirstCDR(cd ChargeData, cr ChargeRuler) CDR {
-	return CDR{
-		DeviceCode: cd.Code,
-		DeviceType: cd.Type,
-
-		LastDataTime: cd.DataTime,
-		DataTime:     cd.DataTime,
-
-		LastDataValue: cd.Data.DataValue,
-		DataValue:     cd.Data.DataValue,
-
-		LastDataCode: cd.DataCode,
-		DataCode:     cd.DataCode,
-
-		RuleID:   cr.ID(),
-		RuleType: cr.Type(),
-		RuleCtg:  cr.Category(),
-
-		Value:      0,
-		UnitFeeFen: cr.UnitFeeFen(),
-		FeeFen:     0,
-
-		PosCode: cd.Pos.PosCode,
-		Project: cd.Pos.Project,
-	}
 }
 
 func CalcCDR(last *ent.CDR, cd ChargeData, cr ChargeRuler) CDR {

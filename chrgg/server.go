@@ -33,44 +33,27 @@ func (s *ChargeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 	return true
 }
 
-func (s *ChargeServer) doNewCDR(ctx context.Context, cd ChargeData) (CDR, error) {
-	nc := FirstCDR(cd, ZeroRuler("new"))
+func (s *ChargeServer) doNewCharge(ctx context.Context, cd ChargeData) (CDR, error) {
+	nc := CalcCDR(first, cd, ZeroRuler("new"))
 	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Data(cd))
 	_, err := s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
 }
 
-func (s *ChargeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) {
-	// setp 1 prepare
-	cd, err := s.pre(ctx, bd)
-	if err != nil {
-		return Nil, err
-	}
-
-	// step 2 load
-	last, notfound, err := s.DBx.LoadLast(ctx, cd.Code, cd.Type)
-	if err != nil {
-		return Nil, err
-	}
-
-	// step 2.1 save first
-	if notfound {
-		return s.doNewCDR(ctx, cd)
-	}
-
+func (s *ChargeServer) doCharge(ctx context.Context, last *ent.CDR, cd ChargeData) (CDR, error) {
 	// step 3 verify and check
 	if !s.Verify(ctx, last, cd) {
-		return Nil, nil
+		return nilCDR, nil
 	}
 
-	if err = s.check(ctx, last, cd); err != nil {
-		return Nil, err
+	if err := s.check(ctx, last, cd); err != nil {
+		return nilCDR, err
 	}
 
 	// setp 4 calc
 	ru, err := s.Eng.GetRuler(ctx, cd)
 	if err != nil {
-		return Nil, err
+		return nilCDR, err
 	}
 
 	nc := CalcCDR(last, cd, ru)
@@ -81,4 +64,26 @@ func (s *ChargeServer) DoChange(ctx context.Context, bd MeterData) (CDR, error) 
 	// step 6 save
 	_, err = s.DBx.SaveCurrent(ctx, nc)
 	return nc, err
+}
+
+func (s *ChargeServer) DoCharge(ctx context.Context, bd MeterData) (CDR, error) {
+	// setp 1 prepare
+	cd, err := s.pre(ctx, bd)
+	if err != nil {
+		return nilCDR, err
+	}
+
+	// step 2 load
+	last, notfound, err := s.DBx.LoadLast(ctx, cd.Code, cd.Type)
+	if err != nil {
+		return nilCDR, err
+	}
+
+	// step 2.1 save first
+	if notfound {
+		return s.doNewCharge(ctx, cd)
+	}
+
+	// doCharge
+	return s.doCharge(ctx, last, cd)
 }
