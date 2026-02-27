@@ -47,7 +47,7 @@ type Conf struct {
 }
 
 type DuckABM[K comparable, T any] struct {
-	db *sqlx.DB
+	dbx *sqlx.DB
 
 	conf Conf
 
@@ -67,7 +67,7 @@ func NewDuckABM[K comparable, T any](conf Conf) (*DuckABM[K, T], error) {
 	}
 
 	return &DuckABM[K, T]{
-		db:   db,
+		dbx:  db,
 		conf: conf,
 	}, nil
 }
@@ -79,7 +79,7 @@ func (d *DuckABM[K, T]) Load(ctx context.Context) error {
 		slog.String("nextTbl", nextTbl),
 		slog.String("create", cr),
 	)
-	if _, err := d.db.ExecContext(ctx, cr); err != nil {
+	if _, err := d.dbx.ExecContext(ctx, cr); err != nil {
 		return err
 	}
 
@@ -114,12 +114,12 @@ func (d *DuckABM[K, T]) List(ctx context.Context) (ds []T, err error) {
 		return nil, errors.New("no list sql")
 	}
 
-	err = d.db.SelectContext(ctx, &ds, d.listQry)
+	err = d.dbx.SelectContext(ctx, &ds, d.listQry)
 	return
 }
 
 func (d *DuckABM[K, T]) Get(ctx context.Context, code K) (data T, ok bool, err error) {
-	err = d.db.GetContext(ctx, &data, d.getQry, code)
+	err = d.dbx.GetContext(ctx, &data, d.getQry, code)
 	ok = (err == nil)
 	return
 }
