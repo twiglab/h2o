@@ -10,6 +10,8 @@ var nilCDR CDR
 
 var first *ent.CDR = new(ent.CDR)
 
+var RulNew = zr{t: "new", c: "new"}
+
 type CDR struct {
 	DeviceCode string
 	DeviceType string

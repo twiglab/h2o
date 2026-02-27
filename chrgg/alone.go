@@ -6,6 +6,9 @@ import (
 	"github.com/twiglab/h2o/abm"
 )
 
+var RulAloneErr = zr{t: "err", c: "alone"}
+var RulAloneNoFound = zr{t: "nf", c: "alone"}
+
 type AloneRuler struct {
 	Code    string
 	Fee     int64
@@ -43,11 +46,11 @@ func NewAloneEngine(knowledge *abm.DuckABM[string, AloneRuler]) *AloneEngine {
 func (l *AloneEngine) GetRuler(ctx context.Context, cd ChargeData) (ChargeRuler, error) {
 	a, ok, err := l.knowledge.Get(ctx, cd.Code)
 	if err != nil {
-		return ZeroRuler("err"), nil
+		return RulAloneErr, err
 	}
 
 	if ok {
 		return a, nil
 	}
-	return ZeroRuler("err"), nil
+	return RulAloneNoFound, nil
 }

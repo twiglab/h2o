@@ -34,7 +34,7 @@ func (s *ChargeServer) Verify(ctx context.Context, last *ent.CDR, cd ChargeData)
 }
 
 func (s *ChargeServer) doNewCharge(ctx context.Context, cd ChargeData) (CDR, error) {
-	nc := CalcCDR(first, cd, ZeroRuler("new"))
+	nc := CalcCDR(first, cd, RulNew)
 	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Data(cd))
 	_, err := s.DBx.SaveCurrent(ctx, nc)
 	return nc, err

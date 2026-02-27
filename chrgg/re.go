@@ -16,28 +16,32 @@ type ChargeEngine interface {
 	GetRuler(context.Context, ChargeData) (ChargeRuler, error)
 }
 
-type ZeroRuler string
+type zr struct {
+	t, c string
+}
 
-func (z ZeroRuler) GetRuler(_ context.Context, _ ChargeData) (ChargeRuler, error) {
+func (z zr) GetRuler(_ context.Context, _ ChargeData) (ChargeRuler, error) {
 	return z, nil
 }
 
-func (ZeroRuler) UnitFeeFen() int64 {
+func (zr) UnitFeeFen() int64 {
 	return 0
 }
 
-func (ZeroRuler) ID() string {
+func (zr) ID() string {
 	return "zero"
 }
 
-func (ZeroRuler) Type() string {
+func (z zr) Type() string {
+	return z.t
+}
+
+func (z zr) Category() string {
+	return z.c
+}
+
+func (z zr) Memo() string {
 	return "zero"
 }
 
-func (ZeroRuler) Category() string {
-	return "zero"
-}
-
-func (z ZeroRuler) Memo() string {
-	return string(z)
-}
+var EngZ = zr{t: "z", c: "z"}
