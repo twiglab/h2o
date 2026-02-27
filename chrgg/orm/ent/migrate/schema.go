@@ -18,7 +18,7 @@ var (
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_data_value", Type: field.TypeInt64, Default: 0},
 		{Name: "data_value", Type: field.TypeInt64, Default: 0},
-		{Name: "last_data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "last_data_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "last_data_time", Type: field.TypeTime},
 		{Name: "data_time", Type: field.TypeTime},

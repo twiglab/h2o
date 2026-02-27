@@ -317,11 +317,6 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.LastDataCode(); !ok {
 		return &ValidationError{Name: "last_data_code", err: errors.New(`ent: missing required field "CDR.last_data_code"`)}
 	}
-	if v, ok := _c.mutation.LastDataCode(); ok {
-		if err := cdr.LastDataCodeValidator(v); err != nil {
-			return &ValidationError{Name: "last_data_code", err: fmt.Errorf(`ent: validator failed for field "CDR.last_data_code": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.DataCode(); !ok {
 		return &ValidationError{Name: "data_code", err: errors.New(`ent: missing required field "CDR.data_code"`)}
 	}

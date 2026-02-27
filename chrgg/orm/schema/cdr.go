@@ -47,7 +47,7 @@ func (CDR) Fields() []ent.Field {
 		field.Int64("last_data_value").Immutable().Default(0).Comment("上次次读数"),
 		field.Int64("data_value").Immutable().Default(0).Comment("当前读数"),
 
-		field.String("last_data_code").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("上次datacode"),
+		field.String("last_data_code").Immutable().SchemaType(varchar(64)).Comment("上次datacode"),
 		field.String("data_code").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("当前datacode"),
 
 		field.Time("last_data_time").Immutable().Comment("上次时间"),

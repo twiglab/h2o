@@ -104,8 +104,6 @@ var (
 	DefaultLastDataValue int64
 	// DefaultDataValue holds the default value on creation for the "data_value" field.
 	DefaultDataValue int64
-	// LastDataCodeValidator is a validator for the "last_data_code" field. It is called by the builders before save.
-	LastDataCodeValidator func(string) error
 	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	DataCodeValidator func(string) error
 	// RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.

@@ -44,10 +44,6 @@ func init() {
 	cdrDescDataValue := cdrFields[4].Descriptor()
 	// cdr.DefaultDataValue holds the default value on creation for the data_value field.
 	cdr.DefaultDataValue = cdrDescDataValue.Default.(int64)
-	// cdrDescLastDataCode is the schema descriptor for last_data_code field.
-	cdrDescLastDataCode := cdrFields[5].Descriptor()
-	// cdr.LastDataCodeValidator is a validator for the "last_data_code" field. It is called by the builders before save.
-	cdr.LastDataCodeValidator = cdrDescLastDataCode.Validators[0].(func(string) error)
 	// cdrDescDataCode is the schema descriptor for data_code field.
 	cdrDescDataCode := cdrFields[6].Descriptor()
 	// cdr.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
