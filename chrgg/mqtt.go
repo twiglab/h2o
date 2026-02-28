@@ -32,7 +32,7 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 			return
 		}
 
-		if _, err := s.DoCharge(context.Background(), md); err != nil {
+		if _, err := s.Charge(context.Background(), md); err != nil {
 			slog.Error("change error", slog.Any("error", err))
 		}
 	}

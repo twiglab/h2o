@@ -2,13 +2,9 @@ package chrgg
 
 import (
 	"time"
-
-	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
 var nilCDR CDR
-
-var first *ent.CDR = new(ent.CDR)
 
 var RulNew = zr{t: "new", c: "new"}
 
@@ -37,10 +33,10 @@ type CDR struct {
 	PosCode string
 	Project string
 
-	Momo string
+	Memo string
 }
 
-func CalcCDR(last *ent.CDR, cd ChargeData, cr ChargeRuler) CDR {
+func CalcCDR(last LastCDR, cd ChargeData, cr ChargeRuler) CDR {
 	value, fee := calc(last.DataValue, cd.Data.DataValue, cr.UnitFeeFen())
 	return CDR{
 		DeviceCode: cd.Code,
@@ -65,6 +61,8 @@ func CalcCDR(last *ent.CDR, cd ChargeData, cr ChargeRuler) CDR {
 
 		PosCode: cd.Pos.PosCode,
 		Project: cd.Pos.Project,
+
+		Memo: cr.Memo(),
 	}
 }
 

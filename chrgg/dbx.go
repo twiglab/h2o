@@ -51,7 +51,7 @@ func (d *DBx) SaveCurrent(ctx context.Context, cdr CDR) (r *ent.CDR, err error) 
 	cr.SetPosCode(cdr.PosCode)
 	cr.SetProject(cdr.Project)
 
-	cr.SetMemo(cdr.Momo)
+	cr.SetMemo(cdr.Memo)
 
 	r, err = cr.Save(ctx)
 	return

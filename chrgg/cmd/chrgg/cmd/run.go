@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 
@@ -36,10 +37,15 @@ func run() error {
 	cs := &chrgg.ChargeServer{
 		CdrWAL: cdrWal(),
 		DBx:    &chrgg.DBx{Cli: entcli()},
-		Eng:    chrgg.EngZ,
+		ChargEngine:    chrgg.EngZ,
 	}
 
-	c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
+	t := c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
+	t.Wait()
+
+	if err := t.Error(); err != nil {
+		log.Fatal(err)
+	}
 
 	return http.ListenAndServe(webaddr(), nil)
 }
