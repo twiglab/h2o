@@ -57,7 +57,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	nc := CalcCDR(last, cd, ru)
 
 	// step 5 write cdr
-	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Data(nc))
+	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Any("cdr", nc), wal.Any("last", last), wal.Any("chargeData", cd), wal.Any("chargeRuler", ru))
 
 	// step 6 save
 	_, err = s.DBx.SaveCurrent(ctx, nc)
