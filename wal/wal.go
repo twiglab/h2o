@@ -44,18 +44,10 @@ func (w *WAL) WriteLogContext(ctx context.Context, a ...any) {
 	w.inner.InfoContext(ctx, "wal", a...)
 }
 
-func Data(d any) slog.Attr {
-	return slog.Any("data", d)
-}
-
-func Error(d error) slog.Attr {
-	return slog.Any("error", d)
-}
-
 func Any(s string, d any) slog.Attr {
 	return slog.Any(s, d)
 }
 
-func Type(t string) slog.Attr {
-	return slog.String("type", t)
+func String(k, v string) slog.Attr {
+	return slog.String(k, v)
 }

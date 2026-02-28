@@ -126,7 +126,7 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 		}
 
 		if err := writeReturn(conn, OK); err != nil {
-			s.Logger.ErrorContext(ctx, "unmarshalWriter OK error", slog.Any("error", err))
+			s.Logger.ErrorContext(ctx, "unmarshalRetrun OK error", slog.Any("error", err))
 		}
 	}
 	return sc.Err()
