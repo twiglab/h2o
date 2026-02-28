@@ -118,10 +118,6 @@ var (
 	DefaultUnitFeeFen int64
 	// DefaultFeeFen holds the default value on creation for the "fee_fen" field.
 	DefaultFeeFen int64
-	// PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
-	PosCodeValidator func(string) error
-	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
-	ProjectValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.

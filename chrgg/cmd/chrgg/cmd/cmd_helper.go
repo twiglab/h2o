@@ -99,6 +99,10 @@ func entcli() *ent.Client {
 	return cli
 }
 
+func dbx() *chrgg.DBx {
+	return &chrgg.DBx{Cli: entcli()}
+}
+
 func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
 	load := viper.GetString("chrgg.abm.load")
 	get := viper.GetString("chrgg.abm.get")
@@ -125,9 +129,11 @@ func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
 func server() *chrgg.ChargeServer {
 	return &chrgg.ChargeServer{
 		CdrWAL:      cdrWal(),
-		DBx:         &chrgg.DBx{Cli: entcli()},
+		DBx:         dbx(),
 		ChargEngine: chrgg.EngZ,
 		CheckFunc:   chrgg.DefaultCheck,
 		VerifyFunc:  chrgg.DefaultVerify,
+
+		Logger: serverLog(),
 	}
 }

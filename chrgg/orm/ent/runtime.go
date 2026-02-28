@@ -72,14 +72,6 @@ func init() {
 	cdrDescFeeFen := cdrFields[14].Descriptor()
 	// cdr.DefaultFeeFen holds the default value on creation for the fee_fen field.
 	cdr.DefaultFeeFen = cdrDescFeeFen.Default.(int64)
-	// cdrDescPosCode is the schema descriptor for pos_code field.
-	cdrDescPosCode := cdrFields[15].Descriptor()
-	// cdr.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
-	cdr.PosCodeValidator = cdrDescPosCode.Validators[0].(func(string) error)
-	// cdrDescProject is the schema descriptor for project field.
-	cdrDescProject := cdrFields[16].Descriptor()
-	// cdr.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
-	cdr.ProjectValidator = cdrDescProject.Validators[0].(func(string) error)
 	// cdrDescID is the schema descriptor for id field.
 	cdrDescID := cdrFields[0].Descriptor()
 	// cdr.DefaultID holds the default value on creation for the id field.

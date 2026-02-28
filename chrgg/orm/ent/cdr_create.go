@@ -193,14 +193,6 @@ func (_c *CDRCreate) SetMemo(v string) *CDRCreate {
 	return _c
 }
 
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (_c *CDRCreate) SetNillableMemo(v *string) *CDRCreate {
-	if v != nil {
-		_c.SetMemo(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *CDRCreate) SetID(v string) *CDRCreate {
 	_c.mutation.SetID(v)
@@ -367,18 +359,11 @@ func (_c *CDRCreate) check() error {
 	if _, ok := _c.mutation.PosCode(); !ok {
 		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "CDR.pos_code"`)}
 	}
-	if v, ok := _c.mutation.PosCode(); ok {
-		if err := cdr.PosCodeValidator(v); err != nil {
-			return &ValidationError{Name: "pos_code", err: fmt.Errorf(`ent: validator failed for field "CDR.pos_code": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "CDR.project"`)}
 	}
-	if v, ok := _c.mutation.Project(); ok {
-		if err := cdr.ProjectValidator(v); err != nil {
-			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "CDR.project": %w`, err)}
-		}
+	if _, ok := _c.mutation.Memo(); !ok {
+		return &ValidationError{Name: "memo", err: errors.New(`ent: missing required field "CDR.memo"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := cdr.IDValidator(v); err != nil {
@@ -561,24 +546,6 @@ func (u *CDRUpsert) UpdateUpdateTime() *CDRUpsert {
 	return u
 }
 
-// SetMemo sets the "memo" field.
-func (u *CDRUpsert) SetMemo(v string) *CDRUpsert {
-	u.Set(cdr.FieldMemo, v)
-	return u
-}
-
-// UpdateMemo sets the "memo" field to the value that was provided on create.
-func (u *CDRUpsert) UpdateMemo() *CDRUpsert {
-	u.SetExcluded(cdr.FieldMemo)
-	return u
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (u *CDRUpsert) ClearMemo() *CDRUpsert {
-	u.SetNull(cdr.FieldMemo)
-	return u
-}
-
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -647,6 +614,9 @@ func (u *CDRUpsertOne) UpdateNewValues() *CDRUpsertOne {
 		if _, exists := u.create.mutation.Project(); exists {
 			s.SetIgnore(cdr.FieldProject)
 		}
+		if _, exists := u.create.mutation.Memo(); exists {
+			s.SetIgnore(cdr.FieldMemo)
+		}
 	}))
 	return u
 }
@@ -689,27 +659,6 @@ func (u *CDRUpsertOne) SetUpdateTime(v time.Time) *CDRUpsertOne {
 func (u *CDRUpsertOne) UpdateUpdateTime() *CDRUpsertOne {
 	return u.Update(func(s *CDRUpsert) {
 		s.UpdateUpdateTime()
-	})
-}
-
-// SetMemo sets the "memo" field.
-func (u *CDRUpsertOne) SetMemo(v string) *CDRUpsertOne {
-	return u.Update(func(s *CDRUpsert) {
-		s.SetMemo(v)
-	})
-}
-
-// UpdateMemo sets the "memo" field to the value that was provided on create.
-func (u *CDRUpsertOne) UpdateMemo() *CDRUpsertOne {
-	return u.Update(func(s *CDRUpsert) {
-		s.UpdateMemo()
-	})
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (u *CDRUpsertOne) ClearMemo() *CDRUpsertOne {
-	return u.Update(func(s *CDRUpsert) {
-		s.ClearMemo()
 	})
 }
 
@@ -947,6 +896,9 @@ func (u *CDRUpsertBulk) UpdateNewValues() *CDRUpsertBulk {
 			if _, exists := b.mutation.Project(); exists {
 				s.SetIgnore(cdr.FieldProject)
 			}
+			if _, exists := b.mutation.Memo(); exists {
+				s.SetIgnore(cdr.FieldMemo)
+			}
 		}
 	}))
 	return u
@@ -990,27 +942,6 @@ func (u *CDRUpsertBulk) SetUpdateTime(v time.Time) *CDRUpsertBulk {
 func (u *CDRUpsertBulk) UpdateUpdateTime() *CDRUpsertBulk {
 	return u.Update(func(s *CDRUpsert) {
 		s.UpdateUpdateTime()
-	})
-}
-
-// SetMemo sets the "memo" field.
-func (u *CDRUpsertBulk) SetMemo(v string) *CDRUpsertBulk {
-	return u.Update(func(s *CDRUpsert) {
-		s.SetMemo(v)
-	})
-}
-
-// UpdateMemo sets the "memo" field to the value that was provided on create.
-func (u *CDRUpsertBulk) UpdateMemo() *CDRUpsertBulk {
-	return u.Update(func(s *CDRUpsert) {
-		s.UpdateMemo()
-	})
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (u *CDRUpsertBulk) ClearMemo() *CDRUpsertBulk {
-	return u.Update(func(s *CDRUpsert) {
-		s.ClearMemo()
 	})
 }
 

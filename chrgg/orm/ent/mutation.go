@@ -946,22 +946,9 @@ func (m *CDRMutation) OldMemo(ctx context.Context) (v string, err error) {
 	return oldValue.Memo, nil
 }
 
-// ClearMemo clears the value of the "memo" field.
-func (m *CDRMutation) ClearMemo() {
-	m.memo = nil
-	m.clearedFields[cdr.FieldMemo] = struct{}{}
-}
-
-// MemoCleared returns if the "memo" field was cleared in this mutation.
-func (m *CDRMutation) MemoCleared() bool {
-	_, ok := m.clearedFields[cdr.FieldMemo]
-	return ok
-}
-
 // ResetMemo resets all changes to the "memo" field.
 func (m *CDRMutation) ResetMemo() {
 	m.memo = nil
-	delete(m.clearedFields, cdr.FieldMemo)
 }
 
 // Where appends a list predicates to the CDRMutation builder.
@@ -1383,11 +1370,7 @@ func (m *CDRMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *CDRMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(cdr.FieldMemo) {
-		fields = append(fields, cdr.FieldMemo)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1400,11 +1383,6 @@ func (m *CDRMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *CDRMutation) ClearField(name string) error {
-	switch name {
-	case cdr.FieldMemo:
-		m.ClearMemo()
-		return nil
-	}
 	return fmt.Errorf("unknown CDR nullable field %s", name)
 }
 

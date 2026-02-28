@@ -61,10 +61,10 @@ func (CDR) Fields() []ent.Field {
 		field.Int64("unit_fee_fen").Default(0).Immutable().Comment("计费单价"),
 		field.Int64("fee_fen").Default(0).Immutable().Comment("当次费用(fen)"),
 
-		field.String("pos_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("位置编号"),
-		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
+		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
+		field.String("project").Immutable().SchemaType(varchar(64)).Comment("项目编号"),
 
-		field.String("memo").Optional().SchemaType(varchar(64)).Comment("备注"),
+		field.String("memo").Immutable().SchemaType(varchar(64)).Comment("备注"),
 	}
 }
 

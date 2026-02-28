@@ -2,6 +2,7 @@ package chrgg
 
 import (
 	"context"
+	"log/slog"
 
 	"github.com/twiglab/h2o/wal"
 )
@@ -12,6 +13,8 @@ type ChargeServer struct {
 	ChargEngine ChargeEngine
 	CheckFunc   CheckFunc
 	VerifyFunc  VerifyFunc
+
+	Logger *slog.Logger
 }
 
 func (s *ChargeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
@@ -34,6 +37,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 
 	// step 3 verify and check
 	if !s.VerifyFunc(ctx, last, cd) {
+		s.Logger.DebugContext(ctx, "verify", slog.Any("last", last), slog.Any("cd", cd))
 		return nilCDR, nil
 	}
 
@@ -44,13 +48,14 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	// setp 4 calc
 	ru, err := s.ChargEngine.GetRuler(ctx, cd)
 	if err != nil {
+		s.Logger.ErrorContext(ctx, "GerRuler error", slog.Any("error", err), slog.Any("cd", cd))
 		return nilCDR, err
 	}
 
 	nc := CalcCDR(last, cd, ru)
 
 	// step 5 write cdr
-	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Data(cd))
+	s.CdrWAL.WriteLogContext(ctx, wal.Type("nhcdr"), wal.Data(nc))
 
 	// step 6 save
 	_, err = s.DBx.SaveCurrent(ctx, nc)

@@ -34,26 +34,6 @@ func (_u *CDRUpdate) SetUpdateTime(v time.Time) *CDRUpdate {
 	return _u
 }
 
-// SetMemo sets the "memo" field.
-func (_u *CDRUpdate) SetMemo(v string) *CDRUpdate {
-	_u.mutation.SetMemo(v)
-	return _u
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (_u *CDRUpdate) SetNillableMemo(v *string) *CDRUpdate {
-	if v != nil {
-		_u.SetMemo(*v)
-	}
-	return _u
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (_u *CDRUpdate) ClearMemo() *CDRUpdate {
-	_u.mutation.ClearMemo()
-	return _u
-}
-
 // Mutation returns the CDRMutation object of the builder.
 func (_u *CDRUpdate) Mutation() *CDRMutation {
 	return _u.mutation
@@ -107,12 +87,6 @@ func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.Memo(); ok {
-		_spec.SetField(cdr.FieldMemo, field.TypeString, value)
-	}
-	if _u.mutation.MemoCleared() {
-		_spec.ClearField(cdr.FieldMemo, field.TypeString)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cdr.Label}
@@ -136,26 +110,6 @@ type CDRUpdateOne struct {
 // SetUpdateTime sets the "update_time" field.
 func (_u *CDRUpdateOne) SetUpdateTime(v time.Time) *CDRUpdateOne {
 	_u.mutation.SetUpdateTime(v)
-	return _u
-}
-
-// SetMemo sets the "memo" field.
-func (_u *CDRUpdateOne) SetMemo(v string) *CDRUpdateOne {
-	_u.mutation.SetMemo(v)
-	return _u
-}
-
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (_u *CDRUpdateOne) SetNillableMemo(v *string) *CDRUpdateOne {
-	if v != nil {
-		_u.SetMemo(*v)
-	}
-	return _u
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (_u *CDRUpdateOne) ClearMemo() *CDRUpdateOne {
-	_u.mutation.ClearMemo()
 	return _u
 }
 
@@ -241,12 +195,6 @@ func (_u *CDRUpdateOne) sqlSave(ctx context.Context) (_node *CDR, err error) {
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.Memo(); ok {
-		_spec.SetField(cdr.FieldMemo, field.TypeString, value)
-	}
-	if _u.mutation.MemoCleared() {
-		_spec.ClearField(cdr.FieldMemo, field.TypeString)
 	}
 	_node = &CDR{config: _u.config}
 	_spec.Assign = _node.assignValues
