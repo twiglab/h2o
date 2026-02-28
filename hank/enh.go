@@ -97,7 +97,7 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 func electricityData(dm DataMix) common.Electricity {
 	var ele common.Electricity
 
-	ele.DataValue = str2I64(dm.DataValue, 100)
+	ele.DataValue = str2I64(dm.DataValue, 1)
 
 	if v, ok := dm.ExtraData["voltage-a"]; ok {
 		ele.VoltageA = str2I64(v, 10)
