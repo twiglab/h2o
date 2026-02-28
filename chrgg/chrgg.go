@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
@@ -35,7 +36,10 @@ type LastCDR struct {
 
 func MakeLast(lcdr *ent.CDR) LastCDR {
 	if lcdr == nil {
-		return LastCDR{DataTime: firstCDRDay, IsFirst: true}
+		return LastCDR{
+			DataCode: firstDataCode(),
+			DataTime: firstCDRDay,
+			IsFirst:  true}
 	}
 
 	return LastCDR{
@@ -53,4 +57,9 @@ func MinOfDay(h, m int) int {
 func hourMin(t time.Time) (h, m int) {
 	h, m, _ = t.Clock()
 	return
+}
+
+func firstDataCode() string {
+	u, _ := uuid.NewV7()
+	return u.String()
 }
