@@ -48,6 +48,14 @@ func Data(d any) slog.Attr {
 	return slog.Any("data", d)
 }
 
+func Error(d error) slog.Attr {
+	return slog.Any("error", d)
+}
+
+func Any(s string, d any) slog.Attr {
+	return slog.Any(s, d)
+}
+
 func Type(t string) slog.Attr {
 	return slog.String("type", t)
 }
