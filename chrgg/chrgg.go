@@ -39,7 +39,8 @@ func MakeLast(lcdr *ent.CDR) LastCDR {
 		return LastCDR{
 			DataCode: firstDataCode(),
 			DataTime: firstCDRDay,
-			IsFirst:  true}
+			IsFirst:  true,
+		}
 	}
 
 	return LastCDR{

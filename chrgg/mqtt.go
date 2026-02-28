@@ -28,12 +28,12 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 
 		var md MeterData
 		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
-			slog.Error("unmarshal error", slog.Any("error", err))
+			s.Logger.Error("unmarshal error", slog.Any("error", err))
 			return
 		}
 
 		if _, err := s.Charge(context.Background(), md); err != nil {
-			slog.Error("change error", slog.Any("error", err))
+			s.Logger.Error("charge error", slog.Any("raw", md), slog.Any("error", err))
 		}
 	}
 }
@@ -44,12 +44,12 @@ func RawHandle() mqtt.MessageHandler {
 			return
 		}
 
-		var cd ChargeData
-		if err := cd.UnmarshalBinary(msg.Payload()); err != nil {
+		var md MeterData
+		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
 			slog.Error("unmarshal error", slog.Any("error", err))
 			return
 		}
-		slog.Info("raw", slog.Any("chargeDate", cd))
+		slog.Info("raw", slog.Any("raw", md))
 	}
 }
 

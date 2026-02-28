@@ -31,17 +31,19 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	// step 2 load
 	l, _, err := s.DBx.LoadLast(ctx, cd.Code, cd.Type)
 	if err != nil {
+		s.Logger.ErrorContext(ctx, "loadLast error", slog.Any("chargeData", cd), slog.Any("error", err))
 		return nilCDR, err
 	}
 	last := MakeLast(l)
 
 	// step 3 verify and check
-	if !s.VerifyFunc(ctx, last, cd) {
-		s.Logger.DebugContext(ctx, "verify", slog.Any("last", last), slog.Any("cd", cd))
+	if vr, ok := s.VerifyFunc(ctx, last, cd); !ok {
+		s.Logger.DebugContext(ctx, "verify", slog.Any("last", last), slog.Any("cd", cd), slog.Any("return", vr))
 		return nilCDR, nil
 	}
 
 	if err := s.CheckFunc(ctx, last, cd); err != nil {
+		s.Logger.ErrorContext(ctx, "check error", slog.Any("last", last), slog.Any("chargeData", cd), slog.Any("error", err))
 		return nilCDR, err
 	}
 
@@ -59,5 +61,8 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 
 	// step 6 save
 	_, err = s.DBx.SaveCurrent(ctx, nc)
+	if err != nil {
+		s.Logger.ErrorContext(ctx, "save error", slog.Any("ncdr", nc), slog.Any("error", err))
+	}
 	return nc, err
 }
