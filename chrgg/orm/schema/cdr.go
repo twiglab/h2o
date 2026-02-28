@@ -64,7 +64,7 @@ func (CDR) Fields() []ent.Field {
 		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("project").Immutable().SchemaType(varchar(64)).Comment("项目编号"),
 
-		field.String("memo").Immutable().SchemaType(varchar(64)).Comment("备注"),
+		field.String("memo").Immutable().Optional().SchemaType(varchar(64)).Comment("备注"),
 	}
 }
 

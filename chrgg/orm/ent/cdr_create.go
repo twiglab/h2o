@@ -193,6 +193,14 @@ func (_c *CDRCreate) SetMemo(v string) *CDRCreate {
 	return _c
 }
 
+// SetNillableMemo sets the "memo" field if the given value is not nil.
+func (_c *CDRCreate) SetNillableMemo(v *string) *CDRCreate {
+	if v != nil {
+		_c.SetMemo(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *CDRCreate) SetID(v string) *CDRCreate {
 	_c.mutation.SetID(v)
@@ -361,9 +369,6 @@ func (_c *CDRCreate) check() error {
 	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "CDR.project"`)}
-	}
-	if _, ok := _c.mutation.Memo(); !ok {
-		return &ValidationError{Name: "memo", err: errors.New(`ent: missing required field "CDR.memo"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := cdr.IDValidator(v); err != nil {

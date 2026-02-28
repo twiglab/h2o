@@ -1159,6 +1159,16 @@ func MemoHasSuffix(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldHasSuffix(FieldMemo, v))
 }
 
+// MemoIsNil applies the IsNil predicate on the "memo" field.
+func MemoIsNil() predicate.CDR {
+	return predicate.CDR(sql.FieldIsNull(FieldMemo))
+}
+
+// MemoNotNil applies the NotNil predicate on the "memo" field.
+func MemoNotNil() predicate.CDR {
+	return predicate.CDR(sql.FieldNotNull(FieldMemo))
+}
+
 // MemoEqualFold applies the EqualFold predicate on the "memo" field.
 func MemoEqualFold(v string) predicate.CDR {
 	return predicate.CDR(sql.FieldEqualFold(FieldMemo, v))

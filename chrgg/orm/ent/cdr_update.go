@@ -87,6 +87,9 @@ func (_u *CDRUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
 	}
+	if _u.mutation.MemoCleared() {
+		_spec.ClearField(cdr.FieldMemo, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cdr.Label}
@@ -195,6 +198,9 @@ func (_u *CDRUpdateOne) sqlSave(ctx context.Context) (_node *CDR, err error) {
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(cdr.FieldUpdateTime, field.TypeTime, value)
+	}
+	if _u.mutation.MemoCleared() {
+		_spec.ClearField(cdr.FieldMemo, field.TypeString)
 	}
 	_node = &CDR{config: _u.config}
 	_spec.Assign = _node.assignValues
