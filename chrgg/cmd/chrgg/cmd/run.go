@@ -34,12 +34,7 @@ func run() error {
 
 	c := mqttcli()
 
-	cs := &chrgg.ChargeServer{
-		CdrWAL: cdrWal(),
-		DBx:    &chrgg.DBx{Cli: entcli()},
-		ChargEngine:    chrgg.EngZ,
-	}
-
+	cs := server()
 	t := c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
 	t.Wait()
 

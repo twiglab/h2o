@@ -121,3 +121,13 @@ func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
 	}
 	return db, c
 }
+
+func server() *chrgg.ChargeServer {
+	return &chrgg.ChargeServer{
+		CdrWAL:      cdrWal(),
+		DBx:         &chrgg.DBx{Cli: entcli()},
+		ChargEngine: chrgg.EngZ,
+		CheckFunc:   chrgg.DefaultCheck,
+		VerifyFunc:  chrgg.DefaultVerify,
+	}
+}
