@@ -23,6 +23,8 @@ type ChargeData struct {
 	MeterData
 }
 
+var firstCDRDay = time.Date(2000, 1, 1, 0, 0, 0, 0, time.Local)
+
 type LastCDR struct {
 	lastcdr   *ent.CDR
 	DataValue int64
@@ -33,7 +35,7 @@ type LastCDR struct {
 
 func MakeLast(lcdr *ent.CDR) LastCDR {
 	if lcdr == nil {
-		return LastCDR{DataTime: time.Now(), IsFirst: true}
+		return LastCDR{DataTime: firstCDRDay, IsFirst: true}
 	}
 
 	return LastCDR{
