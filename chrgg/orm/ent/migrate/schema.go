@@ -58,6 +58,16 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{TNhCdrColumns[10]},
 			},
+			{
+				Name:    "cdr_pos_code",
+				Unique:  false,
+				Columns: []*schema.Column{TNhCdrColumns[17]},
+			},
+			{
+				Name:    "cdr_project",
+				Unique:  false,
+				Columns: []*schema.Column{TNhCdrColumns[18]},
+			},
 		},
 	}
 	// Tables holds all the tables in the schema.

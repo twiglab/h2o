@@ -80,6 +80,8 @@ func (CDR) Indexes() []ent.Index {
 		index.Fields("device_type"),
 		index.Fields("data_code").Unique(),
 		index.Fields("data_time"),
+		index.Fields("pos_code"),
+		index.Fields("project"),
 	}
 }
 
