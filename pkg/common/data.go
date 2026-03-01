@@ -67,7 +67,3 @@ type ModbusGw struct {
 	Gateway
 	Unit uint8 `json:"uint"`
 }
-
-type Site struct {
-	SiteCode string `json:"site_code,omitempty"`
-}
