@@ -16,6 +16,9 @@ func (v VerifyReturn) String() string {
 type CheckFunc func(context.Context, LastCDR, ChargeData) error
 type VerifyFunc func(ctx context.Context, last LastCDR, cd ChargeData) (VerifyReturn, bool)
 
+// type SkipFunc func(ctx context.Context, last LastCDR, cd ChargeData) (VerifyReturn, bool)
+// type VerifyFunc func(ctx context.Context, last LastCDR, cd ChargeData, cdr CDR) (VerifyReturn, bool)
+
 func DefaultCheck(ctx context.Context, last LastCDR, cd ChargeData) error {
 	if cd.DataCode == last.DataCode {
 		return ErrDataCodeDup
@@ -27,7 +30,7 @@ func DefaultCheck(ctx context.Context, last LastCDR, cd ChargeData) error {
 }
 
 func DefaultVerify(ctx context.Context, last LastCDR, cd ChargeData) (VerifyReturn, bool) {
-	if MinOfDay(hourMin(cd.DataTime)) >= 1365 {
+	if MinPerDay(cd.DataTime) >= m_22_45 {
 		return VerifyReturn{}, true
 	}
 

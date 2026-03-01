@@ -2,11 +2,46 @@ package chrgg
 
 import (
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
 var nilCDR CDR
 
 var RulNew = zr{t: "new", c: "new"}
+
+var firstCDRDay = time.Date(2000, 1, 1, 0, 0, 0, 0, time.Local)
+
+type LastCDR struct {
+	lastcdr *ent.CDR
+
+	DataValue int64
+	DataCode  string
+	DataTime  time.Time
+	Value     int64
+
+	IsFirst bool
+}
+
+func MakeLast(lcdr *ent.CDR) LastCDR {
+	if lcdr == nil {
+		return LastCDR{
+			DataCode: firstDataCode(),
+			DataTime: firstCDRDay,
+			IsFirst:  true,
+		}
+	}
+
+	return LastCDR{
+		lastcdr: lcdr,
+
+		DataValue: lcdr.DataValue,
+		DataCode:  lcdr.DataCode,
+		DataTime:  lcdr.DataTime,
+		Value:     lcdr.Value,
+	}
+}
 
 type CDR struct {
 	DeviceCode string
@@ -64,6 +99,11 @@ func CalcCDR(last LastCDR, cd ChargeData, cr ChargeRuler) CDR {
 
 		Memo: cr.Memo(),
 	}
+}
+
+func firstDataCode() string {
+	u, _ := uuid.NewV7()
+	return u.String()
 }
 
 func calcFee(lastV, currV int64, unitFen int64) (
