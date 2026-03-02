@@ -12,6 +12,7 @@ import (
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/wal"
 )
 
@@ -75,15 +76,11 @@ func webaddr() string {
 }
 
 func topics() map[string]byte {
-	subs := viper.GetStringSlice("chrgg.mqtt.topics")
-	if len(subs) == 0 {
-		log.Fatal("topic is 0")
+	return map[string]byte{
+		common.WaterTopic:       0x00,
+		common.ElectricityTopic: 0x00,
+		common.GasTopic:         0x00,
 	}
-	m := make(map[string]byte)
-	for _, t := range subs {
-		m[t] = 0x00
-	}
-	return m
 }
 
 func entcli() *ent.Client {

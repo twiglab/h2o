@@ -9,7 +9,7 @@ type Meter struct {
 }
 
 func (m Meter) Topic() string {
-	return "h2o/" + m.Code + "/" + m.Type
+	return common.Topic(m.Device)
 }
 
 type ElectricityMeter struct {
@@ -27,5 +27,14 @@ type WaterMeter struct {
 }
 
 func (m WaterMeter) MarshalBinary() (data []byte, err error) {
+	return marshal(m)
+}
+
+type GasMeter struct {
+	Meter
+	Data common.Water `json:"data"`
+}
+
+func (m GasMeter) MarshalBinary() (data []byte, err error) {
 	return marshal(m)
 }

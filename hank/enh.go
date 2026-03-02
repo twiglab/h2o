@@ -18,7 +18,7 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 		Meter: Meter{
 			Device: common.Device{
 				Code: dd.No,
-				Type: dd.Type,
+				Type: common.WATER,
 				Name: dd.No,
 
 				DataTime: parseTime(dd.DataTime),
@@ -42,17 +42,9 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 				F5: meta.F5,
 			},
 		},
-		Data: waterData(dd.DataJson),
+		Data: WaterData(dd.DataJson),
 	}
 	return d
-}
-
-func waterData(dm DataMix) common.Water {
-	return common.Water{
-		MeterValue: common.MeterValue{
-			DataValue: str2I64(dm.DataValue, 100),
-		},
-	}
 }
 
 func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
@@ -63,7 +55,7 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 			Device: common.Device{
 				SN:   meta.SN,
 				Code: dd.No,
-				Type: dd.Type,
+				Type: common.ELECTRICITY,
 				Name: meta.Name,
 
 				DataTime: parseTime(dd.DataTime),
@@ -89,12 +81,55 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 			},
 		},
 
-		Data: electricityData(dd.DataJson),
+		Data: ElectricityData(dd.DataJson),
 	}
 	return d
 }
 
-func electricityData(dm DataMix) common.Electricity {
+func (e *Enh) ToGas(dd DeviceData) GasMeter {
+	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
+	d := GasMeter{
+		Meter: Meter{
+			Device: common.Device{
+				Code: dd.No,
+				Type: common.GAS,
+				Name: dd.No,
+
+				DataTime: parseTime(dd.DataTime),
+				DataCode: dd.DataCode,
+
+				Status: 0,
+			},
+			Pos: common.Pos{
+				Project:   meta.Project,
+				PosCode:   meta.PosCode,
+				Building:  meta.Building,
+				FloorCode: meta.FloorCode,
+				AreaCode:  meta.AreaCode,
+			},
+
+			Flag: common.Flag{
+				F1: meta.F1,
+				F2: meta.F2,
+				F3: meta.F3,
+				F4: meta.F4,
+				F5: meta.F5,
+			},
+		},
+		Data: GasData(dd.DataJson),
+	}
+	return d
+}
+
+func WaterData(dm DataMix) common.Water {
+	return common.Water{
+		MeterValue: common.MeterValue{
+			DataValue: str2I64(dm.DataValue, 100),
+		},
+	}
+}
+
+func ElectricityData(dm DataMix) common.Electricity {
 	var ele common.Electricity
 
 	ele.DataValue = str2I64(dm.DataValue, 1)
@@ -124,6 +159,14 @@ func electricityData(dm DataMix) common.Electricity {
 	}
 
 	return ele
+}
+
+func GasData(dm DataMix) common.Water {
+	return common.Water{
+		MeterValue: common.MeterValue{
+			DataValue: str2I64(dm.DataValue, 100),
+		},
+	}
 }
 
 func str2I64(s string, i float64) int64 {
