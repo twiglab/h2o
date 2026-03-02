@@ -12,7 +12,7 @@ type ChargeServer struct {
 	CdrWAL      *wal.WAL
 	ChargEngine ChargeEngine
 	CheckFunc   CheckFunc
-	VerifyFunc  VerifyFunc
+	SkipFunc    SkipFunc
 
 	Logger *slog.Logger
 }
@@ -40,9 +40,9 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 		return nilCDR, err
 	}
 
-	// step 3 verify and check
-	if vr, ok := s.VerifyFunc(ctx, last, cd); !ok {
-		s.Logger.DebugContext(ctx, "verify", slog.Any("last", last), slog.Any("cd", cd), slog.Any("return", vr))
+	// step 3 skip and check
+	if r := s.SkipFunc(ctx, last, cd); r.OK {
+		s.Logger.DebugContext(ctx, "skip", slog.Any("last", last), slog.Any("cd", cd), slog.Any("result", r))
 		return nilCDR, nil
 	}
 

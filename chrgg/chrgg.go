@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-const CLIENT_ID = "chrgg"
-
 type ChargeErr struct {
 	Code    string
 	Type    string
@@ -25,5 +23,3 @@ func MinPerDay(t time.Time) int {
 	h, m, _ := t.Clock()
 	return h*60 + m
 }
-
-var m_22_45 = 1365 // 22:45分的分钟数

@@ -9,6 +9,8 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+const CLIENT_ID = "chrgg"
+
 type MeterData struct {
 	common.Device
 	Pos  common.Pos        `json:"pos,omitzero"`
