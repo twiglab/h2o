@@ -17,6 +17,8 @@ func DefaultCheck(ctx context.Context, last LastCDR, cd ChargeData) error {
 	return nil
 }
 
+var pass = SkipReturn{}
+
 type SkipReturn struct {
 	Message string
 	OK      bool
@@ -27,7 +29,7 @@ func NewSkipReturn(msg string) SkipReturn {
 }
 
 func SkipPass() SkipReturn {
-	return SkipReturn{}
+	return pass
 }
 
 func (v SkipReturn) String() string {
@@ -51,7 +53,7 @@ func DefaultSkipChain() SkipFunc {
 	return NewSkipChain(Skip22h45m, SkipValueLess)
 }
 
-var tm_22h45m = 1365 // 22:45分的分钟数
+const tm_22h45m = 1365 // 22:45分的分钟数
 
 func Skip22h45m(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn {
 	if MinPerDay(cd.DataTime) >= tm_22h45m {
@@ -59,7 +61,6 @@ func Skip22h45m(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn {
 			return NewSkipReturn("上一条已经存在，且无变化")
 		}
 	}
-
 	return SkipPass()
 }
 

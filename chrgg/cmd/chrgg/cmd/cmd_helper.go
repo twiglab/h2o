@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cmp"
 	"context"
 	"log"
 	"log/slog"
@@ -70,10 +71,7 @@ func mqttcli() mqtt.Client {
 
 func webaddr() string {
 	addr := viper.GetString("chrgg.web.addr")
-	if addr != "" {
-		return addr
-	}
-	return ":10007"
+	return cmp.Or(addr, ":10007")
 }
 
 func topics() map[string]byte {
