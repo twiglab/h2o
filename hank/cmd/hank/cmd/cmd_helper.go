@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"cmp"
 	"context"
 	"log"
 	"log/slog"
@@ -94,4 +95,10 @@ func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
 func enh() *hank.Enh {
 	m, _ := ddb()
 	return &hank.Enh{DDB: m}
+}
+
+func playback() *hank.PlayBack {
+	f := viper.GetString("hank.playback.file")
+	logf := cmp.Or(f, "logs/playback/record.log")
+	return hank.NewPlayBack(logf)
 }

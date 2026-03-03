@@ -2,6 +2,7 @@ package hank
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log/slog"
 	"os"
@@ -36,4 +37,24 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 	}
 	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
 	return slog.New(h)
+}
+
+type PlayBack struct {
+	out io.Writer
+}
+
+func NewPlayBack(logf string) *PlayBack {
+	o := &lumberjack.Logger{
+		Filename:   logf,
+		MaxSize:    10, // megabytes
+		MaxBackups: 10,
+		MaxAge:     10, //days
+	}
+	return &PlayBack{
+		out: o,
+	}
+}
+
+func (p *PlayBack) Record(ctx context.Context, data string) {
+	fmt.Fprintln(p.out, data)
 }

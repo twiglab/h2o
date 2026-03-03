@@ -41,8 +41,9 @@ func run() error {
 			Sender: sender(),
 			EP:     ep,
 		},
-		Logger: serverLog(),
-		Enh:    enh(),
+		Logger:   serverLog(),
+		Enh:      enh(),
+		PlayBack: playback(),
 	}
 
 	http.HandleFunc("/eyes/all", hank.EyesAll(ep))

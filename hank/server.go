@@ -33,6 +33,8 @@ type Server struct {
 	BaseCtx func(net.Conn) context.Context
 
 	Logger *slog.Logger
+
+	PlayBack *PlayBack
 }
 
 func (s *Server) RunAt(l net.Listener) error {
@@ -100,6 +102,8 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 	)
 
 	for sc.Scan() {
+		s.PlayBack.Record(ctx, sc.Text())
+
 		var sd SyncData
 		if err := unmarshal(sc.Bytes(), &sd); err != nil {
 			s.Logger.ErrorContext(ctx, "unmarshal SyncData error",
