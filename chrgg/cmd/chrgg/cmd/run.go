@@ -34,8 +34,8 @@ func run() error {
 
 	c := mqttcli()
 
-	cs := server()
-	t := c.SubscribeMultiple(topics(), chrgg.HandleChange(cs))
+	svr := cs()
+	t := c.SubscribeMultiple(topics(), chrgg.HandleChange(svr))
 	t.Wait()
 
 	if err := t.Error(); err != nil {

@@ -99,9 +99,9 @@ func dbx() *chrgg.DBx {
 }
 
 func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
-	load := viper.GetString("chrgg.abm.load")
-	get := viper.GetString("chrgg.abm.get")
-	list := viper.GetString("chrgg.abm.list")
+	load := viper.GetString("chrgg.ce.alone.load")
+	get := viper.GetString("chrgg.ce.alone.get")
+	list := viper.GetString("chrgg.ce.alone.list")
 
 	c := abm.Conf{
 		LoadSQL: load,
@@ -121,11 +121,23 @@ func ddb() (*abm.DuckABM[string, chrgg.AloneRuler], abm.Conf) {
 	return db, c
 }
 
-func server() *chrgg.ChargeServer {
+func ce() chrgg.ChargeEngine {
+	b := viper.GetString("chrgg.ce.backend")
+	switch b {
+	case "alone":
+		log.Println("ce: alone")
+		feedb, _ := ddb()
+		return chrgg.NewAloneEngine(feedb)
+	}
+	log.Println("ce: EngZ")
+	return chrgg.EngZ
+}
+
+func cs() *chrgg.ChargeServer {
 	return &chrgg.ChargeServer{
 		CdrWAL:      cdrWal(),
 		DBx:         dbx(),
-		ChargEngine: chrgg.EngZ,
+		ChargEngine: ce(),
 		CheckFunc:   chrgg.DefaultCheck,
 		SkipFunc:    chrgg.DefaultSkipChain(),
 
