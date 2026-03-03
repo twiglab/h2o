@@ -2,6 +2,7 @@ package abm
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -120,8 +121,16 @@ func (d *DuckABM[K, T]) List(ctx context.Context) (ds []T, err error) {
 
 func (d *DuckABM[K, T]) Get(ctx context.Context, code K) (data T, ok bool, err error) {
 	err = d.dbx.GetContext(ctx, &data, d.getQry, code)
-	ok = (err == nil)
-	return
+	if err == nil {
+		ok = true
+		return
+	}
+	if errors.Is(err, sql.ErrNoRows) {
+		err = nil
+		ok = false
+		return
+	}
+	return // ok: false , err != nil
 }
 
 func (d *DuckABM[K, T]) Set(_ context.Context, _ K, _ T) (err error)             { return }
