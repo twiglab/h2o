@@ -11,9 +11,9 @@ var RulAloneErr = zr{t: "error", c: "alone"}
 var RulAloneNoFound = zr{t: "notfound", c: "alone"}
 
 type AloneRuler struct {
-	Code    string
-	FeeFen  int64  `db:"fee_fen"`
-	PosCode string `db:"pos_code"`
+	Code    string `json:"code" db:"code"`
+	FeeFen  int64  `json:"fee_fen" db:"fee_fen"`
+	PosCode string `json:"pos_code" db:"pos_code"`
 }
 
 func (l AloneRuler) UnitFeeFen() int64 {
