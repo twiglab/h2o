@@ -14,14 +14,14 @@ var RulNew = zr{t: "new", c: "new"}
 var firstCDRDay = time.Date(2000, 1, 1, 0, 0, 0, 0, time.Local)
 
 type LastCDR struct {
-	lastcdr *ent.CDR
+	lastcdr *ent.CDR `json:"-"`
 
-	DataValue int64
-	DataCode  string
-	DataTime  time.Time
-	Value     int64
+	DataValue int64     `json:"data_value"`
+	DataCode  string    `json:"data_code"`
+	DataTime  time.Time `json:"data_time"`
+	Value     int64     `json:"value"`
 
-	IsFirst bool
+	IsFirst bool `json:"is_first"`
 }
 
 func MakeLast(lcdr *ent.CDR) LastCDR {
