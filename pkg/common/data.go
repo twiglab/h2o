@@ -35,10 +35,9 @@ type Electricity struct {
 	CurrentB int64 `json:"current_b,omitempty"`
 	CurrentC int64 `json:"current_c,omitempty"`
 
-	TotalActivePower   int64 `json:"total_active_power,omitempty"`   // 总有功功率  P
-	TotalReactivePower int64 `json:"total_reactive_power,omitempty"` // 总无功功率  Q
-	TotalApperentPower int64 `json:"total_apperent_power,omitempty"` // 总视在功率  S
-	TotalPowerFactor   int64 `json:"total_power_factor,omitempty"`   // 功率因数 PF = p/s
+	ActivePowerTotal   int64 `json:"active_power_total,omitempty"`   // 总有功功率  P
+	ReactivePowerTotal int64 `json:"reactive_power_total,omitempty"` // 总无功功率  Q
+	ApparentPowerTotal int64 `json:"apparent_power_total,omitempty"` // 总视在功率  S
 }
 
 type Water struct {

@@ -154,8 +154,8 @@ func ElectricityData(dm DataMix) common.Electricity {
 		ele.CurrentC = str2I64(v, 1)
 	}
 
-	if v, ok := dm.ExtraData["total-active-power"]; ok {
-		ele.TotalActivePower = str2I64(v, 100)
+	if v, ok := dm.ExtraData[active_power_total]; ok {
+		ele.ActivePowerTotal = str2I64(v, 100)
 	}
 
 	return ele

@@ -59,7 +59,7 @@ func (ei *ElectricityItem) fill() {
 		ei.Data.CurrentB = max(ei.Data.CurrentB, ele.CurrentB)
 		ei.Data.CurrentC = max(ei.Data.CurrentC, ele.CurrentC)
 
-		ei.Data.TotalActivePower = max(ei.Data.TotalActivePower, ele.TotalActivePower)
+		ei.Data.ActivePowerTotal = max(ei.Data.ActivePowerTotal, ele.ActivePowerTotal)
 	}
 
 	ei.L = ei.window.l
