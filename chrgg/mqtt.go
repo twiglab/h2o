@@ -16,6 +16,8 @@ type MeterData struct {
 	Pos  common.Pos        `json:"pos,omitzero"`
 	Data common.MeterValue `json:"data"`
 	Flag common.Flag       `json:"flag,omitzero"`
+
+	Topic string `json:"topic"`
 }
 
 func (d *MeterData) UnmarshalBinary(data []byte) error {
@@ -34,6 +36,7 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 			return
 		}
 
+		md.Topic = msg.Topic()
 		if _, err := s.Charge(context.Background(), md); err != nil {
 			s.Logger.Error("charge error", slog.Any("raw", md), slog.Any("error", err))
 		}
