@@ -122,9 +122,9 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 
 		switch sd.Type {
 		case TypeDeviceData:
-			go doDeviceData(ctx, sd, s)
+			doDeviceData(ctx, sd, s)
 		case TypeDeviceStatus:
-			go doDeviceStatus(ctx, sd, s)
+			doDeviceStatus(ctx, sd, s)
 		default:
 			s.Logger.InfoContext(ctx, "ignore type", slog.String("type", sd.Type))
 		}
