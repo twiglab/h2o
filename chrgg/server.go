@@ -54,7 +54,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	// setp 4 get Charge ruler
 	ru, err := s.ChargEngine.GetRuler(ctx, cd)
 	if err != nil {
-		s.Logger.ErrorContext(ctx, "GerRuler error", slog.Any("error", err), slog.Any("cd", cd))
+		s.Logger.ErrorContext(ctx, "GetRuler error", slog.Any("error", err), slog.Any("cd", cd))
 		return nilCDR, err
 	}
 
