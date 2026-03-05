@@ -61,6 +61,8 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	// setp 5 cale
 	nc := CalcCDR(last, cd, ru)
 
+	s.Logger.InfoContext(ctx, "charge ok", slog.Any("last", last), slog.Any("chargeData", cd), slog.Any("rule", ru), slog.Any("cdr", nc))
+
 	// step 6 write cdr
 	s.CdrWAL.WriteLogContext(ctx, wal.Any("cdr", nc), wal.Any("last", last), wal.Any("chargeData", cd), wal.Any("chargeRuler", ru))
 

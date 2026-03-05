@@ -140,7 +140,7 @@ func cs() *chrgg.ChargeServer {
 		DBx:         dbx(),
 		ChargEngine: ce(),
 		CheckFunc:   chrgg.DefaultCheck,
-		SkipFunc:    chrgg.DefaultSkipChain(),
+		SkipFunc:    chrgg.DefaultSkip,
 
 		Logger: serverLog(),
 	}
