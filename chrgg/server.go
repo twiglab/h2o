@@ -41,7 +41,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 	}
 
 	// step 3 skip and check
-	if r := s.SkipFunc(ctx, last, cd); r.OK {
+	if r := s.SkipFunc(ctx, last, cd); r.Skip {
 		s.Logger.DebugContext(ctx, "skip", slog.Any("last", last), slog.Any("cd", cd), slog.Any("result", r))
 		return nilCDR, nil
 	}

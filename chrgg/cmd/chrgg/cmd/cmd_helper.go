@@ -87,6 +87,7 @@ func entcli() *ent.Client {
 	name := viper.GetString("chrgg.db.name")
 	dsn := viper.GetString("chrgg.db.dsn")
 
+	//cli, err := orm.OpenEntClient(name, dsn, ent.Debug())
 	cli, err := orm.OpenEntClient(name, dsn)
 	if err != nil {
 		log.Fatal(err)

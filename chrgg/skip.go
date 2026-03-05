@@ -6,17 +6,17 @@ import (
 
 type SkipReturn struct {
 	Message string
-	OK      bool
+	Skip    bool
 }
 
-func NewSkipReturn(msg string) SkipReturn {
-	return SkipReturn{Message: msg, OK: true}
+func SkipOK(msg string) SkipReturn {
+	return SkipReturn{Message: msg, Skip: true}
 }
 
-var pass = SkipReturn{OK: false}
+var noSkip = SkipReturn{Skip: false}
 
-func SkipPass() SkipReturn {
-	return pass
+func NoSkip() SkipReturn {
+	return noSkip
 }
 
 func (v SkipReturn) String() string {
@@ -28,36 +28,39 @@ type SkipFunc func(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn
 func NewSkipChain(fs ...SkipFunc) SkipFunc {
 	return func(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn {
 		for _, f := range fs {
-			if r := f(ctx, last, cd); !r.OK {
+			if r := f(ctx, last, cd); r.Skip {
 				return r
 			}
 		}
-		return SkipPass()
+		return NoSkip()
 	}
 }
 
 func DefaultSkipChain() SkipFunc {
-	return NewSkipChain(Skip22h45m, SkipValueLess)
+	return NewSkipChain(
+		Skip22h45m,
+		SkipValueLess,
+	)
 }
 
 const tm_22h45m = 1365 // 22:45分的分钟数
 
 func Skip22h45m(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn {
 	if MinPerDay(cd.DataTime) >= tm_22h45m {
-		if MinPerDay(last.DataTime) >= tm_22h45m && !IsValueChange(last, cd) {
-			return NewSkipReturn("上一条已经存在，且无变化")
+		if MinPerDay(last.DataTime) >= tm_22h45m && !IsValueChangeLeeway(last, cd, 100) {
+			return SkipOK("上一条已经存在，且无变化")
 		}
 	}
-	return SkipPass()
+	return NoSkip()
 }
 
 func SkipValueLess(ctx context.Context, last LastCDR, cd ChargeData) SkipReturn {
-	if !IsValueChange(last, cd) {
-		return NewSkipReturn("小于一个读数")
+	if !IsValueChangeLeeway(last, cd, 100) {
+		return SkipOK("小于一个读数")
 	}
-	return SkipPass()
+	return NoSkip()
 }
 
-func IsValueChange(last LastCDR, cd ChargeData) bool {
-	return (cd.Data.DataValue - last.DataValue) > 100
+func IsValueChangeLeeway(last LastCDR, cd ChargeData, leeway int64) bool {
+	return (cd.Data.DataValue - last.DataValue) > leeway
 }
