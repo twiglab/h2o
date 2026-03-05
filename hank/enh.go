@@ -1,6 +1,7 @@
 package hank
 
 import (
+	"cmp"
 	"context"
 	"strconv"
 	"time"
@@ -19,7 +20,7 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 			Device: common.Device{
 				Code: dd.No,
 				Type: common.WATER,
-				Name: dd.No,
+				Name: cmp.Or(meta.Name, dd.No),
 
 				DataTime: parseTime(dd.DataTime),
 				DataCode: dd.DataCode,
@@ -56,7 +57,7 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 				SN:   meta.SN,
 				Code: dd.No,
 				Type: common.ELECTRICITY,
-				Name: meta.Name,
+				Name: cmp.Or(meta.Name, dd.No),
 
 				DataTime: parseTime(dd.DataTime),
 				DataCode: dd.DataCode,
