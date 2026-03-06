@@ -38,5 +38,5 @@ func DefaultSkip(_ context.Context, last LastCDR, cd ChargeData) SkipReturn {
 }
 
 func IsValueChangeLeeway(last LastCDR, cd ChargeData, leeway int64) bool {
-	return (cd.Data.DataValue - last.DataValue) > leeway
+	return (cd.Data.DataValue - last.DataValue) >= leeway
 }
