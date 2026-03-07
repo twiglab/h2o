@@ -27,21 +27,23 @@ func logLevel(s string) slog.Level {
 }
 
 func rootLog() *slog.Logger {
-	logF := viper.GetString("log.root.file")
-	logL := viper.GetString("log.root.level")
+	rlogF := viper.GetString("log.root.file")
+	rlogL := viper.GetString("log.root.level")
+	logL := viper.GetString("log.level")
 
-	level := logLevel(logL)
-	log := hank.NewLog(logF, level)
+	level := logLevel(cmp.Or(rlogL, logL))
+	log := hank.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	logF := viper.GetString("log.server.file")
-	logL := viper.GetString("log.server.level")
+	sLogF := viper.GetString("log.server.file")
+	sLogL := viper.GetString("log.server.level")
+	logL := viper.GetString("log.level")
 
-	level := logLevel(logL)
-	l := hank.NewLog(logF, level)
+	level := logLevel(cmp.Or(sLogL, logL))
+	l := hank.NewLog(sLogF, level)
 	return l
 }
 
@@ -70,9 +72,9 @@ func sender() hank.Sender {
 }
 
 func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
-	load := viper.GetString("hank.abm.load")
-	get := viper.GetString("hank.abm.get")
-	list := viper.GetString("hank.abm.list")
+	load := viper.GetString("hank.meta.load")
+	get := viper.GetString("hank.meta.get")
+	list := viper.GetString("hank.meta.list")
 
 	c := abm.Conf{
 		LoadSQL: load,

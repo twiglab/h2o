@@ -31,21 +31,23 @@ func logLevel(s string) slog.Level {
 }
 
 func rootLog() *slog.Logger {
-	logF := viper.GetString("log.root.file")
-	logL := viper.GetString("log.root.level")
+	rlogF := viper.GetString("log.root.file")
+	rlogL := viper.GetString("log.root.level")
+	logL := viper.GetString("log.level")
 
-	level := logLevel(logL)
-	log := chrgg.NewLog(logF, level)
+	level := logLevel(cmp.Or(rlogL, logL))
+	log := chrgg.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	logF := viper.GetString("log.server.file")
-	logL := viper.GetString("log.server.level")
+	sLogF := viper.GetString("log.server.file")
+	sLogL := viper.GetString("log.server.level")
+	logL := viper.GetString("log.level")
 
-	level := logLevel(logL)
-	l := chrgg.NewLog(logF, level)
+	level := logLevel(cmp.Or(sLogL, logL))
+	l := chrgg.NewLog(sLogF, level)
 	return l
 }
 
