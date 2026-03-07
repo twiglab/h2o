@@ -4,6 +4,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/hank"
 
 	"github.com/spf13/cobra"
@@ -46,8 +47,9 @@ func run() error {
 		PlayBack: playback(),
 	}
 
-	http.HandleFunc("/eyes/all", hank.EyesAll(ep))
-	go http.ListenAndServe(viper.GetString("hank.web.addr"), nil)
+	mux := chi.NewMux()
+	mux.Mount("/eyes", hank.EyesMux(ep))
+	go http.ListenAndServe(viper.GetString("hank.web.addr"), mux)
 
 	return s.Run()
 }
