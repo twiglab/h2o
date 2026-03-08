@@ -4,7 +4,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/hank"
 
 	"github.com/spf13/cobra"
@@ -33,23 +32,19 @@ func init() {
 func run() error {
 
 	_ = rootLog()
-	ep := hank.NewElectricityPacket()
 
 	s := &hank.Server{
 		Addr: viper.GetString("hank.server.addr"),
 		Hub: &hank.Hub{
 			WAL:    wallog(),
 			Sender: sender(),
-			EP:     ep,
 		},
 		Logger:   serverLog(),
 		Enh:      enh(),
 		PlayBack: playback(),
 	}
 
-	mux := chi.NewMux()
-	mux.Mount("/eyes", hank.EyesMux(ep))
-	go http.ListenAndServe(viper.GetString("hank.web.addr"), mux)
+	go http.ListenAndServe(viper.GetString("hank.web.addr"), nil)
 
 	return s.Run()
 }

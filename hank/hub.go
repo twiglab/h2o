@@ -9,12 +9,9 @@ import (
 type Hub struct {
 	WAL    *wal.WAL
 	Sender Sender
-
-	EP *ElectricityPacket
 }
 
 func (h *Hub) HandleDeviceStatus(ctx context.Context, data DeviceStatus) error {
-	h.EP.SetStatus(data.No, Online(data.Status))
 	return nil
 }
 
@@ -23,8 +20,6 @@ func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) erro
 		wal.String("type", data.Type),
 		wal.Any("data", data),
 		wal.String("topic", data.Topic()))
-
-	h.EP.Merge(data)
 
 	return h.Sender.SendData(ctx, data)
 }
