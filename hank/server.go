@@ -41,22 +41,8 @@ func (s *Server) RunAt(l net.Listener) error {
 	loop, err := netpoll.NewEventLoop(
 		at(serve),
 
-		netpoll.WithOnDisconnect(func(ctx context.Context, conn netpoll.Connection) {
-			id := fromCtx[*cid](ctx, ck)
-			s.Logger.DebugContext(ctx, "onDisconnect",
-				slog.String("remoteAddr", conn.RemoteAddr().String()),
-				slog.String("cid", id.String()),
-			)
-		}),
-
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
 			sk := &cid{s: s, id: uuid.NewString()}
-
-			s.Logger.DebugContext(ctx, "onConnect",
-				slog.String("remoteAddr", conn.RemoteAddr().String()),
-				slog.String("cid", sk.String()),
-			)
-
 			return context.WithValue(ctx, ck, sk)
 		}),
 
