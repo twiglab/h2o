@@ -2,9 +2,7 @@ package common
 
 import "strings"
 
-func Topic(d Device) string {
-	return "h2o/" + d.Code + "/" + d.Type
-}
+const H2O = "h2o"
 
 const (
 	WaterTopic       = "h2o/+/W"
@@ -12,8 +10,18 @@ const (
 	GasTopic         = "h2o/+/G"
 )
 
+func Topic(d Device) string {
+	return H2O + "/" + d.Code + "/" + d.Type
+}
+
+func TopicPart(topic string) (string, string, string) {
+	parts := strings.SplitN(topic, "/", 3)
+	_ = parts[2]
+	return parts[0], parts[1], parts[2]
+}
+
 func TopicType(topic string) string {
-	t, _ := strings.CutSuffix(topic, "/")
+	_, _, t := TopicPart(topic)
 	switch t {
 	case WATER:
 		return WaterTopic
