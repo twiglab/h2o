@@ -5,6 +5,12 @@ import "strings"
 const H2O = "h2o"
 
 const (
+	ELECTRICITY = "E"
+	WATER       = "W"
+	GAS         = "G"
+)
+
+const (
 	WaterTopic       = "h2o/+/W"
 	ElectricityTopic = "h2o/+/E"
 	GasTopic         = "h2o/+/G"
