@@ -132,12 +132,24 @@ func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
 	for _, dd := range ddl {
 		switch dd.Type {
 		case ELECTRICITY:
-			if err := s.Hub.HandleElectricity(ctx, s.Enh.ToElectricity(dd)); err != nil {
-				s.Logger.ErrorContext(ctx, "handleElectricity error", slog.Any("error", err))
+			em, err := s.Enh.ToElecty(dd)
+			if err != nil {
+				s.Logger.ErrorContext(ctx, "Enh.ToElecty error", slog.Any("raw", dd), slog.Any("error", err))
+				return
+			}
+			if err := s.Hub.HandleElectricity(ctx, em); err != nil {
+				s.Logger.ErrorContext(ctx, "handleElectricity error", slog.Any("data", em), slog.Any("error", err))
+				return
 			}
 		case WATER:
-			if err := s.Hub.HandleWater(ctx, s.Enh.ToWater(dd)); err != nil {
-				s.Logger.ErrorContext(ctx, "handleWater error", slog.Any("error", err))
+			wm, err := s.Enh.ToWater(dd)
+			if err != nil {
+				s.Logger.ErrorContext(ctx, "Enh.ToWater error", slog.Any("raw", dd), slog.Any("error", err))
+				return
+			}
+			if err := s.Hub.HandleWater(ctx, wm); err != nil {
+				s.Logger.ErrorContext(ctx, "handleWater error", slog.Any("data", wm), slog.Any("error", err))
+				return
 			}
 		default:
 			s.Logger.ErrorContext(ctx, "unknow device type", slog.String("type", dd.Type))

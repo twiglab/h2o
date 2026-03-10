@@ -13,9 +13,15 @@ type Enh struct {
 	DDB Cache[string, MetaData]
 }
 
-func (e *Enh) ToWater(dd DeviceData) WaterMeter {
+func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
+	data, err := WaterData(dd.DataJson)
+	if err != nil {
+		return WaterMeter{}, err
+	}
+
 	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
-	d := WaterMeter{
+
+	return WaterMeter{
 		Meter: Meter{
 			Device: common.Device{
 				Code: dd.No,
@@ -43,15 +49,19 @@ func (e *Enh) ToWater(dd DeviceData) WaterMeter {
 				F5: meta.F5,
 			},
 		},
-		Data: WaterData(dd.DataJson),
-	}
-	return d
+		Data: data,
+	}, nil
 }
 
-func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
+func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
+	data, err := ElectyData(dd.DataJson)
+	if err != nil {
+		return ElectricityMeter{}, err
+	}
+
 	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
 
-	d := ElectricityMeter{
+	return ElectricityMeter{
 		Meter: Meter{
 			Device: common.Device{
 				SN:   meta.SN,
@@ -82,99 +92,72 @@ func (e *Enh) ToElectricity(dd DeviceData) ElectricityMeter {
 			},
 		},
 
-		Data: ElectricityData(dd.DataJson),
-	}
-	return d
+		Data: data,
+	}, nil
 }
 
-func (e *Enh) ToGas(dd DeviceData) GasMeter {
-	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
-	d := GasMeter{
-		Meter: Meter{
-			Device: common.Device{
-				Code: dd.No,
-				Type: common.GAS,
-				Name: dd.No,
-
-				DataTime: parseTime(dd.DataTime),
-				DataCode: dd.DataCode,
-
-				Status: 0,
-			},
-			Pos: common.Pos{
-				Project:   meta.Project,
-				PosCode:   meta.PosCode,
-				Building:  meta.Building,
-				FloorCode: meta.FloorCode,
-				AreaCode:  meta.AreaCode,
-			},
-
-			Flag: common.Flag{
-				F1: meta.F1,
-				F2: meta.F2,
-				F3: meta.F3,
-				F4: meta.F4,
-				F5: meta.F5,
-			},
-		},
-		Data: GasData(dd.DataJson),
-	}
-	return d
+func (e *Enh) ToGas(dd DeviceData) (gm GasMeter, err error) {
+	return
 }
 
-func WaterData(dm DataMix) common.Water {
-	return common.Water{
-		MeterValue: common.MeterValue{
-			DataValue: str2I64(dm.DataValue, 100),
-		},
-	}
+func WaterData(dm DataMix) (w common.Water, err error) {
+	w.DataValue, err = str2I64E(dm.DataValue, 100)
+	return
 }
 
-func ElectricityData(dm DataMix) common.Electricity {
-	var ele common.Electricity
+func ElectyData(dm DataMix) (ele common.Electricity, err error) {
 
-	ele.DataValue = str2I64(dm.DataValue, 100)
+	if ele.DataValue, err = str2I64E(dm.DataValue, 100); err != nil {
+		return
+	}
 
 	if v, ok := dm.ExtraData[voltage_a]; ok {
-		ele.VoltageA = str2I64(v, 100)
+		if ele.VoltageA, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 	if v, ok := dm.ExtraData[voltage_b]; ok {
-		ele.VoltageB = str2I64(v, 100)
+		if ele.VoltageB, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 	if v, ok := dm.ExtraData[voltage_c]; ok {
-		ele.VoltageC = str2I64(v, 100)
+		if ele.VoltageC, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 
 	if v, ok := dm.ExtraData[current_a]; ok {
-		ele.CurrentA = str2I64(v, 100)
+		if ele.CurrentA, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 	if v, ok := dm.ExtraData[current_b]; ok {
-		ele.CurrentB = str2I64(v, 100)
+		if ele.CurrentB, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 	if v, ok := dm.ExtraData[current_c]; ok {
-		ele.CurrentC = str2I64(v, 100)
+		if ele.CurrentC, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
 
 	if v, ok := dm.ExtraData[active_power_total]; ok {
-		ele.ActivePowerTotal = str2I64(v, 100)
+		if ele.ActivePowerTotal, err = str2I64E(v, 100); err != nil {
+			return
+		}
 	}
-
-	return ele
+	return
 }
 
-func GasData(dm DataMix) common.Water {
-	return common.Water{
-		MeterValue: common.MeterValue{
-			DataValue: str2I64(dm.DataValue, 100),
-		},
+func str2I64E(s string, i float64) (v int64, err error) {
+	var f float64
+	if f, err = strconv.ParseFloat(s, 64); err != nil {
+		return
 	}
-}
-
-func str2I64(s string, i float64) int64 {
-	if f, err := strconv.ParseFloat(s, 64); err == nil {
-		return int64(f * i)
-	}
-	return -1
+	v = int64(f * i)
+	return
 }
 
 var xdate = time.Date(2000, 0, 0, 0, 0, 0, 0, time.Local)
