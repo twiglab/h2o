@@ -3,6 +3,7 @@ module github.com/twiglab/h2o/vigil
 go 1.26.0
 
 require (
+	github.com/99designs/gqlgen v0.17.87
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/influxdata/line-protocol/v2 v2.2.1
@@ -10,10 +11,10 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/taosdata/driver-go/v3 v3.7.8
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
+	github.com/vektah/gqlparser/v2 v2.5.32
 )
 
 require (
-	github.com/99designs/gqlgen v0.17.87 // indirect
 	github.com/agnivade/levenshtein v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
+	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -37,7 +39,6 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/urfave/cli/v3 v3.6.2 // indirect
-	github.com/vektah/gqlparser/v2 v2.5.32 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
