@@ -133,30 +133,30 @@ func WaterData(dm DataMix) common.Water {
 func ElectricityData(dm DataMix) common.Electricity {
 	var ele common.Electricity
 
-	ele.DataValue = str2I64(dm.DataValue, 1)
+	ele.DataValue = str2I64(dm.DataValue, 100)
 
 	if v, ok := dm.ExtraData[voltage_a]; ok {
-		ele.VoltageA = str2I64(v, 10)
+		ele.VoltageA = str2I64(v, 100)
 	}
 	if v, ok := dm.ExtraData[voltage_b]; ok {
-		ele.VoltageB = str2I64(v, 10)
+		ele.VoltageB = str2I64(v, 100)
 	}
 	if v, ok := dm.ExtraData[voltage_c]; ok {
-		ele.VoltageC = str2I64(v, 10)
+		ele.VoltageC = str2I64(v, 100)
 	}
 
 	if v, ok := dm.ExtraData[current_a]; ok {
-		ele.CurrentA = str2I64(v, 1)
+		ele.CurrentA = str2I64(v, 100)
 	}
 	if v, ok := dm.ExtraData[current_b]; ok {
-		ele.CurrentB = str2I64(v, 1)
+		ele.CurrentB = str2I64(v, 100)
 	}
 	if v, ok := dm.ExtraData[current_c]; ok {
-		ele.CurrentC = str2I64(v, 1)
+		ele.CurrentC = str2I64(v, 100)
 	}
 
 	if v, ok := dm.ExtraData[active_power_total]; ok {
-		ele.ActivePowerTotal = str2I64(v, 0.1)
+		ele.ActivePowerTotal = str2I64(v, 100)
 	}
 
 	return ele
