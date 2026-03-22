@@ -4,11 +4,15 @@ import (
 	"context"
 )
 
+type ElectyMeterView interface {
+	Merge(data ElectricityMeter)
+}
+
 type Hub struct {
-	Egg *ElectricityEgg
+	ElectyMeterView ElectyMeterView
 }
 
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
-	h.Egg.Merge(data)
+	h.ElectyMeterView.Merge(data)
 	return nil
 }
