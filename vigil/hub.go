@@ -19,6 +19,5 @@ type Hub struct {
 
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
 	h.ElectyMeterView.Merge(data)
-	h.Recorder.Tabb(ctx, data)
-	return nil
+	return h.Recorder.Tabb(ctx, data)
 }
