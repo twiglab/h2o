@@ -1,19 +1,13 @@
-package vigil
+package eyes
 
 import (
-	"cmp"
 	"encoding/json/v2"
 	"net/http"
-	"slices"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/vigil"
 )
-
-type EleMeterView struct {
-	Meter
-	Data EleMeterDataView `json:"data"`
-}
 
 type EleMeterDataView struct {
 	DataValue float64 `json:"data_value"`
@@ -48,29 +42,25 @@ func toView(data common.Electricity) EleMeterDataView {
 }
 
 type ElectricityItem struct {
-	EleMeterView
+	vigil.Meter
+	Data EleMeterDataView `json:"data"`
 }
 
 type ElectricityEgg struct {
 	Items map[string]*ElectricityItem
 }
 
-func NewElectricityPacket() *ElectricityEgg {
+func NewElectricityEgg() *ElectricityEgg {
 	return &ElectricityEgg{
 		Items: make(map[string]*ElectricityItem),
 	}
 }
 
-func (e *ElectricityEgg) Merge(m ElectricityMeter) {
-
-	md := toView(m.Data)
+func (e *ElectricityEgg) Merge(m vigil.ElectricityMeter) {
 	i := &ElectricityItem{
-		EleMeterView: EleMeterView{
-			Meter: m.Meter,
-			Data:  md,
-		},
+		Meter: m.Meter,
+		Data:  toView(m.Data),
 	}
-
 	e.Items[i.Code] = i
 }
 
@@ -78,7 +68,6 @@ func (e *ElectricityEgg) List() (items []*ElectricityItem) {
 	for _, item := range e.Items {
 		items = append(items, item)
 	}
-	slices.SortFunc(items, func(a, b *ElectricityItem) int { return cmp.Compare(a.Code, b.Code) })
 	return
 }
 
@@ -87,12 +76,6 @@ func (e *ElectricityEgg) Get(code string) *ElectricityItem {
 		return ei
 	}
 	return nil
-}
-
-func (e *ElectricityEgg) SetStatus(code string, status int) {
-	if v, ok := e.Items[code]; ok {
-		v.Status = status
-	}
 }
 
 func EyesAll(ep *ElectricityEgg) http.HandlerFunc {
