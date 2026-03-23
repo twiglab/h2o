@@ -29,13 +29,13 @@ require (
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
-	github.com/duckdb/duckdb-go-bindings v0.3.3 // indirect
-	github.com/duckdb/duckdb-go-bindings/lib/darwin-amd64 v0.3.3 // indirect
-	github.com/duckdb/duckdb-go-bindings/lib/darwin-arm64 v0.3.3 // indirect
-	github.com/duckdb/duckdb-go-bindings/lib/linux-amd64 v0.3.3 // indirect
-	github.com/duckdb/duckdb-go-bindings/lib/linux-arm64 v0.3.3 // indirect
-	github.com/duckdb/duckdb-go-bindings/lib/windows-amd64 v0.3.3 // indirect
-	github.com/duckdb/duckdb-go/v2 v2.5.5 // indirect
+	github.com/duckdb/duckdb-go-bindings v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go-bindings/lib/darwin-amd64 v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go-bindings/lib/darwin-arm64 v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go-bindings/lib/linux-amd64 v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go-bindings/lib/linux-arm64 v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go-bindings/lib/windows-amd64 v0.10500.0 // indirect
+	github.com/duckdb/duckdb-go/v2 v2.10500.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
