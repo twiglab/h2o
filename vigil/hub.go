@@ -18,6 +18,11 @@ type Hub struct {
 }
 
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
+	// 先记录在监控
+	if err := h.Recorder.Tabb(ctx, data); err != nil {
+		h.Logger.ErrorContext(ctx, "handle Electy error", slog.Any("data", data), slog.Any("error", err))
+		return err
+	}
 	h.ElectyMeterView.Merge(data)
-	return h.Recorder.Tabb(ctx, data)
+	return nil
 }
