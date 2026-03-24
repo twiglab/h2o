@@ -4,10 +4,6 @@ import (
 	"context"
 )
 
-type Recorder interface {
-	Tabb(ctx context.Context, data ElectricityMeter) error
-}
-
 type ElectyMeterView interface {
 	Merge(data ElectricityMeter)
 }

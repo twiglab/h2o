@@ -21,6 +21,8 @@ type Record struct {
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
+	// 设备序列号
+	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备号
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
@@ -45,7 +47,7 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case record.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case record.FieldID, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDataCode, record.FieldPosCode, record.FieldProject:
+		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDataCode, record.FieldPosCode, record.FieldProject:
 			values[i] = new(sql.NullString)
 		case record.FieldCreateTime, record.FieldUpdateTime, record.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -81,6 +83,12 @@ func (_m *Record) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
+			}
+		case record.FieldDeviceSn:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
+			} else if value.Valid {
+				_m.DeviceSn = value.String
 			}
 		case record.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -165,6 +173,9 @@ func (_m *Record) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("update_time=")
 	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("device_sn=")
+	builder.WriteString(_m.DeviceSn)
 	builder.WriteString(", ")
 	builder.WriteString("device_code=")
 	builder.WriteString(_m.DeviceCode)

@@ -28,20 +28,24 @@ func init() {
 	record.DefaultUpdateTime = recordDescUpdateTime.Default.(func() time.Time)
 	// record.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	record.UpdateDefaultUpdateTime = recordDescUpdateTime.UpdateDefault.(func() time.Time)
+	// recordDescDeviceSn is the schema descriptor for device_sn field.
+	recordDescDeviceSn := recordFields[1].Descriptor()
+	// record.DeviceSnValidator is a validator for the "device_sn" field. It is called by the builders before save.
+	record.DeviceSnValidator = recordDescDeviceSn.Validators[0].(func(string) error)
 	// recordDescDeviceCode is the schema descriptor for device_code field.
-	recordDescDeviceCode := recordFields[1].Descriptor()
+	recordDescDeviceCode := recordFields[2].Descriptor()
 	// record.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	record.DeviceCodeValidator = recordDescDeviceCode.Validators[0].(func(string) error)
 	// recordDescDeviceType is the schema descriptor for device_type field.
-	recordDescDeviceType := recordFields[2].Descriptor()
+	recordDescDeviceType := recordFields[3].Descriptor()
 	// record.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	record.DeviceTypeValidator = recordDescDeviceType.Validators[0].(func(string) error)
 	// recordDescDataCode is the schema descriptor for data_code field.
-	recordDescDataCode := recordFields[3].Descriptor()
+	recordDescDataCode := recordFields[4].Descriptor()
 	// record.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	record.DataCodeValidator = recordDescDataCode.Validators[0].(func(string) error)
 	// recordDescDataValue is the schema descriptor for data_value field.
-	recordDescDataValue := recordFields[4].Descriptor()
+	recordDescDataValue := recordFields[5].Descriptor()
 	// record.DefaultDataValue holds the default value on creation for the data_value field.
 	record.DefaultDataValue = recordDescDataValue.Default.(int64)
 	// recordDescID is the schema descriptor for id field.

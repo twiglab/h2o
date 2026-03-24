@@ -2,27 +2,12 @@ package vigil
 
 import (
 	"context"
-	"encoding/json/v2"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
 const CLIENT_ID = "vigil"
-
-type Meter struct {
-	common.Device
-	Pos common.Pos `json:"pos,omitzero"`
-}
-
-type ElectricityMeter struct {
-	Meter
-	Data common.Electricity `json:"data,omitzero"`
-}
-
-func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, d)
-}
 
 func Handle(s *Hub) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {

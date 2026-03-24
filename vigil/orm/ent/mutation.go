@@ -35,6 +35,7 @@ type RecordMutation struct {
 	id            *string
 	create_time   *time.Time
 	update_time   *time.Time
+	device_sn     *string
 	device_code   *string
 	device_type   *string
 	data_code     *string
@@ -223,6 +224,42 @@ func (m *RecordMutation) OldUpdateTime(ctx context.Context) (v time.Time, err er
 // ResetUpdateTime resets all changes to the "update_time" field.
 func (m *RecordMutation) ResetUpdateTime() {
 	m.update_time = nil
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (m *RecordMutation) SetDeviceSn(s string) {
+	m.device_sn = &s
+}
+
+// DeviceSn returns the value of the "device_sn" field in the mutation.
+func (m *RecordMutation) DeviceSn() (r string, exists bool) {
+	v := m.device_sn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceSn returns the old "device_sn" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceSn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceSn: %w", err)
+	}
+	return oldValue.DeviceSn, nil
+}
+
+// ResetDeviceSn resets all changes to the "device_sn" field.
+func (m *RecordMutation) ResetDeviceSn() {
+	m.device_sn = nil
 }
 
 // SetDeviceCode sets the "device_code" field.
@@ -531,12 +568,15 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.create_time != nil {
 		fields = append(fields, record.FieldCreateTime)
 	}
 	if m.update_time != nil {
 		fields = append(fields, record.FieldUpdateTime)
+	}
+	if m.device_sn != nil {
+		fields = append(fields, record.FieldDeviceSn)
 	}
 	if m.device_code != nil {
 		fields = append(fields, record.FieldDeviceCode)
@@ -571,6 +611,8 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.CreateTime()
 	case record.FieldUpdateTime:
 		return m.UpdateTime()
+	case record.FieldDeviceSn:
+		return m.DeviceSn()
 	case record.FieldDeviceCode:
 		return m.DeviceCode()
 	case record.FieldDeviceType:
@@ -598,6 +640,8 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldCreateTime(ctx)
 	case record.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
+	case record.FieldDeviceSn:
+		return m.OldDeviceSn(ctx)
 	case record.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
 	case record.FieldDeviceType:
@@ -634,6 +678,13 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
+		return nil
+	case record.FieldDeviceSn:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceSn(v)
 		return nil
 	case record.FieldDeviceCode:
 		v, ok := value.(string)
@@ -753,6 +804,9 @@ func (m *RecordMutation) ResetField(name string) error {
 		return nil
 	case record.FieldUpdateTime:
 		m.ResetUpdateTime()
+		return nil
+	case record.FieldDeviceSn:
+		m.ResetDeviceSn()
 		return nil
 	case record.FieldDeviceCode:
 		m.ResetDeviceCode()

@@ -51,6 +51,12 @@ func (_c *RecordCreate) SetNillableUpdateTime(v *time.Time) *RecordCreate {
 	return _c
 }
 
+// SetDeviceSn sets the "device_sn" field.
+func (_c *RecordCreate) SetDeviceSn(v string) *RecordCreate {
+	_c.mutation.SetDeviceSn(v)
+	return _c
+}
+
 // SetDeviceCode sets the "device_code" field.
 func (_c *RecordCreate) SetDeviceCode(v string) *RecordCreate {
 	_c.mutation.SetDeviceCode(v)
@@ -176,6 +182,14 @@ func (_c *RecordCreate) check() error {
 	if _, ok := _c.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Record.update_time"`)}
 	}
+	if _, ok := _c.mutation.DeviceSn(); !ok {
+		return &ValidationError{Name: "device_sn", err: errors.New(`ent: missing required field "Record.device_sn"`)}
+	}
+	if v, ok := _c.mutation.DeviceSn(); ok {
+		if err := record.DeviceSnValidator(v); err != nil {
+			return &ValidationError{Name: "device_sn", err: fmt.Errorf(`ent: validator failed for field "Record.device_sn": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.DeviceCode(); !ok {
 		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "Record.device_code"`)}
 	}
@@ -260,6 +274,10 @@ func (_c *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdateTime(); ok {
 		_spec.SetField(record.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
+	}
+	if value, ok := _c.mutation.DeviceSn(); ok {
+		_spec.SetField(record.FieldDeviceSn, field.TypeString, value)
+		_node.DeviceSn = value
 	}
 	if value, ok := _c.mutation.DeviceCode(); ok {
 		_spec.SetField(record.FieldDeviceCode, field.TypeString, value)
@@ -372,6 +390,9 @@ func (u *RecordUpsertOne) UpdateNewValues() *RecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.CreateTime(); exists {
 			s.SetIgnore(record.FieldCreateTime)
+		}
+		if _, exists := u.create.mutation.DeviceSn(); exists {
+			s.SetIgnore(record.FieldDeviceSn)
 		}
 		if _, exists := u.create.mutation.DeviceCode(); exists {
 			s.SetIgnore(record.FieldDeviceCode)
@@ -624,6 +645,9 @@ func (u *RecordUpsertBulk) UpdateNewValues() *RecordUpsertBulk {
 			}
 			if _, exists := b.mutation.CreateTime(); exists {
 				s.SetIgnore(record.FieldCreateTime)
+			}
+			if _, exists := b.mutation.DeviceSn(); exists {
+				s.SetIgnore(record.FieldDeviceSn)
 			}
 			if _, exists := b.mutation.DeviceCode(); exists {
 				s.SetIgnore(record.FieldDeviceCode)

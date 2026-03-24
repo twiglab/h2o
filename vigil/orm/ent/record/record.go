@@ -17,6 +17,8 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
 	FieldUpdateTime = "update_time"
+	// FieldDeviceSn holds the string denoting the device_sn field in the database.
+	FieldDeviceSn = "device_sn"
 	// FieldDeviceCode holds the string denoting the device_code field in the database.
 	FieldDeviceCode = "device_code"
 	// FieldDeviceType holds the string denoting the device_type field in the database.
@@ -40,6 +42,7 @@ var Columns = []string{
 	FieldID,
 	FieldCreateTime,
 	FieldUpdateTime,
+	FieldDeviceSn,
 	FieldDeviceCode,
 	FieldDeviceType,
 	FieldDataCode,
@@ -66,6 +69,8 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
+	// DeviceSnValidator is a validator for the "device_sn" field. It is called by the builders before save.
+	DeviceSnValidator func(string) error
 	// DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	DeviceCodeValidator func(string) error
 	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
@@ -96,6 +101,11 @@ func ByCreateTime(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdateTime orders the results by the update_time field.
 func ByUpdateTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdateTime, opts...).ToFunc()
+}
+
+// ByDeviceSn orders the results by the device_sn field.
+func ByDeviceSn(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceSn, opts...).ToFunc()
 }
 
 // ByDeviceCode orders the results by the device_code field.

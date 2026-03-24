@@ -74,6 +74,11 @@ func UpdateTime(v time.Time) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldUpdateTime, v))
 }
 
+// DeviceSn applies equality check predicate on the "device_sn" field. It's identical to DeviceSnEQ.
+func DeviceSn(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDeviceSn, v))
+}
+
 // DeviceCode applies equality check predicate on the "device_code" field. It's identical to DeviceCodeEQ.
 func DeviceCode(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldDeviceCode, v))
@@ -187,6 +192,71 @@ func UpdateTimeLT(v time.Time) predicate.Record {
 // UpdateTimeLTE applies the LTE predicate on the "update_time" field.
 func UpdateTimeLTE(v time.Time) predicate.Record {
 	return predicate.Record(sql.FieldLTE(FieldUpdateTime, v))
+}
+
+// DeviceSnEQ applies the EQ predicate on the "device_sn" field.
+func DeviceSnEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDeviceSn, v))
+}
+
+// DeviceSnNEQ applies the NEQ predicate on the "device_sn" field.
+func DeviceSnNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldDeviceSn, v))
+}
+
+// DeviceSnIn applies the In predicate on the "device_sn" field.
+func DeviceSnIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldDeviceSn, vs...))
+}
+
+// DeviceSnNotIn applies the NotIn predicate on the "device_sn" field.
+func DeviceSnNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldDeviceSn, vs...))
+}
+
+// DeviceSnGT applies the GT predicate on the "device_sn" field.
+func DeviceSnGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldDeviceSn, v))
+}
+
+// DeviceSnGTE applies the GTE predicate on the "device_sn" field.
+func DeviceSnGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldDeviceSn, v))
+}
+
+// DeviceSnLT applies the LT predicate on the "device_sn" field.
+func DeviceSnLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldDeviceSn, v))
+}
+
+// DeviceSnLTE applies the LTE predicate on the "device_sn" field.
+func DeviceSnLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldDeviceSn, v))
+}
+
+// DeviceSnContains applies the Contains predicate on the "device_sn" field.
+func DeviceSnContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldDeviceSn, v))
+}
+
+// DeviceSnHasPrefix applies the HasPrefix predicate on the "device_sn" field.
+func DeviceSnHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldDeviceSn, v))
+}
+
+// DeviceSnHasSuffix applies the HasSuffix predicate on the "device_sn" field.
+func DeviceSnHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldDeviceSn, v))
+}
+
+// DeviceSnEqualFold applies the EqualFold predicate on the "device_sn" field.
+func DeviceSnEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldDeviceSn, v))
+}
+
+// DeviceSnContainsFold applies the ContainsFold predicate on the "device_sn" field.
+func DeviceSnContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldDeviceSn, v))
 }
 
 // DeviceCodeEQ applies the EQ predicate on the "device_code" field.

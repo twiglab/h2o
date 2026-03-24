@@ -11,14 +11,15 @@ type DBx struct {
 	Client *ent.Client
 }
 
-func (d *DBx) Tabb(ctx context.Context, data vigil.ElectricityMeter) error {
+func (d *DBx) Tabb(ctx context.Context, data vigil.MeterData) error {
 	cr := d.Client.Record.Create()
-	cr.SetDataCode(data.Code)
-	cr.SetDeviceType(data.Type)
-	cr.SetDataCode(data.DataCode)
-	cr.SetDataTime(data.DataTime)
-	cr.SetDataValue(data.Data.DataValue)
-	cr.SetPosCode(data.Pos.PosCode)
-	cr.SetProject(data.Pos.Project)
+	cr.SetDeviceSn(data.GetSN())
+	cr.SetDataCode(data.GetCode())
+	cr.SetDeviceType(data.GetType())
+	cr.SetDataCode(data.GetDataCode())
+	cr.SetDataTime(data.GetDataTime())
+	cr.SetDataValue(data.GetDataValue())
+	cr.SetPosCode(data.GetPosCode())
+	cr.SetProject(data.GetProject())
 	return cr.Exec(ctx)
 }
