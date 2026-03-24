@@ -77,6 +77,20 @@ func (_c *RecordCreate) SetDeviceType(v string) *RecordCreate {
 	return _c
 }
 
+// SetDeviceName sets the "device_name" field.
+func (_c *RecordCreate) SetDeviceName(v string) *RecordCreate {
+	_c.mutation.SetDeviceName(v)
+	return _c
+}
+
+// SetNillableDeviceName sets the "device_name" field if the given value is not nil.
+func (_c *RecordCreate) SetNillableDeviceName(v *string) *RecordCreate {
+	if v != nil {
+		_c.SetDeviceName(*v)
+	}
+	return _c
+}
+
 // SetDataCode sets the "data_code" field.
 func (_c *RecordCreate) SetDataCode(v string) *RecordCreate {
 	_c.mutation.SetDataCode(v)
@@ -287,6 +301,10 @@ func (_c *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 		_spec.SetField(record.FieldDeviceType, field.TypeString, value)
 		_node.DeviceType = value
 	}
+	if value, ok := _c.mutation.DeviceName(); ok {
+		_spec.SetField(record.FieldDeviceName, field.TypeString, value)
+		_node.DeviceName = value
+	}
 	if value, ok := _c.mutation.DataCode(); ok {
 		_spec.SetField(record.FieldDataCode, field.TypeString, value)
 		_node.DataCode = value
@@ -399,6 +417,9 @@ func (u *RecordUpsertOne) UpdateNewValues() *RecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.DeviceType(); exists {
 			s.SetIgnore(record.FieldDeviceType)
+		}
+		if _, exists := u.create.mutation.DeviceName(); exists {
+			s.SetIgnore(record.FieldDeviceName)
 		}
 		if _, exists := u.create.mutation.DataCode(); exists {
 			s.SetIgnore(record.FieldDataCode)
@@ -654,6 +675,9 @@ func (u *RecordUpsertBulk) UpdateNewValues() *RecordUpsertBulk {
 			}
 			if _, exists := b.mutation.DeviceType(); exists {
 				s.SetIgnore(record.FieldDeviceType)
+			}
+			if _, exists := b.mutation.DeviceName(); exists {
+				s.SetIgnore(record.FieldDeviceName)
 			}
 			if _, exists := b.mutation.DataCode(); exists {
 				s.SetIgnore(record.FieldDataCode)

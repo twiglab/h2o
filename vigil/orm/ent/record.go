@@ -27,6 +27,8 @@ type Record struct {
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
 	DeviceType string `json:"device_type,omitempty"`
+	// 设备名称
+	DeviceName string `json:"device_name,omitempty"`
 	// 当前datacode
 	DataCode string `json:"data_code,omitempty"`
 	// 当前读数
@@ -47,7 +49,7 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case record.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDataCode, record.FieldPosCode, record.FieldProject:
+		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDeviceName, record.FieldDataCode, record.FieldPosCode, record.FieldProject:
 			values[i] = new(sql.NullString)
 		case record.FieldCreateTime, record.FieldUpdateTime, record.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -101,6 +103,12 @@ func (_m *Record) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
+			}
+		case record.FieldDeviceName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field device_name", values[i])
+			} else if value.Valid {
+				_m.DeviceName = value.String
 			}
 		case record.FieldDataCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -182,6 +190,9 @@ func (_m *Record) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("device_type=")
 	builder.WriteString(_m.DeviceType)
+	builder.WriteString(", ")
+	builder.WriteString("device_name=")
+	builder.WriteString(_m.DeviceName)
 	builder.WriteString(", ")
 	builder.WriteString("data_code=")
 	builder.WriteString(_m.DataCode)

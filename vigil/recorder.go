@@ -10,6 +10,7 @@ import (
 type MeterData interface {
 	GetCode() string
 	GetType() string
+	GetName() string
 	GetDataTime() time.Time
 	GetDataCode() string
 	GetDataValue() int64

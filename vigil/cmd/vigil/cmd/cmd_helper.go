@@ -28,7 +28,7 @@ func logLevel(s string) slog.Level {
 }
 
 func mqttcli() mqtt.Client {
-	broker := viper.GetString("chrgg.mqtt.broker")
+	broker := viper.GetString("vigil.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
@@ -65,4 +65,25 @@ func entcli() *ent.Client {
 
 func dbx() *orm.DBx {
 	return &orm.DBx{Client: entcli()}
+}
+
+func rootLog() *slog.Logger {
+	rlogF := viper.GetString("log.root.file")
+	rlogL := viper.GetString("log.root.level")
+	logL := viper.GetString("log.level")
+
+	level := logLevel(cmp.Or(rlogL, logL))
+	log := vigil.NewLog(rlogF, level)
+	slog.SetDefault(log)
+	return log
+}
+
+func serverLog() *slog.Logger {
+	sLogF := viper.GetString("log.server.file")
+	sLogL := viper.GetString("log.server.level")
+	logL := viper.GetString("log.level")
+
+	level := logLevel(cmp.Or(sLogL, logL))
+	l := vigil.NewLog(sLogF, level)
+	return l
 }

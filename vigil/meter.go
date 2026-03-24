@@ -33,6 +33,10 @@ func (d ElectricityMeter) GetType() string {
 	return d.Type
 }
 
+func (d ElectricityMeter) GetName() string {
+	return d.Name
+}
+
 func (d ElectricityMeter) GetDataCode() string {
 	return d.DataCode
 }

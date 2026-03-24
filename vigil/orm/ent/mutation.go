@@ -38,6 +38,7 @@ type RecordMutation struct {
 	device_sn     *string
 	device_code   *string
 	device_type   *string
+	device_name   *string
 	data_code     *string
 	data_value    *int64
 	adddata_value *int64
@@ -347,6 +348,55 @@ func (m *RecordMutation) ResetDeviceType() {
 	m.device_type = nil
 }
 
+// SetDeviceName sets the "device_name" field.
+func (m *RecordMutation) SetDeviceName(s string) {
+	m.device_name = &s
+}
+
+// DeviceName returns the value of the "device_name" field in the mutation.
+func (m *RecordMutation) DeviceName() (r string, exists bool) {
+	v := m.device_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceName returns the old "device_name" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldDeviceName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceName: %w", err)
+	}
+	return oldValue.DeviceName, nil
+}
+
+// ClearDeviceName clears the value of the "device_name" field.
+func (m *RecordMutation) ClearDeviceName() {
+	m.device_name = nil
+	m.clearedFields[record.FieldDeviceName] = struct{}{}
+}
+
+// DeviceNameCleared returns if the "device_name" field was cleared in this mutation.
+func (m *RecordMutation) DeviceNameCleared() bool {
+	_, ok := m.clearedFields[record.FieldDeviceName]
+	return ok
+}
+
+// ResetDeviceName resets all changes to the "device_name" field.
+func (m *RecordMutation) ResetDeviceName() {
+	m.device_name = nil
+	delete(m.clearedFields, record.FieldDeviceName)
+}
+
 // SetDataCode sets the "data_code" field.
 func (m *RecordMutation) SetDataCode(s string) {
 	m.data_code = &s
@@ -581,7 +631,7 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.create_time != nil {
 		fields = append(fields, record.FieldCreateTime)
 	}
@@ -596,6 +646,9 @@ func (m *RecordMutation) Fields() []string {
 	}
 	if m.device_type != nil {
 		fields = append(fields, record.FieldDeviceType)
+	}
+	if m.device_name != nil {
+		fields = append(fields, record.FieldDeviceName)
 	}
 	if m.data_code != nil {
 		fields = append(fields, record.FieldDataCode)
@@ -630,6 +683,8 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceCode()
 	case record.FieldDeviceType:
 		return m.DeviceType()
+	case record.FieldDeviceName:
+		return m.DeviceName()
 	case record.FieldDataCode:
 		return m.DataCode()
 	case record.FieldDataValue:
@@ -659,6 +714,8 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDeviceCode(ctx)
 	case record.FieldDeviceType:
 		return m.OldDeviceType(ctx)
+	case record.FieldDeviceName:
+		return m.OldDeviceName(ctx)
 	case record.FieldDataCode:
 		return m.OldDataCode(ctx)
 	case record.FieldDataValue:
@@ -712,6 +769,13 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
+		return nil
+	case record.FieldDeviceName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceName(v)
 		return nil
 	case record.FieldDataCode:
 		v, ok := value.(string)
@@ -796,6 +860,9 @@ func (m *RecordMutation) ClearedFields() []string {
 	if m.FieldCleared(record.FieldDeviceSn) {
 		fields = append(fields, record.FieldDeviceSn)
 	}
+	if m.FieldCleared(record.FieldDeviceName) {
+		fields = append(fields, record.FieldDeviceName)
+	}
 	return fields
 }
 
@@ -812,6 +879,9 @@ func (m *RecordMutation) ClearField(name string) error {
 	switch name {
 	case record.FieldDeviceSn:
 		m.ClearDeviceSn()
+		return nil
+	case record.FieldDeviceName:
+		m.ClearDeviceName()
 		return nil
 	}
 	return fmt.Errorf("unknown Record nullable field %s", name)
@@ -835,6 +905,9 @@ func (m *RecordMutation) ResetField(name string) error {
 		return nil
 	case record.FieldDeviceType:
 		m.ResetDeviceType()
+		return nil
+	case record.FieldDeviceName:
+		m.ResetDeviceName()
 		return nil
 	case record.FieldDataCode:
 		m.ResetDataCode()

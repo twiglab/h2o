@@ -37,11 +37,11 @@ func init() {
 	// record.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	record.DeviceTypeValidator = recordDescDeviceType.Validators[0].(func(string) error)
 	// recordDescDataCode is the schema descriptor for data_code field.
-	recordDescDataCode := recordFields[4].Descriptor()
+	recordDescDataCode := recordFields[5].Descriptor()
 	// record.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	record.DataCodeValidator = recordDescDataCode.Validators[0].(func(string) error)
 	// recordDescDataValue is the schema descriptor for data_value field.
-	recordDescDataValue := recordFields[5].Descriptor()
+	recordDescDataValue := recordFields[6].Descriptor()
 	// record.DefaultDataValue holds the default value on creation for the data_value field.
 	record.DefaultDataValue = recordDescDataValue.Default.(int64)
 	// recordDescID is the schema descriptor for id field.

@@ -30,10 +30,14 @@ func init() {
 }
 
 func run() {
+
+	rootLog()
+
 	egg := eyes.NewElectricityEgg()
 	hub := &vigil.Hub{
 		ElectyMeterView: egg,
 		Recorder:        vigil.WithRecorder(dbx()),
+		Logger:          serverLog(),
 	}
 	mcli := mqttcli()
 	token := mcli.SubscribeMultiple(topics(), vigil.Handle(hub))

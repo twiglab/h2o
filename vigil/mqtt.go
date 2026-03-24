@@ -2,6 +2,7 @@ package vigil
 
 import (
 	"context"
+	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/pkg/common"
@@ -10,6 +11,11 @@ import (
 const CLIENT_ID = "vigil"
 
 func Handle(s *Hub) mqtt.MessageHandler {
+	ctx := context.Background()
+	if s.BaseContext != nil {
+		ctx = s.BaseContext(s)
+	}
+
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
 			return
@@ -20,8 +26,12 @@ func Handle(s *Hub) mqtt.MessageHandler {
 		case common.ElectricityTopic:
 			var em ElectricityMeter
 			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+				s.Logger.ErrorContext(ctx, "unmarshal error", slog.Any("err", err))
+				return
 			}
-			if err := s.HandleElectricity(context.Background(), em); err != nil {
+			if err := s.HandleElectricity(ctx, em); err != nil {
+				s.Logger.ErrorContext(ctx, "handle electry error", slog.Any("err", err))
+				return
 			}
 		case common.GasTopic:
 		}

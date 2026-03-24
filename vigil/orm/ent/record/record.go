@@ -23,6 +23,8 @@ const (
 	FieldDeviceCode = "device_code"
 	// FieldDeviceType holds the string denoting the device_type field in the database.
 	FieldDeviceType = "device_type"
+	// FieldDeviceName holds the string denoting the device_name field in the database.
+	FieldDeviceName = "device_name"
 	// FieldDataCode holds the string denoting the data_code field in the database.
 	FieldDataCode = "data_code"
 	// FieldDataValue holds the string denoting the data_value field in the database.
@@ -45,6 +47,7 @@ var Columns = []string{
 	FieldDeviceSn,
 	FieldDeviceCode,
 	FieldDeviceType,
+	FieldDeviceName,
 	FieldDataCode,
 	FieldDataValue,
 	FieldDataTime,
@@ -114,6 +117,11 @@ func ByDeviceCode(opts ...sql.OrderTermOption) OrderOption {
 // ByDeviceType orders the results by the device_type field.
 func ByDeviceType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceType, opts...).ToFunc()
+}
+
+// ByDeviceName orders the results by the device_name field.
+func ByDeviceName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
 }
 
 // ByDataCode orders the results by the data_code field.

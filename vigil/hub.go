@@ -2,6 +2,7 @@ package vigil
 
 import (
 	"context"
+	"log/slog"
 )
 
 type ElectyMeterView interface {
@@ -11,6 +12,9 @@ type ElectyMeterView interface {
 type Hub struct {
 	ElectyMeterView ElectyMeterView
 	Recorder        Recorder
+	Logger          *slog.Logger
+
+	BaseContext func(h *Hub) context.Context
 }
 
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
