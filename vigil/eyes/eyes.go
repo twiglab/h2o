@@ -37,7 +37,7 @@ func toView(data common.Electricity) EleMeterDataView {
 		CurrentB: float64(data.CurrentB) / 100,
 		CurrentC: float64(data.CurrentC) / 100,
 
-		ActivePowerTotal: float64(data.ActivePowerTotal) / 100,
+		ActivePowerTotal: float64(data.ActivePowerTotal) * 10,
 	}
 }
 
