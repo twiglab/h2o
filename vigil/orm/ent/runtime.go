@@ -28,10 +28,6 @@ func init() {
 	record.DefaultUpdateTime = recordDescUpdateTime.Default.(func() time.Time)
 	// record.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	record.UpdateDefaultUpdateTime = recordDescUpdateTime.UpdateDefault.(func() time.Time)
-	// recordDescDeviceSn is the schema descriptor for device_sn field.
-	recordDescDeviceSn := recordFields[1].Descriptor()
-	// record.DeviceSnValidator is a validator for the "device_sn" field. It is called by the builders before save.
-	record.DeviceSnValidator = recordDescDeviceSn.Validators[0].(func(string) error)
 	// recordDescDeviceCode is the schema descriptor for device_code field.
 	recordDescDeviceCode := recordFields[2].Descriptor()
 	// record.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.

@@ -249,6 +249,16 @@ func DeviceSnHasSuffix(v string) predicate.Record {
 	return predicate.Record(sql.FieldHasSuffix(FieldDeviceSn, v))
 }
 
+// DeviceSnIsNil applies the IsNil predicate on the "device_sn" field.
+func DeviceSnIsNil() predicate.Record {
+	return predicate.Record(sql.FieldIsNull(FieldDeviceSn))
+}
+
+// DeviceSnNotNil applies the NotNil predicate on the "device_sn" field.
+func DeviceSnNotNil() predicate.Record {
+	return predicate.Record(sql.FieldNotNull(FieldDeviceSn))
+}
+
 // DeviceSnEqualFold applies the EqualFold predicate on the "device_sn" field.
 func DeviceSnEqualFold(v string) predicate.Record {
 	return predicate.Record(sql.FieldEqualFold(FieldDeviceSn, v))

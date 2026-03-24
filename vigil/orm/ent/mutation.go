@@ -257,9 +257,22 @@ func (m *RecordMutation) OldDeviceSn(ctx context.Context) (v string, err error) 
 	return oldValue.DeviceSn, nil
 }
 
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (m *RecordMutation) ClearDeviceSn() {
+	m.device_sn = nil
+	m.clearedFields[record.FieldDeviceSn] = struct{}{}
+}
+
+// DeviceSnCleared returns if the "device_sn" field was cleared in this mutation.
+func (m *RecordMutation) DeviceSnCleared() bool {
+	_, ok := m.clearedFields[record.FieldDeviceSn]
+	return ok
+}
+
 // ResetDeviceSn resets all changes to the "device_sn" field.
 func (m *RecordMutation) ResetDeviceSn() {
 	m.device_sn = nil
+	delete(m.clearedFields, record.FieldDeviceSn)
 }
 
 // SetDeviceCode sets the "device_code" field.
@@ -779,7 +792,11 @@ func (m *RecordMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *RecordMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(record.FieldDeviceSn) {
+		fields = append(fields, record.FieldDeviceSn)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -792,6 +809,11 @@ func (m *RecordMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *RecordMutation) ClearField(name string) error {
+	switch name {
+	case record.FieldDeviceSn:
+		m.ClearDeviceSn()
+		return nil
+	}
 	return fmt.Errorf("unknown Record nullable field %s", name)
 }
 

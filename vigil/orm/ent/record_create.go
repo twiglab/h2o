@@ -57,6 +57,14 @@ func (_c *RecordCreate) SetDeviceSn(v string) *RecordCreate {
 	return _c
 }
 
+// SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
+func (_c *RecordCreate) SetNillableDeviceSn(v *string) *RecordCreate {
+	if v != nil {
+		_c.SetDeviceSn(*v)
+	}
+	return _c
+}
+
 // SetDeviceCode sets the "device_code" field.
 func (_c *RecordCreate) SetDeviceCode(v string) *RecordCreate {
 	_c.mutation.SetDeviceCode(v)
@@ -181,14 +189,6 @@ func (_c *RecordCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Record.update_time"`)}
-	}
-	if _, ok := _c.mutation.DeviceSn(); !ok {
-		return &ValidationError{Name: "device_sn", err: errors.New(`ent: missing required field "Record.device_sn"`)}
-	}
-	if v, ok := _c.mutation.DeviceSn(); ok {
-		if err := record.DeviceSnValidator(v); err != nil {
-			return &ValidationError{Name: "device_sn", err: fmt.Errorf(`ent: validator failed for field "Record.device_sn": %w`, err)}
-		}
 	}
 	if _, ok := _c.mutation.DeviceCode(); !ok {
 		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "Record.device_code"`)}

@@ -41,7 +41,7 @@ func (Record) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Immutable().NotEmpty().DefaultFunc(cdrid).SchemaType(char(36)),
 
-		field.String("device_sn").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备序列号"),
+		field.String("device_sn").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("device_type").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
 

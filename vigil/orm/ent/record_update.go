@@ -87,6 +87,9 @@ func (_u *RecordUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(record.FieldUpdateTime, field.TypeTime, value)
 	}
+	if _u.mutation.DeviceSnCleared() {
+		_spec.ClearField(record.FieldDeviceSn, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{record.Label}
@@ -195,6 +198,9 @@ func (_u *RecordUpdateOne) sqlSave(ctx context.Context) (_node *Record, err erro
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(record.FieldUpdateTime, field.TypeTime, value)
+	}
+	if _u.mutation.DeviceSnCleared() {
+		_spec.ClearField(record.FieldDeviceSn, field.TypeString)
 	}
 	_node = &Record{config: _u.config}
 	_spec.Assign = _node.assignValues

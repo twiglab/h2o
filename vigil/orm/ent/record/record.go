@@ -69,8 +69,6 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
-	// DeviceSnValidator is a validator for the "device_sn" field. It is called by the builders before save.
-	DeviceSnValidator func(string) error
 	// DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	DeviceCodeValidator func(string) error
 	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
