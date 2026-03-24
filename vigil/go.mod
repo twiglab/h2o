@@ -15,6 +15,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
 	github.com/vektah/gqlparser/v2 v2.5.32
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
