@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/twiglab/h2o/wal"
+	"github.com/twiglab/h2o/log/wal"
 )
 
 type ChargeServer struct {

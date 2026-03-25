@@ -12,8 +12,8 @@ import (
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/log/wal"
 	"github.com/twiglab/h2o/pkg/common"
-	"github.com/twiglab/h2o/wal"
 )
 
 func logLevel(s string) slog.Level {
