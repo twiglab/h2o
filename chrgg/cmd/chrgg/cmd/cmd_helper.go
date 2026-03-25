@@ -79,9 +79,9 @@ func webaddr() string {
 
 func topics() map[string]byte {
 	return map[string]byte{
-		common.WaterTopic:       0x00,
-		common.ElectricityTopic: 0x00,
-		common.GasTopic:         0x00,
+		common.WaterTopic:       0x01,
+		common.ElectricityTopic: 0x01,
+		common.GasTopic:         0x01,
 	}
 }
 
