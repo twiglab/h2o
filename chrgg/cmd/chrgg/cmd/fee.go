@@ -1,12 +1,10 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twiglab/h2o/chrgg"
 
 	"context"
 	"fmt"
@@ -14,6 +12,7 @@ import (
 	"os"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 // feeCmd represents the csv command
@@ -57,12 +56,29 @@ func csv() {
 		log.Fatal("list ", err)
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"code", "fee_fen", "pos_code"})
+	table := tablewriter.NewTable(os.Stdout,
+		tablewriter.WithStringer(toTable),
+		tablewriter.WithConfig(tablewriter.Config{
+			Header: tw.CellConfig{
+				Formatting: tw.CellFormatting{AutoFormat: tw.On},
+				Alignment:  tw.CellAlignment{Global: tw.AlignCenter},
+			},
+			Row: tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}},
+		}),
+	)
+	table.Header([]string{"code", "fee_fen", "pos_code"})
 
 	for _, emp := range rs {
-		table.Append(emp.ToStrings())
+		table.Append(emp)
 	}
 
 	table.Render()
+}
+
+func toTable(e any) []string {
+	emp, ok := e.(chrgg.AloneRuler)
+	if !ok {
+		return []string{"Error: Invalid type"}
+	}
+	return emp.ToStrings()
 }
