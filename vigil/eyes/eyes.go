@@ -41,9 +41,14 @@ func toView(data common.Electricity) EleMeterDataView {
 	}
 }
 
+type Extra struct {
+	StdCurrent float64 `json:"std_current"`
+}
+
 type ElectricityItem struct {
 	vigil.Meter
-	Data EleMeterDataView `json:"data"`
+	Data  EleMeterDataView `json:"data"`
+	Extra Extra            `json:"extra"`
 }
 
 type ElectricityEgg struct {
@@ -57,9 +62,13 @@ func NewElectricityEgg() *ElectricityEgg {
 }
 
 func (e *ElectricityEgg) Merge(m vigil.ElectricityMeter) {
+	data := toView(m.Data)
 	i := &ElectricityItem{
 		Meter: m.Meter,
-		Data:  toView(m.Data),
+		Data:  data,
+		Extra: Extra{
+			StdCurrent: std(data.CurrentA, data.CurrentB, data.CurrentC),
+		},
 	}
 	e.Items[i.Code] = i
 }
