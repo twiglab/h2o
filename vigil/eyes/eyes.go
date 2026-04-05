@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/montanaflynn/stats"
 	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/vigil"
 )
@@ -100,4 +101,10 @@ func EyesMux(ep *ElectricityEgg) http.Handler {
 	mux := chi.NewMux()
 	mux.HandleFunc("/all", EyesAll(ep))
 	return mux
+}
+
+func std(f ...float64) (r float64) {
+	fd := stats.LoadRawData(f)
+	r, _ = fd.StandardDeviationPopulation()
+	return
 }
