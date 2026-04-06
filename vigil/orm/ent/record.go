@@ -33,7 +33,7 @@ type Record struct {
 	DataCode string `json:"data_code,omitempty"`
 	// 当前读数
 	DataValue int64 `json:"data_value,omitempty"`
-	// 当前时间
+	// 采集时间
 	DataTime time.Time `json:"data_time,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`

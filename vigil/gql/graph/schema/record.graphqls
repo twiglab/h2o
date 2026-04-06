@@ -1,0 +1,28 @@
+scalar Time
+scalar Int64
+
+type Record {
+  id: ID!
+
+  deviceCode : String!
+  deviceName : String!
+  deviceType : String!
+
+  dataCode   : String!
+  dataValue  : Int64!
+  dataTime   : Time!
+
+  posCode    : String!
+  project    : String!
+}
+
+input RecordIn {
+  posCode    : String
+  project    : String
+  deviceCode : String
+}
+
+type Query {
+  all(input: RecordIn!): [Record!]!
+}
+
