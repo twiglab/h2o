@@ -7,6 +7,8 @@ import (
 	"github.com/twiglab/h2o/vigil/orm/ent"
 )
 
+const f = "20060102150405"
+
 type DBx struct {
 	Client *ent.Client
 }
@@ -22,5 +24,6 @@ func (d *DBx) Tabb(ctx context.Context, data vigil.MeterData) error {
 	cr.SetDataValue(data.GetDataValue())
 	cr.SetPosCode(data.GetPosCode())
 	cr.SetProject(data.GetProject())
+	cr.SetDataTs(data.GetDataTime().Format(f))
 	return cr.Exec(ctx)
 }

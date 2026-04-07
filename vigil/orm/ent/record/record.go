@@ -31,6 +31,8 @@ const (
 	FieldDataValue = "data_value"
 	// FieldDataTime holds the string denoting the data_time field in the database.
 	FieldDataTime = "data_time"
+	// FieldDataTs holds the string denoting the data_ts field in the database.
+	FieldDataTs = "data_ts"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldDataCode,
 	FieldDataValue,
 	FieldDataTime,
+	FieldDataTs,
 	FieldPosCode,
 	FieldProject,
 }
@@ -80,6 +83,8 @@ var (
 	DataCodeValidator func(string) error
 	// DefaultDataValue holds the default value on creation for the "data_value" field.
 	DefaultDataValue int64
+	// DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
+	DataTsValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -137,6 +142,11 @@ func ByDataValue(opts ...sql.OrderTermOption) OrderOption {
 // ByDataTime orders the results by the data_time field.
 func ByDataTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDataTime, opts...).ToFunc()
+}
+
+// ByDataTs orders the results by the data_ts field.
+func ByDataTs(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDataTs, opts...).ToFunc()
 }
 
 // ByPosCode orders the results by the pos_code field.

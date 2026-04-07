@@ -43,6 +43,7 @@ type RecordMutation struct {
 	data_value    *int64
 	adddata_value *int64
 	data_time     *time.Time
+	data_ts       *string
 	pos_code      *string
 	project       *string
 	clearedFields map[string]struct{}
@@ -525,6 +526,42 @@ func (m *RecordMutation) ResetDataTime() {
 	m.data_time = nil
 }
 
+// SetDataTs sets the "data_ts" field.
+func (m *RecordMutation) SetDataTs(s string) {
+	m.data_ts = &s
+}
+
+// DataTs returns the value of the "data_ts" field in the mutation.
+func (m *RecordMutation) DataTs() (r string, exists bool) {
+	v := m.data_ts
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataTs returns the old "data_ts" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldDataTs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataTs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataTs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataTs: %w", err)
+	}
+	return oldValue.DataTs, nil
+}
+
+// ResetDataTs resets all changes to the "data_ts" field.
+func (m *RecordMutation) ResetDataTs() {
+	m.data_ts = nil
+}
+
 // SetPosCode sets the "pos_code" field.
 func (m *RecordMutation) SetPosCode(s string) {
 	m.pos_code = &s
@@ -631,7 +668,7 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.create_time != nil {
 		fields = append(fields, record.FieldCreateTime)
 	}
@@ -658,6 +695,9 @@ func (m *RecordMutation) Fields() []string {
 	}
 	if m.data_time != nil {
 		fields = append(fields, record.FieldDataTime)
+	}
+	if m.data_ts != nil {
+		fields = append(fields, record.FieldDataTs)
 	}
 	if m.pos_code != nil {
 		fields = append(fields, record.FieldPosCode)
@@ -691,6 +731,8 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DataValue()
 	case record.FieldDataTime:
 		return m.DataTime()
+	case record.FieldDataTs:
+		return m.DataTs()
 	case record.FieldPosCode:
 		return m.PosCode()
 	case record.FieldProject:
@@ -722,6 +764,8 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDataValue(ctx)
 	case record.FieldDataTime:
 		return m.OldDataTime(ctx)
+	case record.FieldDataTs:
+		return m.OldDataTs(ctx)
 	case record.FieldPosCode:
 		return m.OldPosCode(ctx)
 	case record.FieldProject:
@@ -797,6 +841,13 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataTime(v)
+		return nil
+	case record.FieldDataTs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataTs(v)
 		return nil
 	case record.FieldPosCode:
 		v, ok := value.(string)
@@ -917,6 +968,9 @@ func (m *RecordMutation) ResetField(name string) error {
 		return nil
 	case record.FieldDataTime:
 		m.ResetDataTime()
+		return nil
+	case record.FieldDataTs:
+		m.ResetDataTs()
 		return nil
 	case record.FieldPosCode:
 		m.ResetPosCode()

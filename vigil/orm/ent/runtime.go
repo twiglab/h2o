@@ -44,6 +44,10 @@ func init() {
 	recordDescDataValue := recordFields[6].Descriptor()
 	// record.DefaultDataValue holds the default value on creation for the data_value field.
 	record.DefaultDataValue = recordDescDataValue.Default.(int64)
+	// recordDescDataTs is the schema descriptor for data_ts field.
+	recordDescDataTs := recordFields[8].Descriptor()
+	// record.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
+	record.DataTsValidator = recordDescDataTs.Validators[0].(func(string) error)
 	// recordDescID is the schema descriptor for id field.
 	recordDescID := recordFields[0].Descriptor()
 	// record.DefaultID holds the default value on creation for the id field.

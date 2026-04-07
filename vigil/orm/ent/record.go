@@ -29,12 +29,14 @@ type Record struct {
 	DeviceType string `json:"device_type,omitempty"`
 	// 设备名称
 	DeviceName string `json:"device_name,omitempty"`
-	// 当前datacode
+	// 当前记录code
 	DataCode string `json:"data_code,omitempty"`
 	// 当前读数
 	DataValue int64 `json:"data_value,omitempty"`
 	// 采集时间
 	DataTime time.Time `json:"data_time,omitempty"`
+	// 采集时间字符串
+	DataTs string `json:"data_ts,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
@@ -49,7 +51,7 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case record.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDeviceName, record.FieldDataCode, record.FieldPosCode, record.FieldProject:
+		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDeviceName, record.FieldDataCode, record.FieldDataTs, record.FieldPosCode, record.FieldProject:
 			values[i] = new(sql.NullString)
 		case record.FieldCreateTime, record.FieldUpdateTime, record.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -128,6 +130,12 @@ func (_m *Record) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.DataTime = value.Time
 			}
+		case record.FieldDataTs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field data_ts", values[i])
+			} else if value.Valid {
+				_m.DataTs = value.String
+			}
 		case record.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
@@ -202,6 +210,9 @@ func (_m *Record) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("data_time=")
 	builder.WriteString(_m.DataTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("data_ts=")
+	builder.WriteString(_m.DataTs)
 	builder.WriteString(", ")
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)

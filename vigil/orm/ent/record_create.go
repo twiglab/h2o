@@ -117,6 +117,12 @@ func (_c *RecordCreate) SetDataTime(v time.Time) *RecordCreate {
 	return _c
 }
 
+// SetDataTs sets the "data_ts" field.
+func (_c *RecordCreate) SetDataTs(v string) *RecordCreate {
+	_c.mutation.SetDataTs(v)
+	return _c
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_c *RecordCreate) SetPosCode(v string) *RecordCreate {
 	_c.mutation.SetPosCode(v)
@@ -234,6 +240,14 @@ func (_c *RecordCreate) check() error {
 	if _, ok := _c.mutation.DataTime(); !ok {
 		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "Record.data_time"`)}
 	}
+	if _, ok := _c.mutation.DataTs(); !ok {
+		return &ValidationError{Name: "data_ts", err: errors.New(`ent: missing required field "Record.data_ts"`)}
+	}
+	if v, ok := _c.mutation.DataTs(); ok {
+		if err := record.DataTsValidator(v); err != nil {
+			return &ValidationError{Name: "data_ts", err: fmt.Errorf(`ent: validator failed for field "Record.data_ts": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.PosCode(); !ok {
 		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "Record.pos_code"`)}
 	}
@@ -316,6 +330,10 @@ func (_c *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.DataTime(); ok {
 		_spec.SetField(record.FieldDataTime, field.TypeTime, value)
 		_node.DataTime = value
+	}
+	if value, ok := _c.mutation.DataTs(); ok {
+		_spec.SetField(record.FieldDataTs, field.TypeString, value)
+		_node.DataTs = value
 	}
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(record.FieldPosCode, field.TypeString, value)
@@ -429,6 +447,9 @@ func (u *RecordUpsertOne) UpdateNewValues() *RecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.DataTime(); exists {
 			s.SetIgnore(record.FieldDataTime)
+		}
+		if _, exists := u.create.mutation.DataTs(); exists {
+			s.SetIgnore(record.FieldDataTs)
 		}
 		if _, exists := u.create.mutation.PosCode(); exists {
 			s.SetIgnore(record.FieldPosCode)
@@ -687,6 +708,9 @@ func (u *RecordUpsertBulk) UpdateNewValues() *RecordUpsertBulk {
 			}
 			if _, exists := b.mutation.DataTime(); exists {
 				s.SetIgnore(record.FieldDataTime)
+			}
+			if _, exists := b.mutation.DataTs(); exists {
+				s.SetIgnore(record.FieldDataTs)
 			}
 			if _, exists := b.mutation.PosCode(); exists {
 				s.SetIgnore(record.FieldPosCode)

@@ -109,6 +109,11 @@ func DataTime(v time.Time) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldDataTime, v))
 }
 
+// DataTs applies equality check predicate on the "data_ts" field. It's identical to DataTsEQ.
+func DataTs(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDataTs, v))
+}
+
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
 func PosCode(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldPosCode, v))
@@ -622,6 +627,71 @@ func DataTimeLT(v time.Time) predicate.Record {
 // DataTimeLTE applies the LTE predicate on the "data_time" field.
 func DataTimeLTE(v time.Time) predicate.Record {
 	return predicate.Record(sql.FieldLTE(FieldDataTime, v))
+}
+
+// DataTsEQ applies the EQ predicate on the "data_ts" field.
+func DataTsEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDataTs, v))
+}
+
+// DataTsNEQ applies the NEQ predicate on the "data_ts" field.
+func DataTsNEQ(v string) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldDataTs, v))
+}
+
+// DataTsIn applies the In predicate on the "data_ts" field.
+func DataTsIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldDataTs, vs...))
+}
+
+// DataTsNotIn applies the NotIn predicate on the "data_ts" field.
+func DataTsNotIn(vs ...string) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldDataTs, vs...))
+}
+
+// DataTsGT applies the GT predicate on the "data_ts" field.
+func DataTsGT(v string) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldDataTs, v))
+}
+
+// DataTsGTE applies the GTE predicate on the "data_ts" field.
+func DataTsGTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldDataTs, v))
+}
+
+// DataTsLT applies the LT predicate on the "data_ts" field.
+func DataTsLT(v string) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldDataTs, v))
+}
+
+// DataTsLTE applies the LTE predicate on the "data_ts" field.
+func DataTsLTE(v string) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldDataTs, v))
+}
+
+// DataTsContains applies the Contains predicate on the "data_ts" field.
+func DataTsContains(v string) predicate.Record {
+	return predicate.Record(sql.FieldContains(FieldDataTs, v))
+}
+
+// DataTsHasPrefix applies the HasPrefix predicate on the "data_ts" field.
+func DataTsHasPrefix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasPrefix(FieldDataTs, v))
+}
+
+// DataTsHasSuffix applies the HasSuffix predicate on the "data_ts" field.
+func DataTsHasSuffix(v string) predicate.Record {
+	return predicate.Record(sql.FieldHasSuffix(FieldDataTs, v))
+}
+
+// DataTsEqualFold applies the EqualFold predicate on the "data_ts" field.
+func DataTsEqualFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldEqualFold(FieldDataTs, v))
+}
+
+// DataTsContainsFold applies the ContainsFold predicate on the "data_ts" field.
+func DataTsContainsFold(v string) predicate.Record {
+	return predicate.Record(sql.FieldContainsFold(FieldDataTs, v))
 }
 
 // PosCodeEQ applies the EQ predicate on the "pos_code" field.
