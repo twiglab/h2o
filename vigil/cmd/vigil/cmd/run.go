@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/eyes"
+	"github.com/twiglab/h2o/vigil/gql"
 
 	"github.com/spf13/cobra"
 )
@@ -33,19 +34,22 @@ func run() {
 
 	rootLog()
 
+	cli := entcli()
+
 	egg := eyes.NewElectricityEgg()
 	hub := &vigil.Hub{
 		ElectyMeterView: egg,
-		Recorder:        vigil.WithRecorder(dbx()),
+		Recorder:        vigil.WithRecorder(dbx(cli)),
 		Logger:          serverLog(),
 	}
 	mcli := mqttcli()
 	token := mcli.SubscribeMultiple(topics(), vigil.Handle(hub))
 	token.Wait()
 
-	er := eyes.EyesMux(egg)
+	gqlc := gql.NewConf(cli)
 
 	mux := chi.NewMux()
-	mux.Mount("/eyes", er)
+	mux.Mount("/eyes", eyes.EyesMux(egg))
+	mux.Mount("/gql", gql.Handle(gqlc))
 	http.ListenAndServe(webaddr(), mux)
 }

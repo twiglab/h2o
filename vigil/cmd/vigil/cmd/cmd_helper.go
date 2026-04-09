@@ -7,6 +7,7 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
+	vlog "github.com/twiglab/h2o/log"
 	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
@@ -63,8 +64,8 @@ func entcli() *ent.Client {
 	return cli
 }
 
-func dbx() *orm.DBx {
-	return &orm.DBx{Client: entcli()}
+func dbx(c *ent.Client) *orm.DBx {
+	return &orm.DBx{Client: c}
 }
 
 func rootLog() *slog.Logger {
@@ -73,7 +74,7 @@ func rootLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(rlogL, logL))
-	log := vigil.NewLog(rlogF, level)
+	log := vlog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
@@ -84,6 +85,6 @@ func serverLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(sLogL, logL))
-	l := vigil.NewLog(sLogF, level)
+	l := vlog.NewLog(sLogF, level)
 	return l
 }
