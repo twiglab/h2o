@@ -19,10 +19,11 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 	var out io.Writer = os.Stdout
 	if !isConsole(logFile) {
 		out = &lumberjack.Logger{
-			Filename:   logFile,
-			MaxSize:    10, // megabytes
-			MaxBackups: 10,
-			MaxAge:     10, //days
+			Filename: logFile,
+			MaxSize:  10, // megabytes
+			// MaxBackups: 100,
+			MaxAge:    180, //days
+			LocalTime: true,
 		}
 	}
 	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
