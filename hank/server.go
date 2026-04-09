@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"context"
 	"log/slog"
+	"math/rand/v2"
 	"net"
 
 	"github.com/cloudwego/netpoll"
-	"github.com/google/uuid"
 )
 
 type connKey struct {
@@ -18,11 +18,7 @@ var ck = connKey{"__conn_id"}
 
 type cid struct {
 	s  *Server
-	id string
-}
-
-func (c cid) String() string {
-	return c.id
+	id int64
 }
 
 type Server struct {
@@ -42,7 +38,7 @@ func (s *Server) RunAt(l net.Listener) error {
 		at(serve),
 
 		netpoll.WithOnConnect(func(ctx context.Context, conn netpoll.Connection) context.Context {
-			sk := &cid{s: s, id: uuid.NewString()}
+			sk := &cid{s: s, id: rand.Int64()}
 			return context.WithValue(ctx, ck, sk)
 		}),
 
@@ -84,7 +80,7 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 
 	slog.DebugContext(ctx, "serve",
 		slog.String("remoteAddr", conn.RemoteAddr().String()),
-		slog.String("cid", sk.String()),
+		slog.Int64("cid", sk.id),
 	)
 
 	for sc.Scan() {
@@ -94,7 +90,7 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 		if err := unmarshal(sc.Bytes(), &sd); err != nil {
 			s.Logger.ErrorContext(ctx, "unmarshal SyncData error",
 				slog.String("remoteAddr", conn.RemoteAddr().String()),
-				slog.String("cid", sk.String()),
+				slog.Int64("cid", sk.id),
 				slog.Any("error", err),
 			)
 			continue

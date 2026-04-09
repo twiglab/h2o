@@ -3,7 +3,7 @@ package hank
 import (
 	"context"
 
-	"github.com/twiglab/h2o/wal"
+	"github.com/twiglab/h2o/log/wal"
 )
 
 type Hub struct {

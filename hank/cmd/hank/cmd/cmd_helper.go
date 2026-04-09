@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/abm"
 	"github.com/twiglab/h2o/hank"
-	"github.com/twiglab/h2o/wal"
+	"github.com/twiglab/h2o/log/wal"
 )
 
 func logLevel(s string) slog.Level {
