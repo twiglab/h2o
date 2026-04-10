@@ -18,7 +18,6 @@ require (
 	github.com/taosdata/driver-go/v3 v3.8.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
 	github.com/vektah/gqlparser/v2 v2.5.32
-	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
 require (
@@ -38,6 +37,8 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
+	github.com/google/subcommands v1.2.0 // indirect
+	github.com/google/wire v0.7.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.18.1 // indirect
@@ -76,12 +77,14 @@ require (
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/tools v0.43.0 // indirect
 	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 tool (
 	entgo.io/ent/cmd/ent
 	github.com/99designs/gqlgen
+	github.com/google/wire/cmd/wire
 )
 
 replace github.com/twiglab/h2o => ../
