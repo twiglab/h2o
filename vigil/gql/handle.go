@@ -1,8 +1,6 @@
 package gql
 
 import (
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -13,9 +11,10 @@ import (
 	"github.com/vektah/gqlparser/v2/ast"
 
 	"github.com/twiglab/h2o/vigil/gql/graph"
+	"github.com/twiglab/h2o/vigil/orm/ent"
 )
 
-func Handle(conf graph.Config) http.Handler {
+func Handle(conf graph.Config) *chi.Mux {
 	srv := handler.New(graph.NewExecutableSchema(conf))
 
 	srv.AddTransport(transport.Options{})
@@ -28,10 +27,18 @@ func Handle(conf graph.Config) http.Handler {
 		Cache: lru.New[string](100),
 	})
 
-	r := chi.NewRouter()
+	r := chi.NewMux()
 
-	r.Handle("/", playground.ApolloSandboxHandler("GraphQL playground", "/query"))
+	r.Handle("/", playground.ApolloSandboxHandler("GraphQL playground", "/gql/query"))
 	r.Handle("/query", srv)
 
 	return r
+}
+
+func NewConf(cli *ent.Client) graph.Config {
+	return graph.Config{
+		Resolvers: &graph.Resolver{
+			Client: cli,
+		},
+	}
 }
