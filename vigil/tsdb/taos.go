@@ -11,6 +11,9 @@ const (
 
 	FIELD_DENSITY_COUNT = "human_count"
 	FIELD_DENSITY_RATIO = "human_ratio"
+
+	FIELD_DATA_VALUE = "data_value"
+
 )
 
 const (
