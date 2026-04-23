@@ -10,7 +10,7 @@ require (
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/google/uuid v1.6.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
-	github.com/jackc/pgx/v5 v5.9.1
+	github.com/jackc/pgx/v5 v5.9.2
 	github.com/mattn/go-sqlite3 v1.14.37
 	github.com/montanaflynn/stats v0.9.0
 	github.com/spf13/cobra v1.10.2
