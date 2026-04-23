@@ -39,13 +39,14 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Query struct {
-		All                func(childComplexity int, input model.RecordIn) int
+		RecordPage         func(childComplexity int, input model.RecordPageIn) int
 		__resolve__service func(childComplexity int) int
 	}
 
 	Record struct {
 		DataCode   func(childComplexity int) int
 		DataTime   func(childComplexity int) int
+		DataTs     func(childComplexity int) int
 		DataValue  func(childComplexity int) int
 		DeviceCode func(childComplexity int) int
 		DeviceName func(childComplexity int) int
@@ -55,13 +56,24 @@ type ComplexityRoot struct {
 		Project    func(childComplexity int) int
 	}
 
+	RecordPageOut struct {
+		DeviceCode func(childComplexity int) int
+		End        func(childComplexity int) int
+		Last       func(childComplexity int) int
+		PageSize   func(childComplexity int) int
+		PosCode    func(childComplexity int) int
+		Project    func(childComplexity int) int
+		Result     func(childComplexity int) int
+		Start      func(childComplexity int) int
+	}
+
 	_Service struct {
 		SDL func(childComplexity int) int
 	}
 }
 
 type QueryResolver interface {
-	All(ctx context.Context, input model.RecordIn) ([]*ent.Record, error)
+	RecordPage(ctx context.Context, input model.RecordPageIn) (*model.RecordPageOut, error)
 }
 
 type executableSchema graphql.ExecutableSchemaState[ResolverRoot, DirectiveRoot, ComplexityRoot]
@@ -78,18 +90,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Query.all":
-		if e.ComplexityRoot.Query.All == nil {
+	case "Query.RecordPage":
+		if e.ComplexityRoot.Query.RecordPage == nil {
 			break
 		}
 
-		args, err := ec.field_Query_all_args(ctx, rawArgs)
+		args, err := ec.field_Query_RecordPage_args(ctx, rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.All(childComplexity, args["input"].(model.RecordIn)), true
-
+		return e.ComplexityRoot.Query.RecordPage(childComplexity, args["input"].(model.RecordPageIn)), true
 	case "Query._service":
 		if e.ComplexityRoot.Query.__resolve__service == nil {
 			break
@@ -109,6 +120,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Record.DataTime(childComplexity), true
+	case "Record.dataTs":
+		if e.ComplexityRoot.Record.DataTs == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Record.DataTs(childComplexity), true
 	case "Record.dataValue":
 		if e.ComplexityRoot.Record.DataValue == nil {
 			break
@@ -152,6 +169,55 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Record.Project(childComplexity), true
 
+	case "RecordPageOut.deviceCode":
+		if e.ComplexityRoot.RecordPageOut.DeviceCode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.DeviceCode(childComplexity), true
+	case "RecordPageOut.end":
+		if e.ComplexityRoot.RecordPageOut.End == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.End(childComplexity), true
+	case "RecordPageOut.last":
+		if e.ComplexityRoot.RecordPageOut.Last == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.Last(childComplexity), true
+	case "RecordPageOut.pageSize":
+		if e.ComplexityRoot.RecordPageOut.PageSize == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.PageSize(childComplexity), true
+	case "RecordPageOut.posCode":
+		if e.ComplexityRoot.RecordPageOut.PosCode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.PosCode(childComplexity), true
+	case "RecordPageOut.project":
+		if e.ComplexityRoot.RecordPageOut.Project == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.Project(childComplexity), true
+	case "RecordPageOut.result":
+		if e.ComplexityRoot.RecordPageOut.Result == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.Result(childComplexity), true
+	case "RecordPageOut.start":
+		if e.ComplexityRoot.RecordPageOut.Start == nil {
+			break
+		}
+
+		return e.ComplexityRoot.RecordPageOut.Start(childComplexity), true
+
 	case "_Service.sdl":
 		if e.ComplexityRoot._Service.SDL == nil {
 			break
@@ -167,7 +233,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	opCtx := graphql.GetOperationContext(ctx)
 	ec := newExecutionContext(opCtx, e, make(chan graphql.DeferredResult))
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputRecordIn,
+		ec.unmarshalInputRecordPageIn,
 	)
 	first := true
 
@@ -307,6 +373,17 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Query_RecordPage_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+	var err error
+	args := map[string]any{}
+	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNRecordPageIn2githubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordPageIn)
+	if err != nil {
+		return nil, err
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
@@ -315,17 +392,6 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		return nil, err
 	}
 	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_all_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input", ec.unmarshalNRecordIn2githubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordIn)
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
 	return args, nil
 }
 
@@ -381,24 +447,24 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Query_all(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+func (ec *executionContext) _Query_RecordPage(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
 		field,
-		ec.fieldContext_Query_all,
+		ec.fieldContext_Query_RecordPage,
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().All(ctx, fc.Args["input"].(model.RecordIn))
+			return ec.Resolvers.Query().RecordPage(ctx, fc.Args["input"].(model.RecordPageIn))
 		},
 		nil,
-		ec.marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecordᚄ,
+		ec.marshalORecordPageOut2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordPageOut,
 		true,
-		true,
+		false,
 	)
 }
 
-func (ec *executionContext) fieldContext_Query_all(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_RecordPage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -406,26 +472,24 @@ func (ec *executionContext) fieldContext_Query_all(ctx context.Context, field gr
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_Record_id(ctx, field)
-			case "deviceCode":
-				return ec.fieldContext_Record_deviceCode(ctx, field)
-			case "deviceName":
-				return ec.fieldContext_Record_deviceName(ctx, field)
-			case "deviceType":
-				return ec.fieldContext_Record_deviceType(ctx, field)
-			case "dataCode":
-				return ec.fieldContext_Record_dataCode(ctx, field)
-			case "dataValue":
-				return ec.fieldContext_Record_dataValue(ctx, field)
-			case "dataTime":
-				return ec.fieldContext_Record_dataTime(ctx, field)
+			case "result":
+				return ec.fieldContext_RecordPageOut_result(ctx, field)
 			case "posCode":
-				return ec.fieldContext_Record_posCode(ctx, field)
+				return ec.fieldContext_RecordPageOut_posCode(ctx, field)
 			case "project":
-				return ec.fieldContext_Record_project(ctx, field)
+				return ec.fieldContext_RecordPageOut_project(ctx, field)
+			case "deviceCode":
+				return ec.fieldContext_RecordPageOut_deviceCode(ctx, field)
+			case "start":
+				return ec.fieldContext_RecordPageOut_start(ctx, field)
+			case "end":
+				return ec.fieldContext_RecordPageOut_end(ctx, field)
+			case "last":
+				return ec.fieldContext_RecordPageOut_last(ctx, field)
+			case "pageSize":
+				return ec.fieldContext_RecordPageOut_pageSize(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type Record", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type RecordPageOut", field.Name)
 		},
 	}
 	defer func() {
@@ -435,7 +499,7 @@ func (ec *executionContext) fieldContext_Query_all(ctx context.Context, field gr
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_all_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_RecordPage_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -786,6 +850,35 @@ func (ec *executionContext) fieldContext_Record_dataTime(_ context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Record_dataTs(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_Record_dataTs,
+		func(ctx context.Context) (any, error) {
+			return obj.DataTs, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_Record_dataTs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Record",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Record_posCode(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -839,6 +932,260 @@ func (ec *executionContext) fieldContext_Record_project(_ context.Context, field
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_result(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_result,
+		func(ctx context.Context) (any, error) {
+			return obj.Result, nil
+		},
+		nil,
+		ec.marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecordᚄ,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_result(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Record_id(ctx, field)
+			case "deviceCode":
+				return ec.fieldContext_Record_deviceCode(ctx, field)
+			case "deviceName":
+				return ec.fieldContext_Record_deviceName(ctx, field)
+			case "deviceType":
+				return ec.fieldContext_Record_deviceType(ctx, field)
+			case "dataCode":
+				return ec.fieldContext_Record_dataCode(ctx, field)
+			case "dataValue":
+				return ec.fieldContext_Record_dataValue(ctx, field)
+			case "dataTime":
+				return ec.fieldContext_Record_dataTime(ctx, field)
+			case "dataTs":
+				return ec.fieldContext_Record_dataTs(ctx, field)
+			case "posCode":
+				return ec.fieldContext_Record_posCode(ctx, field)
+			case "project":
+				return ec.fieldContext_Record_project(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Record", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_posCode(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_posCode,
+		func(ctx context.Context) (any, error) {
+			return obj.PosCode, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_posCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_project(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_project,
+		func(ctx context.Context) (any, error) {
+			return obj.Project, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_project(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_deviceCode(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_deviceCode,
+		func(ctx context.Context) (any, error) {
+			return obj.DeviceCode, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_deviceCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_start(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_start,
+		func(ctx context.Context) (any, error) {
+			return obj.Start, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_start(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_end(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_end,
+		func(ctx context.Context) (any, error) {
+			return obj.End, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_end(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_last(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_last,
+		func(ctx context.Context) (any, error) {
+			return obj.Last, nil
+		},
+		nil,
+		ec.marshalNString2string,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_last(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _RecordPageOut_pageSize(ctx context.Context, field graphql.CollectedField, obj *model.RecordPageOut) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		ec.fieldContext_RecordPageOut_pageSize,
+		func(ctx context.Context) (any, error) {
+			return obj.PageSize, nil
+		},
+		nil,
+		ec.marshalNInt2int,
+		true,
+		true,
+	)
+}
+
+func (ec *executionContext) fieldContext_RecordPageOut_pageSize(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "RecordPageOut",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2319,8 +2666,8 @@ func (ec *executionContext) fieldContext___Type_isOneOf(_ context.Context, field
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputRecordIn(ctx context.Context, obj any) (model.RecordIn, error) {
-	var it model.RecordIn
+func (ec *executionContext) unmarshalInputRecordPageIn(ctx context.Context, obj any) (model.RecordPageIn, error) {
+	var it model.RecordPageIn
 	if obj == nil {
 		return it, nil
 	}
@@ -2330,7 +2677,7 @@ func (ec *executionContext) unmarshalInputRecordIn(ctx context.Context, obj any)
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"posCode", "project", "deviceCode"}
+	fieldsInOrder := [...]string{"posCode", "project", "deviceCode", "start", "end", "last", "pageSize"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -2339,25 +2686,53 @@ func (ec *executionContext) unmarshalInputRecordIn(ctx context.Context, obj any)
 		switch k {
 		case "posCode":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("posCode"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.PosCode = data
 		case "project":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("project"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Project = data
 		case "deviceCode":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("deviceCode"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.DeviceCode = data
+		case "start":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Start = data
+		case "end":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.End = data
+		case "last":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("last"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Last = data
+		case "pageSize":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("pageSize"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PageSize = data
 		}
 	}
 	return it, nil
@@ -2390,19 +2765,16 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "all":
+		case "RecordPage":
 			field := field
 
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
 				defer func() {
 					if r := recover(); r != nil {
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_all(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
+				res = ec._Query_RecordPage(ctx, field)
 				return res
 			}
 
@@ -2511,6 +2883,11 @@ func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "dataTs":
+			out.Values[i] = ec._Record_dataTs(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "posCode":
 			out.Values[i] = ec._Record_posCode(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -2518,6 +2895,80 @@ func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, o
 			}
 		case "project":
 			out.Values[i] = ec._Record_project(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.Deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.ProcessDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var recordPageOutImplementors = []string{"RecordPageOut"}
+
+func (ec *executionContext) _RecordPageOut(ctx context.Context, sel ast.SelectionSet, obj *model.RecordPageOut) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, recordPageOutImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("RecordPageOut")
+		case "result":
+			out.Values[i] = ec._RecordPageOut_result(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "posCode":
+			out.Values[i] = ec._RecordPageOut_posCode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "project":
+			out.Values[i] = ec._RecordPageOut_project(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deviceCode":
+			out.Values[i] = ec._RecordPageOut_deviceCode(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "start":
+			out.Values[i] = ec._RecordPageOut_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "end":
+			out.Values[i] = ec._RecordPageOut_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "last":
+			out.Values[i] = ec._RecordPageOut_last(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "pageSize":
+			out.Values[i] = ec._RecordPageOut_pageSize(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -2963,6 +3414,22 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v any) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	_ = sel
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) unmarshalNInt642int64(ctx context.Context, v any) (int64, error) {
 	res, err := graphql.UnmarshalInt64(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3005,8 +3472,8 @@ func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvig
 	return ec._Record(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalNRecordIn2githubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordIn(ctx context.Context, v any) (model.RecordIn, error) {
-	res, err := ec.unmarshalInputRecordIn(ctx, v)
+func (ec *executionContext) unmarshalNRecordPageIn2githubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordPageIn(ctx context.Context, v any) (model.RecordPageIn, error) {
+	res, err := ec.unmarshalInputRecordPageIn(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -3367,6 +3834,13 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	_ = ctx
 	res := graphql.MarshalBoolean(*v)
 	return res
+}
+
+func (ec *executionContext) marshalORecordPageOut2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordPageOut(ctx context.Context, sel ast.SelectionSet, v *model.RecordPageOut) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._RecordPageOut(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v any) (string, error) {

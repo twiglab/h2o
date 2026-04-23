@@ -3,6 +3,7 @@ package orm
 //go:generate go tool ent generate ./schema --target ./ent --feature sql/execquery,sql/upsert,privacy,sql/lock
 
 import (
+	"cmp"
 	"context"
 
 	"entgo.io/ent/dialect"
@@ -33,4 +34,8 @@ func pgx(dsn string, ops ...ent.Option) (*ent.Client, error) {
 	drv := entsql.OpenDB(dialect.Postgres, db)
 	ops = append(ops, ent.Driver(drv))
 	return ent.NewClient(ops...), nil
+}
+
+func RecordCmp(a, b *ent.Record) int {
+	return cmp.Compare(b.DataTs, a.DataTs)
 }

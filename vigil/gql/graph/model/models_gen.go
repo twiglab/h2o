@@ -2,8 +2,27 @@
 
 package model
 
-type RecordIn struct {
-	PosCode    *string `json:"posCode,omitempty"`
-	Project    *string `json:"project,omitempty"`
-	DeviceCode *string `json:"deviceCode,omitempty"`
+import (
+	"github.com/twiglab/h2o/vigil/orm/ent"
+)
+
+type RecordPageIn struct {
+	PosCode    string `json:"posCode"`
+	Project    string `json:"project"`
+	DeviceCode string `json:"deviceCode"`
+	Start      string `json:"start"`
+	End        string `json:"end"`
+	Last       string `json:"last"`
+	PageSize   int    `json:"pageSize"`
+}
+
+type RecordPageOut struct {
+	Result     []*ent.Record `json:"result"`
+	PosCode    string        `json:"posCode"`
+	Project    string        `json:"project"`
+	DeviceCode string        `json:"deviceCode"`
+	Start      string        `json:"start"`
+	End        string        `json:"end"`
+	Last       string        `json:"last"`
+	PageSize   int           `json:"pageSize"`
 }

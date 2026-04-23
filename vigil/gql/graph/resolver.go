@@ -7,6 +7,11 @@ import "github.com/twiglab/h2o/vigil/orm/ent"
 // It serves as dependency injection for your app, add any dependencies you require
 // here.
 
+const (
+	MaxStr = "~"
+	MinStr = "!"
+)
+
 type Resolver struct {
 	Client *ent.Client
 }
