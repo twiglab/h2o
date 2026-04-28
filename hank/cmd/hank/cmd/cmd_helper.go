@@ -8,8 +8,9 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/abm"
+	"github.com/twiglab/h2o/clog"
+	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/hank"
-	"github.com/twiglab/h2o/log/wal"
 )
 
 func logLevel(s string) slog.Level {
@@ -32,7 +33,7 @@ func rootLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(rlogL, logL))
-	log := hank.NewLog(rlogF, level)
+	log := clog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
@@ -43,7 +44,7 @@ func serverLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(sLogL, logL))
-	l := hank.NewLog(sLogF, level)
+	l := clog.NewLog(sLogF, level)
 	return l
 }
 

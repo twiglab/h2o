@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/twiglab/h2o/log"
+	"github.com/twiglab/h2o/clog"
 )
 
 type Conf struct {
@@ -18,7 +18,7 @@ type WAL struct {
 }
 
 func New(c Conf) *WAL {
-	l := log.NewLog(c.Filename, slog.LevelInfo)
+	l := clog.NewLog(c.Filename, slog.LevelInfo)
 	return &WAL{
 		inner: l,
 		c:     c,
