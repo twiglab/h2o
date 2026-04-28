@@ -2,23 +2,9 @@ package hank
 
 import (
 	"context"
-	"encoding"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
-
-const (
-	CLIENT_ID = "hank-plugin"
-)
-
-type SendObject interface {
-	encoding.BinaryMarshaler
-	Topic() string
-}
-
-type Sender interface {
-	SendData(ctx context.Context, obj SendObject) error
-}
 
 type MQTTAction struct {
 	client mqtt.Client

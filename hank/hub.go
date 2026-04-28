@@ -2,9 +2,19 @@ package hank
 
 import (
 	"context"
+	"encoding"
 
 	"github.com/twiglab/h2o/clog/wal"
 )
+
+type SendObject interface {
+	encoding.BinaryMarshaler
+	Topic() string
+}
+
+type Sender interface {
+	SendData(ctx context.Context, obj SendObject) error
+}
 
 type Hub struct {
 	WAL    *wal.WAL
