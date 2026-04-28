@@ -6,11 +6,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/twiglab/h2o/cache"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
 type Enh struct {
-	DDB Cache[string, MetaData]
+	DDB cache.Cache[string, MetaData]
 }
 
 func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
