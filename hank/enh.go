@@ -108,7 +108,7 @@ func WaterData(dm DataMix) (w common.Water, err error) {
 
 func ElectyData(dm DataMix) (ele common.Electricity, err error) {
 
-	if ele.DataValue, err = str2I64E(dm.DataValue, 100); err != nil {
+	if ele.DataValue, err = str2I64E(dm.ExtraData[data_value_old], 1); err != nil {
 		return
 	}
 

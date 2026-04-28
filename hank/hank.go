@@ -5,6 +5,10 @@ import (
 )
 
 const (
+	CLIENT_ID = "hank-plugin"
+)
+
+const (
 	ELECTRICITY = "electricity"
 	WATER       = "water"
 )
@@ -238,4 +242,8 @@ const (
 	current_price                  = "current-price"                  //	当前电价
 	system_status                  = "system-status"                  //	系统状态
 	current_n                      = "current-n"                      //	零线电流
+)
+
+const (
+	data_value_old = "data-valueold" // 未处理过的表显（原始值）
 )
