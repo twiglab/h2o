@@ -8,7 +8,7 @@ import (
 )
 
 type NatsAction struct {
-	jetstream.Publisher
+	js jetstream.JetStream
 }
 
 func (c *NatsAction) SendData(ctx context.Context, obj SendObject) error {
@@ -16,18 +16,21 @@ func (c *NatsAction) SendData(ctx context.Context, obj SendObject) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.Publish(ctx, obj.Topic(), bs)
+	_, err = c.js.Publish(ctx, obj.Topic(), bs)
 	return err
 }
 
-func NewNatsAction() (*NatsAction, error) {
-	nc, err := nats.Connect(nats.DefaultURL)
+func (c *NatsAction) Close() error {
+	return c.js.Conn().Drain()
+}
+
+func NewNatsAction(url string) (*NatsAction, error) {
+	nc, err := nats.Connect(url)
 	if err != nil {
 		return nil, err
 	}
-
 	js, _ := jetstream.New(nc)
 	return &NatsAction{
-		Publisher: js,
+		js: js,
 	}, nil
 }
