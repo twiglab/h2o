@@ -16,6 +16,8 @@ type MetaData struct {
 	F3 string `json:"f3"`
 	F4 string `json:"f4"`
 	F5 string `json:"f5"`
+
+	CT int `json:"ct"`
 }
 
 func (m MetaData) ToStrings() []string {

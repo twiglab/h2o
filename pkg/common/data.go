@@ -24,6 +24,10 @@ type Pos struct {
 	AreaCode  string `json:"area_code,omitempty"`  //区域
 }
 
+type ElectricityCT struct {
+	CT int `json:"ct,omitempty"`
+}
+
 type Electricity struct {
 	MeterValue
 
@@ -57,14 +61,4 @@ type Flag struct {
 	F3 string `json:"f3,omitempty"`
 	F4 string `json:"f4,omitempty"`
 	F5 string `json:"f5,omitempty"`
-}
-
-type Gateway struct {
-	GatewayAddr string `json:"gateway_addr,omitempty"`
-	GatewayNo   string `json:"gateway_no,omitempty"`
-}
-
-type ModbusGw struct {
-	Gateway
-	Unit uint8 `json:"uint"`
 }

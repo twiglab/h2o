@@ -75,7 +75,6 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 
 				Status: 0,
 			},
-
 			Pos: common.Pos{
 				Project:   meta.Project,
 				PosCode:   meta.PosCode,
@@ -83,7 +82,6 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
 			},
-
 			Flag: common.Flag{
 				F1: meta.F1,
 				F2: meta.F2,
@@ -92,7 +90,9 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				F5: meta.F5,
 			},
 		},
-
+		ElectricityCT: common.ElectricityCT{
+			CT: cmp.Or(meta.CT, 1),
+		},
 		Data: data,
 	}, nil
 }

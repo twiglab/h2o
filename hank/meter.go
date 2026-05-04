@@ -14,6 +14,7 @@ func (m Meter) Topic() string {
 
 type ElectricityMeter struct {
 	Meter
+	common.ElectricityCT
 	Data common.Electricity `json:"data"`
 }
 
