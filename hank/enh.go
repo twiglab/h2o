@@ -11,7 +11,7 @@ import (
 )
 
 type Enh struct {
-	DDB cache.Cache[string, MetaData]
+	Cache cache.Cache[string, MetaData]
 }
 
 func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
@@ -20,7 +20,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 		return WaterMeter{}, err
 	}
 
-	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
+	meta, _, _ := e.Cache.Get(context.Background(), dd.No)
 
 	return WaterMeter{
 		Meter: Meter{
@@ -60,7 +60,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 		return ElectricityMeter{}, err
 	}
 
-	meta, _, _ := e.DDB.Get(context.Background(), dd.No)
+	meta, _, _ := e.Cache.Get(context.Background(), dd.No)
 
 	return ElectricityMeter{
 		Meter: Meter{
@@ -101,63 +101,52 @@ func (e *Enh) ToGas(dd DeviceData) (gm GasMeter, err error) {
 	return
 }
 
-func WaterData(dm DataMix) (w common.Water, err error) {
-	w.DataValue, err = str2I64E(dm.DataValue, 100)
+func WaterData(dm DataMix) (cd common.Water, err error) {
+	cd.DataValue, err = str2I64E(dm.DataValue, 1)
 	return
 }
 
-func ElectyData(dm DataMix) (ele common.Electricity, err error) {
-
-	if ele.DataValue, err = str2I64E(dm.ExtraData[data_value_old], 1); err != nil {
+func ElectyData(dm DataMix) (cd common.Electricity, err error) {
+	if cd.DataValue, err = str2I64E(dm.DataValue, 1); err != nil {
 		return
 	}
 
-	if v, ok := dm.ExtraData[voltage_a]; ok {
-		if ele.VoltageA, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.VoltageA, err = str2I64E(dm.VoltageA, 10); err != nil {
+		return
 	}
-	if v, ok := dm.ExtraData[voltage_b]; ok {
-		if ele.VoltageB, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.VoltageB, err = str2I64E(dm.VoltageB, 10); err != nil {
+		return
 	}
-	if v, ok := dm.ExtraData[voltage_c]; ok {
-		if ele.VoltageC, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.VoltageC, err = str2I64E(dm.VoltageC, 10); err != nil {
+		return
 	}
 
-	if v, ok := dm.ExtraData[current_a]; ok {
-		if ele.CurrentA, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.CurrentA, err = str2I64E(dm.CurrentA, 1); err != nil {
+		return
 	}
-	if v, ok := dm.ExtraData[current_b]; ok {
-		if ele.CurrentB, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.CurrentB, err = str2I64E(dm.CurrentB, 1); err != nil {
+		return
 	}
-	if v, ok := dm.ExtraData[current_c]; ok {
-		if ele.CurrentC, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.CurrentC, err = str2I64E(dm.CurrentC, 1); err != nil {
+		return
 	}
 
-	if v, ok := dm.ExtraData[active_power_total]; ok {
-		if ele.ActivePowerTotal, err = str2I64E(v, 100); err != nil {
-			return
-		}
+	if cd.ActivePowerTotal, err = str2I64E(dm.ActivePowerTotal, 1); err != nil {
+		return
 	}
+
+	if cd.Frequency, err = str2I64E(dm.Frequency, 1); err != nil {
+		return
+	}
+
 	return
 }
 
-func str2I64E(s string, i float64) (v int64, err error) {
-	var f float64
-	if f, err = strconv.ParseFloat(s, 64); err != nil {
+func str2I64E(s string, i int64) (v int64, err error) {
+	if v, err = strconv.ParseInt(s, 10, 64); err != nil {
 		return
 	}
-	v = int64(f * i)
+	v = v * i
 	return
 }
 

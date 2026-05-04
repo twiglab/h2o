@@ -35,9 +35,11 @@ type Electricity struct {
 	CurrentB int64 `json:"current_b,omitempty"`
 	CurrentC int64 `json:"current_c,omitempty"`
 
-	ActivePowerTotal   int64 `json:"active_power_total,omitempty"`   // 总有功功率  P
-	ReactivePowerTotal int64 `json:"reactive_power_total,omitempty"` // 总无功功率  Q
-	ApparentPowerTotal int64 `json:"apparent_power_total,omitempty"` // 总视在功率  S
+	ActivePowerTotal int64 `json:"active_power_total,omitempty"` // 总有功功率  P
+	// ReactivePowerTotal int64 `json:"reactive_power_total,omitempty"` // 总无功功率  Q
+	// ApparentPowerTotal int64 `json:"apparent_power_total,omitempty"` // 总视在功率  S
+
+	Frequency int64 `json:"frequency,omitempty"` // 频率
 }
 
 type Water struct {
