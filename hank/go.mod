@@ -13,6 +13,7 @@ require (
 )
 
 require (
+	filippo.io/edwards25519 v1.2.0 // indirect
 	github.com/apache/arrow-go/v18 v18.5.1 // indirect
 	github.com/bytedance/gopkg v0.1.1 // indirect
 	github.com/clipperhouse/displaywidth v0.6.2 // indirect
@@ -28,6 +29,7 @@ require (
 	github.com/duckdb/duckdb-go/v2 v2.10502.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
+	github.com/go-sql-driver/mysql v1.10.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/flatbuffers v25.12.19+incompatible // indirect
