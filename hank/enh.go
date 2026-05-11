@@ -90,8 +90,8 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				F5: meta.F5,
 			},
 		},
-		ElectricityCT: common.ElectricityCT{
-			CT: cmp.Or(meta.CT, 1),
+		Param: common.ElectricityParam{
+			Factor: cmp.Or(meta.Factor, 1),
 		},
 		Data: data,
 	}, nil

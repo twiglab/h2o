@@ -24,8 +24,8 @@ type Pos struct {
 	AreaCode  string `json:"area_code,omitempty"`  //区域
 }
 
-type ElectricityCT struct {
-	CT int `json:"ct,omitempty"`
+type ElectricityParam struct {
+	Factor int `json:"factor,omitempty"` // 倍率的结果值，（CT*VT）
 }
 
 type Electricity struct {
