@@ -47,10 +47,10 @@ func (l *SyncMapCache[K, V]) Set(_ context.Context, k K, v V) error {
 	return nil
 }
 
-type emptyCache[K comparable, V any] struct{}
+type EmptyCache[K comparable, V any] struct{}
 
-func (e emptyCache[K, V]) Get(_ context.Context, _ K) (val V, ok bool, err error) { return }
-func (e emptyCache[K, V]) Set(_ context.Context, _ K, _ V) (err error)            { return }
+func (e EmptyCache[K, V]) Get(_ context.Context, _ K) (val V, ok bool, err error) { return }
+func (e EmptyCache[K, V]) Set(_ context.Context, _ K, _ V) (err error)            { return }
 
 type tiersCache[K comparable, V any] struct {
 	c Cache[K, V]
@@ -59,8 +59,8 @@ type tiersCache[K comparable, V any] struct {
 
 func WithCache[K comparable, V any](p, c Cache[K, V]) Cache[K, V] {
 	return &tiersCache[K, V]{
-		c: &SyncMapCache[K, V]{},
-		p: emptyCache[K, V]{},
+		c: c,
+		p: p,
 	}
 }
 
