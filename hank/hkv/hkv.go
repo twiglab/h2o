@@ -3,6 +3,7 @@ package hkv
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/twiglab/h2o/hank"
@@ -24,7 +25,24 @@ type HankDB struct {
 	DB *sqlx.DB
 }
 
-func (h *HankDB) Get(ctx context.Context, code string) (hank.MetaData, error) {
+func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok bool, err error) {
+	data, err = h.GetOne(ctx, code)
+
+	if err == nil {
+		ok = true
+		return
+	}
+	if errors.Is(err, sql.ErrNoRows) {
+		err = nil
+		ok = false
+		return
+	}
+	return
+}
+
+func (h *HankDB) Set(_ context.Context, _ string, _ hank.MetaData) (err error) { return }
+
+func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error) {
 	var d Data
 	if err := h.DB.GetContext(ctx, &d, get_sql, code); err != nil {
 		return hank.MetaData{}, err
@@ -37,10 +55,6 @@ func (h *HankDB) Get(ctx context.Context, code string) (hank.MetaData, error) {
 		PosCode: d.Room,
 		Factor:  d.Rate.V,
 	}, nil
-}
-
-func (h *HankDB) List(ctx context.Context) ([]hank.MetaData, error) {
-	return nil, nil
 }
 
 const (
