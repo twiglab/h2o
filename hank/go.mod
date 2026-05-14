@@ -5,6 +5,8 @@ go 1.26.0
 require (
 	github.com/cloudwego/netpoll v0.7.2
 	github.com/eclipse/paho.mqtt.golang v1.5.1
+	github.com/go-sql-driver/mysql v1.10.0
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/nats-io/nats.go v1.51.0
 	github.com/olekukonko/tablewriter v1.1.3
 	github.com/spf13/cobra v1.10.2
@@ -29,14 +31,12 @@ require (
 	github.com/duckdb/duckdb-go/v2 v2.10502.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/go-sql-driver/mysql v1.10.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/google/flatbuffers v25.12.19+incompatible // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/klauspost/compress v1.18.5 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect

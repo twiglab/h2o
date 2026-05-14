@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"log/slog"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/twiglab/h2o/hank"
@@ -21,12 +23,14 @@ type Data struct {
 
 type HankDB struct {
 	Project string
-
-	DB *sqlx.DB
+	DB      *sqlx.DB
+	Logger  *slog.Logger
 }
 
 func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok bool, err error) {
 	data, err = h.GetOne(ctx, code)
+
+	fmt.Println("hkv ------------", code, "-------", data)
 
 	if err == nil {
 		ok = true
