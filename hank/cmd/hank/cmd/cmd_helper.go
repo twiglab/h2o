@@ -5,12 +5,15 @@ import (
 	"context"
 	"log"
 	"log/slog"
+	"time"
 
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/abm"
+	"github.com/twiglab/h2o/cache"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/hank"
+	"github.com/twiglab/h2o/hank/hkv"
 )
 
 func logLevel(s string) slog.Level {
@@ -73,9 +76,9 @@ func sender() hank.Sender {
 }
 
 func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
-	load := viper.GetString("hank.meta.load")
-	get := viper.GetString("hank.meta.get")
-	list := viper.GetString("hank.meta.list")
+	load := viper.GetString("hank.meta.ddb.load")
+	get := viper.GetString("hank.meta.ddb.get")
+	list := viper.GetString("hank.meta.ddb.list")
 
 	c := abm.Conf{
 		LoadSQL: load,
@@ -95,8 +98,49 @@ func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
 	return db, c
 }
 
+func bhkv() cache.Cache[string, hank.MetaData] {
+	dbname := viper.GetString("hank.meta.hkv.dbname")
+	dsn := viper.GetString("hank.meta.hkv.dsn")
+	sqlget := viper.GetString("hank.meta.hkv.sql_get")
+	project := viper.GetString("hank.meta.hkv.project")
+
+	logf := cmp.Or(viper.GetString("hank.meta.hkv.logfile"), "/logs/hkv.log")
+
+	logl := viper.GetString("hank.meta.hkv.loglevel")
+
+	conf := hkv.HankDBConf{
+		DBName:  dbname,
+		DSN:     dsn,
+		Project: project,
+		SQLGet:  sqlget,
+		Logger:  clog.NewLog(logf, logLevel(logl)),
+	}
+
+	hdb, err := hkv.NewHankDB(conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cache.WithCache(hdb, hkv.NewCache(3*time.Hour))
+}
+
+func backend() cache.Cache[string, hank.MetaData] {
+	var backend cache.Cache[string, hank.MetaData]
+
+	b := viper.GetString("hank.meta.backend")
+	switch b {
+	case hkv.Key:
+		backend = bhkv()
+	case "ddb":
+		backend, _ = ddb()
+	default:
+		backend = cache.EmptyCache[string, hank.MetaData]{}
+	}
+
+	return backend
+}
+
 func enh() *hank.Enh {
-	m, _ := ddb()
+	m := backend()
 	return &hank.Enh{Cache: m}
 }
 

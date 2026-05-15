@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"log/slog"
 
 	"github.com/jmoiron/sqlx"
@@ -12,6 +11,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 )
+
+const Key = "hkv"
 
 type Data struct {
 	Code string
@@ -21,21 +22,42 @@ type Data struct {
 	Rate sql.Null[int]
 }
 
+type HankDBConf struct {
+	Project string
+	DBName  string
+	DSN     string
+	SQLGet  string
+	Logger  *slog.Logger
+}
+
 type HankDB struct {
 	Project string
 	DB      *sqlx.DB
 	Logger  *slog.Logger
+	SQLGet  string
+}
+
+func NewHankDB(conf HankDBConf) (*HankDB, error) {
+	db, err := sqlx.Connect(conf.DBName, conf.DSN)
+	if err != nil {
+		return nil, err
+	}
+
+	return &HankDB{
+		Project: conf.Project,
+		DB:      db,
+		Logger:  conf.Logger,
+		SQLGet:  conf.SQLGet,
+	}, nil
 }
 
 func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok bool, err error) {
 	data, err = h.GetOne(ctx, code)
-
-	fmt.Println("hkv ------------", code, "-------", data)
-
 	if err == nil {
 		ok = true
 		return
 	}
+	h.Logger.ErrorContext(ctx, "get", slog.String("code", code), slog.Any("error", err))
 	if errors.Is(err, sql.ErrNoRows) {
 		err = nil
 		ok = false
@@ -48,7 +70,7 @@ func (h *HankDB) Set(_ context.Context, _ string, _ hank.MetaData) (err error) {
 
 func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error) {
 	var d Data
-	if err := h.DB.GetContext(ctx, &d, get_sql, code); err != nil {
+	if err := h.DB.GetContext(ctx, &d, h.SQLGet, code); err != nil {
 		return hank.MetaData{}, err
 	}
 
@@ -60,18 +82,3 @@ func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error)
 		Factor:  d.Rate.V,
 	}, nil
 }
-
-const (
-	get_sql = `
-		select
-			device_code as code,
-			device_name as name,
-			device_type as type,
-			room_logic_code as room,
-			inductance as rate
-		from
-			v_energy_device
-		where
-			device_code = ?
-	`
-)
