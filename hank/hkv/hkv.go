@@ -52,17 +52,11 @@ func NewHankDB(conf HankDBConf) (*HankDB, error) {
 }
 
 func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok bool, err error) {
-	data, err = h.GetOne(ctx, code)
-	if err == nil {
-		ok = true
+	if data, err = h.GetOne(ctx, code); err != nil {
+		h.Logger.WarnContext(ctx, "get", slog.String("code", code), slog.Any("error", err))
 		return
 	}
-	h.Logger.ErrorContext(ctx, "get", slog.String("code", code), slog.Any("error", err))
-	if errors.Is(err, sql.ErrNoRows) {
-		err = nil
-		ok = false
-		return
-	}
+	ok = true
 	return
 }
 
