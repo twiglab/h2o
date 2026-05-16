@@ -8,6 +8,29 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
+const (
+	DEBUG = "debug"
+	INFO  = "info"
+	ERROR = "error"
+	WARN  = "warm"
+)
+
+const CONSOLE = "console"
+
+func Level(s string) slog.Level {
+	switch s {
+	case DEBUG, "DEBUG":
+		return slog.LevelDebug
+	case INFO, "INFO":
+		return slog.LevelInfo
+	case ERROR, "ERROR":
+		return slog.LevelError
+	case WARN, "WARN":
+		return slog.LevelWarn
+	}
+	return slog.LevelInfo
+}
+
 func isConsole(logFile string) bool {
 	if logFile == "" || logFile == "console" {
 		return true

@@ -16,26 +16,12 @@ import (
 	"github.com/twiglab/h2o/hank/hkv"
 )
 
-func logLevel(s string) slog.Level {
-	switch s {
-	case "debug", "DEBUG":
-		return slog.LevelDebug
-	case "info", "INFO":
-		return slog.LevelInfo
-	case "error", "ERROR":
-		return slog.LevelError
-	case "warn", "WARN":
-		return slog.LevelWarn
-	}
-	return slog.LevelInfo
-}
-
 func rootLog() *slog.Logger {
 	rlogF := viper.GetString("log.root.file")
 	rlogL := viper.GetString("log.root.level")
 	logL := viper.GetString("log.level")
 
-	level := logLevel(cmp.Or(rlogL, logL))
+	level := clog.Level(cmp.Or(rlogL, logL))
 	log := clog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
@@ -46,7 +32,7 @@ func serverLog() *slog.Logger {
 	sLogL := viper.GetString("log.server.level")
 	logL := viper.GetString("log.level")
 
-	level := logLevel(cmp.Or(sLogL, logL))
+	level := clog.Level(cmp.Or(sLogL, logL))
 	l := clog.NewLog(sLogF, level)
 	return l
 }
@@ -99,13 +85,14 @@ func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
 }
 
 func bhkv() cache.Cache[string, hank.MetaData] {
+	log.Println("backend:", hkv.Key)
+
 	dbname := viper.GetString("hank.meta.hkv.dbname")
 	dsn := viper.GetString("hank.meta.hkv.dsn")
 	sqlget := viper.GetString("hank.meta.hkv.sql_get")
 	project := viper.GetString("hank.meta.hkv.project")
 
-	logf := cmp.Or(viper.GetString("hank.meta.hkv.logfile"), "/logs/hkv.log")
-
+	logf := viper.GetString("hank.meta.hkv.logfile")
 	logl := viper.GetString("hank.meta.hkv.loglevel")
 
 	conf := hkv.HankDBConf{
@@ -113,7 +100,7 @@ func bhkv() cache.Cache[string, hank.MetaData] {
 		DSN:     dsn,
 		Project: project,
 		SQLGet:  sqlget,
-		Logger:  clog.NewLog(logf, logLevel(logl)),
+		Logger:  clog.NewLog(logf, clog.Level(logl)),
 	}
 
 	hdb, err := hkv.NewHankDB(conf)
@@ -125,7 +112,6 @@ func bhkv() cache.Cache[string, hank.MetaData] {
 
 func backend() cache.Cache[string, hank.MetaData] {
 	var backend cache.Cache[string, hank.MetaData]
-
 	b := viper.GetString("hank.meta.backend")
 	switch b {
 	case hkv.Key:
@@ -135,7 +121,6 @@ func backend() cache.Cache[string, hank.MetaData] {
 	default:
 		backend = cache.EmptyCache[string, hank.MetaData]{}
 	}
-
 	return backend
 }
 
