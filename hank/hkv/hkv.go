@@ -3,7 +3,6 @@ package hkv
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"log/slog"
 
 	"github.com/jmoiron/sqlx"

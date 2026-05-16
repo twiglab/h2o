@@ -46,19 +46,38 @@ func wallog() *wal.WAL {
 	return wal.New(wal.Conf{Filename: logf})
 }
 
-func sender() hank.Sender {
-	broker := viper.GetString("hank.mqtt.broker")
-	if broker == "" {
-		log.Println("using logAction ...")
-		return hank.LogAction{}
-	}
-	log.Println("using mqttAction ... broker", broker)
-	cli, err := hank.NewMQTTClient(hank.CLIENT_ID, broker)
+func mqtt() *hank.MQTTAction {
+	broker := viper.GetString("hank.sender.mqtt.broker")
+	clientID := viper.GetString("hank.sender.mqtt.broker")
+
+	cli, err := hank.NewMQTTClient(cmp.Or(clientID, hank.CLIENT_ID), broker)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	return hank.NewMQTTAction(cli)
+}
+
+func nats() *hank.NatsAction {
+	url := viper.GetString("hank.sender.nats.url")
+	n, err := hank.NewNatsAction(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return n
+}
+
+func sender() hank.Sender {
+	use := viper.GetString("hank.sender.use")
+	switch use {
+	case "mqtt":
+		log.Println("using mqtt")
+		return mqtt()
+	case "nats":
+		log.Println("using nats")
+		return nats()
+	}
+	log.Println("using logAction")
+	return hank.LogAction{}
 }
 
 func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
