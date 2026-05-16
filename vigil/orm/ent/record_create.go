@@ -91,12 +91,6 @@ func (_c *RecordCreate) SetNillableDeviceName(v *string) *RecordCreate {
 	return _c
 }
 
-// SetDataCode sets the "data_code" field.
-func (_c *RecordCreate) SetDataCode(v string) *RecordCreate {
-	_c.mutation.SetDataCode(v)
-	return _c
-}
-
 // SetDataValue sets the "data_value" field.
 func (_c *RecordCreate) SetDataValue(v int64) *RecordCreate {
 	_c.mutation.SetDataValue(v)
@@ -108,6 +102,40 @@ func (_c *RecordCreate) SetNillableDataValue(v *int64) *RecordCreate {
 	if v != nil {
 		_c.SetDataValue(*v)
 	}
+	return _c
+}
+
+// SetXDataValue sets the "x_data_value" field.
+func (_c *RecordCreate) SetXDataValue(v int64) *RecordCreate {
+	_c.mutation.SetXDataValue(v)
+	return _c
+}
+
+// SetNillableXDataValue sets the "x_data_value" field if the given value is not nil.
+func (_c *RecordCreate) SetNillableXDataValue(v *int64) *RecordCreate {
+	if v != nil {
+		_c.SetXDataValue(*v)
+	}
+	return _c
+}
+
+// SetFactor sets the "factor" field.
+func (_c *RecordCreate) SetFactor(v int) *RecordCreate {
+	_c.mutation.SetFactor(v)
+	return _c
+}
+
+// SetNillableFactor sets the "factor" field if the given value is not nil.
+func (_c *RecordCreate) SetNillableFactor(v *int) *RecordCreate {
+	if v != nil {
+		_c.SetFactor(*v)
+	}
+	return _c
+}
+
+// SetDataCode sets the "data_code" field.
+func (_c *RecordCreate) SetDataCode(v string) *RecordCreate {
+	_c.mutation.SetDataCode(v)
 	return _c
 }
 
@@ -196,6 +224,14 @@ func (_c *RecordCreate) defaults() {
 		v := record.DefaultDataValue
 		_c.mutation.SetDataValue(v)
 	}
+	if _, ok := _c.mutation.XDataValue(); !ok {
+		v := record.DefaultXDataValue
+		_c.mutation.SetXDataValue(v)
+	}
+	if _, ok := _c.mutation.Factor(); !ok {
+		v := record.DefaultFactor
+		_c.mutation.SetFactor(v)
+	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := record.DefaultID()
 		_c.mutation.SetID(v)
@@ -226,6 +262,15 @@ func (_c *RecordCreate) check() error {
 			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "Record.device_type": %w`, err)}
 		}
 	}
+	if _, ok := _c.mutation.DataValue(); !ok {
+		return &ValidationError{Name: "data_value", err: errors.New(`ent: missing required field "Record.data_value"`)}
+	}
+	if _, ok := _c.mutation.XDataValue(); !ok {
+		return &ValidationError{Name: "x_data_value", err: errors.New(`ent: missing required field "Record.x_data_value"`)}
+	}
+	if _, ok := _c.mutation.Factor(); !ok {
+		return &ValidationError{Name: "factor", err: errors.New(`ent: missing required field "Record.factor"`)}
+	}
 	if _, ok := _c.mutation.DataCode(); !ok {
 		return &ValidationError{Name: "data_code", err: errors.New(`ent: missing required field "Record.data_code"`)}
 	}
@@ -233,9 +278,6 @@ func (_c *RecordCreate) check() error {
 		if err := record.DataCodeValidator(v); err != nil {
 			return &ValidationError{Name: "data_code", err: fmt.Errorf(`ent: validator failed for field "Record.data_code": %w`, err)}
 		}
-	}
-	if _, ok := _c.mutation.DataValue(); !ok {
-		return &ValidationError{Name: "data_value", err: errors.New(`ent: missing required field "Record.data_value"`)}
 	}
 	if _, ok := _c.mutation.DataTime(); !ok {
 		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "Record.data_time"`)}
@@ -319,13 +361,21 @@ func (_c *RecordCreate) createSpec() (*Record, *sqlgraph.CreateSpec) {
 		_spec.SetField(record.FieldDeviceName, field.TypeString, value)
 		_node.DeviceName = value
 	}
-	if value, ok := _c.mutation.DataCode(); ok {
-		_spec.SetField(record.FieldDataCode, field.TypeString, value)
-		_node.DataCode = value
-	}
 	if value, ok := _c.mutation.DataValue(); ok {
 		_spec.SetField(record.FieldDataValue, field.TypeInt64, value)
 		_node.DataValue = value
+	}
+	if value, ok := _c.mutation.XDataValue(); ok {
+		_spec.SetField(record.FieldXDataValue, field.TypeInt64, value)
+		_node.XDataValue = value
+	}
+	if value, ok := _c.mutation.Factor(); ok {
+		_spec.SetField(record.FieldFactor, field.TypeInt, value)
+		_node.Factor = value
+	}
+	if value, ok := _c.mutation.DataCode(); ok {
+		_spec.SetField(record.FieldDataCode, field.TypeString, value)
+		_node.DataCode = value
 	}
 	if value, ok := _c.mutation.DataTime(); ok {
 		_spec.SetField(record.FieldDataTime, field.TypeTime, value)
@@ -439,11 +489,17 @@ func (u *RecordUpsertOne) UpdateNewValues() *RecordUpsertOne {
 		if _, exists := u.create.mutation.DeviceName(); exists {
 			s.SetIgnore(record.FieldDeviceName)
 		}
-		if _, exists := u.create.mutation.DataCode(); exists {
-			s.SetIgnore(record.FieldDataCode)
-		}
 		if _, exists := u.create.mutation.DataValue(); exists {
 			s.SetIgnore(record.FieldDataValue)
+		}
+		if _, exists := u.create.mutation.XDataValue(); exists {
+			s.SetIgnore(record.FieldXDataValue)
+		}
+		if _, exists := u.create.mutation.Factor(); exists {
+			s.SetIgnore(record.FieldFactor)
+		}
+		if _, exists := u.create.mutation.DataCode(); exists {
+			s.SetIgnore(record.FieldDataCode)
 		}
 		if _, exists := u.create.mutation.DataTime(); exists {
 			s.SetIgnore(record.FieldDataTime)
@@ -700,11 +756,17 @@ func (u *RecordUpsertBulk) UpdateNewValues() *RecordUpsertBulk {
 			if _, exists := b.mutation.DeviceName(); exists {
 				s.SetIgnore(record.FieldDeviceName)
 			}
-			if _, exists := b.mutation.DataCode(); exists {
-				s.SetIgnore(record.FieldDataCode)
-			}
 			if _, exists := b.mutation.DataValue(); exists {
 				s.SetIgnore(record.FieldDataValue)
+			}
+			if _, exists := b.mutation.XDataValue(); exists {
+				s.SetIgnore(record.FieldXDataValue)
+			}
+			if _, exists := b.mutation.Factor(); exists {
+				s.SetIgnore(record.FieldFactor)
+			}
+			if _, exists := b.mutation.DataCode(); exists {
+				s.SetIgnore(record.FieldDataCode)
 			}
 			if _, exists := b.mutation.DataTime(); exists {
 				s.SetIgnore(record.FieldDataTime)

@@ -47,14 +47,15 @@ type ComplexityRoot struct {
 	Record struct {
 		DataCode   func(childComplexity int) int
 		DataTime   func(childComplexity int) int
-		DataTs     func(childComplexity int) int
 		DataValue  func(childComplexity int) int
 		DeviceCode func(childComplexity int) int
 		DeviceName func(childComplexity int) int
 		DeviceType func(childComplexity int) int
+		Factor     func(childComplexity int) int
 		ID         func(childComplexity int) int
 		PosCode    func(childComplexity int) int
 		Project    func(childComplexity int) int
+		XDataValue func(childComplexity int) int
 	}
 
 	RecordPageOut struct {
@@ -121,12 +122,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Record.DataTime(childComplexity), true
-	case "Record.dataTs":
-		if e.ComplexityRoot.Record.DataTs == nil {
-			break
-		}
-
-		return e.ComplexityRoot.Record.DataTs(childComplexity), true
 	case "Record.dataValue":
 		if e.ComplexityRoot.Record.DataValue == nil {
 			break
@@ -151,6 +146,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Record.DeviceType(childComplexity), true
+	case "Record.factor":
+		if e.ComplexityRoot.Record.Factor == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Record.Factor(childComplexity), true
 	case "Record.id":
 		if e.ComplexityRoot.Record.ID == nil {
 			break
@@ -169,6 +170,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Record.Project(childComplexity), true
+	case "Record.xDataValue":
+		if e.ComplexityRoot.Record.XDataValue == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Record.XDataValue(childComplexity), true
 
 	case "RecordPageOut.deviceCode":
 		if e.ComplexityRoot.RecordPageOut.DeviceCode == nil {
@@ -388,10 +395,12 @@ func (ec *executionContext) childFields_Record(ctx context.Context, field graphq
 		return ec.fieldContext_Record_dataCode(ctx, field)
 	case "dataValue":
 		return ec.fieldContext_Record_dataValue(ctx, field)
+	case "xDataValue":
+		return ec.fieldContext_Record_xDataValue(ctx, field)
+	case "factor":
+		return ec.fieldContext_Record_factor(ctx, field)
 	case "dataTime":
 		return ec.fieldContext_Record_dataTime(ctx, field)
-	case "dataTs":
-		return ec.fieldContext_Record_dataTs(ctx, field)
 	case "posCode":
 		return ec.fieldContext_Record_posCode(ctx, field)
 	case "project":
@@ -928,6 +937,52 @@ func (ec *executionContext) fieldContext_Record_dataValue(_ context.Context, fie
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int64 does not have child fields"))
 }
 
+func (ec *executionContext) _Record_xDataValue(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Record_xDataValue(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.XDataValue, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int64) graphql.Marshaler {
+			return ec.marshalNInt642int64(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Record_xDataValue(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int64 does not have child fields"))
+}
+
+func (ec *executionContext) _Record_factor(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Record_factor(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Factor, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v int) graphql.Marshaler {
+			return ec.marshalNInt2int(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Record_factor(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int does not have child fields"))
+}
+
 func (ec *executionContext) _Record_dataTime(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -949,29 +1004,6 @@ func (ec *executionContext) _Record_dataTime(ctx context.Context, field graphql.
 }
 func (ec *executionContext) fieldContext_Record_dataTime(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Time does not have child fields"))
-}
-
-func (ec *executionContext) _Record_dataTs(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Record_dataTs(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			return obj.DataTs, nil
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
-			return ec.marshalNString2string(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Record_dataTs(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
 func (ec *executionContext) _Record_posCode(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
@@ -2507,13 +2539,18 @@ func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "dataTime":
-			out.Values[i] = ec._Record_dataTime(ctx, field, obj)
+		case "xDataValue":
+			out.Values[i] = ec._Record_xDataValue(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "dataTs":
-			out.Values[i] = ec._Record_dataTs(ctx, field, obj)
+		case "factor":
+			out.Values[i] = ec._Record_factor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "dataTime":
+			out.Values[i] = ec._Record_dataTime(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

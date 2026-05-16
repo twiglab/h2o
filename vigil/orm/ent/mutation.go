@@ -30,26 +30,30 @@ const (
 // RecordMutation represents an operation that mutates the Record nodes in the graph.
 type RecordMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	create_time   *time.Time
-	update_time   *time.Time
-	device_sn     *string
-	device_code   *string
-	device_type   *string
-	device_name   *string
-	data_code     *string
-	data_value    *int64
-	adddata_value *int64
-	data_time     *time.Time
-	data_ts       *string
-	pos_code      *string
-	project       *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Record, error)
-	predicates    []predicate.Record
+	op              Op
+	typ             string
+	id              *string
+	create_time     *time.Time
+	update_time     *time.Time
+	device_sn       *string
+	device_code     *string
+	device_type     *string
+	device_name     *string
+	data_value      *int64
+	adddata_value   *int64
+	x_data_value    *int64
+	addx_data_value *int64
+	factor          *int
+	addfactor       *int
+	data_code       *string
+	data_time       *time.Time
+	data_ts         *string
+	pos_code        *string
+	project         *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Record, error)
+	predicates      []predicate.Record
 }
 
 var _ ent.Mutation = (*RecordMutation)(nil)
@@ -398,42 +402,6 @@ func (m *RecordMutation) ResetDeviceName() {
 	delete(m.clearedFields, record.FieldDeviceName)
 }
 
-// SetDataCode sets the "data_code" field.
-func (m *RecordMutation) SetDataCode(s string) {
-	m.data_code = &s
-}
-
-// DataCode returns the value of the "data_code" field in the mutation.
-func (m *RecordMutation) DataCode() (r string, exists bool) {
-	v := m.data_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataCode returns the old "data_code" field's value of the Record entity.
-// If the Record object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RecordMutation) OldDataCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataCode: %w", err)
-	}
-	return oldValue.DataCode, nil
-}
-
-// ResetDataCode resets all changes to the "data_code" field.
-func (m *RecordMutation) ResetDataCode() {
-	m.data_code = nil
-}
-
 // SetDataValue sets the "data_value" field.
 func (m *RecordMutation) SetDataValue(i int64) {
 	m.data_value = &i
@@ -488,6 +456,154 @@ func (m *RecordMutation) AddedDataValue() (r int64, exists bool) {
 func (m *RecordMutation) ResetDataValue() {
 	m.data_value = nil
 	m.adddata_value = nil
+}
+
+// SetXDataValue sets the "x_data_value" field.
+func (m *RecordMutation) SetXDataValue(i int64) {
+	m.x_data_value = &i
+	m.addx_data_value = nil
+}
+
+// XDataValue returns the value of the "x_data_value" field in the mutation.
+func (m *RecordMutation) XDataValue() (r int64, exists bool) {
+	v := m.x_data_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldXDataValue returns the old "x_data_value" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldXDataValue(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldXDataValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldXDataValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldXDataValue: %w", err)
+	}
+	return oldValue.XDataValue, nil
+}
+
+// AddXDataValue adds i to the "x_data_value" field.
+func (m *RecordMutation) AddXDataValue(i int64) {
+	if m.addx_data_value != nil {
+		*m.addx_data_value += i
+	} else {
+		m.addx_data_value = &i
+	}
+}
+
+// AddedXDataValue returns the value that was added to the "x_data_value" field in this mutation.
+func (m *RecordMutation) AddedXDataValue() (r int64, exists bool) {
+	v := m.addx_data_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetXDataValue resets all changes to the "x_data_value" field.
+func (m *RecordMutation) ResetXDataValue() {
+	m.x_data_value = nil
+	m.addx_data_value = nil
+}
+
+// SetFactor sets the "factor" field.
+func (m *RecordMutation) SetFactor(i int) {
+	m.factor = &i
+	m.addfactor = nil
+}
+
+// Factor returns the value of the "factor" field in the mutation.
+func (m *RecordMutation) Factor() (r int, exists bool) {
+	v := m.factor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFactor returns the old "factor" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldFactor(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFactor is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFactor requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFactor: %w", err)
+	}
+	return oldValue.Factor, nil
+}
+
+// AddFactor adds i to the "factor" field.
+func (m *RecordMutation) AddFactor(i int) {
+	if m.addfactor != nil {
+		*m.addfactor += i
+	} else {
+		m.addfactor = &i
+	}
+}
+
+// AddedFactor returns the value that was added to the "factor" field in this mutation.
+func (m *RecordMutation) AddedFactor() (r int, exists bool) {
+	v := m.addfactor
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetFactor resets all changes to the "factor" field.
+func (m *RecordMutation) ResetFactor() {
+	m.factor = nil
+	m.addfactor = nil
+}
+
+// SetDataCode sets the "data_code" field.
+func (m *RecordMutation) SetDataCode(s string) {
+	m.data_code = &s
+}
+
+// DataCode returns the value of the "data_code" field in the mutation.
+func (m *RecordMutation) DataCode() (r string, exists bool) {
+	v := m.data_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataCode returns the old "data_code" field's value of the Record entity.
+// If the Record object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecordMutation) OldDataCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataCode: %w", err)
+	}
+	return oldValue.DataCode, nil
+}
+
+// ResetDataCode resets all changes to the "data_code" field.
+func (m *RecordMutation) ResetDataCode() {
+	m.data_code = nil
 }
 
 // SetDataTime sets the "data_time" field.
@@ -668,7 +784,7 @@ func (m *RecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecordMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 14)
 	if m.create_time != nil {
 		fields = append(fields, record.FieldCreateTime)
 	}
@@ -687,11 +803,17 @@ func (m *RecordMutation) Fields() []string {
 	if m.device_name != nil {
 		fields = append(fields, record.FieldDeviceName)
 	}
-	if m.data_code != nil {
-		fields = append(fields, record.FieldDataCode)
-	}
 	if m.data_value != nil {
 		fields = append(fields, record.FieldDataValue)
+	}
+	if m.x_data_value != nil {
+		fields = append(fields, record.FieldXDataValue)
+	}
+	if m.factor != nil {
+		fields = append(fields, record.FieldFactor)
+	}
+	if m.data_code != nil {
+		fields = append(fields, record.FieldDataCode)
 	}
 	if m.data_time != nil {
 		fields = append(fields, record.FieldDataTime)
@@ -725,10 +847,14 @@ func (m *RecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceType()
 	case record.FieldDeviceName:
 		return m.DeviceName()
-	case record.FieldDataCode:
-		return m.DataCode()
 	case record.FieldDataValue:
 		return m.DataValue()
+	case record.FieldXDataValue:
+		return m.XDataValue()
+	case record.FieldFactor:
+		return m.Factor()
+	case record.FieldDataCode:
+		return m.DataCode()
 	case record.FieldDataTime:
 		return m.DataTime()
 	case record.FieldDataTs:
@@ -758,10 +884,14 @@ func (m *RecordMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDeviceType(ctx)
 	case record.FieldDeviceName:
 		return m.OldDeviceName(ctx)
-	case record.FieldDataCode:
-		return m.OldDataCode(ctx)
 	case record.FieldDataValue:
 		return m.OldDataValue(ctx)
+	case record.FieldXDataValue:
+		return m.OldXDataValue(ctx)
+	case record.FieldFactor:
+		return m.OldFactor(ctx)
+	case record.FieldDataCode:
+		return m.OldDataCode(ctx)
 	case record.FieldDataTime:
 		return m.OldDataTime(ctx)
 	case record.FieldDataTs:
@@ -821,19 +951,33 @@ func (m *RecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDeviceName(v)
 		return nil
-	case record.FieldDataCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataCode(v)
-		return nil
 	case record.FieldDataValue:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataValue(v)
+		return nil
+	case record.FieldXDataValue:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetXDataValue(v)
+		return nil
+	case record.FieldFactor:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFactor(v)
+		return nil
+	case record.FieldDataCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataCode(v)
 		return nil
 	case record.FieldDataTime:
 		v, ok := value.(time.Time)
@@ -874,6 +1018,12 @@ func (m *RecordMutation) AddedFields() []string {
 	if m.adddata_value != nil {
 		fields = append(fields, record.FieldDataValue)
 	}
+	if m.addx_data_value != nil {
+		fields = append(fields, record.FieldXDataValue)
+	}
+	if m.addfactor != nil {
+		fields = append(fields, record.FieldFactor)
+	}
 	return fields
 }
 
@@ -884,6 +1034,10 @@ func (m *RecordMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case record.FieldDataValue:
 		return m.AddedDataValue()
+	case record.FieldXDataValue:
+		return m.AddedXDataValue()
+	case record.FieldFactor:
+		return m.AddedFactor()
 	}
 	return nil, false
 }
@@ -899,6 +1053,20 @@ func (m *RecordMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddDataValue(v)
+		return nil
+	case record.FieldXDataValue:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddXDataValue(v)
+		return nil
+	case record.FieldFactor:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddFactor(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Record numeric field %s", name)
@@ -960,11 +1128,17 @@ func (m *RecordMutation) ResetField(name string) error {
 	case record.FieldDeviceName:
 		m.ResetDeviceName()
 		return nil
-	case record.FieldDataCode:
-		m.ResetDataCode()
-		return nil
 	case record.FieldDataValue:
 		m.ResetDataValue()
+		return nil
+	case record.FieldXDataValue:
+		m.ResetXDataValue()
+		return nil
+	case record.FieldFactor:
+		m.ResetFactor()
+		return nil
+	case record.FieldDataCode:
+		m.ResetDataCode()
 		return nil
 	case record.FieldDataTime:
 		m.ResetDataTime()

@@ -36,16 +36,24 @@ func init() {
 	recordDescDeviceType := recordFields[3].Descriptor()
 	// record.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	record.DeviceTypeValidator = recordDescDeviceType.Validators[0].(func(string) error)
-	// recordDescDataCode is the schema descriptor for data_code field.
-	recordDescDataCode := recordFields[5].Descriptor()
-	// record.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
-	record.DataCodeValidator = recordDescDataCode.Validators[0].(func(string) error)
 	// recordDescDataValue is the schema descriptor for data_value field.
-	recordDescDataValue := recordFields[6].Descriptor()
+	recordDescDataValue := recordFields[5].Descriptor()
 	// record.DefaultDataValue holds the default value on creation for the data_value field.
 	record.DefaultDataValue = recordDescDataValue.Default.(int64)
+	// recordDescXDataValue is the schema descriptor for x_data_value field.
+	recordDescXDataValue := recordFields[6].Descriptor()
+	// record.DefaultXDataValue holds the default value on creation for the x_data_value field.
+	record.DefaultXDataValue = recordDescXDataValue.Default.(int64)
+	// recordDescFactor is the schema descriptor for factor field.
+	recordDescFactor := recordFields[7].Descriptor()
+	// record.DefaultFactor holds the default value on creation for the factor field.
+	record.DefaultFactor = recordDescFactor.Default.(int)
+	// recordDescDataCode is the schema descriptor for data_code field.
+	recordDescDataCode := recordFields[8].Descriptor()
+	// record.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
+	record.DataCodeValidator = recordDescDataCode.Validators[0].(func(string) error)
 	// recordDescDataTs is the schema descriptor for data_ts field.
-	recordDescDataTs := recordFields[8].Descriptor()
+	recordDescDataTs := recordFields[10].Descriptor()
 	// record.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
 	record.DataTsValidator = recordDescDataTs.Validators[0].(func(string) error)
 	// recordDescID is the schema descriptor for id field.

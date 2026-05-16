@@ -29,10 +29,14 @@ type Record struct {
 	DeviceType string `json:"device_type,omitempty"`
 	// 设备名称
 	DeviceName string `json:"device_name,omitempty"`
+	// 当前表显
+	DataValue int64 `json:"data_value,omitempty"`
+	// 当前计量数值
+	XDataValue int64 `json:"x_data_value,omitempty"`
+	// 当前倍率
+	Factor int `json:"factor,omitempty"`
 	// 当前记录code
 	DataCode string `json:"data_code,omitempty"`
-	// 当前读数
-	DataValue int64 `json:"data_value,omitempty"`
 	// 采集时间
 	DataTime time.Time `json:"data_time,omitempty"`
 	// 采集时间字符串
@@ -49,7 +53,7 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case record.FieldDataValue:
+		case record.FieldDataValue, record.FieldXDataValue, record.FieldFactor:
 			values[i] = new(sql.NullInt64)
 		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDeviceName, record.FieldDataCode, record.FieldDataTs, record.FieldPosCode, record.FieldProject:
 			values[i] = new(sql.NullString)
@@ -112,17 +116,29 @@ func (_m *Record) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.DeviceName = value.String
 			}
-		case record.FieldDataCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field data_code", values[i])
-			} else if value.Valid {
-				_m.DataCode = value.String
-			}
 		case record.FieldDataValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field data_value", values[i])
 			} else if value.Valid {
 				_m.DataValue = value.Int64
+			}
+		case record.FieldXDataValue:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field x_data_value", values[i])
+			} else if value.Valid {
+				_m.XDataValue = value.Int64
+			}
+		case record.FieldFactor:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field factor", values[i])
+			} else if value.Valid {
+				_m.Factor = int(value.Int64)
+			}
+		case record.FieldDataCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field data_code", values[i])
+			} else if value.Valid {
+				_m.DataCode = value.String
 			}
 		case record.FieldDataTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -202,11 +218,17 @@ func (_m *Record) String() string {
 	builder.WriteString("device_name=")
 	builder.WriteString(_m.DeviceName)
 	builder.WriteString(", ")
-	builder.WriteString("data_code=")
-	builder.WriteString(_m.DataCode)
-	builder.WriteString(", ")
 	builder.WriteString("data_value=")
 	builder.WriteString(fmt.Sprintf("%v", _m.DataValue))
+	builder.WriteString(", ")
+	builder.WriteString("x_data_value=")
+	builder.WriteString(fmt.Sprintf("%v", _m.XDataValue))
+	builder.WriteString(", ")
+	builder.WriteString("factor=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Factor))
+	builder.WriteString(", ")
+	builder.WriteString("data_code=")
+	builder.WriteString(_m.DataCode)
 	builder.WriteString(", ")
 	builder.WriteString("data_time=")
 	builder.WriteString(_m.DataTime.Format(time.ANSIC))

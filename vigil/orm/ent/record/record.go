@@ -25,10 +25,14 @@ const (
 	FieldDeviceType = "device_type"
 	// FieldDeviceName holds the string denoting the device_name field in the database.
 	FieldDeviceName = "device_name"
-	// FieldDataCode holds the string denoting the data_code field in the database.
-	FieldDataCode = "data_code"
 	// FieldDataValue holds the string denoting the data_value field in the database.
 	FieldDataValue = "data_value"
+	// FieldXDataValue holds the string denoting the x_data_value field in the database.
+	FieldXDataValue = "x_data_value"
+	// FieldFactor holds the string denoting the factor field in the database.
+	FieldFactor = "factor"
+	// FieldDataCode holds the string denoting the data_code field in the database.
+	FieldDataCode = "data_code"
 	// FieldDataTime holds the string denoting the data_time field in the database.
 	FieldDataTime = "data_time"
 	// FieldDataTs holds the string denoting the data_ts field in the database.
@@ -50,8 +54,10 @@ var Columns = []string{
 	FieldDeviceCode,
 	FieldDeviceType,
 	FieldDeviceName,
-	FieldDataCode,
 	FieldDataValue,
+	FieldXDataValue,
+	FieldFactor,
+	FieldDataCode,
 	FieldDataTime,
 	FieldDataTs,
 	FieldPosCode,
@@ -79,10 +85,14 @@ var (
 	DeviceCodeValidator func(string) error
 	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	DeviceTypeValidator func(string) error
-	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
-	DataCodeValidator func(string) error
 	// DefaultDataValue holds the default value on creation for the "data_value" field.
 	DefaultDataValue int64
+	// DefaultXDataValue holds the default value on creation for the "x_data_value" field.
+	DefaultXDataValue int64
+	// DefaultFactor holds the default value on creation for the "factor" field.
+	DefaultFactor int
+	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
+	DataCodeValidator func(string) error
 	// DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
 	DataTsValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -129,14 +139,24 @@ func ByDeviceName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
 }
 
-// ByDataCode orders the results by the data_code field.
-func ByDataCode(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDataCode, opts...).ToFunc()
-}
-
 // ByDataValue orders the results by the data_value field.
 func ByDataValue(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDataValue, opts...).ToFunc()
+}
+
+// ByXDataValue orders the results by the x_data_value field.
+func ByXDataValue(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldXDataValue, opts...).ToFunc()
+}
+
+// ByFactor orders the results by the factor field.
+func ByFactor(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFactor, opts...).ToFunc()
+}
+
+// ByDataCode orders the results by the data_code field.
+func ByDataCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDataCode, opts...).ToFunc()
 }
 
 // ByDataTime orders the results by the data_time field.

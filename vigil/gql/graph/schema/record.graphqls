@@ -10,8 +10,9 @@ type Record {
 
   dataCode   : String!
   dataValue  : Int64!
+  xDataValue : Int64!
+  factor     : Int!
   dataTime   : Time!
-  dataTs     : String!
 
   posCode    : String!
   project    : String!

@@ -17,6 +17,9 @@ type MeterData interface {
 	GetPosCode() string
 	GetProject() string
 	GetSN() string
+
+	GetXDataValue() int64
+	GetFactor() int
 }
 
 type Recorder interface {

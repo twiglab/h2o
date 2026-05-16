@@ -25,5 +25,7 @@ func (d *DBx) Tabb(ctx context.Context, data vigil.MeterData) error {
 	cr.SetPosCode(data.GetPosCode())
 	cr.SetProject(data.GetProject())
 	cr.SetDataTs(data.GetDataTime().Format(f))
+	cr.SetXDataValue(data.GetXDataValue())
+	cr.SetFactor(data.GetFactor())
 	return cr.Exec(ctx)
 }

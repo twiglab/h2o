@@ -14,7 +14,8 @@ type Meter struct {
 
 type ElectricityMeter struct {
 	Meter
-	Data common.Electricity `json:"data,omitzero"`
+	Data  common.Electricity      `json:"data,omitzero"`
+	Param common.ElectricityParam `json:"param,omitzero"`
 }
 
 func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
@@ -55,4 +56,11 @@ func (d ElectricityMeter) GetPosCode() string {
 
 func (d ElectricityMeter) GetProject() string {
 	return d.Pos.Project
+}
+func (d ElectricityMeter) GetXDataValue() int64 {
+	return d.Data.DataValue * int64(d.Param.Factor)
+}
+
+func (d ElectricityMeter) GetFactor() int {
+	return d.Param.Factor
 }

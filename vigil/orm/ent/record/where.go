@@ -94,14 +94,24 @@ func DeviceName(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldDeviceName, v))
 }
 
-// DataCode applies equality check predicate on the "data_code" field. It's identical to DataCodeEQ.
-func DataCode(v string) predicate.Record {
-	return predicate.Record(sql.FieldEQ(FieldDataCode, v))
-}
-
 // DataValue applies equality check predicate on the "data_value" field. It's identical to DataValueEQ.
 func DataValue(v int64) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldDataValue, v))
+}
+
+// XDataValue applies equality check predicate on the "x_data_value" field. It's identical to XDataValueEQ.
+func XDataValue(v int64) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldXDataValue, v))
+}
+
+// Factor applies equality check predicate on the "factor" field. It's identical to FactorEQ.
+func Factor(v int) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldFactor, v))
+}
+
+// DataCode applies equality check predicate on the "data_code" field. It's identical to DataCodeEQ.
+func DataCode(v string) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDataCode, v))
 }
 
 // DataTime applies equality check predicate on the "data_time" field. It's identical to DataTimeEQ.
@@ -484,6 +494,126 @@ func DeviceNameContainsFold(v string) predicate.Record {
 	return predicate.Record(sql.FieldContainsFold(FieldDeviceName, v))
 }
 
+// DataValueEQ applies the EQ predicate on the "data_value" field.
+func DataValueEQ(v int64) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldDataValue, v))
+}
+
+// DataValueNEQ applies the NEQ predicate on the "data_value" field.
+func DataValueNEQ(v int64) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldDataValue, v))
+}
+
+// DataValueIn applies the In predicate on the "data_value" field.
+func DataValueIn(vs ...int64) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldDataValue, vs...))
+}
+
+// DataValueNotIn applies the NotIn predicate on the "data_value" field.
+func DataValueNotIn(vs ...int64) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldDataValue, vs...))
+}
+
+// DataValueGT applies the GT predicate on the "data_value" field.
+func DataValueGT(v int64) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldDataValue, v))
+}
+
+// DataValueGTE applies the GTE predicate on the "data_value" field.
+func DataValueGTE(v int64) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldDataValue, v))
+}
+
+// DataValueLT applies the LT predicate on the "data_value" field.
+func DataValueLT(v int64) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldDataValue, v))
+}
+
+// DataValueLTE applies the LTE predicate on the "data_value" field.
+func DataValueLTE(v int64) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldDataValue, v))
+}
+
+// XDataValueEQ applies the EQ predicate on the "x_data_value" field.
+func XDataValueEQ(v int64) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldXDataValue, v))
+}
+
+// XDataValueNEQ applies the NEQ predicate on the "x_data_value" field.
+func XDataValueNEQ(v int64) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldXDataValue, v))
+}
+
+// XDataValueIn applies the In predicate on the "x_data_value" field.
+func XDataValueIn(vs ...int64) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldXDataValue, vs...))
+}
+
+// XDataValueNotIn applies the NotIn predicate on the "x_data_value" field.
+func XDataValueNotIn(vs ...int64) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldXDataValue, vs...))
+}
+
+// XDataValueGT applies the GT predicate on the "x_data_value" field.
+func XDataValueGT(v int64) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldXDataValue, v))
+}
+
+// XDataValueGTE applies the GTE predicate on the "x_data_value" field.
+func XDataValueGTE(v int64) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldXDataValue, v))
+}
+
+// XDataValueLT applies the LT predicate on the "x_data_value" field.
+func XDataValueLT(v int64) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldXDataValue, v))
+}
+
+// XDataValueLTE applies the LTE predicate on the "x_data_value" field.
+func XDataValueLTE(v int64) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldXDataValue, v))
+}
+
+// FactorEQ applies the EQ predicate on the "factor" field.
+func FactorEQ(v int) predicate.Record {
+	return predicate.Record(sql.FieldEQ(FieldFactor, v))
+}
+
+// FactorNEQ applies the NEQ predicate on the "factor" field.
+func FactorNEQ(v int) predicate.Record {
+	return predicate.Record(sql.FieldNEQ(FieldFactor, v))
+}
+
+// FactorIn applies the In predicate on the "factor" field.
+func FactorIn(vs ...int) predicate.Record {
+	return predicate.Record(sql.FieldIn(FieldFactor, vs...))
+}
+
+// FactorNotIn applies the NotIn predicate on the "factor" field.
+func FactorNotIn(vs ...int) predicate.Record {
+	return predicate.Record(sql.FieldNotIn(FieldFactor, vs...))
+}
+
+// FactorGT applies the GT predicate on the "factor" field.
+func FactorGT(v int) predicate.Record {
+	return predicate.Record(sql.FieldGT(FieldFactor, v))
+}
+
+// FactorGTE applies the GTE predicate on the "factor" field.
+func FactorGTE(v int) predicate.Record {
+	return predicate.Record(sql.FieldGTE(FieldFactor, v))
+}
+
+// FactorLT applies the LT predicate on the "factor" field.
+func FactorLT(v int) predicate.Record {
+	return predicate.Record(sql.FieldLT(FieldFactor, v))
+}
+
+// FactorLTE applies the LTE predicate on the "factor" field.
+func FactorLTE(v int) predicate.Record {
+	return predicate.Record(sql.FieldLTE(FieldFactor, v))
+}
+
 // DataCodeEQ applies the EQ predicate on the "data_code" field.
 func DataCodeEQ(v string) predicate.Record {
 	return predicate.Record(sql.FieldEQ(FieldDataCode, v))
@@ -547,46 +677,6 @@ func DataCodeEqualFold(v string) predicate.Record {
 // DataCodeContainsFold applies the ContainsFold predicate on the "data_code" field.
 func DataCodeContainsFold(v string) predicate.Record {
 	return predicate.Record(sql.FieldContainsFold(FieldDataCode, v))
-}
-
-// DataValueEQ applies the EQ predicate on the "data_value" field.
-func DataValueEQ(v int64) predicate.Record {
-	return predicate.Record(sql.FieldEQ(FieldDataValue, v))
-}
-
-// DataValueNEQ applies the NEQ predicate on the "data_value" field.
-func DataValueNEQ(v int64) predicate.Record {
-	return predicate.Record(sql.FieldNEQ(FieldDataValue, v))
-}
-
-// DataValueIn applies the In predicate on the "data_value" field.
-func DataValueIn(vs ...int64) predicate.Record {
-	return predicate.Record(sql.FieldIn(FieldDataValue, vs...))
-}
-
-// DataValueNotIn applies the NotIn predicate on the "data_value" field.
-func DataValueNotIn(vs ...int64) predicate.Record {
-	return predicate.Record(sql.FieldNotIn(FieldDataValue, vs...))
-}
-
-// DataValueGT applies the GT predicate on the "data_value" field.
-func DataValueGT(v int64) predicate.Record {
-	return predicate.Record(sql.FieldGT(FieldDataValue, v))
-}
-
-// DataValueGTE applies the GTE predicate on the "data_value" field.
-func DataValueGTE(v int64) predicate.Record {
-	return predicate.Record(sql.FieldGTE(FieldDataValue, v))
-}
-
-// DataValueLT applies the LT predicate on the "data_value" field.
-func DataValueLT(v int64) predicate.Record {
-	return predicate.Record(sql.FieldLT(FieldDataValue, v))
-}
-
-// DataValueLTE applies the LTE predicate on the "data_value" field.
-func DataValueLTE(v int64) predicate.Record {
-	return predicate.Record(sql.FieldLTE(FieldDataValue, v))
 }
 
 // DataTimeEQ applies the EQ predicate on the "data_time" field.
