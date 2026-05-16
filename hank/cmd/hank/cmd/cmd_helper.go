@@ -126,7 +126,7 @@ func bhkv() cache.Cache[string, hank.MetaData] {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return cache.WithCache(hdb, hkv.NewCache(3*time.Hour))
+	return cache.WithCache(hdb, hkv.NewCache(60*time.Minute))
 }
 
 func backend() cache.Cache[string, hank.MetaData] {
