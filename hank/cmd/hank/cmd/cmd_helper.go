@@ -48,7 +48,7 @@ func wallog() *wal.WAL {
 
 func mqtt() *hank.MQTTAction {
 	broker := viper.GetString("hank.sender.mqtt.broker")
-	clientID := viper.GetString("hank.sender.mqtt.broker")
+	clientID := viper.GetString("hank.sender.mqtt.client_id")
 
 	cli, err := hank.NewMQTTClient(cmp.Or(clientID, hank.CLIENT_ID), broker)
 	if err != nil {
