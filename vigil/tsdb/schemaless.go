@@ -24,16 +24,33 @@ func NewSchLe(dsn string) (*Schemaless, error) {
 	}, nil
 }
 
-func (s *Schemaless) HandleElecty(ctx context.Context, data vigil.ElectricityMeter) error {
+func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error {
 
 	var enc lineprotocol.Encoder
 
 	enc.SetPrecision(lineprotocol.Second)
-	enc.StartLine(POWER_STB)
+	enc.StartLine(ELECTY_STB)
 
 	enc.AddTag(TAG_CODE, data.Code)
 	enc.AddTag(TAG_PCODE, data.Pos.PosCode)
 	enc.AddTag(TAG_PROJ, data.Pos.Project)
+
+	v, _ := lineprotocol.FloatValue(data.STD())
+	enc.AddField(FIELD_B, v)
+
+	enc.AddField(FIELD_DATA_VALUE, lineprotocol.IntValue(data.Data.DataValue))
+
+	enc.AddField(FIELD_FREQUENCY, lineprotocol.IntValue(data.Data.Frequency))
+
+	enc.AddField(FIELD_I_A, lineprotocol.IntValue(data.Data.CurrentA))
+	enc.AddField(FIELD_I_B, lineprotocol.IntValue(data.Data.CurrentB))
+	enc.AddField(FIELD_I_C, lineprotocol.IntValue(data.Data.CurrentC))
+
+	enc.AddField(FIELD_P, lineprotocol.IntValue(data.Data.ActivePowerTotal))
+
+	enc.AddField(FIELD_V_A, lineprotocol.IntValue(data.Data.VoltageA))
+	enc.AddField(FIELD_V_B, lineprotocol.IntValue(data.Data.VoltageB))
+	enc.AddField(FIELD_V_C, lineprotocol.IntValue(data.Data.VoltageC))
 
 	enc.EndLine(data.DataTime)
 

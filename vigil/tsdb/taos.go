@@ -9,15 +9,26 @@ const (
 	TAG_PROJ  = "proj"
 	TAG_PCODE = "pcode"
 
-	FIELD_DENSITY_COUNT = "human_count"
-	FIELD_DENSITY_RATIO = "human_ratio"
+	FIELD_B = "b"
 
-	FIELD_DATA_VALUE = "data_value"
+	FIELD_DATA_VALUE = "dv" // 表显
 
+	FIELD_FREQUENCY = "f"
+
+	FIELD_I_A = "ia"
+	FIELD_I_B = "ib"
+	FIELD_I_C = "ic"
+
+	FIELD_P = "p" // 总有功功率
+
+	FIELD_V_A = "va"
+	FIELD_V_B = "vb"
+	FIELD_V_C = "vc"
 )
 
 const (
-	POWER_STB = "power_stb"
+	ELECTY_STB = "electy_stb"
+	WATER_STB  = "water_stb"
 )
 
 const (
