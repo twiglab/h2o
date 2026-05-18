@@ -29,7 +29,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				s.Logger.ErrorContext(ctx, "unmarshal error", slog.Any("err", err))
 				return
 			}
-			if err := s.HandleElectricity(ctx, em); err != nil {
+			if err := s.HandleElecty(ctx, em); err != nil {
 				s.Logger.ErrorContext(ctx, "handle electry error", slog.Any("err", err))
 				return
 			}

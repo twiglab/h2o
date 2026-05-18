@@ -17,7 +17,6 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/twiglab/h2o/vigil/gql/graph/model"
-	"github.com/twiglab/h2o/vigil/orm/ent"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -45,6 +44,7 @@ type ComplexityRoot struct {
 	}
 
 	Record struct {
+		Code       func(childComplexity int) int
 		DataCode   func(childComplexity int) int
 		DataTime   func(childComplexity int) int
 		DataValue  func(childComplexity int) int
@@ -110,6 +110,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 
 		return e.ComplexityRoot.Query.__resolve__service(childComplexity), true
 
+	case "Record.code":
+		if e.ComplexityRoot.Record.Code == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Record.Code(childComplexity), true
 	case "Record.dataCode":
 		if e.ComplexityRoot.Record.DataCode == nil {
 			break
@@ -385,6 +391,8 @@ func (ec *executionContext) childFields_Record(ctx context.Context, field graphq
 	switch field.Name {
 	case "id":
 		return ec.fieldContext_Record_id(ctx, field)
+	case "code":
+		return ec.fieldContext_Record_code(ctx, field)
 	case "deviceCode":
 		return ec.fieldContext_Record_deviceCode(ctx, field)
 	case "deviceName":
@@ -799,7 +807,7 @@ func (ec *executionContext) fieldContext_Query___schema(_ context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Record_id(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_id(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -822,7 +830,30 @@ func (ec *executionContext) fieldContext_Record_id(_ context.Context, field grap
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type ID does not have child fields"))
 }
 
-func (ec *executionContext) _Record_deviceCode(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_code(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Record_code(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.Code, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalNString2string(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Record_code(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _Record_deviceCode(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -845,7 +876,7 @@ func (ec *executionContext) fieldContext_Record_deviceCode(_ context.Context, fi
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Record_deviceName(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_deviceName(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -868,7 +899,7 @@ func (ec *executionContext) fieldContext_Record_deviceName(_ context.Context, fi
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Record_deviceType(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_deviceType(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -891,7 +922,7 @@ func (ec *executionContext) fieldContext_Record_deviceType(_ context.Context, fi
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Record_dataCode(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_dataCode(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -914,7 +945,7 @@ func (ec *executionContext) fieldContext_Record_dataCode(_ context.Context, fiel
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Record_dataValue(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_dataValue(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -937,7 +968,7 @@ func (ec *executionContext) fieldContext_Record_dataValue(_ context.Context, fie
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int64 does not have child fields"))
 }
 
-func (ec *executionContext) _Record_xDataValue(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_xDataValue(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -960,7 +991,7 @@ func (ec *executionContext) fieldContext_Record_xDataValue(_ context.Context, fi
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int64 does not have child fields"))
 }
 
-func (ec *executionContext) _Record_factor(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_factor(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -983,7 +1014,7 @@ func (ec *executionContext) fieldContext_Record_factor(_ context.Context, field 
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Int does not have child fields"))
 }
 
-func (ec *executionContext) _Record_dataTime(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_dataTime(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -1006,7 +1037,7 @@ func (ec *executionContext) fieldContext_Record_dataTime(_ context.Context, fiel
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type Time does not have child fields"))
 }
 
-func (ec *executionContext) _Record_posCode(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_posCode(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -1029,7 +1060,7 @@ func (ec *executionContext) fieldContext_Record_posCode(_ context.Context, field
 	return graphql.NewScalarFieldContext("Record", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
-func (ec *executionContext) _Record_project(ctx context.Context, field graphql.CollectedField, obj *ent.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_project(ctx context.Context, field graphql.CollectedField, obj *model.Record) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
 		ec.OperationContext,
@@ -1064,8 +1095,8 @@ func (ec *executionContext) _RecordPageOut_result(ctx context.Context, field gra
 			return obj.Result, nil
 		},
 		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v []*ent.Record) graphql.Marshaler {
-			return ec.marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecordᚄ(ctx, selections, v)
+		func(ctx context.Context, selections ast.SelectionSet, v []*model.Record) graphql.Marshaler {
+			return ec.marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordᚄ(ctx, selections, v)
 		},
 		true,
 		true,
@@ -2500,7 +2531,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var recordImplementors = []string{"Record"}
 
-func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, obj *ent.Record) graphql.Marshaler {
+func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, obj *model.Record) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, recordImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -2511,6 +2542,11 @@ func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = graphql.MarshalString("Record")
 		case "id":
 			out.Values[i] = ec._Record_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "code":
+			out.Values[i] = ec._Record_code(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -3112,11 +3148,11 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Record) graphql.Marshaler {
+func (ec *executionContext) marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Record) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNRecord2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecord(ctx, sel, v[i])
+		return ec.marshalNRecord2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecord(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -3128,7 +3164,7 @@ func (ec *executionContext) marshalNRecord2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋormᚋentᚐRecord(ctx context.Context, sel ast.SelectionSet, v *ent.Record) graphql.Marshaler {
+func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋvigilᚋgqlᚋgraphᚋmodelᚐRecord(ctx context.Context, sel ast.SelectionSet, v *model.Record) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")

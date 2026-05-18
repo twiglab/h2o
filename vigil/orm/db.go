@@ -34,6 +34,6 @@ func pgx(dsn string, ops ...ent.Option) (*ent.Client, error) {
 	return ent.NewClient(ops...), nil
 }
 
-func RecordCmp(a, b *ent.Record) int {
+func RecordCmp(a, b *ent.Electy) int {
 	return cmp.Compare(b.DataTs, a.DataTs)
 }

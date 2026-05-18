@@ -9,16 +9,28 @@ import (
 	"github.com/twiglab/h2o/vigil/orm/ent"
 )
 
-// The RecordFunc type is an adapter to allow the use of ordinary
-// function as Record mutator.
-type RecordFunc func(context.Context, *ent.RecordMutation) (ent.Value, error)
+// The ElectyFunc type is an adapter to allow the use of ordinary
+// function as Electy mutator.
+type ElectyFunc func(context.Context, *ent.ElectyMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f RecordFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.RecordMutation); ok {
+func (f ElectyFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ElectyMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.RecordMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ElectyMutation", m)
+}
+
+// The WaterFunc type is an adapter to allow the use of ordinary
+// function as Water mutator.
+type WaterFunc func(context.Context, *ent.WaterMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f WaterFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.WaterMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.WaterMutation", m)
 }
 
 // Condition is a hook condition function.

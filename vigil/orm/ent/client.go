@@ -14,7 +14,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/vigil/orm/ent/record"
+	"github.com/twiglab/h2o/vigil/orm/ent/electy"
+	"github.com/twiglab/h2o/vigil/orm/ent/water"
 
 	stdsql "database/sql"
 )
@@ -24,8 +25,10 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Record is the client for interacting with the Record builders.
-	Record *RecordClient
+	// Electy is the client for interacting with the Electy builders.
+	Electy *ElectyClient
+	// Water is the client for interacting with the Water builders.
+	Water *WaterClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -37,7 +40,8 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Record = NewRecordClient(c.config)
+	c.Electy = NewElectyClient(c.config)
+	c.Water = NewWaterClient(c.config)
 }
 
 type (
@@ -130,7 +134,8 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Record: NewRecordClient(cfg),
+		Electy: NewElectyClient(cfg),
+		Water:  NewWaterClient(cfg),
 	}, nil
 }
 
@@ -150,14 +155,15 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		Record: NewRecordClient(cfg),
+		Electy: NewElectyClient(cfg),
+		Water:  NewWaterClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Record.
+//		Electy.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -179,126 +185,130 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Record.Use(hooks...)
+	c.Electy.Use(hooks...)
+	c.Water.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Record.Intercept(interceptors...)
+	c.Electy.Intercept(interceptors...)
+	c.Water.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *RecordMutation:
-		return c.Record.mutate(ctx, m)
+	case *ElectyMutation:
+		return c.Electy.mutate(ctx, m)
+	case *WaterMutation:
+		return c.Water.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// RecordClient is a client for the Record schema.
-type RecordClient struct {
+// ElectyClient is a client for the Electy schema.
+type ElectyClient struct {
 	config
 }
 
-// NewRecordClient returns a client for the Record from the given config.
-func NewRecordClient(c config) *RecordClient {
-	return &RecordClient{config: c}
+// NewElectyClient returns a client for the Electy from the given config.
+func NewElectyClient(c config) *ElectyClient {
+	return &ElectyClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `record.Hooks(f(g(h())))`.
-func (c *RecordClient) Use(hooks ...Hook) {
-	c.hooks.Record = append(c.hooks.Record, hooks...)
+// A call to `Use(f, g, h)` equals to `electy.Hooks(f(g(h())))`.
+func (c *ElectyClient) Use(hooks ...Hook) {
+	c.hooks.Electy = append(c.hooks.Electy, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `record.Intercept(f(g(h())))`.
-func (c *RecordClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Record = append(c.inters.Record, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `electy.Intercept(f(g(h())))`.
+func (c *ElectyClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Electy = append(c.inters.Electy, interceptors...)
 }
 
-// Create returns a builder for creating a Record entity.
-func (c *RecordClient) Create() *RecordCreate {
-	mutation := newRecordMutation(c.config, OpCreate)
-	return &RecordCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Electy entity.
+func (c *ElectyClient) Create() *ElectyCreate {
+	mutation := newElectyMutation(c.config, OpCreate)
+	return &ElectyCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Record entities.
-func (c *RecordClient) CreateBulk(builders ...*RecordCreate) *RecordCreateBulk {
-	return &RecordCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Electy entities.
+func (c *ElectyClient) CreateBulk(builders ...*ElectyCreate) *ElectyCreateBulk {
+	return &ElectyCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *RecordClient) MapCreateBulk(slice any, setFunc func(*RecordCreate, int)) *RecordCreateBulk {
+func (c *ElectyClient) MapCreateBulk(slice any, setFunc func(*ElectyCreate, int)) *ElectyCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &RecordCreateBulk{err: fmt.Errorf("calling to RecordClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &ElectyCreateBulk{err: fmt.Errorf("calling to ElectyClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*RecordCreate, rv.Len())
+	builders := make([]*ElectyCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &RecordCreateBulk{config: c.config, builders: builders}
+	return &ElectyCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Record.
-func (c *RecordClient) Update() *RecordUpdate {
-	mutation := newRecordMutation(c.config, OpUpdate)
-	return &RecordUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Electy.
+func (c *ElectyClient) Update() *ElectyUpdate {
+	mutation := newElectyMutation(c.config, OpUpdate)
+	return &ElectyUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *RecordClient) UpdateOne(_m *Record) *RecordUpdateOne {
-	mutation := newRecordMutation(c.config, OpUpdateOne, withRecord(_m))
-	return &RecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ElectyClient) UpdateOne(_m *Electy) *ElectyUpdateOne {
+	mutation := newElectyMutation(c.config, OpUpdateOne, withElecty(_m))
+	return &ElectyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *RecordClient) UpdateOneID(id string) *RecordUpdateOne {
-	mutation := newRecordMutation(c.config, OpUpdateOne, withRecordID(id))
-	return &RecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *ElectyClient) UpdateOneID(id string) *ElectyUpdateOne {
+	mutation := newElectyMutation(c.config, OpUpdateOne, withElectyID(id))
+	return &ElectyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Record.
-func (c *RecordClient) Delete() *RecordDelete {
-	mutation := newRecordMutation(c.config, OpDelete)
-	return &RecordDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Electy.
+func (c *ElectyClient) Delete() *ElectyDelete {
+	mutation := newElectyMutation(c.config, OpDelete)
+	return &ElectyDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *RecordClient) DeleteOne(_m *Record) *RecordDeleteOne {
+func (c *ElectyClient) DeleteOne(_m *Electy) *ElectyDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *RecordClient) DeleteOneID(id string) *RecordDeleteOne {
-	builder := c.Delete().Where(record.ID(id))
+func (c *ElectyClient) DeleteOneID(id string) *ElectyDeleteOne {
+	builder := c.Delete().Where(electy.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &RecordDeleteOne{builder}
+	return &ElectyDeleteOne{builder}
 }
 
-// Query returns a query builder for Record.
-func (c *RecordClient) Query() *RecordQuery {
-	return &RecordQuery{
+// Query returns a query builder for Electy.
+func (c *ElectyClient) Query() *ElectyQuery {
+	return &ElectyQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeRecord},
+		ctx:    &QueryContext{Type: TypeElecty},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a Record entity by its id.
-func (c *RecordClient) Get(ctx context.Context, id string) (*Record, error) {
-	return c.Query().Where(record.ID(id)).Only(ctx)
+// Get returns a Electy entity by its id.
+func (c *ElectyClient) Get(ctx context.Context, id string) (*Electy, error) {
+	return c.Query().Where(electy.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *RecordClient) GetX(ctx context.Context, id string) *Record {
+func (c *ElectyClient) GetX(ctx context.Context, id string) *Electy {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -307,37 +317,170 @@ func (c *RecordClient) GetX(ctx context.Context, id string) *Record {
 }
 
 // Hooks returns the client hooks.
-func (c *RecordClient) Hooks() []Hook {
-	return c.hooks.Record
+func (c *ElectyClient) Hooks() []Hook {
+	return c.hooks.Electy
 }
 
 // Interceptors returns the client interceptors.
-func (c *RecordClient) Interceptors() []Interceptor {
-	return c.inters.Record
+func (c *ElectyClient) Interceptors() []Interceptor {
+	return c.inters.Electy
 }
 
-func (c *RecordClient) mutate(ctx context.Context, m *RecordMutation) (Value, error) {
+func (c *ElectyClient) mutate(ctx context.Context, m *ElectyMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&RecordCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ElectyCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&RecordUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ElectyUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&RecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&ElectyUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&RecordDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&ElectyDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown Record mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Electy mutation op: %q", m.Op())
+	}
+}
+
+// WaterClient is a client for the Water schema.
+type WaterClient struct {
+	config
+}
+
+// NewWaterClient returns a client for the Water from the given config.
+func NewWaterClient(c config) *WaterClient {
+	return &WaterClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `water.Hooks(f(g(h())))`.
+func (c *WaterClient) Use(hooks ...Hook) {
+	c.hooks.Water = append(c.hooks.Water, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `water.Intercept(f(g(h())))`.
+func (c *WaterClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Water = append(c.inters.Water, interceptors...)
+}
+
+// Create returns a builder for creating a Water entity.
+func (c *WaterClient) Create() *WaterCreate {
+	mutation := newWaterMutation(c.config, OpCreate)
+	return &WaterCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Water entities.
+func (c *WaterClient) CreateBulk(builders ...*WaterCreate) *WaterCreateBulk {
+	return &WaterCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *WaterClient) MapCreateBulk(slice any, setFunc func(*WaterCreate, int)) *WaterCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &WaterCreateBulk{err: fmt.Errorf("calling to WaterClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*WaterCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &WaterCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Water.
+func (c *WaterClient) Update() *WaterUpdate {
+	mutation := newWaterMutation(c.config, OpUpdate)
+	return &WaterUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *WaterClient) UpdateOne(_m *Water) *WaterUpdateOne {
+	mutation := newWaterMutation(c.config, OpUpdateOne, withWater(_m))
+	return &WaterUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *WaterClient) UpdateOneID(id string) *WaterUpdateOne {
+	mutation := newWaterMutation(c.config, OpUpdateOne, withWaterID(id))
+	return &WaterUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Water.
+func (c *WaterClient) Delete() *WaterDelete {
+	mutation := newWaterMutation(c.config, OpDelete)
+	return &WaterDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *WaterClient) DeleteOne(_m *Water) *WaterDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *WaterClient) DeleteOneID(id string) *WaterDeleteOne {
+	builder := c.Delete().Where(water.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &WaterDeleteOne{builder}
+}
+
+// Query returns a query builder for Water.
+func (c *WaterClient) Query() *WaterQuery {
+	return &WaterQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeWater},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Water entity by its id.
+func (c *WaterClient) Get(ctx context.Context, id string) (*Water, error) {
+	return c.Query().Where(water.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *WaterClient) GetX(ctx context.Context, id string) *Water {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *WaterClient) Hooks() []Hook {
+	return c.hooks.Water
+}
+
+// Interceptors returns the client interceptors.
+func (c *WaterClient) Interceptors() []Interceptor {
+	return c.inters.Water
+}
+
+func (c *WaterClient) mutate(ctx context.Context, m *WaterMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&WaterCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&WaterUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&WaterUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&WaterDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Water mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Record []ent.Hook
+		Electy, Water []ent.Hook
 	}
 	inters struct {
-		Record []ent.Interceptor
+		Electy, Water []ent.Interceptor
 	}
 )
 

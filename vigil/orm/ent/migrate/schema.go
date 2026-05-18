@@ -9,11 +9,12 @@ import (
 )
 
 var (
-	// TNhRecordColumns holds the columns for the "t_nh_record" table.
-	TNhRecordColumns = []*schema.Column{
+	// RecordElectyColumns holds the columns for the "record_electy" table.
+	RecordElectyColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
+		{Name: "p_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -27,57 +28,131 @@ var (
 		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
-	// TNhRecordTable holds the schema information for the "t_nh_record" table.
-	TNhRecordTable = &schema.Table{
-		Name:       "t_nh_record",
-		Columns:    TNhRecordColumns,
-		PrimaryKey: []*schema.Column{TNhRecordColumns[0]},
+	// RecordElectyTable holds the schema information for the "record_electy" table.
+	RecordElectyTable = &schema.Table{
+		Name:       "record_electy",
+		Columns:    RecordElectyColumns,
+		PrimaryKey: []*schema.Column{RecordElectyColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "record_device_code",
+				Name:    "electy_p_code",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[4]},
+				Columns: []*schema.Column{RecordElectyColumns[3]},
 			},
 			{
-				Name:    "record_device_type",
+				Name:    "electy_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[5]},
+				Columns: []*schema.Column{RecordElectyColumns[5]},
 			},
 			{
-				Name:    "record_data_code",
+				Name:    "electy_device_type",
+				Unique:  false,
+				Columns: []*schema.Column{RecordElectyColumns[6]},
+			},
+			{
+				Name:    "electy_data_code",
 				Unique:  true,
-				Columns: []*schema.Column{TNhRecordColumns[10]},
+				Columns: []*schema.Column{RecordElectyColumns[11]},
 			},
 			{
-				Name:    "record_data_time",
+				Name:    "electy_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[11]},
+				Columns: []*schema.Column{RecordElectyColumns[12]},
 			},
 			{
-				Name:    "record_data_ts",
+				Name:    "electy_data_ts",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[12]},
+				Columns: []*schema.Column{RecordElectyColumns[13]},
 			},
 			{
-				Name:    "record_pos_code",
+				Name:    "electy_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[13]},
+				Columns: []*schema.Column{RecordElectyColumns[14]},
 			},
 			{
-				Name:    "record_project",
+				Name:    "electy_project",
 				Unique:  false,
-				Columns: []*schema.Column{TNhRecordColumns[14]},
+				Columns: []*schema.Column{RecordElectyColumns[15]},
+			},
+		},
+	}
+	// RecordWaterColumns holds the columns for the "record_water" table.
+	RecordWaterColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "p_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "data_value", Type: field.TypeInt64, Default: 0},
+		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "data_time", Type: field.TypeTime},
+		{Name: "data_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
+		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+	}
+	// RecordWaterTable holds the schema information for the "record_water" table.
+	RecordWaterTable = &schema.Table{
+		Name:       "record_water",
+		Columns:    RecordWaterColumns,
+		PrimaryKey: []*schema.Column{RecordWaterColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "water_p_code",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[3]},
+			},
+			{
+				Name:    "water_device_code",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[5]},
+			},
+			{
+				Name:    "water_device_type",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[6]},
+			},
+			{
+				Name:    "water_data_code",
+				Unique:  true,
+				Columns: []*schema.Column{RecordWaterColumns[9]},
+			},
+			{
+				Name:    "water_data_time",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[10]},
+			},
+			{
+				Name:    "water_data_ts",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[11]},
+			},
+			{
+				Name:    "water_pos_code",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[12]},
+			},
+			{
+				Name:    "water_project",
+				Unique:  false,
+				Columns: []*schema.Column{RecordWaterColumns[13]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		TNhRecordTable,
+		RecordElectyTable,
+		RecordWaterTable,
 	}
 )
 
 func init() {
-	TNhRecordTable.Annotation = &entsql.Annotation{
-		Table: "t_nh_record",
+	RecordElectyTable.Annotation = &entsql.Annotation{
+		Table: "record_electy",
+	}
+	RecordWaterTable.Annotation = &entsql.Annotation{
+		Table: "record_water",
 	}
 }

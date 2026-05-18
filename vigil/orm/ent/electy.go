@@ -9,11 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/vigil/orm/ent/record"
+	"github.com/twiglab/h2o/vigil/orm/ent/electy"
 )
 
-// Record is the model entity for the Record schema.
-type Record struct {
+// Electy is the model entity for the Electy schema.
+type Electy struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
@@ -21,6 +21,8 @@ type Record struct {
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
+	// 设备位置业务编号
+	PCode string `json:"p_code,omitempty"`
 	// 设备序列号
 	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备号
@@ -49,15 +51,15 @@ type Record struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Record) scanValues(columns []string) ([]any, error) {
+func (*Electy) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case record.FieldDataValue, record.FieldXDataValue, record.FieldFactor:
+		case electy.FieldDataValue, electy.FieldXDataValue, electy.FieldFactor:
 			values[i] = new(sql.NullInt64)
-		case record.FieldID, record.FieldDeviceSn, record.FieldDeviceCode, record.FieldDeviceType, record.FieldDeviceName, record.FieldDataCode, record.FieldDataTs, record.FieldPosCode, record.FieldProject:
+		case electy.FieldID, electy.FieldPCode, electy.FieldDeviceSn, electy.FieldDeviceCode, electy.FieldDeviceType, electy.FieldDeviceName, electy.FieldDataCode, electy.FieldDataTs, electy.FieldPosCode, electy.FieldProject:
 			values[i] = new(sql.NullString)
-		case record.FieldCreateTime, record.FieldUpdateTime, record.FieldDataTime:
+		case electy.FieldCreateTime, electy.FieldUpdateTime, electy.FieldDataTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -67,98 +69,104 @@ func (*Record) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Record fields.
-func (_m *Record) assignValues(columns []string, values []any) error {
+// to the Electy fields.
+func (_m *Electy) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case record.FieldID:
+		case electy.FieldID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				_m.ID = value.String
 			}
-		case record.FieldCreateTime:
+		case electy.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
 				_m.CreateTime = value.Time
 			}
-		case record.FieldUpdateTime:
+		case electy.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
 			}
-		case record.FieldDeviceSn:
+		case electy.FieldPCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field p_code", values[i])
+			} else if value.Valid {
+				_m.PCode = value.String
+			}
+		case electy.FieldDeviceSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
 			} else if value.Valid {
 				_m.DeviceSn = value.String
 			}
-		case record.FieldDeviceCode:
+		case electy.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_code", values[i])
 			} else if value.Valid {
 				_m.DeviceCode = value.String
 			}
-		case record.FieldDeviceType:
+		case electy.FieldDeviceType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
 			}
-		case record.FieldDeviceName:
+		case electy.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
 				_m.DeviceName = value.String
 			}
-		case record.FieldDataValue:
+		case electy.FieldDataValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field data_value", values[i])
 			} else if value.Valid {
 				_m.DataValue = value.Int64
 			}
-		case record.FieldXDataValue:
+		case electy.FieldXDataValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field x_data_value", values[i])
 			} else if value.Valid {
 				_m.XDataValue = value.Int64
 			}
-		case record.FieldFactor:
+		case electy.FieldFactor:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field factor", values[i])
 			} else if value.Valid {
 				_m.Factor = int(value.Int64)
 			}
-		case record.FieldDataCode:
+		case electy.FieldDataCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field data_code", values[i])
 			} else if value.Valid {
 				_m.DataCode = value.String
 			}
-		case record.FieldDataTime:
+		case electy.FieldDataTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field data_time", values[i])
 			} else if value.Valid {
 				_m.DataTime = value.Time
 			}
-		case record.FieldDataTs:
+		case electy.FieldDataTs:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field data_ts", values[i])
 			} else if value.Valid {
 				_m.DataTs = value.String
 			}
-		case record.FieldPosCode:
+		case electy.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
 			} else if value.Valid {
 				_m.PosCode = value.String
 			}
-		case record.FieldProject:
+		case electy.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field project", values[i])
 			} else if value.Valid {
@@ -171,40 +179,43 @@ func (_m *Record) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Record.
+// Value returns the ent.Value that was dynamically selected and assigned to the Electy.
 // This includes values selected through modifiers, order, etc.
-func (_m *Record) Value(name string) (ent.Value, error) {
+func (_m *Electy) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Record.
-// Note that you need to call Record.Unwrap() before calling this method if this Record
+// Update returns a builder for updating this Electy.
+// Note that you need to call Electy.Unwrap() before calling this method if this Electy
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *Record) Update() *RecordUpdateOne {
-	return NewRecordClient(_m.config).UpdateOne(_m)
+func (_m *Electy) Update() *ElectyUpdateOne {
+	return NewElectyClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the Record entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Electy entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *Record) Unwrap() *Record {
+func (_m *Electy) Unwrap() *Electy {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Record is not a transactional entity")
+		panic("ent: Electy is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *Record) String() string {
+func (_m *Electy) String() string {
 	var builder strings.Builder
-	builder.WriteString("Record(")
+	builder.WriteString("Electy(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("create_time=")
 	builder.WriteString(_m.CreateTime.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("update_time=")
 	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("p_code=")
+	builder.WriteString(_m.PCode)
 	builder.WriteString(", ")
 	builder.WriteString("device_sn=")
 	builder.WriteString(_m.DeviceSn)
@@ -245,5 +256,5 @@ func (_m *Record) String() string {
 	return builder.String()
 }
 
-// Records is a parsable slice of Record.
-type Records []*Record
+// Electies is a parsable slice of Electy.
+type Electies []*Electy

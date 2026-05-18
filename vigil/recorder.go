@@ -7,23 +7,8 @@ import (
 	"github.com/twiglab/h2o/cache"
 )
 
-type MeterData interface {
-	GetCode() string
-	GetType() string
-	GetName() string
-	GetDataTime() time.Time
-	GetDataCode() string
-	GetDataValue() int64
-	GetPosCode() string
-	GetProject() string
-	GetSN() string
-
-	GetXDataValue() int64
-	GetFactor() int
-}
-
 type Recorder interface {
-	Tabb(ctx context.Context, data MeterData) error
+	TabbElecty(ctx context.Context, data ElectricityMeter) error
 }
 
 type recordCache struct {
@@ -38,12 +23,12 @@ func WithRecorder(r Recorder) Recorder {
 	}
 }
 
-func (r *recordCache) Tabb(ctx context.Context, data MeterData) error {
-	if t, ok, _ := r.c.Get(ctx, data.GetCode()); ok {
-		if t.Hour() == data.GetDataTime().Hour() {
+func (r *recordCache) TabbElecty(ctx context.Context, data ElectricityMeter) error {
+	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
+		if t.Hour() == data.DataTime.Hour() {
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.GetCode(), data.GetDataTime())
-	return r.r.Tabb(ctx, data)
+	r.c.Set(ctx, data.Code, data.DataTime)
+	return r.r.TabbElecty(ctx, data)
 }

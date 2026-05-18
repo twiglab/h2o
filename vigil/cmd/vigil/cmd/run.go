@@ -6,7 +6,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/eyes"
-	"github.com/twiglab/h2o/vigil/gql"
 
 	"github.com/spf13/cobra"
 )
@@ -46,10 +45,10 @@ func run() {
 	token := mcli.SubscribeMultiple(topics(), vigil.Handle(hub))
 	token.Wait()
 
-	gqlc := gql.NewConf(cli)
+	//gqlc := gql.NewConf(cli)
 
 	mux := chi.NewMux()
 	mux.Mount("/eyes", eyes.EyesMux(egg))
-	mux.Mount("/gql", gql.Handle(gqlc))
+	//mux.Mount("/gql", gql.Handle(gqlc))
 	http.ListenAndServe(webaddr(), mux)
 }

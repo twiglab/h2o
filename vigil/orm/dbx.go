@@ -7,25 +7,24 @@ import (
 	"github.com/twiglab/h2o/vigil/orm/ent"
 )
 
-const f = "20060102150405"
-
 type DBx struct {
 	Client *ent.Client
 }
 
-func (d *DBx) Tabb(ctx context.Context, data vigil.MeterData) error {
-	cr := d.Client.Record.Create()
-	cr.SetDeviceSn(data.GetSN())
-	cr.SetDeviceCode(data.GetCode())
-	cr.SetDeviceType(data.GetType())
-	cr.SetDeviceName(data.GetName())
-	cr.SetDataCode(data.GetDataCode())
-	cr.SetDataTime(data.GetDataTime())
-	cr.SetDataValue(data.GetDataValue())
-	cr.SetPosCode(data.GetPosCode())
-	cr.SetProject(data.GetProject())
-	cr.SetDataTs(data.GetDataTime().Format(f))
-	cr.SetXDataValue(data.GetXDataValue())
-	cr.SetFactor(data.GetFactor())
+func (d *DBx) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error {
+	cr := d.Client.Electy.Create()
+	cr.SetPCode(data.PCode())
+	cr.SetDeviceSn(data.SN)
+	cr.SetDeviceCode(data.Code)
+	cr.SetDeviceType(data.Type)
+	cr.SetDeviceName(data.Name)
+	cr.SetDataCode(data.DataCode)
+	cr.SetDataTime(data.DataTime)
+	cr.SetDataValue(data.Data.DataValue)
+	cr.SetPosCode(data.Pos.PosCode)
+	cr.SetProject(data.Pos.Project)
+	cr.SetDataTs(data.Ts())
+	cr.SetXDataValue(data.XDataValue())
+	cr.SetFactor(data.Param.Factor)
 	return cr.Exec(ctx)
 }

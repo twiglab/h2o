@@ -3,6 +3,7 @@ scalar Int64
 
 type Record {
   id: ID!
+  code: String!
 
   deviceCode : String!
   deviceName : String!

@@ -3,8 +3,23 @@
 package model
 
 import (
-	"github.com/twiglab/h2o/vigil/orm/ent"
+	"time"
 )
+
+type Record struct {
+	ID         string    `json:"id"`
+	Code       string    `json:"code"`
+	DeviceCode string    `json:"deviceCode"`
+	DeviceName string    `json:"deviceName"`
+	DeviceType string    `json:"deviceType"`
+	DataCode   string    `json:"dataCode"`
+	DataValue  int64     `json:"dataValue"`
+	XDataValue int64     `json:"xDataValue"`
+	Factor     int       `json:"factor"`
+	DataTime   time.Time `json:"dataTime"`
+	PosCode    string    `json:"posCode"`
+	Project    string    `json:"project"`
+}
 
 type RecordPageIn struct {
 	PosCode    string `json:"posCode"`
@@ -17,12 +32,12 @@ type RecordPageIn struct {
 }
 
 type RecordPageOut struct {
-	Result     []*ent.Record `json:"result"`
-	PosCode    string        `json:"posCode"`
-	Project    string        `json:"project"`
-	DeviceCode string        `json:"deviceCode"`
-	Start      string        `json:"start"`
-	End        string        `json:"end"`
-	Last       string        `json:"last"`
-	PageSize   int           `json:"pageSize"`
+	Result     []*Record `json:"result"`
+	PosCode    string    `json:"posCode"`
+	Project    string    `json:"project"`
+	DeviceCode string    `json:"deviceCode"`
+	Start      string    `json:"start"`
+	End        string    `json:"end"`
+	Last       string    `json:"last"`
+	PageSize   int       `json:"pageSize"`
 }
