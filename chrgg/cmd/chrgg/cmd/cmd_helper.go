@@ -12,6 +12,7 @@ import (
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/pkg/common"
 )
@@ -36,7 +37,7 @@ func rootLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(rlogL, logL))
-	log := chrgg.NewLog(rlogF, level)
+	log := clog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
@@ -47,7 +48,7 @@ func serverLog() *slog.Logger {
 	logL := viper.GetString("log.level")
 
 	level := logLevel(cmp.Or(sLogL, logL))
-	l := chrgg.NewLog(sLogF, level)
+	l := clog.NewLog(sLogF, level)
 	return l
 }
 
