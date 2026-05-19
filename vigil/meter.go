@@ -15,7 +15,7 @@ type Meter struct {
 }
 
 func (d Meter) PCode() string {
-	return d.Code + "@" + d.Pos.Project
+	return d.Code + "@" + d.Pos.Project + "#" + d.Type
 }
 
 func (d Meter) Ts() string {

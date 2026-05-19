@@ -23,16 +23,29 @@ func Handle(s *Hub) mqtt.MessageHandler {
 
 		switch common.TopicType(msg.Topic()) {
 		case common.WaterTopic:
+			var wm WaterMeter
+			if err := wm.UnmarshalBinary(msg.Payload()); err != nil {
+				s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
+				return
+			}
+
+			if err := s.HandleWater(ctx, wm); err != nil {
+				s.Logger.ErrorContext(ctx, "handle water error", slog.Any("err", err))
+				return
+			}
+
 		case common.ElectricityTopic:
 			var em ElectricityMeter
 			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
-				s.Logger.ErrorContext(ctx, "unmarshal error", slog.Any("err", err))
+				s.Logger.ErrorContext(ctx, "unmarshal electy error", slog.Any("err", err))
 				return
 			}
+
 			if err := s.HandleElecty(ctx, em); err != nil {
-				s.Logger.ErrorContext(ctx, "handle electry error", slog.Any("err", err))
+				s.Logger.ErrorContext(ctx, "handle electy error", slog.Any("err", err))
 				return
 			}
+
 		case common.GasTopic:
 		}
 	}

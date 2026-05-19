@@ -29,10 +29,11 @@ func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter
 	var enc lineprotocol.Encoder
 
 	enc.SetPrecision(lineprotocol.Second)
+
 	enc.StartLine(ELECTY_STB)
 
 	enc.AddTag(TAG_CODE, data.Code)
-	enc.AddTag(TAG_PCODE, data.Pos.PosCode)
+	enc.AddTag(TAG_PCODE, data.PCode())
 	enc.AddTag(TAG_PROJ, data.Pos.Project)
 
 	v, _ := lineprotocol.FloatValue(data.STD())
@@ -51,6 +52,31 @@ func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter
 	enc.AddField(FIELD_V_A, lineprotocol.IntValue(data.Data.VoltageA))
 	enc.AddField(FIELD_V_B, lineprotocol.IntValue(data.Data.VoltageB))
 	enc.AddField(FIELD_V_C, lineprotocol.IntValue(data.Data.VoltageC))
+
+	enc.EndLine(data.DataTime)
+
+	if err := enc.Err(); err != nil {
+		return err
+	}
+
+	bs := enc.Bytes()
+	line := bytesToStr(bs)
+
+	return s.schemaless.SchemalessInsert(common.GetReqID(), line, unified.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_SECONDS, 0, "")
+}
+
+func (s *Schemaless) TabbWater(ctx context.Context, data vigil.WaterMeter) error {
+	var enc lineprotocol.Encoder
+
+	enc.SetPrecision(lineprotocol.Second)
+
+	enc.StartLine(WATER_STB)
+
+	enc.AddTag(TAG_CODE, data.Code)
+	enc.AddTag(TAG_PCODE, data.PCode())
+	enc.AddTag(TAG_PROJ, data.Pos.Project)
+
+	enc.AddField(FIELD_DATA_VALUE, lineprotocol.IntValue(data.Data.DataValue))
 
 	enc.EndLine(data.DataTime)
 

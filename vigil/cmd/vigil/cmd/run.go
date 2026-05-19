@@ -38,7 +38,8 @@ func run() {
 	egg := eyes.NewElectricityEgg()
 	hub := &vigil.Hub{
 		ElectyMeterView: egg,
-		Recorder:        vigil.WithRecorder(dbx(cli)),
+		DB:              vigil.WithRecorder(dbx(cli)),
+		TSDB:            tdb(),
 		Logger:          serverLog(),
 	}
 	mcli := mqttcli()

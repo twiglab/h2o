@@ -9,6 +9,7 @@ import (
 
 type Recorder interface {
 	TabbElecty(ctx context.Context, data ElectricityMeter) error
+	TabbWater(ctx context.Context, data WaterMeter) error
 }
 
 type recordCache struct {
@@ -24,11 +25,21 @@ func WithRecorder(r Recorder) Recorder {
 }
 
 func (r *recordCache) TabbElecty(ctx context.Context, data ElectricityMeter) error {
-	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
+	if t, ok, _ := r.c.Get(ctx, data.PCode()); ok {
 		if t.Hour() == data.DataTime.Hour() {
 			return nil
 		}
 	}
 	r.c.Set(ctx, data.Code, data.DataTime)
 	return r.r.TabbElecty(ctx, data)
+}
+
+func (r *recordCache) TabbWater(ctx context.Context, data WaterMeter) error {
+	if t, ok, _ := r.c.Get(ctx, data.PCode()); ok {
+		if t.Hour() == data.DataTime.Hour() {
+			return nil
+		}
+	}
+	r.c.Set(ctx, data.Code, data.DataTime)
+	return r.r.TabbWater(ctx, data)
 }

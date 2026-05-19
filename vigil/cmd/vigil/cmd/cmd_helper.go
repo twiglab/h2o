@@ -12,6 +12,7 @@ import (
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
 	"github.com/twiglab/h2o/vigil/orm/ent"
+	"github.com/twiglab/h2o/vigil/tsdb"
 )
 
 func logLevel(s string) slog.Level {
@@ -66,6 +67,15 @@ func entcli() *ent.Client {
 
 func dbx(c *ent.Client) *orm.DBx {
 	return &orm.DBx{Client: c}
+}
+
+func tdb() *tsdb.Schemaless {
+	dsn := viper.GetString("vigil.tsdb.dsn")
+	sch, err := tsdb.NewSchLe(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return sch
 }
 
 func rootLog() *slog.Logger {
