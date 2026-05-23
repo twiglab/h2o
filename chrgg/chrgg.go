@@ -16,7 +16,7 @@ func (e ChargeErr) Error() string {
 }
 
 type ChargeData struct {
-	MeterData
+	ElectyMeterData
 }
 
 func MinPerDay(t time.Time) int {

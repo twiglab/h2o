@@ -2,7 +2,6 @@ package chrgg
 
 import (
 	"context"
-	"encoding/json/v2"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -11,34 +10,24 @@ import (
 
 const CLIENT_ID = "chrgg"
 
-type MeterData struct {
-	common.Device
-	Pos  common.Pos        `json:"pos,omitzero"`
-	Data common.MeterValue `json:"data"`
-	Flag common.Flag       `json:"flag,omitzero"`
-
-	Topic string `json:"topic"`
-}
-
-func (d *MeterData) UnmarshalBinary(data []byte) error {
-	return json.Unmarshal(data, d)
-}
-
 func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
 			return
 		}
+		switch common.TopicType(msg.Topic()) {
+		case common.WaterTopic:
 
-		var md MeterData
-		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
-			s.Logger.Error("unmarshal error", slog.Any("error", err))
-			return
-		}
-
-		md.Topic = msg.Topic()
-		if _, err := s.Charge(context.Background(), md); err != nil {
-			s.Logger.Error("charge error", slog.Any("raw", md), slog.Any("error", err))
+		case common.ElectricityTopic:
+			var em ElectyMeterData
+			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+				s.Logger.Error("unmarshal error", slog.Any("error", err))
+				return
+			}
+			if _, err := s.Charge(context.Background(), em); err != nil {
+				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
+			}
+		case common.GasTopic:
 		}
 	}
 }
@@ -49,7 +38,7 @@ func RawHandle() mqtt.MessageHandler {
 			return
 		}
 
-		var md MeterData
+		var md ElectyMeterData
 		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
 			slog.Error("unmarshal error", slog.Any("error", err))
 			return

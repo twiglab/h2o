@@ -17,8 +17,8 @@ type ChargeServer struct {
 	Logger *slog.Logger
 }
 
-func (s *ChargeServer) pre(_ context.Context, md MeterData) (ChargeData, error) {
-	return ChargeData{MeterData: md}, nil
+func (s *ChargeServer) pre(_ context.Context, md ElectyMeterData) (ChargeData, error) {
+	return ChargeData{ElectyMeterData: md}, nil
 }
 
 func (s *ChargeServer) loadLast(ctx context.Context, cd ChargeData) (LastCDR, error) {
@@ -26,7 +26,7 @@ func (s *ChargeServer) loadLast(ctx context.Context, cd ChargeData) (LastCDR, er
 	return MakeLast(l), err
 }
 
-func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
+func (s *ChargeServer) Charge(ctx context.Context, md ElectyMeterData) (CDR, error) {
 	// setp 1 prepare
 	cd, err := s.pre(ctx, md)
 	if err != nil {
@@ -74,4 +74,8 @@ func (s *ChargeServer) Charge(ctx context.Context, md MeterData) (CDR, error) {
 
 	// step 8 return
 	return nc, err
+}
+
+func (s *ChargeServer) ChargeWater(ctx context.Context, wd WaterMeterData) (CDR, error) {
+	return nilCDR, nil
 }
