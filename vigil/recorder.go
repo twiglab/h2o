@@ -30,7 +30,7 @@ func (r *recordCache) TabbElecty(ctx context.Context, data ElectricityMeter) err
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.Code, data.DataTime)
+	r.c.Set(ctx, data.PCode(), data.DataTime)
 	return r.r.TabbElecty(ctx, data)
 }
 
@@ -40,6 +40,6 @@ func (r *recordCache) TabbWater(ctx context.Context, data WaterMeter) error {
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.Code, data.DataTime)
+	r.c.Set(ctx, data.PCode(), data.DataTime)
 	return r.r.TabbWater(ctx, data)
 }
