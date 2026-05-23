@@ -40,6 +40,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
+				PCode:     pcode(meta.PosCode, meta.Project, common.WATER),
 			},
 
 			Flag: common.Flag{
@@ -81,6 +82,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
+				PCode:     pcode(meta.PosCode, meta.Project, common.ELECTRICITY),
 			},
 			Flag: common.Flag{
 				F1: meta.F1,
@@ -158,4 +160,8 @@ func parseTime(s string) time.Time {
 		return xdate
 	}
 	return t
+}
+
+func pcode(c, p, t string) string {
+	return c + "@" + p + "#" + t
 }

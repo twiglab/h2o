@@ -14,10 +14,6 @@ type Meter struct {
 	Pos common.Pos `json:"pos,omitzero"`
 }
 
-func (d Meter) PCode() string {
-	return d.Code + "@" + d.Pos.Project + "#" + d.Type
-}
-
 func (d Meter) Ts() string {
 	return d.DataTime.Format(f)
 }

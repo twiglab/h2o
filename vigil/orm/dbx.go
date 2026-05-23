@@ -13,7 +13,7 @@ type DBx struct {
 
 func (d *DBx) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error {
 	cr := d.Client.Electy.Create()
-	cr.SetPCode(data.PCode())
+	cr.SetPCode(data.Pos.PCode)
 	cr.SetDeviceSn(data.SN)
 	cr.SetDeviceCode(data.Code)
 	cr.SetDeviceType(data.Type)
@@ -31,7 +31,7 @@ func (d *DBx) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error
 
 func (d *DBx) TabbWater(ctx context.Context, data vigil.WaterMeter) error {
 	cr := d.Client.Water.Create()
-	cr.SetPCode(data.PCode())
+	cr.SetPCode(data.Pos.PCode)
 	cr.SetDeviceSn(data.SN)
 	cr.SetDeviceCode(data.Code)
 	cr.SetDeviceType(data.Type)
