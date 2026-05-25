@@ -2,6 +2,7 @@ package hkv
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/twiglab/h2o/hank"
@@ -19,6 +20,7 @@ func (i Item) IsSince(d time.Duration) bool {
 type Cache struct {
 	m        map[string]Item
 	Duration time.Duration
+	mu       sync.Mutex
 }
 
 func NewCache(d time.Duration) *Cache {
@@ -38,6 +40,8 @@ func (c *Cache) Get(ctx context.Context, code string) (hank.MetaData, bool, erro
 }
 
 func (c *Cache) Set(ctx context.Context, code string, data hank.MetaData) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	c.m[code] = Item{Data: data, Time: time.Now()}
 	return nil
 }
