@@ -40,7 +40,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
-				PCode:     pcode(meta.PosCode, meta.Project, common.WATER),
+				PCode:     pcode(cmp.Or(meta.PosCode, dd.No), meta.Project, common.WATER),
 			},
 
 			Flag: common.Flag{
@@ -82,7 +82,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				Building:  meta.Building,
 				FloorCode: meta.FloorCode,
 				AreaCode:  meta.AreaCode,
-				PCode:     pcode(meta.PosCode, meta.Project, common.ELECTRICITY),
+				PCode:     pcode(cmp.Or(meta.PosCode, dd.No), meta.Project, common.ELECTRICITY),
 			},
 			Flag: common.Flag{
 				F1: meta.F1,
