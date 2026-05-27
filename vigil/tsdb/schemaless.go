@@ -36,7 +36,7 @@ func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter
 	enc.AddTag(TAG_PCODE, data.Pos.PCode)
 	enc.AddTag(TAG_PROJ, data.Pos.Project)
 
-	v, _ := lineprotocol.FloatValue(data.STD())
+	v, _ := lineprotocol.FloatValue(data.STD)
 	enc.AddField(FIELD_B, v)
 
 	enc.AddField(FIELD_DATA_VALUE, lineprotocol.IntValue(data.Data.DataValue))

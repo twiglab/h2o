@@ -23,8 +23,8 @@ func (d *DBx) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error
 	cr.SetDataValue(data.Data.DataValue)
 	cr.SetPosCode(data.Pos.PosCode)
 	cr.SetProject(data.Pos.Project)
-	cr.SetDataTs(data.Ts())
-	cr.SetXDataValue(data.XDataValue())
+	cr.SetDataTs(data.Ts)
+	cr.SetXDataValue(data.XDateValue)
 	cr.SetFactor(data.Param.Factor)
 	return cr.Exec(ctx)
 }
@@ -41,6 +41,6 @@ func (d *DBx) TabbWater(ctx context.Context, data vigil.WaterMeter) error {
 	cr.SetDataValue(data.Data.DataValue)
 	cr.SetPosCode(data.Pos.PosCode)
 	cr.SetProject(data.Pos.Project)
-	cr.SetDataTs(data.Ts())
+	cr.SetDataTs(data.Ts)
 	return cr.Exec(ctx)
 }

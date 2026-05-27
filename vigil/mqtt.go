@@ -28,7 +28,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
 				return
 			}
-
+			wm.setup()
 			if err := s.HandleWater(ctx, wm); err != nil {
 				s.Logger.ErrorContext(ctx, "handle water error", slog.Any("err", err))
 				return
@@ -40,7 +40,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				s.Logger.ErrorContext(ctx, "unmarshal electy error", slog.Any("err", err))
 				return
 			}
-
+			em.setup()
 			if err := s.HandleElecty(ctx, em); err != nil {
 				s.Logger.ErrorContext(ctx, "handle electy error", slog.Any("err", err))
 				return
