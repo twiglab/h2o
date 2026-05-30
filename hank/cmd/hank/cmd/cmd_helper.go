@@ -17,22 +17,23 @@ import (
 )
 
 func rootLog() *slog.Logger {
-	rlogF := viper.GetString("log.root.file")
-	rlogL := viper.GetString("log.root.level")
-	logL := viper.GetString("log.level")
+	rlogF := viper.GetString("hank.log.root.file")
+	rlogL := viper.GetString("hank.log.root.level")
 
-	level := clog.Level(cmp.Or(rlogL, logL))
+	hlogL := viper.GetString("hank.log.level")
+	level := clog.Level(cmp.Or(rlogL, hlogL))
+
 	log := clog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	sLogF := viper.GetString("log.server.file")
-	sLogL := viper.GetString("log.server.level")
-	logL := viper.GetString("log.level")
+	sLogF := viper.GetString("hank.log.server.file")
+	sLogL := viper.GetString("hank.log.server.level")
+	hlogL := viper.GetString("hank.log.level")
 
-	level := clog.Level(cmp.Or(sLogL, logL))
+	level := clog.Level(cmp.Or(sLogL, hlogL))
 	l := clog.NewLog(sLogF, level)
 	return l
 }
@@ -40,7 +41,7 @@ func serverLog() *slog.Logger {
 func wallog() *wal.WAL {
 	logf := viper.GetString("hank.wal.file")
 	if logf == "" {
-		log.Fatalln("wal file is null. ***MUST*** set datalog.file")
+		log.Fatalln("wal file is null. ***MUST*** set hank.wal.file")
 	}
 	log.Println("wal file:", logf)
 	return wal.New(wal.Conf{Filename: logf})
@@ -149,7 +150,9 @@ func enh() *hank.Enh {
 }
 
 func playback() *hank.PlayBack {
-	f := viper.GetString("hank.playback.file")
-	logf := cmp.Or(f, "logs/playback/record.log")
-	return hank.NewPlayBack(logf)
+	logF := viper.GetString("hank.playback.file")
+	if logF == "" {
+		log.Fatalln("playback file is null. ***MUST*** set hank.playback.file")
+	}
+	return hank.NewPlayBack(logF)
 }
