@@ -154,5 +154,6 @@ func playback() *hank.PlayBack {
 	if logF == "" {
 		log.Fatalln("playback file is null. ***MUST*** set hank.playback.file")
 	}
+	log.Println("playback file:", logF)
 	return hank.NewPlayBack(logF)
 }
