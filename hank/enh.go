@@ -25,6 +25,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 	return WaterMeter{
 		Meter: Meter{
 			Device: common.Device{
+				SN:   meta.SN,
 				Code: dd.No,
 				Type: common.WATER,
 				Name: cmp.Or(meta.Name, dd.No),

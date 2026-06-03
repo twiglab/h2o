@@ -14,11 +14,12 @@ import (
 const Key = "hkv"
 
 type Data struct {
+	SN   string
 	Code string
 	Name string
 	Type string
 	Room string
-	Rate sql.Null[int]
+	Rate sql.Null[float64]
 }
 
 type HankDBConf struct {
@@ -68,10 +69,18 @@ func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error)
 	}
 
 	return hank.MetaData{
+		SN:      d.SN,
 		Project: h.Project,
 		Code:    d.Code,
 		Name:    d.Name,
 		PosCode: d.Room,
-		Factor:  d.Rate.V,
+		Factor:  float64int(d.Rate),
 	}, nil
+}
+
+func float64int(f sql.Null[float64]) int {
+	if f.Valid {
+		return int(f.V)
+	}
+	return 0
 }
