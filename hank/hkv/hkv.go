@@ -54,7 +54,8 @@ func NewHankDB(conf HankDBConf) (*HankDB, error) {
 func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok bool, err error) {
 	if data, err = h.GetOne(ctx, code); err != nil {
 		data.Project = h.Project
-		h.Logger.WarnContext(ctx, "get", slog.String("code", code), slog.Any("error", err))
+		data.Code = code
+		h.Logger.WarnContext(ctx, "get", slog.Any("data", data), slog.Any("error", err))
 	}
 	ok = true
 	return
