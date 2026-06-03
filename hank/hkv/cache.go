@@ -31,6 +31,8 @@ func NewCache(d time.Duration) *Cache {
 }
 
 func (c *Cache) Get(ctx context.Context, code string) (hank.MetaData, bool, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
 	if i, ok := c.m[code]; ok {
 		if i.IsSince(c.Duration) {
 			return i.Data, ok, nil
