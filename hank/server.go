@@ -96,6 +96,16 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 			continue
 		}
 
+		if err := writeReturn(conn, OK); err != nil {
+			// 和对方确认，网关发送完毕数据2s后断开，但是经过实际测试，网关并没有2s的延时，应该是发送完毕就直接断开了
+			// 另外对方答复不返回ok会导致后续再次发送，实际运行也没有发现再次发送的情况
+			// 另外实际业务处理，也不可能达到2s之久
+			// 综上所述，保留这个日志，并将等级由于Error改为Warn
+			// 后续待查
+			// TODO
+			s.Logger.WarnContext(ctx, "unmarshalRetrun OK error", slog.Any("error", err))
+		}
+
 		if sd.Type == TypeRate {
 			err := writeReturn(conn, ErrNoRate)
 			s.Logger.InfoContext(ctx, "rate type", slog.String("type", sd.Type), slog.Any("error", err))
@@ -111,9 +121,6 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 			s.Logger.InfoContext(ctx, "ignore type", slog.String("type", sd.Type))
 		}
 
-		if err := writeReturn(conn, OK); err != nil {
-			s.Logger.ErrorContext(ctx, "unmarshalRetrun OK error", slog.Any("error", err))
-		}
 	}
 	return sc.Err()
 }
