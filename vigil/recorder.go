@@ -14,13 +14,12 @@ type Recorder interface {
 
 type recordCache struct {
 	r Recorder
-	c cache.Cache[string, time.Time]
+	c cache.SyncMapCache[string, time.Time]
 }
 
 func WithRecorder(r Recorder) Recorder {
 	return &recordCache{
 		r: r,
-		c: cache.NewMapCache[string, time.Time](),
 	}
 }
 
