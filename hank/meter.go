@@ -4,8 +4,7 @@ import "github.com/twiglab/h2o/pkg/common"
 
 type Meter struct {
 	common.Device
-	Pos  common.Pos  `json:"pos,omitzero"`
-	Flag common.Flag `json:"flag,omitzero"`
+	Pos common.Pos `json:"pos,omitzero"`
 }
 
 func (m Meter) Topic() string {

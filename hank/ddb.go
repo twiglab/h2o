@@ -5,24 +5,14 @@ type MetaData struct {
 	Code string `json:"code"`           // 设备code,业务全局唯一
 	Name string `json:"name,omitempty"` // 设备名称,可以为空
 
-	Project   string `json:"project"`                // 所属项目编号
-	PosCode   string `json:"pos_code" db:"pos_code"` // 位置编号
-	Building  string `json:"building"`               // 大楼
-	FloorCode string `json:"floor_code" db:"floor_code"`
-	AreaCode  string `json:"area_code" db:"area_code"`
-
-	F1 string `json:"f1"`
-	F2 string `json:"f2"`
-	F3 string `json:"f3"`
-	F4 string `json:"f4"`
-	F5 string `json:"f5"`
+	Project string `json:"project"`                // 所属项目编号
+	PosCode string `json:"pos_code" db:"pos_code"` // 位置编号
 
 	Factor int `json:"factor"`
 }
 
 func (m MetaData) ToStrings() []string {
 	return []string{
-		m.SN, m.Code, m.Name, m.Project, m.PosCode, m.Building, m.FloorCode, m.AreaCode,
-		m.F1, m.F2, m.F3, m.F4, m.F5,
+		m.SN, m.Code, m.Name, m.Project, m.PosCode,
 	}
 }

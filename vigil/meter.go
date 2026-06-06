@@ -16,12 +16,6 @@ type Meter struct {
 	Ts string
 }
 
-/*
-func (d Meter) Ts() string {
-	return d.DataTime.Format(f)
-}
-*/
-
 type ElectricityMeter struct {
 	Meter
 	Data  common.Electricity      `json:"data,omitzero"`
