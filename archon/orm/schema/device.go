@@ -13,7 +13,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func cdrid() string {
+func id() string {
 	u, _ := uuid.NewV7()
 	return u.String()
 }
@@ -39,7 +39,7 @@ type Device struct {
 
 func (Device) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("id").Immutable().NotEmpty().DefaultFunc(cdrid).SchemaType(char(36)),
+		field.String("id").Immutable().NotEmpty().DefaultFunc(id).SchemaType(char(36)),
 
 		field.String("device_sn").Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_code").NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
