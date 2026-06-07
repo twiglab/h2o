@@ -93,6 +93,9 @@ func (_u *WaterUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(water.FieldDeviceName, field.TypeString)
 	}
+	if _u.mutation.OwnerCleared() {
+		_spec.ClearField(water.FieldOwner, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{water.Label}
@@ -207,6 +210,9 @@ func (_u *WaterUpdateOne) sqlSave(ctx context.Context) (_node *Water, err error)
 	}
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(water.FieldDeviceName, field.TypeString)
+	}
+	if _u.mutation.OwnerCleared() {
+		_spec.ClearField(water.FieldOwner, field.TypeString)
 	}
 	_node = &Water{config: _u.config}
 	_spec.Assign = _node.assignValues

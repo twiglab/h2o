@@ -139,6 +139,11 @@ func Project(v string) predicate.Electy {
 	return predicate.Electy(sql.FieldEQ(FieldProject, v))
 }
 
+// Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
+func Owner(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldEQ(FieldOwner, v))
+}
+
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
 func CreateTimeEQ(v time.Time) predicate.Electy {
 	return predicate.Electy(sql.FieldEQ(FieldCreateTime, v))
@@ -982,6 +987,81 @@ func ProjectEqualFold(v string) predicate.Electy {
 // ProjectContainsFold applies the ContainsFold predicate on the "project" field.
 func ProjectContainsFold(v string) predicate.Electy {
 	return predicate.Electy(sql.FieldContainsFold(FieldProject, v))
+}
+
+// OwnerEQ applies the EQ predicate on the "owner" field.
+func OwnerEQ(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldEQ(FieldOwner, v))
+}
+
+// OwnerNEQ applies the NEQ predicate on the "owner" field.
+func OwnerNEQ(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldNEQ(FieldOwner, v))
+}
+
+// OwnerIn applies the In predicate on the "owner" field.
+func OwnerIn(vs ...string) predicate.Electy {
+	return predicate.Electy(sql.FieldIn(FieldOwner, vs...))
+}
+
+// OwnerNotIn applies the NotIn predicate on the "owner" field.
+func OwnerNotIn(vs ...string) predicate.Electy {
+	return predicate.Electy(sql.FieldNotIn(FieldOwner, vs...))
+}
+
+// OwnerGT applies the GT predicate on the "owner" field.
+func OwnerGT(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldGT(FieldOwner, v))
+}
+
+// OwnerGTE applies the GTE predicate on the "owner" field.
+func OwnerGTE(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldGTE(FieldOwner, v))
+}
+
+// OwnerLT applies the LT predicate on the "owner" field.
+func OwnerLT(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldLT(FieldOwner, v))
+}
+
+// OwnerLTE applies the LTE predicate on the "owner" field.
+func OwnerLTE(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldLTE(FieldOwner, v))
+}
+
+// OwnerContains applies the Contains predicate on the "owner" field.
+func OwnerContains(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldContains(FieldOwner, v))
+}
+
+// OwnerHasPrefix applies the HasPrefix predicate on the "owner" field.
+func OwnerHasPrefix(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldHasPrefix(FieldOwner, v))
+}
+
+// OwnerHasSuffix applies the HasSuffix predicate on the "owner" field.
+func OwnerHasSuffix(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldHasSuffix(FieldOwner, v))
+}
+
+// OwnerIsNil applies the IsNil predicate on the "owner" field.
+func OwnerIsNil() predicate.Electy {
+	return predicate.Electy(sql.FieldIsNull(FieldOwner))
+}
+
+// OwnerNotNil applies the NotNil predicate on the "owner" field.
+func OwnerNotNil() predicate.Electy {
+	return predicate.Electy(sql.FieldNotNull(FieldOwner))
+}
+
+// OwnerEqualFold applies the EqualFold predicate on the "owner" field.
+func OwnerEqualFold(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldEqualFold(FieldOwner, v))
+}
+
+// OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
+func OwnerContainsFold(v string) predicate.Electy {
+	return predicate.Electy(sql.FieldContainsFold(FieldOwner, v))
 }
 
 // And groups predicates with the AND operator between them.

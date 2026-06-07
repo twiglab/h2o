@@ -46,7 +46,9 @@ type Electy struct {
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
-	Project      string `json:"project,omitempty"`
+	Project string `json:"project,omitempty"`
+	// 归属
+	Owner        string `json:"owner,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -57,7 +59,7 @@ func (*Electy) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case electy.FieldDataValue, electy.FieldXDataValue, electy.FieldFactor:
 			values[i] = new(sql.NullInt64)
-		case electy.FieldID, electy.FieldPCode, electy.FieldDeviceSn, electy.FieldDeviceCode, electy.FieldDeviceType, electy.FieldDeviceName, electy.FieldDataCode, electy.FieldDataTs, electy.FieldPosCode, electy.FieldProject:
+		case electy.FieldID, electy.FieldPCode, electy.FieldDeviceSn, electy.FieldDeviceCode, electy.FieldDeviceType, electy.FieldDeviceName, electy.FieldDataCode, electy.FieldDataTs, electy.FieldPosCode, electy.FieldProject, electy.FieldOwner:
 			values[i] = new(sql.NullString)
 		case electy.FieldCreateTime, electy.FieldUpdateTime, electy.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -172,6 +174,12 @@ func (_m *Electy) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Project = value.String
 			}
+		case electy.FieldOwner:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field owner", values[i])
+			} else if value.Valid {
+				_m.Owner = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -252,6 +260,9 @@ func (_m *Electy) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)
+	builder.WriteString(", ")
+	builder.WriteString("owner=")
+	builder.WriteString(_m.Owner)
 	builder.WriteByte(')')
 	return builder.String()
 }

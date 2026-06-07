@@ -93,6 +93,9 @@ func (_u *ElectyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(electy.FieldDeviceName, field.TypeString)
 	}
+	if _u.mutation.OwnerCleared() {
+		_spec.ClearField(electy.FieldOwner, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{electy.Label}
@@ -207,6 +210,9 @@ func (_u *ElectyUpdateOne) sqlSave(ctx context.Context) (_node *Electy, err erro
 	}
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(electy.FieldDeviceName, field.TypeString)
+	}
+	if _u.mutation.OwnerCleared() {
+		_spec.ClearField(electy.FieldOwner, field.TypeString)
 	}
 	_node = &Electy{config: _u.config}
 	_spec.Assign = _node.assignValues

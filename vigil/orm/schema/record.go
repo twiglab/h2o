@@ -59,6 +59,7 @@ func (Electy) Fields() []ent.Field {
 
 		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
+		field.String("owner").Immutable().Optional().SchemaType(varchar(64)).Comment("归属"),
 	}
 }
 
@@ -110,6 +111,7 @@ func (Water) Fields() []ent.Field {
 
 		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
+		field.String("owner").Immutable().Optional().SchemaType(varchar(64)).Comment("归属"),
 	}
 }
 

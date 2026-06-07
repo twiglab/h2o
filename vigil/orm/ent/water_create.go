@@ -141,6 +141,20 @@ func (_c *WaterCreate) SetProject(v string) *WaterCreate {
 	return _c
 }
 
+// SetOwner sets the "owner" field.
+func (_c *WaterCreate) SetOwner(v string) *WaterCreate {
+	_c.mutation.SetOwner(v)
+	return _c
+}
+
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (_c *WaterCreate) SetNillableOwner(v *string) *WaterCreate {
+	if v != nil {
+		_c.SetOwner(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *WaterCreate) SetID(v string) *WaterCreate {
 	_c.mutation.SetID(v)
@@ -366,6 +380,10 @@ func (_c *WaterCreate) createSpec() (*Water, *sqlgraph.CreateSpec) {
 		_spec.SetField(water.FieldProject, field.TypeString, value)
 		_node.Project = value
 	}
+	if value, ok := _c.mutation.Owner(); ok {
+		_spec.SetField(water.FieldOwner, field.TypeString, value)
+		_node.Owner = value
+	}
 	return _node, _spec
 }
 
@@ -482,6 +500,9 @@ func (u *WaterUpsertOne) UpdateNewValues() *WaterUpsertOne {
 		}
 		if _, exists := u.create.mutation.Project(); exists {
 			s.SetIgnore(water.FieldProject)
+		}
+		if _, exists := u.create.mutation.Owner(); exists {
+			s.SetIgnore(water.FieldOwner)
 		}
 	}))
 	return u
@@ -746,6 +767,9 @@ func (u *WaterUpsertBulk) UpdateNewValues() *WaterUpsertBulk {
 			}
 			if _, exists := b.mutation.Project(); exists {
 				s.SetIgnore(water.FieldProject)
+			}
+			if _, exists := b.mutation.Owner(); exists {
+				s.SetIgnore(water.FieldOwner)
 			}
 		}
 	}))

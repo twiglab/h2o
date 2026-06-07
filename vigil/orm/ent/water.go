@@ -42,7 +42,9 @@ type Water struct {
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
-	Project      string `json:"project,omitempty"`
+	Project string `json:"project,omitempty"`
+	// 归属
+	Owner        string `json:"owner,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -53,7 +55,7 @@ func (*Water) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case water.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case water.FieldID, water.FieldPCode, water.FieldDeviceSn, water.FieldDeviceCode, water.FieldDeviceType, water.FieldDeviceName, water.FieldDataCode, water.FieldDataTs, water.FieldPosCode, water.FieldProject:
+		case water.FieldID, water.FieldPCode, water.FieldDeviceSn, water.FieldDeviceCode, water.FieldDeviceType, water.FieldDeviceName, water.FieldDataCode, water.FieldDataTs, water.FieldPosCode, water.FieldProject, water.FieldOwner:
 			values[i] = new(sql.NullString)
 		case water.FieldCreateTime, water.FieldUpdateTime, water.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -156,6 +158,12 @@ func (_m *Water) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Project = value.String
 			}
+		case water.FieldOwner:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field owner", values[i])
+			} else if value.Valid {
+				_m.Owner = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -230,6 +238,9 @@ func (_m *Water) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)
+	builder.WriteString(", ")
+	builder.WriteString("owner=")
+	builder.WriteString(_m.Owner)
 	builder.WriteByte(')')
 	return builder.String()
 }

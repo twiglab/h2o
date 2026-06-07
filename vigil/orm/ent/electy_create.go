@@ -169,6 +169,20 @@ func (_c *ElectyCreate) SetProject(v string) *ElectyCreate {
 	return _c
 }
 
+// SetOwner sets the "owner" field.
+func (_c *ElectyCreate) SetOwner(v string) *ElectyCreate {
+	_c.mutation.SetOwner(v)
+	return _c
+}
+
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (_c *ElectyCreate) SetNillableOwner(v *string) *ElectyCreate {
+	if v != nil {
+		_c.SetOwner(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *ElectyCreate) SetID(v string) *ElectyCreate {
 	_c.mutation.SetID(v)
@@ -416,6 +430,10 @@ func (_c *ElectyCreate) createSpec() (*Electy, *sqlgraph.CreateSpec) {
 		_spec.SetField(electy.FieldProject, field.TypeString, value)
 		_node.Project = value
 	}
+	if value, ok := _c.mutation.Owner(); ok {
+		_spec.SetField(electy.FieldOwner, field.TypeString, value)
+		_node.Owner = value
+	}
 	return _node, _spec
 }
 
@@ -538,6 +556,9 @@ func (u *ElectyUpsertOne) UpdateNewValues() *ElectyUpsertOne {
 		}
 		if _, exists := u.create.mutation.Project(); exists {
 			s.SetIgnore(electy.FieldProject)
+		}
+		if _, exists := u.create.mutation.Owner(); exists {
+			s.SetIgnore(electy.FieldOwner)
 		}
 	}))
 	return u
@@ -808,6 +829,9 @@ func (u *ElectyUpsertBulk) UpdateNewValues() *ElectyUpsertBulk {
 			}
 			if _, exists := b.mutation.Project(); exists {
 				s.SetIgnore(electy.FieldProject)
+			}
+			if _, exists := b.mutation.Owner(); exists {
+				s.SetIgnore(electy.FieldOwner)
 			}
 		}
 	}))

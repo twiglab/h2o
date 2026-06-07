@@ -53,6 +53,7 @@ type ElectyMutation struct {
 	data_ts         *string
 	pos_code        *string
 	project         *string
+	owner           *string
 	clearedFields   map[string]struct{}
 	done            bool
 	oldValue        func(context.Context) (*Electy, error)
@@ -789,6 +790,55 @@ func (m *ElectyMutation) ResetProject() {
 	m.project = nil
 }
 
+// SetOwner sets the "owner" field.
+func (m *ElectyMutation) SetOwner(s string) {
+	m.owner = &s
+}
+
+// Owner returns the value of the "owner" field in the mutation.
+func (m *ElectyMutation) Owner() (r string, exists bool) {
+	v := m.owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOwner returns the old "owner" field's value of the Electy entity.
+// If the Electy object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ElectyMutation) OldOwner(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOwner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
+	}
+	return oldValue.Owner, nil
+}
+
+// ClearOwner clears the value of the "owner" field.
+func (m *ElectyMutation) ClearOwner() {
+	m.owner = nil
+	m.clearedFields[electy.FieldOwner] = struct{}{}
+}
+
+// OwnerCleared returns if the "owner" field was cleared in this mutation.
+func (m *ElectyMutation) OwnerCleared() bool {
+	_, ok := m.clearedFields[electy.FieldOwner]
+	return ok
+}
+
+// ResetOwner resets all changes to the "owner" field.
+func (m *ElectyMutation) ResetOwner() {
+	m.owner = nil
+	delete(m.clearedFields, electy.FieldOwner)
+}
+
 // Where appends a list predicates to the ElectyMutation builder.
 func (m *ElectyMutation) Where(ps ...predicate.Electy) {
 	m.predicates = append(m.predicates, ps...)
@@ -823,7 +873,7 @@ func (m *ElectyMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ElectyMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.create_time != nil {
 		fields = append(fields, electy.FieldCreateTime)
 	}
@@ -869,6 +919,9 @@ func (m *ElectyMutation) Fields() []string {
 	if m.project != nil {
 		fields = append(fields, electy.FieldProject)
 	}
+	if m.owner != nil {
+		fields = append(fields, electy.FieldOwner)
+	}
 	return fields
 }
 
@@ -907,6 +960,8 @@ func (m *ElectyMutation) Field(name string) (ent.Value, bool) {
 		return m.PosCode()
 	case electy.FieldProject:
 		return m.Project()
+	case electy.FieldOwner:
+		return m.Owner()
 	}
 	return nil, false
 }
@@ -946,6 +1001,8 @@ func (m *ElectyMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldPosCode(ctx)
 	case electy.FieldProject:
 		return m.OldProject(ctx)
+	case electy.FieldOwner:
+		return m.OldOwner(ctx)
 	}
 	return nil, fmt.Errorf("unknown Electy field %s", name)
 }
@@ -1060,6 +1117,13 @@ func (m *ElectyMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProject(v)
 		return nil
+	case electy.FieldOwner:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOwner(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Electy field %s", name)
 }
@@ -1135,6 +1199,9 @@ func (m *ElectyMutation) ClearedFields() []string {
 	if m.FieldCleared(electy.FieldDeviceName) {
 		fields = append(fields, electy.FieldDeviceName)
 	}
+	if m.FieldCleared(electy.FieldOwner) {
+		fields = append(fields, electy.FieldOwner)
+	}
 	return fields
 }
 
@@ -1154,6 +1221,9 @@ func (m *ElectyMutation) ClearField(name string) error {
 		return nil
 	case electy.FieldDeviceName:
 		m.ClearDeviceName()
+		return nil
+	case electy.FieldOwner:
+		m.ClearOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown Electy nullable field %s", name)
@@ -1207,6 +1277,9 @@ func (m *ElectyMutation) ResetField(name string) error {
 		return nil
 	case electy.FieldProject:
 		m.ResetProject()
+		return nil
+	case electy.FieldOwner:
+		m.ResetOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown Electy field %s", name)
@@ -1280,6 +1353,7 @@ type WaterMutation struct {
 	data_ts       *string
 	pos_code      *string
 	project       *string
+	owner         *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Water, error)
@@ -1904,6 +1978,55 @@ func (m *WaterMutation) ResetProject() {
 	m.project = nil
 }
 
+// SetOwner sets the "owner" field.
+func (m *WaterMutation) SetOwner(s string) {
+	m.owner = &s
+}
+
+// Owner returns the value of the "owner" field in the mutation.
+func (m *WaterMutation) Owner() (r string, exists bool) {
+	v := m.owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOwner returns the old "owner" field's value of the Water entity.
+// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WaterMutation) OldOwner(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOwner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
+	}
+	return oldValue.Owner, nil
+}
+
+// ClearOwner clears the value of the "owner" field.
+func (m *WaterMutation) ClearOwner() {
+	m.owner = nil
+	m.clearedFields[water.FieldOwner] = struct{}{}
+}
+
+// OwnerCleared returns if the "owner" field was cleared in this mutation.
+func (m *WaterMutation) OwnerCleared() bool {
+	_, ok := m.clearedFields[water.FieldOwner]
+	return ok
+}
+
+// ResetOwner resets all changes to the "owner" field.
+func (m *WaterMutation) ResetOwner() {
+	m.owner = nil
+	delete(m.clearedFields, water.FieldOwner)
+}
+
 // Where appends a list predicates to the WaterMutation builder.
 func (m *WaterMutation) Where(ps ...predicate.Water) {
 	m.predicates = append(m.predicates, ps...)
@@ -1938,7 +2061,7 @@ func (m *WaterMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WaterMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 14)
 	if m.create_time != nil {
 		fields = append(fields, water.FieldCreateTime)
 	}
@@ -1978,6 +2101,9 @@ func (m *WaterMutation) Fields() []string {
 	if m.project != nil {
 		fields = append(fields, water.FieldProject)
 	}
+	if m.owner != nil {
+		fields = append(fields, water.FieldOwner)
+	}
 	return fields
 }
 
@@ -2012,6 +2138,8 @@ func (m *WaterMutation) Field(name string) (ent.Value, bool) {
 		return m.PosCode()
 	case water.FieldProject:
 		return m.Project()
+	case water.FieldOwner:
+		return m.Owner()
 	}
 	return nil, false
 }
@@ -2047,6 +2175,8 @@ func (m *WaterMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldPosCode(ctx)
 	case water.FieldProject:
 		return m.OldProject(ctx)
+	case water.FieldOwner:
+		return m.OldOwner(ctx)
 	}
 	return nil, fmt.Errorf("unknown Water field %s", name)
 }
@@ -2147,6 +2277,13 @@ func (m *WaterMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProject(v)
 		return nil
+	case water.FieldOwner:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOwner(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Water field %s", name)
 }
@@ -2198,6 +2335,9 @@ func (m *WaterMutation) ClearedFields() []string {
 	if m.FieldCleared(water.FieldDeviceName) {
 		fields = append(fields, water.FieldDeviceName)
 	}
+	if m.FieldCleared(water.FieldOwner) {
+		fields = append(fields, water.FieldOwner)
+	}
 	return fields
 }
 
@@ -2217,6 +2357,9 @@ func (m *WaterMutation) ClearField(name string) error {
 		return nil
 	case water.FieldDeviceName:
 		m.ClearDeviceName()
+		return nil
+	case water.FieldOwner:
+		m.ClearOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown Water nullable field %s", name)
@@ -2264,6 +2407,9 @@ func (m *WaterMutation) ResetField(name string) error {
 		return nil
 	case water.FieldProject:
 		m.ResetProject()
+		return nil
+	case water.FieldOwner:
+		m.ResetOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown Water field %s", name)

@@ -39,6 +39,8 @@ const (
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
+	// FieldOwner holds the string denoting the owner field in the database.
+	FieldOwner = "owner"
 	// Table holds the table name of the water in the database.
 	Table = "record_water"
 )
@@ -59,6 +61,7 @@ var Columns = []string{
 	FieldDataTs,
 	FieldPosCode,
 	FieldProject,
+	FieldOwner,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -169,4 +172,9 @@ func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 // ByProject orders the results by the project field.
 func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
+}
+
+// ByOwner orders the results by the owner field.
+func ByOwner(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOwner, opts...).ToFunc()
 }
