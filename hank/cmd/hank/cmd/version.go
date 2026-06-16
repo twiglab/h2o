@@ -36,7 +36,7 @@ func version() {
 	if info, ok := debug.ReadBuildInfo(); ok {
 		if info.Main.Version != "" {
 			fmt.Println(info.Main.Version)
-		return
+			return
 		}
 	}
 	fmt.Println("(unknown)")
