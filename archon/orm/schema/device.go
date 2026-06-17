@@ -41,9 +41,10 @@ func (Device) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Immutable().NotEmpty().DefaultFunc(id).SchemaType(char(36)),
 
-		field.String("device_sn").Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_code").NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("device_type").NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
+
+		field.String("device_sn").Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_name").Optional().SchemaType(varchar(64)).Comment("设备名称"),
 
 		field.Int("rate").Default(1).Comment("当前倍率"),

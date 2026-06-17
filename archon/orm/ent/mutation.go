@@ -35,9 +35,9 @@ type DeviceMutation struct {
 	id            *string
 	create_time   *time.Time
 	update_time   *time.Time
-	device_sn     *string
 	device_code   *string
 	device_type   *string
+	device_sn     *string
 	device_name   *string
 	rate          *int
 	addrate       *int
@@ -228,55 +228,6 @@ func (m *DeviceMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (m *DeviceMutation) SetDeviceSn(s string) {
-	m.device_sn = &s
-}
-
-// DeviceSn returns the value of the "device_sn" field in the mutation.
-func (m *DeviceMutation) DeviceSn() (r string, exists bool) {
-	v := m.device_sn
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceSn returns the old "device_sn" field's value of the Device entity.
-// If the Device object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceSn requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceSn: %w", err)
-	}
-	return oldValue.DeviceSn, nil
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (m *DeviceMutation) ClearDeviceSn() {
-	m.device_sn = nil
-	m.clearedFields[device.FieldDeviceSn] = struct{}{}
-}
-
-// DeviceSnCleared returns if the "device_sn" field was cleared in this mutation.
-func (m *DeviceMutation) DeviceSnCleared() bool {
-	_, ok := m.clearedFields[device.FieldDeviceSn]
-	return ok
-}
-
-// ResetDeviceSn resets all changes to the "device_sn" field.
-func (m *DeviceMutation) ResetDeviceSn() {
-	m.device_sn = nil
-	delete(m.clearedFields, device.FieldDeviceSn)
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (m *DeviceMutation) SetDeviceCode(s string) {
 	m.device_code = &s
@@ -347,6 +298,55 @@ func (m *DeviceMutation) OldDeviceType(ctx context.Context) (v string, err error
 // ResetDeviceType resets all changes to the "device_type" field.
 func (m *DeviceMutation) ResetDeviceType() {
 	m.device_type = nil
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (m *DeviceMutation) SetDeviceSn(s string) {
+	m.device_sn = &s
+}
+
+// DeviceSn returns the value of the "device_sn" field in the mutation.
+func (m *DeviceMutation) DeviceSn() (r string, exists bool) {
+	v := m.device_sn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceSn returns the old "device_sn" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceSn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceSn: %w", err)
+	}
+	return oldValue.DeviceSn, nil
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (m *DeviceMutation) ClearDeviceSn() {
+	m.device_sn = nil
+	m.clearedFields[device.FieldDeviceSn] = struct{}{}
+}
+
+// DeviceSnCleared returns if the "device_sn" field was cleared in this mutation.
+func (m *DeviceMutation) DeviceSnCleared() bool {
+	_, ok := m.clearedFields[device.FieldDeviceSn]
+	return ok
+}
+
+// ResetDeviceSn resets all changes to the "device_sn" field.
+func (m *DeviceMutation) ResetDeviceSn() {
+	m.device_sn = nil
+	delete(m.clearedFields, device.FieldDeviceSn)
 }
 
 // SetDeviceName sets the "device_name" field.
@@ -740,14 +740,14 @@ func (m *DeviceMutation) Fields() []string {
 	if m.update_time != nil {
 		fields = append(fields, device.FieldUpdateTime)
 	}
-	if m.device_sn != nil {
-		fields = append(fields, device.FieldDeviceSn)
-	}
 	if m.device_code != nil {
 		fields = append(fields, device.FieldDeviceCode)
 	}
 	if m.device_type != nil {
 		fields = append(fields, device.FieldDeviceType)
+	}
+	if m.device_sn != nil {
+		fields = append(fields, device.FieldDeviceSn)
 	}
 	if m.device_name != nil {
 		fields = append(fields, device.FieldDeviceName)
@@ -782,12 +782,12 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.CreateTime()
 	case device.FieldUpdateTime:
 		return m.UpdateTime()
-	case device.FieldDeviceSn:
-		return m.DeviceSn()
 	case device.FieldDeviceCode:
 		return m.DeviceCode()
 	case device.FieldDeviceType:
 		return m.DeviceType()
+	case device.FieldDeviceSn:
+		return m.DeviceSn()
 	case device.FieldDeviceName:
 		return m.DeviceName()
 	case device.FieldRate:
@@ -815,12 +815,12 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldCreateTime(ctx)
 	case device.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case device.FieldDeviceSn:
-		return m.OldDeviceSn(ctx)
 	case device.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
 	case device.FieldDeviceType:
 		return m.OldDeviceType(ctx)
+	case device.FieldDeviceSn:
+		return m.OldDeviceSn(ctx)
 	case device.FieldDeviceName:
 		return m.OldDeviceName(ctx)
 	case device.FieldRate:
@@ -858,13 +858,6 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdateTime(v)
 		return nil
-	case device.FieldDeviceSn:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceSn(v)
-		return nil
 	case device.FieldDeviceCode:
 		v, ok := value.(string)
 		if !ok {
@@ -878,6 +871,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
+		return nil
+	case device.FieldDeviceSn:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceSn(v)
 		return nil
 	case device.FieldDeviceName:
 		v, ok := value.(string)
@@ -1043,14 +1043,14 @@ func (m *DeviceMutation) ResetField(name string) error {
 	case device.FieldUpdateTime:
 		m.ResetUpdateTime()
 		return nil
-	case device.FieldDeviceSn:
-		m.ResetDeviceSn()
-		return nil
 	case device.FieldDeviceCode:
 		m.ResetDeviceCode()
 		return nil
 	case device.FieldDeviceType:
 		m.ResetDeviceType()
+		return nil
+	case device.FieldDeviceSn:
+		m.ResetDeviceSn()
 		return nil
 	case device.FieldDeviceName:
 		m.ResetDeviceName()

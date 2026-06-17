@@ -14,9 +14,9 @@ var (
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "rate", Type: field.TypeInt, Default: 1},
 		{Name: "pos_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -34,17 +34,17 @@ var (
 			{
 				Name:    "device_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[4]},
+				Columns: []*schema.Column{DeviceColumns[3]},
 			},
 			{
 				Name:    "device_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[5]},
+				Columns: []*schema.Column{DeviceColumns[4]},
 			},
 			{
 				Name:    "device_device_sn",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[3]},
+				Columns: []*schema.Column{DeviceColumns[5]},
 			},
 			{
 				Name:    "device_pos_code",

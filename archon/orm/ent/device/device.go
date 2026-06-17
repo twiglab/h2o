@@ -17,12 +17,12 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
 	FieldUpdateTime = "update_time"
-	// FieldDeviceSn holds the string denoting the device_sn field in the database.
-	FieldDeviceSn = "device_sn"
 	// FieldDeviceCode holds the string denoting the device_code field in the database.
 	FieldDeviceCode = "device_code"
 	// FieldDeviceType holds the string denoting the device_type field in the database.
 	FieldDeviceType = "device_type"
+	// FieldDeviceSn holds the string denoting the device_sn field in the database.
+	FieldDeviceSn = "device_sn"
 	// FieldDeviceName holds the string denoting the device_name field in the database.
 	FieldDeviceName = "device_name"
 	// FieldRate holds the string denoting the rate field in the database.
@@ -46,9 +46,9 @@ var Columns = []string{
 	FieldID,
 	FieldCreateTime,
 	FieldUpdateTime,
-	FieldDeviceSn,
 	FieldDeviceCode,
 	FieldDeviceType,
+	FieldDeviceSn,
 	FieldDeviceName,
 	FieldRate,
 	FieldPosCode,
@@ -107,11 +107,6 @@ func ByUpdateTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdateTime, opts...).ToFunc()
 }
 
-// ByDeviceSn orders the results by the device_sn field.
-func ByDeviceSn(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDeviceSn, opts...).ToFunc()
-}
-
 // ByDeviceCode orders the results by the device_code field.
 func ByDeviceCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceCode, opts...).ToFunc()
@@ -120,6 +115,11 @@ func ByDeviceCode(opts ...sql.OrderTermOption) OrderOption {
 // ByDeviceType orders the results by the device_type field.
 func ByDeviceType(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceType, opts...).ToFunc()
+}
+
+// ByDeviceSn orders the results by the device_sn field.
+func ByDeviceSn(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeviceSn, opts...).ToFunc()
 }
 
 // ByDeviceName orders the results by the device_name field.

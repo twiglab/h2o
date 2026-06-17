@@ -29,11 +29,11 @@ func init() {
 	// device.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	device.UpdateDefaultUpdateTime = deviceDescUpdateTime.UpdateDefault.(func() time.Time)
 	// deviceDescDeviceCode is the schema descriptor for device_code field.
-	deviceDescDeviceCode := deviceFields[2].Descriptor()
+	deviceDescDeviceCode := deviceFields[1].Descriptor()
 	// device.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	device.DeviceCodeValidator = deviceDescDeviceCode.Validators[0].(func(string) error)
 	// deviceDescDeviceType is the schema descriptor for device_type field.
-	deviceDescDeviceType := deviceFields[3].Descriptor()
+	deviceDescDeviceType := deviceFields[2].Descriptor()
 	// device.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	device.DeviceTypeValidator = deviceDescDeviceType.Validators[0].(func(string) error)
 	// deviceDescRate is the schema descriptor for rate field.

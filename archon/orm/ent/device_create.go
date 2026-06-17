@@ -51,6 +51,18 @@ func (_c *DeviceCreate) SetNillableUpdateTime(v *time.Time) *DeviceCreate {
 	return _c
 }
 
+// SetDeviceCode sets the "device_code" field.
+func (_c *DeviceCreate) SetDeviceCode(v string) *DeviceCreate {
+	_c.mutation.SetDeviceCode(v)
+	return _c
+}
+
+// SetDeviceType sets the "device_type" field.
+func (_c *DeviceCreate) SetDeviceType(v string) *DeviceCreate {
+	_c.mutation.SetDeviceType(v)
+	return _c
+}
+
 // SetDeviceSn sets the "device_sn" field.
 func (_c *DeviceCreate) SetDeviceSn(v string) *DeviceCreate {
 	_c.mutation.SetDeviceSn(v)
@@ -62,18 +74,6 @@ func (_c *DeviceCreate) SetNillableDeviceSn(v *string) *DeviceCreate {
 	if v != nil {
 		_c.SetDeviceSn(*v)
 	}
-	return _c
-}
-
-// SetDeviceCode sets the "device_code" field.
-func (_c *DeviceCreate) SetDeviceCode(v string) *DeviceCreate {
-	_c.mutation.SetDeviceCode(v)
-	return _c
-}
-
-// SetDeviceType sets the "device_type" field.
-func (_c *DeviceCreate) SetDeviceType(v string) *DeviceCreate {
-	_c.mutation.SetDeviceType(v)
 	return _c
 }
 
@@ -323,10 +323,6 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
 	}
-	if value, ok := _c.mutation.DeviceSn(); ok {
-		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
-		_node.DeviceSn = value
-	}
 	if value, ok := _c.mutation.DeviceCode(); ok {
 		_spec.SetField(device.FieldDeviceCode, field.TypeString, value)
 		_node.DeviceCode = value
@@ -334,6 +330,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.DeviceType(); ok {
 		_spec.SetField(device.FieldDeviceType, field.TypeString, value)
 		_node.DeviceType = value
+	}
+	if value, ok := _c.mutation.DeviceSn(); ok {
+		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
+		_node.DeviceSn = value
 	}
 	if value, ok := _c.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
@@ -427,24 +427,6 @@ func (u *DeviceUpsert) UpdateUpdateTime() *DeviceUpsert {
 	return u
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (u *DeviceUpsert) SetDeviceSn(v string) *DeviceUpsert {
-	u.Set(device.FieldDeviceSn, v)
-	return u
-}
-
-// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
-func (u *DeviceUpsert) UpdateDeviceSn() *DeviceUpsert {
-	u.SetExcluded(device.FieldDeviceSn)
-	return u
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (u *DeviceUpsert) ClearDeviceSn() *DeviceUpsert {
-	u.SetNull(device.FieldDeviceSn)
-	return u
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (u *DeviceUpsert) SetDeviceCode(v string) *DeviceUpsert {
 	u.Set(device.FieldDeviceCode, v)
@@ -466,6 +448,24 @@ func (u *DeviceUpsert) SetDeviceType(v string) *DeviceUpsert {
 // UpdateDeviceType sets the "device_type" field to the value that was provided on create.
 func (u *DeviceUpsert) UpdateDeviceType() *DeviceUpsert {
 	u.SetExcluded(device.FieldDeviceType)
+	return u
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (u *DeviceUpsert) SetDeviceSn(v string) *DeviceUpsert {
+	u.Set(device.FieldDeviceSn, v)
+	return u
+}
+
+// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateDeviceSn() *DeviceUpsert {
+	u.SetExcluded(device.FieldDeviceSn)
+	return u
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (u *DeviceUpsert) ClearDeviceSn() *DeviceUpsert {
+	u.SetNull(device.FieldDeviceSn)
 	return u
 }
 
@@ -660,27 +660,6 @@ func (u *DeviceUpsertOne) UpdateUpdateTime() *DeviceUpsertOne {
 	})
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (u *DeviceUpsertOne) SetDeviceSn(v string) *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.SetDeviceSn(v)
-	})
-}
-
-// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
-func (u *DeviceUpsertOne) UpdateDeviceSn() *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.UpdateDeviceSn()
-	})
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (u *DeviceUpsertOne) ClearDeviceSn() *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.ClearDeviceSn()
-	})
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (u *DeviceUpsertOne) SetDeviceCode(v string) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
@@ -706,6 +685,27 @@ func (u *DeviceUpsertOne) SetDeviceType(v string) *DeviceUpsertOne {
 func (u *DeviceUpsertOne) UpdateDeviceType() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateDeviceType()
+	})
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (u *DeviceUpsertOne) SetDeviceSn(v string) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetDeviceSn(v)
+	})
+}
+
+// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateDeviceSn() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateDeviceSn()
+	})
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (u *DeviceUpsertOne) ClearDeviceSn() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearDeviceSn()
 	})
 }
 
@@ -1088,27 +1088,6 @@ func (u *DeviceUpsertBulk) UpdateUpdateTime() *DeviceUpsertBulk {
 	})
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (u *DeviceUpsertBulk) SetDeviceSn(v string) *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.SetDeviceSn(v)
-	})
-}
-
-// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
-func (u *DeviceUpsertBulk) UpdateDeviceSn() *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.UpdateDeviceSn()
-	})
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (u *DeviceUpsertBulk) ClearDeviceSn() *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.ClearDeviceSn()
-	})
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (u *DeviceUpsertBulk) SetDeviceCode(v string) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1134,6 +1113,27 @@ func (u *DeviceUpsertBulk) SetDeviceType(v string) *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) UpdateDeviceType() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateDeviceType()
+	})
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (u *DeviceUpsertBulk) SetDeviceSn(v string) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetDeviceSn(v)
+	})
+}
+
+// UpdateDeviceSn sets the "device_sn" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateDeviceSn() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateDeviceSn()
+	})
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (u *DeviceUpsertBulk) ClearDeviceSn() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearDeviceSn()
 	})
 }
 

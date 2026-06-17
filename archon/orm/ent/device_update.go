@@ -34,26 +34,6 @@ func (_u *DeviceUpdate) SetUpdateTime(v time.Time) *DeviceUpdate {
 	return _u
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (_u *DeviceUpdate) SetDeviceSn(v string) *DeviceUpdate {
-	_u.mutation.SetDeviceSn(v)
-	return _u
-}
-
-// SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
-func (_u *DeviceUpdate) SetNillableDeviceSn(v *string) *DeviceUpdate {
-	if v != nil {
-		_u.SetDeviceSn(*v)
-	}
-	return _u
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (_u *DeviceUpdate) ClearDeviceSn() *DeviceUpdate {
-	_u.mutation.ClearDeviceSn()
-	return _u
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (_u *DeviceUpdate) SetDeviceCode(v string) *DeviceUpdate {
 	_u.mutation.SetDeviceCode(v)
@@ -79,6 +59,26 @@ func (_u *DeviceUpdate) SetNillableDeviceType(v *string) *DeviceUpdate {
 	if v != nil {
 		_u.SetDeviceType(*v)
 	}
+	return _u
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (_u *DeviceUpdate) SetDeviceSn(v string) *DeviceUpdate {
+	_u.mutation.SetDeviceSn(v)
+	return _u
+}
+
+// SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableDeviceSn(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetDeviceSn(*v)
+	}
+	return _u
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (_u *DeviceUpdate) ClearDeviceSn() *DeviceUpdate {
+	_u.mutation.ClearDeviceSn()
 	return _u
 }
 
@@ -299,17 +299,17 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(device.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.DeviceSn(); ok {
-		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
-	}
-	if _u.mutation.DeviceSnCleared() {
-		_spec.ClearField(device.FieldDeviceSn, field.TypeString)
-	}
 	if value, ok := _u.mutation.DeviceCode(); ok {
 		_spec.SetField(device.FieldDeviceCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.DeviceType(); ok {
 		_spec.SetField(device.FieldDeviceType, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeviceSn(); ok {
+		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
+	}
+	if _u.mutation.DeviceSnCleared() {
+		_spec.ClearField(device.FieldDeviceSn, field.TypeString)
 	}
 	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
@@ -379,26 +379,6 @@ func (_u *DeviceUpdateOne) SetUpdateTime(v time.Time) *DeviceUpdateOne {
 	return _u
 }
 
-// SetDeviceSn sets the "device_sn" field.
-func (_u *DeviceUpdateOne) SetDeviceSn(v string) *DeviceUpdateOne {
-	_u.mutation.SetDeviceSn(v)
-	return _u
-}
-
-// SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
-func (_u *DeviceUpdateOne) SetNillableDeviceSn(v *string) *DeviceUpdateOne {
-	if v != nil {
-		_u.SetDeviceSn(*v)
-	}
-	return _u
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (_u *DeviceUpdateOne) ClearDeviceSn() *DeviceUpdateOne {
-	_u.mutation.ClearDeviceSn()
-	return _u
-}
-
 // SetDeviceCode sets the "device_code" field.
 func (_u *DeviceUpdateOne) SetDeviceCode(v string) *DeviceUpdateOne {
 	_u.mutation.SetDeviceCode(v)
@@ -424,6 +404,26 @@ func (_u *DeviceUpdateOne) SetNillableDeviceType(v *string) *DeviceUpdateOne {
 	if v != nil {
 		_u.SetDeviceType(*v)
 	}
+	return _u
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (_u *DeviceUpdateOne) SetDeviceSn(v string) *DeviceUpdateOne {
+	_u.mutation.SetDeviceSn(v)
+	return _u
+}
+
+// SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableDeviceSn(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetDeviceSn(*v)
+	}
+	return _u
+}
+
+// ClearDeviceSn clears the value of the "device_sn" field.
+func (_u *DeviceUpdateOne) ClearDeviceSn() *DeviceUpdateOne {
+	_u.mutation.ClearDeviceSn()
 	return _u
 }
 
@@ -674,17 +674,17 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(device.FieldUpdateTime, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.DeviceSn(); ok {
-		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
-	}
-	if _u.mutation.DeviceSnCleared() {
-		_spec.ClearField(device.FieldDeviceSn, field.TypeString)
-	}
 	if value, ok := _u.mutation.DeviceCode(); ok {
 		_spec.SetField(device.FieldDeviceCode, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.DeviceType(); ok {
 		_spec.SetField(device.FieldDeviceType, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeviceSn(); ok {
+		_spec.SetField(device.FieldDeviceSn, field.TypeString, value)
+	}
+	if _u.mutation.DeviceSnCleared() {
+		_spec.ClearField(device.FieldDeviceSn, field.TypeString)
 	}
 	if value, ok := _u.mutation.DeviceName(); ok {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)

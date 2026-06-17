@@ -21,12 +21,12 @@ type Device struct {
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
-	// 设备序列号
-	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备号
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
 	DeviceType string `json:"device_type,omitempty"`
+	// 设备序列号
+	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备名称
 	DeviceName string `json:"device_name,omitempty"`
 	// 当前倍率
@@ -51,7 +51,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldRate:
 			values[i] = new(sql.NullInt64)
-		case device.FieldID, device.FieldDeviceSn, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceName, device.FieldPosCode, device.FieldAreaCode, device.FieldProject, device.FieldPcode, device.FieldMemo:
+		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldPosCode, device.FieldAreaCode, device.FieldProject, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
 		case device.FieldCreateTime, device.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -88,12 +88,6 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
 			}
-		case device.FieldDeviceSn:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
-			} else if value.Valid {
-				_m.DeviceSn = value.String
-			}
 		case device.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_code", values[i])
@@ -105,6 +99,12 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
+			}
+		case device.FieldDeviceSn:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
+			} else if value.Valid {
+				_m.DeviceSn = value.String
 			}
 		case device.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -190,14 +190,14 @@ func (_m *Device) String() string {
 	builder.WriteString("update_time=")
 	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("device_sn=")
-	builder.WriteString(_m.DeviceSn)
-	builder.WriteString(", ")
 	builder.WriteString("device_code=")
 	builder.WriteString(_m.DeviceCode)
 	builder.WriteString(", ")
 	builder.WriteString("device_type=")
 	builder.WriteString(_m.DeviceType)
+	builder.WriteString(", ")
+	builder.WriteString("device_sn=")
+	builder.WriteString(_m.DeviceSn)
 	builder.WriteString(", ")
 	builder.WriteString("device_name=")
 	builder.WriteString(_m.DeviceName)
