@@ -15,6 +15,9 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 		if msg.Duplicate() {
 			return
 		}
+
+		defer msg.Ack()
+
 		switch common.TopicType(msg.Topic()) {
 		case common.WaterTopic:
 

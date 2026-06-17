@@ -2,6 +2,7 @@ package vigil
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -21,6 +22,8 @@ func Handle(s *Hub) mqtt.MessageHandler {
 			return
 		}
 
+		defer msg.Ack()
+
 		switch common.TopicType(msg.Topic()) {
 		case common.WaterTopic:
 			var wm WaterMeter
@@ -28,6 +31,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
 				return
 			}
+			fmt.Println(wm.DataTime, wm.Code)
 			wm.setup()
 			if err := s.HandleWater(ctx, wm); err != nil {
 				s.Logger.ErrorContext(ctx, "handle water error", slog.Any("err", err))
@@ -40,6 +44,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				s.Logger.ErrorContext(ctx, "unmarshal electy error", slog.Any("err", err))
 				return
 			}
+			fmt.Println(em.DataTime, em.Code)
 			em.setup()
 			if err := s.HandleElecty(ctx, em); err != nil {
 				s.Logger.ErrorContext(ctx, "handle electy error", slog.Any("err", err))
