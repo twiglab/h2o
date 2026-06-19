@@ -119,9 +119,19 @@ func Pcode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldPcode, v))
 }
 
+// Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
+func Status(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldStatus, v))
+}
+
 // Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
 func Memo(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldMemo, v))
+}
+
+// IsDel applies equality check predicate on the "is_del" field. It's identical to IsDelEQ.
+func IsDel(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldIsDel, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -824,6 +834,46 @@ func PcodeContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldPcode, v))
 }
 
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldStatus, v))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldStatus, v))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldStatus, vs...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// StatusGT applies the GT predicate on the "status" field.
+func StatusGT(v int) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldStatus, v))
+}
+
+// StatusGTE applies the GTE predicate on the "status" field.
+func StatusGTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldStatus, v))
+}
+
+// StatusLT applies the LT predicate on the "status" field.
+func StatusLT(v int) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldStatus, v))
+}
+
+// StatusLTE applies the LTE predicate on the "status" field.
+func StatusLTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldStatus, v))
+}
+
 // MemoEQ applies the EQ predicate on the "memo" field.
 func MemoEQ(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldMemo, v))
@@ -897,6 +947,46 @@ func MemoEqualFold(v string) predicate.Device {
 // MemoContainsFold applies the ContainsFold predicate on the "memo" field.
 func MemoContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldMemo, v))
+}
+
+// IsDelEQ applies the EQ predicate on the "is_del" field.
+func IsDelEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldIsDel, v))
+}
+
+// IsDelNEQ applies the NEQ predicate on the "is_del" field.
+func IsDelNEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldIsDel, v))
+}
+
+// IsDelIn applies the In predicate on the "is_del" field.
+func IsDelIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldIsDel, vs...))
+}
+
+// IsDelNotIn applies the NotIn predicate on the "is_del" field.
+func IsDelNotIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldIsDel, vs...))
+}
+
+// IsDelGT applies the GT predicate on the "is_del" field.
+func IsDelGT(v int) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldIsDel, v))
+}
+
+// IsDelGTE applies the GTE predicate on the "is_del" field.
+func IsDelGTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldIsDel, v))
+}
+
+// IsDelLT applies the LT predicate on the "is_del" field.
+func IsDelLT(v int) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldIsDel, v))
+}
+
+// IsDelLTE applies the LTE predicate on the "is_del" field.
+func IsDelLTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldIsDel, v))
 }
 
 // And groups predicates with the AND operator between them.

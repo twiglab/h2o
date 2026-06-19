@@ -54,7 +54,11 @@ func (Device) Fields() []ent.Field {
 		field.String("project").Optional().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("pcode").Optional().SchemaType(varchar(64)).Comment("对外位置编号"),
 
+		field.Int("status").Default(0).Comment("状态"),
+
 		field.String("memo").Optional().SchemaType(varchar(128)).Comment("备注"),
+
+		field.Int("is_del").Default(0).Comment("软删除"),
 	}
 }
 

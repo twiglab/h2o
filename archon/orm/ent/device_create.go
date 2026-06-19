@@ -161,6 +161,20 @@ func (_c *DeviceCreate) SetNillablePcode(v *string) *DeviceCreate {
 	return _c
 }
 
+// SetStatus sets the "status" field.
+func (_c *DeviceCreate) SetStatus(v int) *DeviceCreate {
+	_c.mutation.SetStatus(v)
+	return _c
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableStatus(v *int) *DeviceCreate {
+	if v != nil {
+		_c.SetStatus(*v)
+	}
+	return _c
+}
+
 // SetMemo sets the "memo" field.
 func (_c *DeviceCreate) SetMemo(v string) *DeviceCreate {
 	_c.mutation.SetMemo(v)
@@ -171,6 +185,20 @@ func (_c *DeviceCreate) SetMemo(v string) *DeviceCreate {
 func (_c *DeviceCreate) SetNillableMemo(v *string) *DeviceCreate {
 	if v != nil {
 		_c.SetMemo(*v)
+	}
+	return _c
+}
+
+// SetIsDel sets the "is_del" field.
+func (_c *DeviceCreate) SetIsDel(v int) *DeviceCreate {
+	_c.mutation.SetIsDel(v)
+	return _c
+}
+
+// SetNillableIsDel sets the "is_del" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableIsDel(v *int) *DeviceCreate {
+	if v != nil {
+		_c.SetIsDel(*v)
 	}
 	return _c
 }
@@ -236,6 +264,14 @@ func (_c *DeviceCreate) defaults() {
 		v := device.DefaultRate
 		_c.mutation.SetRate(v)
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		v := device.DefaultStatus
+		_c.mutation.SetStatus(v)
+	}
+	if _, ok := _c.mutation.IsDel(); !ok {
+		v := device.DefaultIsDel
+		_c.mutation.SetIsDel(v)
+	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := device.DefaultID()
 		_c.mutation.SetID(v)
@@ -273,6 +309,12 @@ func (_c *DeviceCreate) check() error {
 		if err := device.ProjectValidator(v); err != nil {
 			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "Device.project": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Device.status"`)}
+	}
+	if _, ok := _c.mutation.IsDel(); !ok {
+		return &ValidationError{Name: "is_del", err: errors.New(`ent: missing required field "Device.is_del"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := device.IDValidator(v); err != nil {
@@ -359,9 +401,17 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldPcode, field.TypeString, value)
 		_node.Pcode = value
 	}
+	if value, ok := _c.mutation.Status(); ok {
+		_spec.SetField(device.FieldStatus, field.TypeInt, value)
+		_node.Status = value
+	}
 	if value, ok := _c.mutation.Memo(); ok {
 		_spec.SetField(device.FieldMemo, field.TypeString, value)
 		_node.Memo = value
+	}
+	if value, ok := _c.mutation.IsDel(); ok {
+		_spec.SetField(device.FieldIsDel, field.TypeInt, value)
+		_node.IsDel = value
 	}
 	return _node, _spec
 }
@@ -577,6 +627,24 @@ func (u *DeviceUpsert) ClearPcode() *DeviceUpsert {
 	return u
 }
 
+// SetStatus sets the "status" field.
+func (u *DeviceUpsert) SetStatus(v int) *DeviceUpsert {
+	u.Set(device.FieldStatus, v)
+	return u
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateStatus() *DeviceUpsert {
+	u.SetExcluded(device.FieldStatus)
+	return u
+}
+
+// AddStatus adds v to the "status" field.
+func (u *DeviceUpsert) AddStatus(v int) *DeviceUpsert {
+	u.Add(device.FieldStatus, v)
+	return u
+}
+
 // SetMemo sets the "memo" field.
 func (u *DeviceUpsert) SetMemo(v string) *DeviceUpsert {
 	u.Set(device.FieldMemo, v)
@@ -592,6 +660,24 @@ func (u *DeviceUpsert) UpdateMemo() *DeviceUpsert {
 // ClearMemo clears the value of the "memo" field.
 func (u *DeviceUpsert) ClearMemo() *DeviceUpsert {
 	u.SetNull(device.FieldMemo)
+	return u
+}
+
+// SetIsDel sets the "is_del" field.
+func (u *DeviceUpsert) SetIsDel(v int) *DeviceUpsert {
+	u.Set(device.FieldIsDel, v)
+	return u
+}
+
+// UpdateIsDel sets the "is_del" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateIsDel() *DeviceUpsert {
+	u.SetExcluded(device.FieldIsDel)
+	return u
+}
+
+// AddIsDel adds v to the "is_del" field.
+func (u *DeviceUpsert) AddIsDel(v int) *DeviceUpsert {
+	u.Add(device.FieldIsDel, v)
 	return u
 }
 
@@ -835,6 +921,27 @@ func (u *DeviceUpsertOne) ClearPcode() *DeviceUpsertOne {
 	})
 }
 
+// SetStatus sets the "status" field.
+func (u *DeviceUpsertOne) SetStatus(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// AddStatus adds v to the "status" field.
+func (u *DeviceUpsertOne) AddStatus(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateStatus() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateStatus()
+	})
+}
+
 // SetMemo sets the "memo" field.
 func (u *DeviceUpsertOne) SetMemo(v string) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
@@ -853,6 +960,27 @@ func (u *DeviceUpsertOne) UpdateMemo() *DeviceUpsertOne {
 func (u *DeviceUpsertOne) ClearMemo() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearMemo()
+	})
+}
+
+// SetIsDel sets the "is_del" field.
+func (u *DeviceUpsertOne) SetIsDel(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetIsDel(v)
+	})
+}
+
+// AddIsDel adds v to the "is_del" field.
+func (u *DeviceUpsertOne) AddIsDel(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddIsDel(v)
+	})
+}
+
+// UpdateIsDel sets the "is_del" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateIsDel() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateIsDel()
 	})
 }
 
@@ -1263,6 +1391,27 @@ func (u *DeviceUpsertBulk) ClearPcode() *DeviceUpsertBulk {
 	})
 }
 
+// SetStatus sets the "status" field.
+func (u *DeviceUpsertBulk) SetStatus(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetStatus(v)
+	})
+}
+
+// AddStatus adds v to the "status" field.
+func (u *DeviceUpsertBulk) AddStatus(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddStatus(v)
+	})
+}
+
+// UpdateStatus sets the "status" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateStatus() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateStatus()
+	})
+}
+
 // SetMemo sets the "memo" field.
 func (u *DeviceUpsertBulk) SetMemo(v string) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1281,6 +1430,27 @@ func (u *DeviceUpsertBulk) UpdateMemo() *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) ClearMemo() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearMemo()
+	})
+}
+
+// SetIsDel sets the "is_del" field.
+func (u *DeviceUpsertBulk) SetIsDel(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetIsDel(v)
+	})
+}
+
+// AddIsDel adds v to the "is_del" field.
+func (u *DeviceUpsertBulk) AddIsDel(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddIsDel(v)
+	})
+}
+
+// UpdateIsDel sets the "is_del" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateIsDel() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateIsDel()
 	})
 }
 

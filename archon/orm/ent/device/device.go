@@ -35,8 +35,12 @@ const (
 	FieldProject = "project"
 	// FieldPcode holds the string denoting the pcode field in the database.
 	FieldPcode = "pcode"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldMemo holds the string denoting the memo field in the database.
 	FieldMemo = "memo"
+	// FieldIsDel holds the string denoting the is_del field in the database.
+	FieldIsDel = "is_del"
 	// Table holds the table name of the device in the database.
 	Table = "device"
 )
@@ -55,7 +59,9 @@ var Columns = []string{
 	FieldAreaCode,
 	FieldProject,
 	FieldPcode,
+	FieldStatus,
 	FieldMemo,
+	FieldIsDel,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -83,6 +89,10 @@ var (
 	DefaultRate int
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	ProjectValidator func(string) error
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus int
+	// DefaultIsDel holds the default value on creation for the "is_del" field.
+	DefaultIsDel int
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() string
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -152,7 +162,17 @@ func ByPcode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPcode, opts...).ToFunc()
 }
 
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
 // ByMemo orders the results by the memo field.
 func ByMemo(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMemo, opts...).ToFunc()
+}
+
+// ByIsDel orders the results by the is_del field.
+func ByIsDel(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsDel, opts...).ToFunc()
 }

@@ -203,6 +203,27 @@ func (_u *DeviceUpdate) ClearPcode() *DeviceUpdate {
 	return _u
 }
 
+// SetStatus sets the "status" field.
+func (_u *DeviceUpdate) SetStatus(v int) *DeviceUpdate {
+	_u.mutation.ResetStatus()
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableStatus(v *int) *DeviceUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
+// AddStatus adds value to the "status" field.
+func (_u *DeviceUpdate) AddStatus(v int) *DeviceUpdate {
+	_u.mutation.AddStatus(v)
+	return _u
+}
+
 // SetMemo sets the "memo" field.
 func (_u *DeviceUpdate) SetMemo(v string) *DeviceUpdate {
 	_u.mutation.SetMemo(v)
@@ -220,6 +241,27 @@ func (_u *DeviceUpdate) SetNillableMemo(v *string) *DeviceUpdate {
 // ClearMemo clears the value of the "memo" field.
 func (_u *DeviceUpdate) ClearMemo() *DeviceUpdate {
 	_u.mutation.ClearMemo()
+	return _u
+}
+
+// SetIsDel sets the "is_del" field.
+func (_u *DeviceUpdate) SetIsDel(v int) *DeviceUpdate {
+	_u.mutation.ResetIsDel()
+	_u.mutation.SetIsDel(v)
+	return _u
+}
+
+// SetNillableIsDel sets the "is_del" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableIsDel(v *int) *DeviceUpdate {
+	if v != nil {
+		_u.SetIsDel(*v)
+	}
+	return _u
+}
+
+// AddIsDel adds value to the "is_del" field.
+func (_u *DeviceUpdate) AddIsDel(v int) *DeviceUpdate {
+	_u.mutation.AddIsDel(v)
 	return _u
 }
 
@@ -347,11 +389,23 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.PcodeCleared() {
 		_spec.ClearField(device.FieldPcode, field.TypeString)
 	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(device.FieldStatus, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedStatus(); ok {
+		_spec.AddField(device.FieldStatus, field.TypeInt, value)
+	}
 	if value, ok := _u.mutation.Memo(); ok {
 		_spec.SetField(device.FieldMemo, field.TypeString, value)
 	}
 	if _u.mutation.MemoCleared() {
 		_spec.ClearField(device.FieldMemo, field.TypeString)
+	}
+	if value, ok := _u.mutation.IsDel(); ok {
+		_spec.SetField(device.FieldIsDel, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedIsDel(); ok {
+		_spec.AddField(device.FieldIsDel, field.TypeInt, value)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -548,6 +602,27 @@ func (_u *DeviceUpdateOne) ClearPcode() *DeviceUpdateOne {
 	return _u
 }
 
+// SetStatus sets the "status" field.
+func (_u *DeviceUpdateOne) SetStatus(v int) *DeviceUpdateOne {
+	_u.mutation.ResetStatus()
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableStatus(v *int) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
+// AddStatus adds value to the "status" field.
+func (_u *DeviceUpdateOne) AddStatus(v int) *DeviceUpdateOne {
+	_u.mutation.AddStatus(v)
+	return _u
+}
+
 // SetMemo sets the "memo" field.
 func (_u *DeviceUpdateOne) SetMemo(v string) *DeviceUpdateOne {
 	_u.mutation.SetMemo(v)
@@ -565,6 +640,27 @@ func (_u *DeviceUpdateOne) SetNillableMemo(v *string) *DeviceUpdateOne {
 // ClearMemo clears the value of the "memo" field.
 func (_u *DeviceUpdateOne) ClearMemo() *DeviceUpdateOne {
 	_u.mutation.ClearMemo()
+	return _u
+}
+
+// SetIsDel sets the "is_del" field.
+func (_u *DeviceUpdateOne) SetIsDel(v int) *DeviceUpdateOne {
+	_u.mutation.ResetIsDel()
+	_u.mutation.SetIsDel(v)
+	return _u
+}
+
+// SetNillableIsDel sets the "is_del" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableIsDel(v *int) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetIsDel(*v)
+	}
+	return _u
+}
+
+// AddIsDel adds value to the "is_del" field.
+func (_u *DeviceUpdateOne) AddIsDel(v int) *DeviceUpdateOne {
+	_u.mutation.AddIsDel(v)
 	return _u
 }
 
@@ -722,11 +818,23 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	if _u.mutation.PcodeCleared() {
 		_spec.ClearField(device.FieldPcode, field.TypeString)
 	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(device.FieldStatus, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedStatus(); ok {
+		_spec.AddField(device.FieldStatus, field.TypeInt, value)
+	}
 	if value, ok := _u.mutation.Memo(); ok {
 		_spec.SetField(device.FieldMemo, field.TypeString, value)
 	}
 	if _u.mutation.MemoCleared() {
 		_spec.ClearField(device.FieldMemo, field.TypeString)
+	}
+	if value, ok := _u.mutation.IsDel(); ok {
+		_spec.SetField(device.FieldIsDel, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedIsDel(); ok {
+		_spec.AddField(device.FieldIsDel, field.TypeInt, value)
 	}
 	_node = &Device{config: _u.config}
 	_spec.Assign = _node.assignValues

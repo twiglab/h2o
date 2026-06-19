@@ -39,8 +39,12 @@ type Device struct {
 	Project string `json:"project,omitempty"`
 	// 对外位置编号
 	Pcode string `json:"pcode,omitempty"`
+	// 状态
+	Status int `json:"status,omitempty"`
 	// 备注
-	Memo         string `json:"memo,omitempty"`
+	Memo string `json:"memo,omitempty"`
+	// 软删除
+	IsDel        int `json:"is_del,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -49,7 +53,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldRate:
+		case device.FieldRate, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
 		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldPosCode, device.FieldAreaCode, device.FieldProject, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -142,11 +146,23 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Pcode = value.String
 			}
+		case device.FieldStatus:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				_m.Status = int(value.Int64)
+			}
 		case device.FieldMemo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field memo", values[i])
 			} else if value.Valid {
 				_m.Memo = value.String
+			}
+		case device.FieldIsDel:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field is_del", values[i])
+			} else if value.Valid {
+				_m.IsDel = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -217,8 +233,14 @@ func (_m *Device) String() string {
 	builder.WriteString("pcode=")
 	builder.WriteString(_m.Pcode)
 	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
 	builder.WriteString("memo=")
 	builder.WriteString(_m.Memo)
+	builder.WriteString(", ")
+	builder.WriteString("is_del=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsDel))
 	builder.WriteByte(')')
 	return builder.String()
 }
