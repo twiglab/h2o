@@ -36,7 +36,7 @@ func run() error {
 	s := &hank.Server{
 		Addr: viper.GetString("hank.server.addr"),
 		Hub: &hank.Hub{
-			WAL:    wallog(),
+			// WAL:    wallog(),
 			Sender: sender(),
 		},
 		Logger:   serverLog(),
