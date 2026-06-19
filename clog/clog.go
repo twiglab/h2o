@@ -50,7 +50,7 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 func NewLogWriter(logf string) io.Writer {
 	return &lumberjack.Logger{
 		Filename:  logf,
-		MaxSize:   20, // megabytes
+		MaxSize:   30, // megabytes
 		MaxAge:    60, // days
 		LocalTime: true,
 	}
