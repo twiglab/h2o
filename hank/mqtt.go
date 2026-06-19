@@ -20,7 +20,7 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 		return err
 	}
 
-	pubToken := c.client.Publish(obj.Topic(), 0x01, true, bb)
+	pubToken := c.client.Publish(obj.Topic(), 0x01, false, bb)
 	pubToken.Wait()
 
 	return pubToken.Error()
