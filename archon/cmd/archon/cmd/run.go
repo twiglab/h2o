@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -39,5 +40,7 @@ func run() {
 	http.Handle("/gql", playground.ApolloSandboxHandler("gql", "/gql/query"))
 	http.Handle("/gql/query", gql.Handle(cli))
 
-	http.ListenAndServe(webaddr(), nil)
+	if err := http.ListenAndServe(webaddr(), nil); err != nil {
+		log.Fatal(err)
+	}
 }
