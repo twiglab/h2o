@@ -41,9 +41,9 @@ type DeviceMutation struct {
 	device_name   *string
 	rate          *int
 	addrate       *int
+	project       *string
 	pos_code      *string
 	area_code     *string
-	project       *string
 	pcode         *string
 	status        *int
 	addstatus     *int
@@ -458,6 +458,42 @@ func (m *DeviceMutation) ResetRate() {
 	m.addrate = nil
 }
 
+// SetProject sets the "project" field.
+func (m *DeviceMutation) SetProject(s string) {
+	m.project = &s
+}
+
+// Project returns the value of the "project" field in the mutation.
+func (m *DeviceMutation) Project() (r string, exists bool) {
+	v := m.project
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProject returns the old "project" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldProject(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProject is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProject requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProject: %w", err)
+	}
+	return oldValue.Project, nil
+}
+
+// ResetProject resets all changes to the "project" field.
+func (m *DeviceMutation) ResetProject() {
+	m.project = nil
+}
+
 // SetPosCode sets the "pos_code" field.
 func (m *DeviceMutation) SetPosCode(s string) {
 	m.pos_code = &s
@@ -554,55 +590,6 @@ func (m *DeviceMutation) AreaCodeCleared() bool {
 func (m *DeviceMutation) ResetAreaCode() {
 	m.area_code = nil
 	delete(m.clearedFields, device.FieldAreaCode)
-}
-
-// SetProject sets the "project" field.
-func (m *DeviceMutation) SetProject(s string) {
-	m.project = &s
-}
-
-// Project returns the value of the "project" field in the mutation.
-func (m *DeviceMutation) Project() (r string, exists bool) {
-	v := m.project
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProject returns the old "project" field's value of the Device entity.
-// If the Device object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceMutation) OldProject(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProject is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProject requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProject: %w", err)
-	}
-	return oldValue.Project, nil
-}
-
-// ClearProject clears the value of the "project" field.
-func (m *DeviceMutation) ClearProject() {
-	m.project = nil
-	m.clearedFields[device.FieldProject] = struct{}{}
-}
-
-// ProjectCleared returns if the "project" field was cleared in this mutation.
-func (m *DeviceMutation) ProjectCleared() bool {
-	_, ok := m.clearedFields[device.FieldProject]
-	return ok
-}
-
-// ResetProject resets all changes to the "project" field.
-func (m *DeviceMutation) ResetProject() {
-	m.project = nil
-	delete(m.clearedFields, device.FieldProject)
 }
 
 // SetPcode sets the "pcode" field.
@@ -871,14 +858,14 @@ func (m *DeviceMutation) Fields() []string {
 	if m.rate != nil {
 		fields = append(fields, device.FieldRate)
 	}
+	if m.project != nil {
+		fields = append(fields, device.FieldProject)
+	}
 	if m.pos_code != nil {
 		fields = append(fields, device.FieldPosCode)
 	}
 	if m.area_code != nil {
 		fields = append(fields, device.FieldAreaCode)
-	}
-	if m.project != nil {
-		fields = append(fields, device.FieldProject)
 	}
 	if m.pcode != nil {
 		fields = append(fields, device.FieldPcode)
@@ -914,12 +901,12 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceName()
 	case device.FieldRate:
 		return m.Rate()
+	case device.FieldProject:
+		return m.Project()
 	case device.FieldPosCode:
 		return m.PosCode()
 	case device.FieldAreaCode:
 		return m.AreaCode()
-	case device.FieldProject:
-		return m.Project()
 	case device.FieldPcode:
 		return m.Pcode()
 	case device.FieldStatus:
@@ -951,12 +938,12 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDeviceName(ctx)
 	case device.FieldRate:
 		return m.OldRate(ctx)
+	case device.FieldProject:
+		return m.OldProject(ctx)
 	case device.FieldPosCode:
 		return m.OldPosCode(ctx)
 	case device.FieldAreaCode:
 		return m.OldAreaCode(ctx)
-	case device.FieldProject:
-		return m.OldProject(ctx)
 	case device.FieldPcode:
 		return m.OldPcode(ctx)
 	case device.FieldStatus:
@@ -1023,6 +1010,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRate(v)
 		return nil
+	case device.FieldProject:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProject(v)
+		return nil
 	case device.FieldPosCode:
 		v, ok := value.(string)
 		if !ok {
@@ -1036,13 +1030,6 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAreaCode(v)
-		return nil
-	case device.FieldProject:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProject(v)
 		return nil
 	case device.FieldPcode:
 		v, ok := value.(string)
@@ -1153,9 +1140,6 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldAreaCode) {
 		fields = append(fields, device.FieldAreaCode)
 	}
-	if m.FieldCleared(device.FieldProject) {
-		fields = append(fields, device.FieldProject)
-	}
 	if m.FieldCleared(device.FieldPcode) {
 		fields = append(fields, device.FieldPcode)
 	}
@@ -1187,9 +1171,6 @@ func (m *DeviceMutation) ClearField(name string) error {
 		return nil
 	case device.FieldAreaCode:
 		m.ClearAreaCode()
-		return nil
-	case device.FieldProject:
-		m.ClearProject()
 		return nil
 	case device.FieldPcode:
 		m.ClearPcode()
@@ -1226,14 +1207,14 @@ func (m *DeviceMutation) ResetField(name string) error {
 	case device.FieldRate:
 		m.ResetRate()
 		return nil
+	case device.FieldProject:
+		m.ResetProject()
+		return nil
 	case device.FieldPosCode:
 		m.ResetPosCode()
 		return nil
 	case device.FieldAreaCode:
 		m.ResetAreaCode()
-		return nil
-	case device.FieldProject:
-		m.ResetProject()
 		return nil
 	case device.FieldPcode:
 		m.ResetPcode()

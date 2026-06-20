@@ -163,26 +163,6 @@ func (_u *DeviceUpdate) ClearAreaCode() *DeviceUpdate {
 	return _u
 }
 
-// SetProject sets the "project" field.
-func (_u *DeviceUpdate) SetProject(v string) *DeviceUpdate {
-	_u.mutation.SetProject(v)
-	return _u
-}
-
-// SetNillableProject sets the "project" field if the given value is not nil.
-func (_u *DeviceUpdate) SetNillableProject(v *string) *DeviceUpdate {
-	if v != nil {
-		_u.SetProject(*v)
-	}
-	return _u
-}
-
-// ClearProject clears the value of the "project" field.
-func (_u *DeviceUpdate) ClearProject() *DeviceUpdate {
-	_u.mutation.ClearProject()
-	return _u
-}
-
 // SetPcode sets the "pcode" field.
 func (_u *DeviceUpdate) SetPcode(v string) *DeviceUpdate {
 	_u.mutation.SetPcode(v)
@@ -318,11 +298,6 @@ func (_u *DeviceUpdate) check() error {
 			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "Device.device_type": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Project(); ok {
-		if err := device.ProjectValidator(v); err != nil {
-			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "Device.project": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -376,12 +351,6 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.AreaCodeCleared() {
 		_spec.ClearField(device.FieldAreaCode, field.TypeString)
-	}
-	if value, ok := _u.mutation.Project(); ok {
-		_spec.SetField(device.FieldProject, field.TypeString, value)
-	}
-	if _u.mutation.ProjectCleared() {
-		_spec.ClearField(device.FieldProject, field.TypeString)
 	}
 	if value, ok := _u.mutation.Pcode(); ok {
 		_spec.SetField(device.FieldPcode, field.TypeString, value)
@@ -562,26 +531,6 @@ func (_u *DeviceUpdateOne) ClearAreaCode() *DeviceUpdateOne {
 	return _u
 }
 
-// SetProject sets the "project" field.
-func (_u *DeviceUpdateOne) SetProject(v string) *DeviceUpdateOne {
-	_u.mutation.SetProject(v)
-	return _u
-}
-
-// SetNillableProject sets the "project" field if the given value is not nil.
-func (_u *DeviceUpdateOne) SetNillableProject(v *string) *DeviceUpdateOne {
-	if v != nil {
-		_u.SetProject(*v)
-	}
-	return _u
-}
-
-// ClearProject clears the value of the "project" field.
-func (_u *DeviceUpdateOne) ClearProject() *DeviceUpdateOne {
-	_u.mutation.ClearProject()
-	return _u
-}
-
 // SetPcode sets the "pcode" field.
 func (_u *DeviceUpdateOne) SetPcode(v string) *DeviceUpdateOne {
 	_u.mutation.SetPcode(v)
@@ -730,11 +679,6 @@ func (_u *DeviceUpdateOne) check() error {
 			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "Device.device_type": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.Project(); ok {
-		if err := device.ProjectValidator(v); err != nil {
-			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "Device.project": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -805,12 +749,6 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	}
 	if _u.mutation.AreaCodeCleared() {
 		_spec.ClearField(device.FieldAreaCode, field.TypeString)
-	}
-	if value, ok := _u.mutation.Project(); ok {
-		_spec.SetField(device.FieldProject, field.TypeString, value)
-	}
-	if _u.mutation.ProjectCleared() {
-		_spec.ClearField(device.FieldProject, field.TypeString)
 	}
 	if value, ok := _u.mutation.Pcode(); ok {
 		_spec.SetField(device.FieldPcode, field.TypeString, value)

@@ -27,12 +27,12 @@ const (
 	FieldDeviceName = "device_name"
 	// FieldRate holds the string denoting the rate field in the database.
 	FieldRate = "rate"
+	// FieldProject holds the string denoting the project field in the database.
+	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
 	// FieldAreaCode holds the string denoting the area_code field in the database.
 	FieldAreaCode = "area_code"
-	// FieldProject holds the string denoting the project field in the database.
-	FieldProject = "project"
 	// FieldPcode holds the string denoting the pcode field in the database.
 	FieldPcode = "pcode"
 	// FieldStatus holds the string denoting the status field in the database.
@@ -55,9 +55,9 @@ var Columns = []string{
 	FieldDeviceSn,
 	FieldDeviceName,
 	FieldRate,
+	FieldProject,
 	FieldPosCode,
 	FieldAreaCode,
-	FieldProject,
 	FieldPcode,
 	FieldStatus,
 	FieldMemo,
@@ -142,6 +142,11 @@ func ByRate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRate, opts...).ToFunc()
 }
 
+// ByProject orders the results by the project field.
+func ByProject(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProject, opts...).ToFunc()
+}
+
 // ByPosCode orders the results by the pos_code field.
 func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
@@ -150,11 +155,6 @@ func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 // ByAreaCode orders the results by the area_code field.
 func ByAreaCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAreaCode, opts...).ToFunc()
-}
-
-// ByProject orders the results by the project field.
-func ByProject(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProject, opts...).ToFunc()
 }
 
 // ByPcode orders the results by the pcode field.

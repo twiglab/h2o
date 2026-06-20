@@ -99,6 +99,11 @@ func Rate(v int) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
 }
 
+// Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
+func Project(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldProject, v))
+}
+
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
 func PosCode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldPosCode, v))
@@ -107,11 +112,6 @@ func PosCode(v string) predicate.Device {
 // AreaCode applies equality check predicate on the "area_code" field. It's identical to AreaCodeEQ.
 func AreaCode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldAreaCode, v))
-}
-
-// Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
-func Project(v string) predicate.Device {
-	return predicate.Device(sql.FieldEQ(FieldProject, v))
 }
 
 // Pcode applies equality check predicate on the "pcode" field. It's identical to PcodeEQ.
@@ -534,6 +534,71 @@ func RateLTE(v int) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldRate, v))
 }
 
+// ProjectEQ applies the EQ predicate on the "project" field.
+func ProjectEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldProject, v))
+}
+
+// ProjectNEQ applies the NEQ predicate on the "project" field.
+func ProjectNEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldProject, v))
+}
+
+// ProjectIn applies the In predicate on the "project" field.
+func ProjectIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldProject, vs...))
+}
+
+// ProjectNotIn applies the NotIn predicate on the "project" field.
+func ProjectNotIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldProject, vs...))
+}
+
+// ProjectGT applies the GT predicate on the "project" field.
+func ProjectGT(v string) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldProject, v))
+}
+
+// ProjectGTE applies the GTE predicate on the "project" field.
+func ProjectGTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldProject, v))
+}
+
+// ProjectLT applies the LT predicate on the "project" field.
+func ProjectLT(v string) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldProject, v))
+}
+
+// ProjectLTE applies the LTE predicate on the "project" field.
+func ProjectLTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldProject, v))
+}
+
+// ProjectContains applies the Contains predicate on the "project" field.
+func ProjectContains(v string) predicate.Device {
+	return predicate.Device(sql.FieldContains(FieldProject, v))
+}
+
+// ProjectHasPrefix applies the HasPrefix predicate on the "project" field.
+func ProjectHasPrefix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasPrefix(FieldProject, v))
+}
+
+// ProjectHasSuffix applies the HasSuffix predicate on the "project" field.
+func ProjectHasSuffix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasSuffix(FieldProject, v))
+}
+
+// ProjectEqualFold applies the EqualFold predicate on the "project" field.
+func ProjectEqualFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldEqualFold(FieldProject, v))
+}
+
+// ProjectContainsFold applies the ContainsFold predicate on the "project" field.
+func ProjectContainsFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldContainsFold(FieldProject, v))
+}
+
 // PosCodeEQ applies the EQ predicate on the "pos_code" field.
 func PosCodeEQ(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldPosCode, v))
@@ -682,81 +747,6 @@ func AreaCodeEqualFold(v string) predicate.Device {
 // AreaCodeContainsFold applies the ContainsFold predicate on the "area_code" field.
 func AreaCodeContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldAreaCode, v))
-}
-
-// ProjectEQ applies the EQ predicate on the "project" field.
-func ProjectEQ(v string) predicate.Device {
-	return predicate.Device(sql.FieldEQ(FieldProject, v))
-}
-
-// ProjectNEQ applies the NEQ predicate on the "project" field.
-func ProjectNEQ(v string) predicate.Device {
-	return predicate.Device(sql.FieldNEQ(FieldProject, v))
-}
-
-// ProjectIn applies the In predicate on the "project" field.
-func ProjectIn(vs ...string) predicate.Device {
-	return predicate.Device(sql.FieldIn(FieldProject, vs...))
-}
-
-// ProjectNotIn applies the NotIn predicate on the "project" field.
-func ProjectNotIn(vs ...string) predicate.Device {
-	return predicate.Device(sql.FieldNotIn(FieldProject, vs...))
-}
-
-// ProjectGT applies the GT predicate on the "project" field.
-func ProjectGT(v string) predicate.Device {
-	return predicate.Device(sql.FieldGT(FieldProject, v))
-}
-
-// ProjectGTE applies the GTE predicate on the "project" field.
-func ProjectGTE(v string) predicate.Device {
-	return predicate.Device(sql.FieldGTE(FieldProject, v))
-}
-
-// ProjectLT applies the LT predicate on the "project" field.
-func ProjectLT(v string) predicate.Device {
-	return predicate.Device(sql.FieldLT(FieldProject, v))
-}
-
-// ProjectLTE applies the LTE predicate on the "project" field.
-func ProjectLTE(v string) predicate.Device {
-	return predicate.Device(sql.FieldLTE(FieldProject, v))
-}
-
-// ProjectContains applies the Contains predicate on the "project" field.
-func ProjectContains(v string) predicate.Device {
-	return predicate.Device(sql.FieldContains(FieldProject, v))
-}
-
-// ProjectHasPrefix applies the HasPrefix predicate on the "project" field.
-func ProjectHasPrefix(v string) predicate.Device {
-	return predicate.Device(sql.FieldHasPrefix(FieldProject, v))
-}
-
-// ProjectHasSuffix applies the HasSuffix predicate on the "project" field.
-func ProjectHasSuffix(v string) predicate.Device {
-	return predicate.Device(sql.FieldHasSuffix(FieldProject, v))
-}
-
-// ProjectIsNil applies the IsNil predicate on the "project" field.
-func ProjectIsNil() predicate.Device {
-	return predicate.Device(sql.FieldIsNull(FieldProject))
-}
-
-// ProjectNotNil applies the NotNil predicate on the "project" field.
-func ProjectNotNil() predicate.Device {
-	return predicate.Device(sql.FieldNotNull(FieldProject))
-}
-
-// ProjectEqualFold applies the EqualFold predicate on the "project" field.
-func ProjectEqualFold(v string) predicate.Device {
-	return predicate.Device(sql.FieldEqualFold(FieldProject, v))
-}
-
-// ProjectContainsFold applies the ContainsFold predicate on the "project" field.
-func ProjectContainsFold(v string) predicate.Device {
-	return predicate.Device(sql.FieldContainsFold(FieldProject, v))
 }
 
 // PcodeEQ applies the EQ predicate on the "pcode" field.

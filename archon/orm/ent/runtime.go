@@ -41,7 +41,7 @@ func init() {
 	// device.DefaultRate holds the default value on creation for the rate field.
 	device.DefaultRate = deviceDescRate.Default.(int)
 	// deviceDescProject is the schema descriptor for project field.
-	deviceDescProject := deviceFields[8].Descriptor()
+	deviceDescProject := deviceFields[6].Descriptor()
 	// device.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	device.ProjectValidator = deviceDescProject.Validators[0].(func(string) error)
 	// deviceDescStatus is the schema descriptor for status field.

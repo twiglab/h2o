@@ -19,9 +19,9 @@ var (
 		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "rate", Type: field.TypeInt, Default: 1},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "area_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "project", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pcode", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "status", Type: field.TypeInt, Default: 0},
 		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
@@ -35,7 +35,7 @@ var (
 		Indexes: []*schema.Index{
 			{
 				Name:    "device_device_code",
-				Unique:  false,
+				Unique:  true,
 				Columns: []*schema.Column{DeviceColumns[3]},
 			},
 			{
@@ -51,12 +51,12 @@ var (
 			{
 				Name:    "device_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[8]},
+				Columns: []*schema.Column{DeviceColumns[9]},
 			},
 			{
 				Name:    "device_project",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[10]},
+				Columns: []*schema.Column{DeviceColumns[8]},
 			},
 			{
 				Name:    "device_pcode",

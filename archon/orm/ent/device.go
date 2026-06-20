@@ -31,12 +31,12 @@ type Device struct {
 	DeviceName string `json:"device_name,omitempty"`
 	// 当前倍率
 	Rate int `json:"rate,omitempty"`
+	// 项目编号
+	Project string `json:"project,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 区域编号
 	AreaCode string `json:"area_code,omitempty"`
-	// 项目编号
-	Project string `json:"project,omitempty"`
 	// 对外位置编号
 	Pcode string `json:"pcode,omitempty"`
 	// 状态
@@ -55,7 +55,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldRate, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldPosCode, device.FieldAreaCode, device.FieldProject, device.FieldPcode, device.FieldMemo:
+		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
 		case device.FieldCreateTime, device.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -122,6 +122,12 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Rate = int(value.Int64)
 			}
+		case device.FieldProject:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field project", values[i])
+			} else if value.Valid {
+				_m.Project = value.String
+			}
 		case device.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
@@ -133,12 +139,6 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field area_code", values[i])
 			} else if value.Valid {
 				_m.AreaCode = value.String
-			}
-		case device.FieldProject:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field project", values[i])
-			} else if value.Valid {
-				_m.Project = value.String
 			}
 		case device.FieldPcode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -221,14 +221,14 @@ func (_m *Device) String() string {
 	builder.WriteString("rate=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Rate))
 	builder.WriteString(", ")
+	builder.WriteString("project=")
+	builder.WriteString(_m.Project)
+	builder.WriteString(", ")
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
 	builder.WriteString(", ")
 	builder.WriteString("area_code=")
 	builder.WriteString(_m.AreaCode)
-	builder.WriteString(", ")
-	builder.WriteString("project=")
-	builder.WriteString(_m.Project)
 	builder.WriteString(", ")
 	builder.WriteString("pcode=")
 	builder.WriteString(_m.Pcode)

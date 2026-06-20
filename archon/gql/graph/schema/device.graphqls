@@ -1,0 +1,90 @@
+scalar Int64
+scalar Time
+scalar UUID
+
+type Device {
+  id : ID!
+
+  deviceCode : String!
+  deviceType : String!
+
+  deviceSN   : String!
+  deviceName : String!
+
+  rate       : Int!
+
+  posCode    : String!
+  areaCode   : String!
+  project    : String!
+  pcode      : String!
+
+  status     : Int!
+
+  memo       : String!
+}
+
+input DeviceListInput {
+  type : String
+  posCode : String
+}
+
+type Query {
+  deviceQuery(input: DeviceListInput):  [Device]!
+}
+
+input DeviceCreateInput {
+  deviceCode : String!
+  deviceType : String!
+
+  project    : String!
+
+
+  deviceSN   : String
+  deviceName : String
+
+  rate       : Int
+
+  posCode    : String
+  areaCode   : String
+  pcode      : String
+
+  memo       : String
+}
+
+input DeviceModifyInput {
+  id         : ID!
+
+  deviceSN   : String
+  deviceName : String
+
+  rate       : Int
+
+  posCode    : String
+  areaCode   : String
+  pcode      : String
+
+  memo       : String
+}
+
+input DeviceRemoveInput {
+  id : ID!
+}
+
+type Mutation {
+  deviceCreate(input: DeviceCreateInput): Device!
+  deviceModify(input: DeviceModifyInput): Device!
+  deviceRemove(input: DeviceRemoveInput): Device!
+
+}
+
+input DeviceCleanInput {
+  name : String!
+}
+
+type DeviceCleanResult {
+  name : String!
+}
+
+extend type Mutation {
+  deviceClean(input: DeviceCleanInput): DeviceCleanResult!
+}

@@ -49,9 +49,9 @@ func (Device) Fields() []ent.Field {
 
 		field.Int("rate").Default(1).Comment("当前倍率"),
 
+		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("pos_code").Optional().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("area_code").Optional().SchemaType(varchar(64)).Comment("区域编号"),
-		field.String("project").Optional().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("pcode").Optional().SchemaType(varchar(64)).Comment("对外位置编号"),
 
 		field.Int("status").Default(0).Comment("状态"),
@@ -70,7 +70,7 @@ func (Device) Mixin() []ent.Mixin {
 
 func (Device) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("device_code"),
+		index.Fields("device_code").Unique(),
 		index.Fields("device_type"),
 		index.Fields("device_sn"),
 

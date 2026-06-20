@@ -105,6 +105,12 @@ func (_c *DeviceCreate) SetNillableRate(v *int) *DeviceCreate {
 	return _c
 }
 
+// SetProject sets the "project" field.
+func (_c *DeviceCreate) SetProject(v string) *DeviceCreate {
+	_c.mutation.SetProject(v)
+	return _c
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_c *DeviceCreate) SetPosCode(v string) *DeviceCreate {
 	_c.mutation.SetPosCode(v)
@@ -129,20 +135,6 @@ func (_c *DeviceCreate) SetAreaCode(v string) *DeviceCreate {
 func (_c *DeviceCreate) SetNillableAreaCode(v *string) *DeviceCreate {
 	if v != nil {
 		_c.SetAreaCode(*v)
-	}
-	return _c
-}
-
-// SetProject sets the "project" field.
-func (_c *DeviceCreate) SetProject(v string) *DeviceCreate {
-	_c.mutation.SetProject(v)
-	return _c
-}
-
-// SetNillableProject sets the "project" field if the given value is not nil.
-func (_c *DeviceCreate) SetNillableProject(v *string) *DeviceCreate {
-	if v != nil {
-		_c.SetProject(*v)
 	}
 	return _c
 }
@@ -305,6 +297,9 @@ func (_c *DeviceCreate) check() error {
 	if _, ok := _c.mutation.Rate(); !ok {
 		return &ValidationError{Name: "rate", err: errors.New(`ent: missing required field "Device.rate"`)}
 	}
+	if _, ok := _c.mutation.Project(); !ok {
+		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "Device.project"`)}
+	}
 	if v, ok := _c.mutation.Project(); ok {
 		if err := device.ProjectValidator(v); err != nil {
 			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "Device.project": %w`, err)}
@@ -385,6 +380,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldRate, field.TypeInt, value)
 		_node.Rate = value
 	}
+	if value, ok := _c.mutation.Project(); ok {
+		_spec.SetField(device.FieldProject, field.TypeString, value)
+		_node.Project = value
+	}
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
@@ -392,10 +391,6 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.AreaCode(); ok {
 		_spec.SetField(device.FieldAreaCode, field.TypeString, value)
 		_node.AreaCode = value
-	}
-	if value, ok := _c.mutation.Project(); ok {
-		_spec.SetField(device.FieldProject, field.TypeString, value)
-		_node.Project = value
 	}
 	if value, ok := _c.mutation.Pcode(); ok {
 		_spec.SetField(device.FieldPcode, field.TypeString, value)
@@ -591,24 +586,6 @@ func (u *DeviceUpsert) ClearAreaCode() *DeviceUpsert {
 	return u
 }
 
-// SetProject sets the "project" field.
-func (u *DeviceUpsert) SetProject(v string) *DeviceUpsert {
-	u.Set(device.FieldProject, v)
-	return u
-}
-
-// UpdateProject sets the "project" field to the value that was provided on create.
-func (u *DeviceUpsert) UpdateProject() *DeviceUpsert {
-	u.SetExcluded(device.FieldProject)
-	return u
-}
-
-// ClearProject clears the value of the "project" field.
-func (u *DeviceUpsert) ClearProject() *DeviceUpsert {
-	u.SetNull(device.FieldProject)
-	return u
-}
-
 // SetPcode sets the "pcode" field.
 func (u *DeviceUpsert) SetPcode(v string) *DeviceUpsert {
 	u.Set(device.FieldPcode, v)
@@ -700,6 +677,9 @@ func (u *DeviceUpsertOne) UpdateNewValues() *DeviceUpsertOne {
 		}
 		if _, exists := u.create.mutation.CreateTime(); exists {
 			s.SetIgnore(device.FieldCreateTime)
+		}
+		if _, exists := u.create.mutation.Project(); exists {
+			s.SetIgnore(device.FieldProject)
 		}
 	}))
 	return u
@@ -876,27 +856,6 @@ func (u *DeviceUpsertOne) UpdateAreaCode() *DeviceUpsertOne {
 func (u *DeviceUpsertOne) ClearAreaCode() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearAreaCode()
-	})
-}
-
-// SetProject sets the "project" field.
-func (u *DeviceUpsertOne) SetProject(v string) *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.SetProject(v)
-	})
-}
-
-// UpdateProject sets the "project" field to the value that was provided on create.
-func (u *DeviceUpsertOne) UpdateProject() *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.UpdateProject()
-	})
-}
-
-// ClearProject clears the value of the "project" field.
-func (u *DeviceUpsertOne) ClearProject() *DeviceUpsertOne {
-	return u.Update(func(s *DeviceUpsert) {
-		s.ClearProject()
 	})
 }
 
@@ -1170,6 +1129,9 @@ func (u *DeviceUpsertBulk) UpdateNewValues() *DeviceUpsertBulk {
 			if _, exists := b.mutation.CreateTime(); exists {
 				s.SetIgnore(device.FieldCreateTime)
 			}
+			if _, exists := b.mutation.Project(); exists {
+				s.SetIgnore(device.FieldProject)
+			}
 		}
 	}))
 	return u
@@ -1346,27 +1308,6 @@ func (u *DeviceUpsertBulk) UpdateAreaCode() *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) ClearAreaCode() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearAreaCode()
-	})
-}
-
-// SetProject sets the "project" field.
-func (u *DeviceUpsertBulk) SetProject(v string) *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.SetProject(v)
-	})
-}
-
-// UpdateProject sets the "project" field to the value that was provided on create.
-func (u *DeviceUpsertBulk) UpdateProject() *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.UpdateProject()
-	})
-}
-
-// ClearProject clears the value of the "project" field.
-func (u *DeviceUpsertBulk) ClearProject() *DeviceUpsertBulk {
-	return u.Update(func(s *DeviceUpsert) {
-		s.ClearProject()
 	})
 }
 
