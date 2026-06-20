@@ -10,6 +10,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/twiglab/h2o/archon/orm/ent"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func OpenEntClient(name, dsn string, ops ...ent.Option) (*ent.Client, error) {
