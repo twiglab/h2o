@@ -29,7 +29,7 @@ input DeviceListInput {
 }
 
 type Query {
-  deviceQuery(input: DeviceListInput):  [Device]!
+  deviceQuery(input: DeviceListInput!):  [Device]!
 }
 
 input DeviceCreateInput {
@@ -71,9 +71,9 @@ input DeviceRemoveInput {
 }
 
 type Mutation {
-  deviceCreate(input: DeviceCreateInput): Device!
-  deviceModify(input: DeviceModifyInput): Device!
-  deviceRemove(input: DeviceRemoveInput): Device!
+  deviceCreate(input: DeviceCreateInput!): Device!
+  deviceModify(input: DeviceModifyInput!): Device!
+  deviceRemove(input: DeviceRemoveInput!): Device!
 
 }
 

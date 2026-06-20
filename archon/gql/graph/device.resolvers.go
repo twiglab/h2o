@@ -14,7 +14,7 @@ import (
 )
 
 // DeviceCreate is the resolver for the deviceCreate field.
-func (r *mutationResolver) DeviceCreate(ctx context.Context, input *model.DeviceCreateInput) (*ent.Device, error) {
+func (r *mutationResolver) DeviceCreate(ctx context.Context, input model.DeviceCreateInput) (*ent.Device, error) {
 	cr := r.DBx.Client.Device.Create()
 
 	cr.
@@ -54,7 +54,7 @@ func (r *mutationResolver) DeviceCreate(ctx context.Context, input *model.Device
 }
 
 // DeviceModify is the resolver for the deviceModify field.
-func (r *mutationResolver) DeviceModify(ctx context.Context, input *model.DeviceModifyInput) (*ent.Device, error) {
+func (r *mutationResolver) DeviceModify(ctx context.Context, input model.DeviceModifyInput) (*ent.Device, error) {
 	update := r.DBx.Client.Device.UpdateOneID(input.ID)
 	if input.DeviceSn != nil {
 		update.SetDeviceSn(*input.DeviceSn)
@@ -88,7 +88,7 @@ func (r *mutationResolver) DeviceModify(ctx context.Context, input *model.Device
 }
 
 // DeviceRemove is the resolver for the deviceRemove field.
-func (r *mutationResolver) DeviceRemove(ctx context.Context, input *model.DeviceRemoveInput) (*ent.Device, error) {
+func (r *mutationResolver) DeviceRemove(ctx context.Context, input model.DeviceRemoveInput) (*ent.Device, error) {
 	update := r.DBx.Client.Device.UpdateOneID(input.ID)
 	update.AddIsDel(1)
 	return update.Save(ctx)
@@ -100,7 +100,7 @@ func (r *mutationResolver) DeviceClean(ctx context.Context, input *model.DeviceC
 }
 
 // DeviceQuery is the resolver for the deviceQuery field.
-func (r *queryResolver) DeviceQuery(ctx context.Context, input *model.DeviceListInput) ([]*ent.Device, error) {
+func (r *queryResolver) DeviceQuery(ctx context.Context, input model.DeviceListInput) ([]*ent.Device, error) {
 	q := r.DBx.Client.Device.Query()
 	q.Where(device.IsDelEQ(0))
 	q.Order(ent.Desc(device.FieldPosCode))

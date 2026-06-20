@@ -60,13 +60,13 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		DeviceClean  func(childComplexity int, input *model.DeviceCleanInput) int
-		DeviceCreate func(childComplexity int, input *model.DeviceCreateInput) int
-		DeviceModify func(childComplexity int, input *model.DeviceModifyInput) int
-		DeviceRemove func(childComplexity int, input *model.DeviceRemoveInput) int
+		DeviceCreate func(childComplexity int, input model.DeviceCreateInput) int
+		DeviceModify func(childComplexity int, input model.DeviceModifyInput) int
+		DeviceRemove func(childComplexity int, input model.DeviceRemoveInput) int
 	}
 
 	Query struct {
-		DeviceQuery        func(childComplexity int, input *model.DeviceListInput) int
+		DeviceQuery        func(childComplexity int, input model.DeviceListInput) int
 		__resolve__service func(childComplexity int) int
 	}
 
@@ -80,13 +80,13 @@ type ComplexityRoot struct {
 // region    ************************** generated!.gotpl **************************
 
 type MutationResolver interface {
-	DeviceCreate(ctx context.Context, input *model.DeviceCreateInput) (*ent.Device, error)
-	DeviceModify(ctx context.Context, input *model.DeviceModifyInput) (*ent.Device, error)
-	DeviceRemove(ctx context.Context, input *model.DeviceRemoveInput) (*ent.Device, error)
+	DeviceCreate(ctx context.Context, input model.DeviceCreateInput) (*ent.Device, error)
+	DeviceModify(ctx context.Context, input model.DeviceModifyInput) (*ent.Device, error)
+	DeviceRemove(ctx context.Context, input model.DeviceRemoveInput) (*ent.Device, error)
 	DeviceClean(ctx context.Context, input *model.DeviceCleanInput) (*model.DeviceCleanResult, error)
 }
 type QueryResolver interface {
-	DeviceQuery(ctx context.Context, input *model.DeviceListInput) ([]*ent.Device, error)
+	DeviceQuery(ctx context.Context, input model.DeviceListInput) ([]*ent.Device, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -208,7 +208,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.DeviceCreate(childComplexity, args["input"].(*model.DeviceCreateInput)), true
+		return e.ComplexityRoot.Mutation.DeviceCreate(childComplexity, args["input"].(model.DeviceCreateInput)), true
 	case "Mutation.deviceModify":
 		if e.ComplexityRoot.Mutation.DeviceModify == nil {
 			break
@@ -219,7 +219,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.DeviceModify(childComplexity, args["input"].(*model.DeviceModifyInput)), true
+		return e.ComplexityRoot.Mutation.DeviceModify(childComplexity, args["input"].(model.DeviceModifyInput)), true
 	case "Mutation.deviceRemove":
 		if e.ComplexityRoot.Mutation.DeviceRemove == nil {
 			break
@@ -230,7 +230,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Mutation.DeviceRemove(childComplexity, args["input"].(*model.DeviceRemoveInput)), true
+		return e.ComplexityRoot.Mutation.DeviceRemove(childComplexity, args["input"].(model.DeviceRemoveInput)), true
 
 	case "Query.deviceQuery":
 		if e.ComplexityRoot.Query.DeviceQuery == nil {
@@ -242,7 +242,7 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 			return 0, false
 		}
 
-		return e.ComplexityRoot.Query.DeviceQuery(childComplexity, args["input"].(*model.DeviceListInput)), true
+		return e.ComplexityRoot.Query.DeviceQuery(childComplexity, args["input"].(model.DeviceListInput)), true
 
 	case "Query._service":
 		if e.ComplexityRoot.Query.__resolve__service == nil {
@@ -605,8 +605,8 @@ func (ec *executionContext) field_Mutation_deviceCreate_args(ctx context.Context
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (*model.DeviceCreateInput, error) {
-			return ec.unmarshalODeviceCreateInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCreateInput(ctx, v)
+		func(ctx context.Context, v any) (model.DeviceCreateInput, error) {
+			return ec.unmarshalNDeviceCreateInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCreateInput(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -619,8 +619,8 @@ func (ec *executionContext) field_Mutation_deviceModify_args(ctx context.Context
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (*model.DeviceModifyInput, error) {
-			return ec.unmarshalODeviceModifyInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceModifyInput(ctx, v)
+		func(ctx context.Context, v any) (model.DeviceModifyInput, error) {
+			return ec.unmarshalNDeviceModifyInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceModifyInput(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -633,8 +633,8 @@ func (ec *executionContext) field_Mutation_deviceRemove_args(ctx context.Context
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (*model.DeviceRemoveInput, error) {
-			return ec.unmarshalODeviceRemoveInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceRemoveInput(ctx, v)
+		func(ctx context.Context, v any) (model.DeviceRemoveInput, error) {
+			return ec.unmarshalNDeviceRemoveInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceRemoveInput(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -661,8 +661,8 @@ func (ec *executionContext) field_Query_deviceQuery_args(ctx context.Context, ra
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (*model.DeviceListInput, error) {
-			return ec.unmarshalODeviceListInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceListInput(ctx, v)
+		func(ctx context.Context, v any) (model.DeviceListInput, error) {
+			return ec.unmarshalNDeviceListInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceListInput(ctx, v)
 		})
 	if err != nil {
 		return nil, err
@@ -1040,7 +1040,7 @@ func (ec *executionContext) _Mutation_deviceCreate(ctx context.Context, field gr
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().DeviceCreate(ctx, fc.Args["input"].(*model.DeviceCreateInput))
+			return ec.Resolvers.Mutation().DeviceCreate(ctx, fc.Args["input"].(model.DeviceCreateInput))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *ent.Device) graphql.Marshaler {
@@ -1084,7 +1084,7 @@ func (ec *executionContext) _Mutation_deviceModify(ctx context.Context, field gr
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().DeviceModify(ctx, fc.Args["input"].(*model.DeviceModifyInput))
+			return ec.Resolvers.Mutation().DeviceModify(ctx, fc.Args["input"].(model.DeviceModifyInput))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *ent.Device) graphql.Marshaler {
@@ -1128,7 +1128,7 @@ func (ec *executionContext) _Mutation_deviceRemove(ctx context.Context, field gr
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().DeviceRemove(ctx, fc.Args["input"].(*model.DeviceRemoveInput))
+			return ec.Resolvers.Mutation().DeviceRemove(ctx, fc.Args["input"].(model.DeviceRemoveInput))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *ent.Device) graphql.Marshaler {
@@ -1216,7 +1216,7 @@ func (ec *executionContext) _Query_deviceQuery(ctx context.Context, field graphq
 		},
 		func(ctx context.Context) (any, error) {
 			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Query().DeviceQuery(ctx, fc.Args["input"].(*model.DeviceListInput))
+			return ec.Resolvers.Query().DeviceQuery(ctx, fc.Args["input"].(model.DeviceListInput))
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v []*ent.Device) graphql.Marshaler {
@@ -3511,6 +3511,26 @@ func (ec *executionContext) marshalNDeviceCleanResult2ᚖgithubᚗcomᚋtwiglab�
 	return ec._DeviceCleanResult(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNDeviceCreateInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCreateInput(ctx context.Context, v any) (model.DeviceCreateInput, error) {
+	res, err := ec.unmarshalInputDeviceCreateInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNDeviceListInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceListInput(ctx context.Context, v any) (model.DeviceListInput, error) {
+	res, err := ec.unmarshalInputDeviceListInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNDeviceModifyInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceModifyInput(ctx context.Context, v any) (model.DeviceModifyInput, error) {
+	res, err := ec.unmarshalInputDeviceModifyInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNDeviceRemoveInput2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceRemoveInput(ctx context.Context, v any) (model.DeviceRemoveInput, error) {
+	res, err := ec.unmarshalInputDeviceRemoveInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNFieldSet2string(ctx context.Context, v any) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -3914,38 +3934,6 @@ func (ec *executionContext) unmarshalODeviceCleanInput2ᚖgithubᚗcomᚋtwiglab
 		return nil, nil
 	}
 	res, err := ec.unmarshalInputDeviceCleanInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalODeviceCreateInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCreateInput(ctx context.Context, v any) (*model.DeviceCreateInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputDeviceCreateInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalODeviceListInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceListInput(ctx context.Context, v any) (*model.DeviceListInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputDeviceListInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalODeviceModifyInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceModifyInput(ctx context.Context, v any) (*model.DeviceModifyInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputDeviceModifyInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) unmarshalODeviceRemoveInput2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceRemoveInput(ctx context.Context, v any) (*model.DeviceRemoveInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputDeviceRemoveInput(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 

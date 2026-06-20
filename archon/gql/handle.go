@@ -8,12 +8,15 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/lru"
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/twiglab/h2o/archon/gql/graph"
+	"github.com/twiglab/h2o/archon/orm"
+	"github.com/twiglab/h2o/archon/orm/ent"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
-func Server() http.Handler {
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
-
+func Handle(client *ent.Client) http.Handler {
+	srv := handler.New(graph.NewExecutableSchema(
+		graph.Config{Resolvers: &graph.Resolver{DBx: orm.DBx{Client: client}}},
+	))
 	srv.AddTransport(transport.Options{})
 	srv.AddTransport(transport.GET{})
 	srv.AddTransport(transport.POST{})
