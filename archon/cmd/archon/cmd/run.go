@@ -40,6 +40,9 @@ func run() {
 	http.Handle("/gql", playground.ApolloSandboxHandler("gql", "/gql/query"))
 	http.Handle("/gql/query", gql.Handle(cli))
 
+	fs := http.FileServer(http.Dir("static/"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
 	if err := http.ListenAndServe(webaddr(), nil); err != nil {
 		log.Fatal(err)
 	}
