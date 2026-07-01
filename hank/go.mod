@@ -3,7 +3,7 @@ module github.com/twiglab/h2o/hank
 go 1.26.0
 
 require (
-	github.com/cloudwego/netpoll v0.7.3
+	github.com/cloudwego/netpoll v0.7.4
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/jmoiron/sqlx v1.4.0
