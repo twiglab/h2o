@@ -6,8 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Electy is the predicate function for electy builders.
-type Electy func(*sql.Selector)
-
-// Water is the predicate function for water builders.
-type Water func(*sql.Selector)
+// NhRecord is the predicate function for nhrecord builders.
+type NhRecord func(*sql.Selector)

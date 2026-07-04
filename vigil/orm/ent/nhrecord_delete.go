@@ -8,30 +8,30 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/h2o/vigil/orm/ent/electy"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 	"github.com/twiglab/h2o/vigil/orm/ent/predicate"
 )
 
-// ElectyDelete is the builder for deleting a Electy entity.
-type ElectyDelete struct {
+// NhRecordDelete is the builder for deleting a NhRecord entity.
+type NhRecordDelete struct {
 	config
 	hooks    []Hook
-	mutation *ElectyMutation
+	mutation *NhRecordMutation
 }
 
-// Where appends a list predicates to the ElectyDelete builder.
-func (_d *ElectyDelete) Where(ps ...predicate.Electy) *ElectyDelete {
+// Where appends a list predicates to the NhRecordDelete builder.
+func (_d *NhRecordDelete) Where(ps ...predicate.NhRecord) *NhRecordDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *ElectyDelete) Exec(ctx context.Context) (int, error) {
+func (_d *NhRecordDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ElectyDelete) ExecX(ctx context.Context) int {
+func (_d *NhRecordDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *ElectyDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *ElectyDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(electy.Table, sqlgraph.NewFieldSpec(electy.FieldID, field.TypeString))
+func (_d *NhRecordDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(nhrecord.Table, sqlgraph.NewFieldSpec(nhrecord.FieldID, field.TypeString))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *ElectyDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// ElectyDeleteOne is the builder for deleting a single Electy entity.
-type ElectyDeleteOne struct {
-	_d *ElectyDelete
+// NhRecordDeleteOne is the builder for deleting a single NhRecord entity.
+type NhRecordDeleteOne struct {
+	_d *NhRecordDelete
 }
 
-// Where appends a list predicates to the ElectyDelete builder.
-func (_d *ElectyDeleteOne) Where(ps ...predicate.Electy) *ElectyDeleteOne {
+// Where appends a list predicates to the NhRecordDelete builder.
+func (_d *NhRecordDeleteOne) Where(ps ...predicate.NhRecord) *NhRecordDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *ElectyDeleteOne) Exec(ctx context.Context) error {
+func (_d *NhRecordDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{electy.Label}
+		return &NotFoundError{nhrecord.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *ElectyDeleteOne) ExecX(ctx context.Context) {
+func (_d *NhRecordDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}

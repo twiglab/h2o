@@ -11,42 +11,42 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/h2o/vigil/orm/ent/electy"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 	"github.com/twiglab/h2o/vigil/orm/ent/predicate"
 )
 
-// ElectyUpdate is the builder for updating Electy entities.
-type ElectyUpdate struct {
+// NhRecordUpdate is the builder for updating NhRecord entities.
+type NhRecordUpdate struct {
 	config
 	hooks    []Hook
-	mutation *ElectyMutation
+	mutation *NhRecordMutation
 }
 
-// Where appends a list predicates to the ElectyUpdate builder.
-func (_u *ElectyUpdate) Where(ps ...predicate.Electy) *ElectyUpdate {
+// Where appends a list predicates to the NhRecordUpdate builder.
+func (_u *NhRecordUpdate) Where(ps ...predicate.NhRecord) *NhRecordUpdate {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (_u *ElectyUpdate) SetUpdateTime(v time.Time) *ElectyUpdate {
+func (_u *NhRecordUpdate) SetUpdateTime(v time.Time) *NhRecordUpdate {
 	_u.mutation.SetUpdateTime(v)
 	return _u
 }
 
-// Mutation returns the ElectyMutation object of the builder.
-func (_u *ElectyUpdate) Mutation() *ElectyMutation {
+// Mutation returns the NhRecordMutation object of the builder.
+func (_u *NhRecordUpdate) Mutation() *NhRecordMutation {
 	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (_u *ElectyUpdate) Save(ctx context.Context) (int, error) {
+func (_u *NhRecordUpdate) Save(ctx context.Context) (int, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ElectyUpdate) SaveX(ctx context.Context) int {
+func (_u *NhRecordUpdate) SaveX(ctx context.Context) int {
 	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -55,28 +55,28 @@ func (_u *ElectyUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (_u *ElectyUpdate) Exec(ctx context.Context) error {
+func (_u *NhRecordUpdate) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ElectyUpdate) ExecX(ctx context.Context) {
+func (_u *NhRecordUpdate) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *ElectyUpdate) defaults() {
+func (_u *NhRecordUpdate) defaults() {
 	if _, ok := _u.mutation.UpdateTime(); !ok {
-		v := electy.UpdateDefaultUpdateTime()
+		v := nhrecord.UpdateDefaultUpdateTime()
 		_u.mutation.SetUpdateTime(v)
 	}
 }
 
-func (_u *ElectyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
-	_spec := sqlgraph.NewUpdateSpec(electy.Table, electy.Columns, sqlgraph.NewFieldSpec(electy.FieldID, field.TypeString))
+func (_u *NhRecordUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	_spec := sqlgraph.NewUpdateSpec(nhrecord.Table, nhrecord.Columns, sqlgraph.NewFieldSpec(nhrecord.FieldID, field.TypeString))
 	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -85,20 +85,20 @@ func (_u *ElectyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
-		_spec.SetField(electy.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(nhrecord.FieldUpdateTime, field.TypeTime, value)
 	}
 	if _u.mutation.DeviceSnCleared() {
-		_spec.ClearField(electy.FieldDeviceSn, field.TypeString)
+		_spec.ClearField(nhrecord.FieldDeviceSn, field.TypeString)
 	}
 	if _u.mutation.DeviceNameCleared() {
-		_spec.ClearField(electy.FieldDeviceName, field.TypeString)
+		_spec.ClearField(nhrecord.FieldDeviceName, field.TypeString)
 	}
 	if _u.mutation.OwnerCleared() {
-		_spec.ClearField(electy.FieldOwner, field.TypeString)
+		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{electy.Label}
+			err = &NotFoundError{nhrecord.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -108,46 +108,46 @@ func (_u *ElectyUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	return _node, nil
 }
 
-// ElectyUpdateOne is the builder for updating a single Electy entity.
-type ElectyUpdateOne struct {
+// NhRecordUpdateOne is the builder for updating a single NhRecord entity.
+type NhRecordUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *ElectyMutation
+	mutation *NhRecordMutation
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (_u *ElectyUpdateOne) SetUpdateTime(v time.Time) *ElectyUpdateOne {
+func (_u *NhRecordUpdateOne) SetUpdateTime(v time.Time) *NhRecordUpdateOne {
 	_u.mutation.SetUpdateTime(v)
 	return _u
 }
 
-// Mutation returns the ElectyMutation object of the builder.
-func (_u *ElectyUpdateOne) Mutation() *ElectyMutation {
+// Mutation returns the NhRecordMutation object of the builder.
+func (_u *NhRecordUpdateOne) Mutation() *NhRecordMutation {
 	return _u.mutation
 }
 
-// Where appends a list predicates to the ElectyUpdate builder.
-func (_u *ElectyUpdateOne) Where(ps ...predicate.Electy) *ElectyUpdateOne {
+// Where appends a list predicates to the NhRecordUpdate builder.
+func (_u *NhRecordUpdateOne) Where(ps ...predicate.NhRecord) *NhRecordUpdateOne {
 	_u.mutation.Where(ps...)
 	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (_u *ElectyUpdateOne) Select(field string, fields ...string) *ElectyUpdateOne {
+func (_u *NhRecordUpdateOne) Select(field string, fields ...string) *NhRecordUpdateOne {
 	_u.fields = append([]string{field}, fields...)
 	return _u
 }
 
-// Save executes the query and returns the updated Electy entity.
-func (_u *ElectyUpdateOne) Save(ctx context.Context) (*Electy, error) {
+// Save executes the query and returns the updated NhRecord entity.
+func (_u *NhRecordUpdateOne) Save(ctx context.Context) (*NhRecord, error) {
 	_u.defaults()
 	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_u *ElectyUpdateOne) SaveX(ctx context.Context) *Electy {
+func (_u *NhRecordUpdateOne) SaveX(ctx context.Context) *NhRecord {
 	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -156,41 +156,41 @@ func (_u *ElectyUpdateOne) SaveX(ctx context.Context) *Electy {
 }
 
 // Exec executes the query on the entity.
-func (_u *ElectyUpdateOne) Exec(ctx context.Context) error {
+func (_u *NhRecordUpdateOne) Exec(ctx context.Context) error {
 	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_u *ElectyUpdateOne) ExecX(ctx context.Context) {
+func (_u *NhRecordUpdateOne) ExecX(ctx context.Context) {
 	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_u *ElectyUpdateOne) defaults() {
+func (_u *NhRecordUpdateOne) defaults() {
 	if _, ok := _u.mutation.UpdateTime(); !ok {
-		v := electy.UpdateDefaultUpdateTime()
+		v := nhrecord.UpdateDefaultUpdateTime()
 		_u.mutation.SetUpdateTime(v)
 	}
 }
 
-func (_u *ElectyUpdateOne) sqlSave(ctx context.Context) (_node *Electy, err error) {
-	_spec := sqlgraph.NewUpdateSpec(electy.Table, electy.Columns, sqlgraph.NewFieldSpec(electy.FieldID, field.TypeString))
+func (_u *NhRecordUpdateOne) sqlSave(ctx context.Context) (_node *NhRecord, err error) {
+	_spec := sqlgraph.NewUpdateSpec(nhrecord.Table, nhrecord.Columns, sqlgraph.NewFieldSpec(nhrecord.FieldID, field.TypeString))
 	id, ok := _u.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Electy.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "NhRecord.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, electy.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, nhrecord.FieldID)
 		for _, f := range fields {
-			if !electy.ValidColumn(f) {
+			if !nhrecord.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != electy.FieldID {
+			if f != nhrecord.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -203,23 +203,23 @@ func (_u *ElectyUpdateOne) sqlSave(ctx context.Context) (_node *Electy, err erro
 		}
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
-		_spec.SetField(electy.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(nhrecord.FieldUpdateTime, field.TypeTime, value)
 	}
 	if _u.mutation.DeviceSnCleared() {
-		_spec.ClearField(electy.FieldDeviceSn, field.TypeString)
+		_spec.ClearField(nhrecord.FieldDeviceSn, field.TypeString)
 	}
 	if _u.mutation.DeviceNameCleared() {
-		_spec.ClearField(electy.FieldDeviceName, field.TypeString)
+		_spec.ClearField(nhrecord.FieldDeviceName, field.TypeString)
 	}
 	if _u.mutation.OwnerCleared() {
-		_spec.ClearField(electy.FieldOwner, field.TypeString)
+		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)
 	}
-	_node = &Electy{config: _u.config}
+	_node = &NhRecord{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{electy.Label}
+			err = &NotFoundError{nhrecord.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

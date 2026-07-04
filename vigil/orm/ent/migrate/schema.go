@@ -9,76 +9,8 @@ import (
 )
 
 var (
-	// RecordElectyColumns holds the columns for the "record_electy" table.
-	RecordElectyColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
-		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime},
-		{Name: "p_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "data_value", Type: field.TypeInt64, Default: 0},
-		{Name: "x_data_value", Type: field.TypeInt64, Default: 0},
-		{Name: "factor", Type: field.TypeInt, Default: 1},
-		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "data_time", Type: field.TypeTime},
-		{Name: "data_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
-		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-	}
-	// RecordElectyTable holds the schema information for the "record_electy" table.
-	RecordElectyTable = &schema.Table{
-		Name:       "record_electy",
-		Columns:    RecordElectyColumns,
-		PrimaryKey: []*schema.Column{RecordElectyColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "electy_p_code",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[3]},
-			},
-			{
-				Name:    "electy_device_code",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[5]},
-			},
-			{
-				Name:    "electy_device_type",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[6]},
-			},
-			{
-				Name:    "electy_data_code",
-				Unique:  true,
-				Columns: []*schema.Column{RecordElectyColumns[11]},
-			},
-			{
-				Name:    "electy_data_time",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[12]},
-			},
-			{
-				Name:    "electy_data_ts",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[13]},
-			},
-			{
-				Name:    "electy_pos_code",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[14]},
-			},
-			{
-				Name:    "electy_project",
-				Unique:  false,
-				Columns: []*schema.Column{RecordElectyColumns[15]},
-			},
-		},
-	}
-	// RecordWaterColumns holds the columns for the "record_water" table.
-	RecordWaterColumns = []*schema.Column{
+	// NhRecordColumns holds the columns for the "nh_record" table.
+	NhRecordColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
@@ -95,66 +27,62 @@ var (
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
-	// RecordWaterTable holds the schema information for the "record_water" table.
-	RecordWaterTable = &schema.Table{
-		Name:       "record_water",
-		Columns:    RecordWaterColumns,
-		PrimaryKey: []*schema.Column{RecordWaterColumns[0]},
+	// NhRecordTable holds the schema information for the "nh_record" table.
+	NhRecordTable = &schema.Table{
+		Name:       "nh_record",
+		Columns:    NhRecordColumns,
+		PrimaryKey: []*schema.Column{NhRecordColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "water_p_code",
+				Name:    "nhrecord_p_code",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[3]},
+				Columns: []*schema.Column{NhRecordColumns[3]},
 			},
 			{
-				Name:    "water_device_code",
+				Name:    "nhrecord_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[5]},
+				Columns: []*schema.Column{NhRecordColumns[5]},
 			},
 			{
-				Name:    "water_device_type",
+				Name:    "nhrecord_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[6]},
+				Columns: []*schema.Column{NhRecordColumns[6]},
 			},
 			{
-				Name:    "water_data_code",
+				Name:    "nhrecord_data_code",
 				Unique:  true,
-				Columns: []*schema.Column{RecordWaterColumns[9]},
+				Columns: []*schema.Column{NhRecordColumns[9]},
 			},
 			{
-				Name:    "water_data_time",
+				Name:    "nhrecord_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[10]},
+				Columns: []*schema.Column{NhRecordColumns[10]},
 			},
 			{
-				Name:    "water_data_ts",
+				Name:    "nhrecord_data_ts",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[11]},
+				Columns: []*schema.Column{NhRecordColumns[11]},
 			},
 			{
-				Name:    "water_pos_code",
+				Name:    "nhrecord_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[12]},
+				Columns: []*schema.Column{NhRecordColumns[12]},
 			},
 			{
-				Name:    "water_project",
+				Name:    "nhrecord_project",
 				Unique:  false,
-				Columns: []*schema.Column{RecordWaterColumns[13]},
+				Columns: []*schema.Column{NhRecordColumns[13]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		RecordElectyTable,
-		RecordWaterTable,
+		NhRecordTable,
 	}
 )
 
 func init() {
-	RecordElectyTable.Annotation = &entsql.Annotation{
-		Table: "record_electy",
-	}
-	RecordWaterTable.Annotation = &entsql.Annotation{
-		Table: "record_water",
+	NhRecordTable.Annotation = &entsql.Annotation{
+		Table: "nh_record",
 	}
 }

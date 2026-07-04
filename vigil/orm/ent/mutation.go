@@ -11,9 +11,8 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/vigil/orm/ent/electy"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 	"github.com/twiglab/h2o/vigil/orm/ent/predicate"
-	"github.com/twiglab/h2o/vigil/orm/ent/water"
 )
 
 const (
@@ -25,1316 +24,11 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeElecty = "Electy"
-	TypeWater  = "Water"
+	TypeNhRecord = "NhRecord"
 )
 
-// ElectyMutation represents an operation that mutates the Electy nodes in the graph.
-type ElectyMutation struct {
-	config
-	op              Op
-	typ             string
-	id              *string
-	create_time     *time.Time
-	update_time     *time.Time
-	p_code          *string
-	device_sn       *string
-	device_code     *string
-	device_type     *string
-	device_name     *string
-	data_value      *int64
-	adddata_value   *int64
-	x_data_value    *int64
-	addx_data_value *int64
-	factor          *int
-	addfactor       *int
-	data_code       *string
-	data_time       *time.Time
-	data_ts         *string
-	pos_code        *string
-	project         *string
-	owner           *string
-	clearedFields   map[string]struct{}
-	done            bool
-	oldValue        func(context.Context) (*Electy, error)
-	predicates      []predicate.Electy
-}
-
-var _ ent.Mutation = (*ElectyMutation)(nil)
-
-// electyOption allows management of the mutation configuration using functional options.
-type electyOption func(*ElectyMutation)
-
-// newElectyMutation creates new mutation for the Electy entity.
-func newElectyMutation(c config, op Op, opts ...electyOption) *ElectyMutation {
-	m := &ElectyMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeElecty,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withElectyID sets the ID field of the mutation.
-func withElectyID(id string) electyOption {
-	return func(m *ElectyMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Electy
-		)
-		m.oldValue = func(ctx context.Context) (*Electy, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Electy.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withElecty sets the old Electy of the mutation.
-func withElecty(node *Electy) electyOption {
-	return func(m *ElectyMutation) {
-		m.oldValue = func(context.Context) (*Electy, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ElectyMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m ElectyMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Electy entities.
-func (m *ElectyMutation) SetID(id string) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *ElectyMutation) ID() (id string, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *ElectyMutation) IDs(ctx context.Context) ([]string, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []string{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Electy.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetCreateTime sets the "create_time" field.
-func (m *ElectyMutation) SetCreateTime(t time.Time) {
-	m.create_time = &t
-}
-
-// CreateTime returns the value of the "create_time" field in the mutation.
-func (m *ElectyMutation) CreateTime() (r time.Time, exists bool) {
-	v := m.create_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreateTime returns the old "create_time" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
-	}
-	return oldValue.CreateTime, nil
-}
-
-// ResetCreateTime resets all changes to the "create_time" field.
-func (m *ElectyMutation) ResetCreateTime() {
-	m.create_time = nil
-}
-
-// SetUpdateTime sets the "update_time" field.
-func (m *ElectyMutation) SetUpdateTime(t time.Time) {
-	m.update_time = &t
-}
-
-// UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *ElectyMutation) UpdateTime() (r time.Time, exists bool) {
-	v := m.update_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdateTime returns the old "update_time" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
-	}
-	return oldValue.UpdateTime, nil
-}
-
-// ResetUpdateTime resets all changes to the "update_time" field.
-func (m *ElectyMutation) ResetUpdateTime() {
-	m.update_time = nil
-}
-
-// SetPCode sets the "p_code" field.
-func (m *ElectyMutation) SetPCode(s string) {
-	m.p_code = &s
-}
-
-// PCode returns the value of the "p_code" field in the mutation.
-func (m *ElectyMutation) PCode() (r string, exists bool) {
-	v := m.p_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPCode returns the old "p_code" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldPCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPCode: %w", err)
-	}
-	return oldValue.PCode, nil
-}
-
-// ResetPCode resets all changes to the "p_code" field.
-func (m *ElectyMutation) ResetPCode() {
-	m.p_code = nil
-}
-
-// SetDeviceSn sets the "device_sn" field.
-func (m *ElectyMutation) SetDeviceSn(s string) {
-	m.device_sn = &s
-}
-
-// DeviceSn returns the value of the "device_sn" field in the mutation.
-func (m *ElectyMutation) DeviceSn() (r string, exists bool) {
-	v := m.device_sn
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceSn returns the old "device_sn" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceSn requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceSn: %w", err)
-	}
-	return oldValue.DeviceSn, nil
-}
-
-// ClearDeviceSn clears the value of the "device_sn" field.
-func (m *ElectyMutation) ClearDeviceSn() {
-	m.device_sn = nil
-	m.clearedFields[electy.FieldDeviceSn] = struct{}{}
-}
-
-// DeviceSnCleared returns if the "device_sn" field was cleared in this mutation.
-func (m *ElectyMutation) DeviceSnCleared() bool {
-	_, ok := m.clearedFields[electy.FieldDeviceSn]
-	return ok
-}
-
-// ResetDeviceSn resets all changes to the "device_sn" field.
-func (m *ElectyMutation) ResetDeviceSn() {
-	m.device_sn = nil
-	delete(m.clearedFields, electy.FieldDeviceSn)
-}
-
-// SetDeviceCode sets the "device_code" field.
-func (m *ElectyMutation) SetDeviceCode(s string) {
-	m.device_code = &s
-}
-
-// DeviceCode returns the value of the "device_code" field in the mutation.
-func (m *ElectyMutation) DeviceCode() (r string, exists bool) {
-	v := m.device_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceCode returns the old "device_code" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceCode: %w", err)
-	}
-	return oldValue.DeviceCode, nil
-}
-
-// ResetDeviceCode resets all changes to the "device_code" field.
-func (m *ElectyMutation) ResetDeviceCode() {
-	m.device_code = nil
-}
-
-// SetDeviceType sets the "device_type" field.
-func (m *ElectyMutation) SetDeviceType(s string) {
-	m.device_type = &s
-}
-
-// DeviceType returns the value of the "device_type" field in the mutation.
-func (m *ElectyMutation) DeviceType() (r string, exists bool) {
-	v := m.device_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceType returns the old "device_type" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDeviceType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceType: %w", err)
-	}
-	return oldValue.DeviceType, nil
-}
-
-// ResetDeviceType resets all changes to the "device_type" field.
-func (m *ElectyMutation) ResetDeviceType() {
-	m.device_type = nil
-}
-
-// SetDeviceName sets the "device_name" field.
-func (m *ElectyMutation) SetDeviceName(s string) {
-	m.device_name = &s
-}
-
-// DeviceName returns the value of the "device_name" field in the mutation.
-func (m *ElectyMutation) DeviceName() (r string, exists bool) {
-	v := m.device_name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceName returns the old "device_name" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDeviceName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceName: %w", err)
-	}
-	return oldValue.DeviceName, nil
-}
-
-// ClearDeviceName clears the value of the "device_name" field.
-func (m *ElectyMutation) ClearDeviceName() {
-	m.device_name = nil
-	m.clearedFields[electy.FieldDeviceName] = struct{}{}
-}
-
-// DeviceNameCleared returns if the "device_name" field was cleared in this mutation.
-func (m *ElectyMutation) DeviceNameCleared() bool {
-	_, ok := m.clearedFields[electy.FieldDeviceName]
-	return ok
-}
-
-// ResetDeviceName resets all changes to the "device_name" field.
-func (m *ElectyMutation) ResetDeviceName() {
-	m.device_name = nil
-	delete(m.clearedFields, electy.FieldDeviceName)
-}
-
-// SetDataValue sets the "data_value" field.
-func (m *ElectyMutation) SetDataValue(i int64) {
-	m.data_value = &i
-	m.adddata_value = nil
-}
-
-// DataValue returns the value of the "data_value" field in the mutation.
-func (m *ElectyMutation) DataValue() (r int64, exists bool) {
-	v := m.data_value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataValue returns the old "data_value" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDataValue(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataValue is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataValue requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataValue: %w", err)
-	}
-	return oldValue.DataValue, nil
-}
-
-// AddDataValue adds i to the "data_value" field.
-func (m *ElectyMutation) AddDataValue(i int64) {
-	if m.adddata_value != nil {
-		*m.adddata_value += i
-	} else {
-		m.adddata_value = &i
-	}
-}
-
-// AddedDataValue returns the value that was added to the "data_value" field in this mutation.
-func (m *ElectyMutation) AddedDataValue() (r int64, exists bool) {
-	v := m.adddata_value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetDataValue resets all changes to the "data_value" field.
-func (m *ElectyMutation) ResetDataValue() {
-	m.data_value = nil
-	m.adddata_value = nil
-}
-
-// SetXDataValue sets the "x_data_value" field.
-func (m *ElectyMutation) SetXDataValue(i int64) {
-	m.x_data_value = &i
-	m.addx_data_value = nil
-}
-
-// XDataValue returns the value of the "x_data_value" field in the mutation.
-func (m *ElectyMutation) XDataValue() (r int64, exists bool) {
-	v := m.x_data_value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldXDataValue returns the old "x_data_value" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldXDataValue(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldXDataValue is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldXDataValue requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldXDataValue: %w", err)
-	}
-	return oldValue.XDataValue, nil
-}
-
-// AddXDataValue adds i to the "x_data_value" field.
-func (m *ElectyMutation) AddXDataValue(i int64) {
-	if m.addx_data_value != nil {
-		*m.addx_data_value += i
-	} else {
-		m.addx_data_value = &i
-	}
-}
-
-// AddedXDataValue returns the value that was added to the "x_data_value" field in this mutation.
-func (m *ElectyMutation) AddedXDataValue() (r int64, exists bool) {
-	v := m.addx_data_value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetXDataValue resets all changes to the "x_data_value" field.
-func (m *ElectyMutation) ResetXDataValue() {
-	m.x_data_value = nil
-	m.addx_data_value = nil
-}
-
-// SetFactor sets the "factor" field.
-func (m *ElectyMutation) SetFactor(i int) {
-	m.factor = &i
-	m.addfactor = nil
-}
-
-// Factor returns the value of the "factor" field in the mutation.
-func (m *ElectyMutation) Factor() (r int, exists bool) {
-	v := m.factor
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFactor returns the old "factor" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldFactor(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFactor is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFactor requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFactor: %w", err)
-	}
-	return oldValue.Factor, nil
-}
-
-// AddFactor adds i to the "factor" field.
-func (m *ElectyMutation) AddFactor(i int) {
-	if m.addfactor != nil {
-		*m.addfactor += i
-	} else {
-		m.addfactor = &i
-	}
-}
-
-// AddedFactor returns the value that was added to the "factor" field in this mutation.
-func (m *ElectyMutation) AddedFactor() (r int, exists bool) {
-	v := m.addfactor
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetFactor resets all changes to the "factor" field.
-func (m *ElectyMutation) ResetFactor() {
-	m.factor = nil
-	m.addfactor = nil
-}
-
-// SetDataCode sets the "data_code" field.
-func (m *ElectyMutation) SetDataCode(s string) {
-	m.data_code = &s
-}
-
-// DataCode returns the value of the "data_code" field in the mutation.
-func (m *ElectyMutation) DataCode() (r string, exists bool) {
-	v := m.data_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataCode returns the old "data_code" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDataCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataCode: %w", err)
-	}
-	return oldValue.DataCode, nil
-}
-
-// ResetDataCode resets all changes to the "data_code" field.
-func (m *ElectyMutation) ResetDataCode() {
-	m.data_code = nil
-}
-
-// SetDataTime sets the "data_time" field.
-func (m *ElectyMutation) SetDataTime(t time.Time) {
-	m.data_time = &t
-}
-
-// DataTime returns the value of the "data_time" field in the mutation.
-func (m *ElectyMutation) DataTime() (r time.Time, exists bool) {
-	v := m.data_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataTime returns the old "data_time" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDataTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataTime: %w", err)
-	}
-	return oldValue.DataTime, nil
-}
-
-// ResetDataTime resets all changes to the "data_time" field.
-func (m *ElectyMutation) ResetDataTime() {
-	m.data_time = nil
-}
-
-// SetDataTs sets the "data_ts" field.
-func (m *ElectyMutation) SetDataTs(s string) {
-	m.data_ts = &s
-}
-
-// DataTs returns the value of the "data_ts" field in the mutation.
-func (m *ElectyMutation) DataTs() (r string, exists bool) {
-	v := m.data_ts
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataTs returns the old "data_ts" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldDataTs(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataTs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataTs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataTs: %w", err)
-	}
-	return oldValue.DataTs, nil
-}
-
-// ResetDataTs resets all changes to the "data_ts" field.
-func (m *ElectyMutation) ResetDataTs() {
-	m.data_ts = nil
-}
-
-// SetPosCode sets the "pos_code" field.
-func (m *ElectyMutation) SetPosCode(s string) {
-	m.pos_code = &s
-}
-
-// PosCode returns the value of the "pos_code" field in the mutation.
-func (m *ElectyMutation) PosCode() (r string, exists bool) {
-	v := m.pos_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPosCode returns the old "pos_code" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldPosCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPosCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPosCode: %w", err)
-	}
-	return oldValue.PosCode, nil
-}
-
-// ResetPosCode resets all changes to the "pos_code" field.
-func (m *ElectyMutation) ResetPosCode() {
-	m.pos_code = nil
-}
-
-// SetProject sets the "project" field.
-func (m *ElectyMutation) SetProject(s string) {
-	m.project = &s
-}
-
-// Project returns the value of the "project" field in the mutation.
-func (m *ElectyMutation) Project() (r string, exists bool) {
-	v := m.project
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProject returns the old "project" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldProject(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProject is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProject requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProject: %w", err)
-	}
-	return oldValue.Project, nil
-}
-
-// ResetProject resets all changes to the "project" field.
-func (m *ElectyMutation) ResetProject() {
-	m.project = nil
-}
-
-// SetOwner sets the "owner" field.
-func (m *ElectyMutation) SetOwner(s string) {
-	m.owner = &s
-}
-
-// Owner returns the value of the "owner" field in the mutation.
-func (m *ElectyMutation) Owner() (r string, exists bool) {
-	v := m.owner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOwner returns the old "owner" field's value of the Electy entity.
-// If the Electy object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ElectyMutation) OldOwner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOwner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
-	}
-	return oldValue.Owner, nil
-}
-
-// ClearOwner clears the value of the "owner" field.
-func (m *ElectyMutation) ClearOwner() {
-	m.owner = nil
-	m.clearedFields[electy.FieldOwner] = struct{}{}
-}
-
-// OwnerCleared returns if the "owner" field was cleared in this mutation.
-func (m *ElectyMutation) OwnerCleared() bool {
-	_, ok := m.clearedFields[electy.FieldOwner]
-	return ok
-}
-
-// ResetOwner resets all changes to the "owner" field.
-func (m *ElectyMutation) ResetOwner() {
-	m.owner = nil
-	delete(m.clearedFields, electy.FieldOwner)
-}
-
-// Where appends a list predicates to the ElectyMutation builder.
-func (m *ElectyMutation) Where(ps ...predicate.Electy) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the ElectyMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ElectyMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Electy, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *ElectyMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *ElectyMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Electy).
-func (m *ElectyMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *ElectyMutation) Fields() []string {
-	fields := make([]string, 0, 16)
-	if m.create_time != nil {
-		fields = append(fields, electy.FieldCreateTime)
-	}
-	if m.update_time != nil {
-		fields = append(fields, electy.FieldUpdateTime)
-	}
-	if m.p_code != nil {
-		fields = append(fields, electy.FieldPCode)
-	}
-	if m.device_sn != nil {
-		fields = append(fields, electy.FieldDeviceSn)
-	}
-	if m.device_code != nil {
-		fields = append(fields, electy.FieldDeviceCode)
-	}
-	if m.device_type != nil {
-		fields = append(fields, electy.FieldDeviceType)
-	}
-	if m.device_name != nil {
-		fields = append(fields, electy.FieldDeviceName)
-	}
-	if m.data_value != nil {
-		fields = append(fields, electy.FieldDataValue)
-	}
-	if m.x_data_value != nil {
-		fields = append(fields, electy.FieldXDataValue)
-	}
-	if m.factor != nil {
-		fields = append(fields, electy.FieldFactor)
-	}
-	if m.data_code != nil {
-		fields = append(fields, electy.FieldDataCode)
-	}
-	if m.data_time != nil {
-		fields = append(fields, electy.FieldDataTime)
-	}
-	if m.data_ts != nil {
-		fields = append(fields, electy.FieldDataTs)
-	}
-	if m.pos_code != nil {
-		fields = append(fields, electy.FieldPosCode)
-	}
-	if m.project != nil {
-		fields = append(fields, electy.FieldProject)
-	}
-	if m.owner != nil {
-		fields = append(fields, electy.FieldOwner)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *ElectyMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case electy.FieldCreateTime:
-		return m.CreateTime()
-	case electy.FieldUpdateTime:
-		return m.UpdateTime()
-	case electy.FieldPCode:
-		return m.PCode()
-	case electy.FieldDeviceSn:
-		return m.DeviceSn()
-	case electy.FieldDeviceCode:
-		return m.DeviceCode()
-	case electy.FieldDeviceType:
-		return m.DeviceType()
-	case electy.FieldDeviceName:
-		return m.DeviceName()
-	case electy.FieldDataValue:
-		return m.DataValue()
-	case electy.FieldXDataValue:
-		return m.XDataValue()
-	case electy.FieldFactor:
-		return m.Factor()
-	case electy.FieldDataCode:
-		return m.DataCode()
-	case electy.FieldDataTime:
-		return m.DataTime()
-	case electy.FieldDataTs:
-		return m.DataTs()
-	case electy.FieldPosCode:
-		return m.PosCode()
-	case electy.FieldProject:
-		return m.Project()
-	case electy.FieldOwner:
-		return m.Owner()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *ElectyMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case electy.FieldCreateTime:
-		return m.OldCreateTime(ctx)
-	case electy.FieldUpdateTime:
-		return m.OldUpdateTime(ctx)
-	case electy.FieldPCode:
-		return m.OldPCode(ctx)
-	case electy.FieldDeviceSn:
-		return m.OldDeviceSn(ctx)
-	case electy.FieldDeviceCode:
-		return m.OldDeviceCode(ctx)
-	case electy.FieldDeviceType:
-		return m.OldDeviceType(ctx)
-	case electy.FieldDeviceName:
-		return m.OldDeviceName(ctx)
-	case electy.FieldDataValue:
-		return m.OldDataValue(ctx)
-	case electy.FieldXDataValue:
-		return m.OldXDataValue(ctx)
-	case electy.FieldFactor:
-		return m.OldFactor(ctx)
-	case electy.FieldDataCode:
-		return m.OldDataCode(ctx)
-	case electy.FieldDataTime:
-		return m.OldDataTime(ctx)
-	case electy.FieldDataTs:
-		return m.OldDataTs(ctx)
-	case electy.FieldPosCode:
-		return m.OldPosCode(ctx)
-	case electy.FieldProject:
-		return m.OldProject(ctx)
-	case electy.FieldOwner:
-		return m.OldOwner(ctx)
-	}
-	return nil, fmt.Errorf("unknown Electy field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ElectyMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case electy.FieldCreateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreateTime(v)
-		return nil
-	case electy.FieldUpdateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdateTime(v)
-		return nil
-	case electy.FieldPCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPCode(v)
-		return nil
-	case electy.FieldDeviceSn:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceSn(v)
-		return nil
-	case electy.FieldDeviceCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceCode(v)
-		return nil
-	case electy.FieldDeviceType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceType(v)
-		return nil
-	case electy.FieldDeviceName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceName(v)
-		return nil
-	case electy.FieldDataValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataValue(v)
-		return nil
-	case electy.FieldXDataValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetXDataValue(v)
-		return nil
-	case electy.FieldFactor:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFactor(v)
-		return nil
-	case electy.FieldDataCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataCode(v)
-		return nil
-	case electy.FieldDataTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataTime(v)
-		return nil
-	case electy.FieldDataTs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataTs(v)
-		return nil
-	case electy.FieldPosCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPosCode(v)
-		return nil
-	case electy.FieldProject:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProject(v)
-		return nil
-	case electy.FieldOwner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOwner(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Electy field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *ElectyMutation) AddedFields() []string {
-	var fields []string
-	if m.adddata_value != nil {
-		fields = append(fields, electy.FieldDataValue)
-	}
-	if m.addx_data_value != nil {
-		fields = append(fields, electy.FieldXDataValue)
-	}
-	if m.addfactor != nil {
-		fields = append(fields, electy.FieldFactor)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *ElectyMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case electy.FieldDataValue:
-		return m.AddedDataValue()
-	case electy.FieldXDataValue:
-		return m.AddedXDataValue()
-	case electy.FieldFactor:
-		return m.AddedFactor()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *ElectyMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case electy.FieldDataValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddDataValue(v)
-		return nil
-	case electy.FieldXDataValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddXDataValue(v)
-		return nil
-	case electy.FieldFactor:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddFactor(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Electy numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *ElectyMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(electy.FieldDeviceSn) {
-		fields = append(fields, electy.FieldDeviceSn)
-	}
-	if m.FieldCleared(electy.FieldDeviceName) {
-		fields = append(fields, electy.FieldDeviceName)
-	}
-	if m.FieldCleared(electy.FieldOwner) {
-		fields = append(fields, electy.FieldOwner)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *ElectyMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *ElectyMutation) ClearField(name string) error {
-	switch name {
-	case electy.FieldDeviceSn:
-		m.ClearDeviceSn()
-		return nil
-	case electy.FieldDeviceName:
-		m.ClearDeviceName()
-		return nil
-	case electy.FieldOwner:
-		m.ClearOwner()
-		return nil
-	}
-	return fmt.Errorf("unknown Electy nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *ElectyMutation) ResetField(name string) error {
-	switch name {
-	case electy.FieldCreateTime:
-		m.ResetCreateTime()
-		return nil
-	case electy.FieldUpdateTime:
-		m.ResetUpdateTime()
-		return nil
-	case electy.FieldPCode:
-		m.ResetPCode()
-		return nil
-	case electy.FieldDeviceSn:
-		m.ResetDeviceSn()
-		return nil
-	case electy.FieldDeviceCode:
-		m.ResetDeviceCode()
-		return nil
-	case electy.FieldDeviceType:
-		m.ResetDeviceType()
-		return nil
-	case electy.FieldDeviceName:
-		m.ResetDeviceName()
-		return nil
-	case electy.FieldDataValue:
-		m.ResetDataValue()
-		return nil
-	case electy.FieldXDataValue:
-		m.ResetXDataValue()
-		return nil
-	case electy.FieldFactor:
-		m.ResetFactor()
-		return nil
-	case electy.FieldDataCode:
-		m.ResetDataCode()
-		return nil
-	case electy.FieldDataTime:
-		m.ResetDataTime()
-		return nil
-	case electy.FieldDataTs:
-		m.ResetDataTs()
-		return nil
-	case electy.FieldPosCode:
-		m.ResetPosCode()
-		return nil
-	case electy.FieldProject:
-		m.ResetProject()
-		return nil
-	case electy.FieldOwner:
-		m.ResetOwner()
-		return nil
-	}
-	return fmt.Errorf("unknown Electy field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ElectyMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *ElectyMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ElectyMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *ElectyMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ElectyMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *ElectyMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *ElectyMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Electy unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *ElectyMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Electy edge %s", name)
-}
-
-// WaterMutation represents an operation that mutates the Water nodes in the graph.
-type WaterMutation struct {
+// NhRecordMutation represents an operation that mutates the NhRecord nodes in the graph.
+type NhRecordMutation struct {
 	config
 	op            Op
 	typ           string
@@ -1356,21 +50,21 @@ type WaterMutation struct {
 	owner         *string
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*Water, error)
-	predicates    []predicate.Water
+	oldValue      func(context.Context) (*NhRecord, error)
+	predicates    []predicate.NhRecord
 }
 
-var _ ent.Mutation = (*WaterMutation)(nil)
+var _ ent.Mutation = (*NhRecordMutation)(nil)
 
-// waterOption allows management of the mutation configuration using functional options.
-type waterOption func(*WaterMutation)
+// nhrecordOption allows management of the mutation configuration using functional options.
+type nhrecordOption func(*NhRecordMutation)
 
-// newWaterMutation creates new mutation for the Water entity.
-func newWaterMutation(c config, op Op, opts ...waterOption) *WaterMutation {
-	m := &WaterMutation{
+// newNhRecordMutation creates new mutation for the NhRecord entity.
+func newNhRecordMutation(c config, op Op, opts ...nhrecordOption) *NhRecordMutation {
+	m := &NhRecordMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeWater,
+		typ:           TypeNhRecord,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -1379,20 +73,20 @@ func newWaterMutation(c config, op Op, opts ...waterOption) *WaterMutation {
 	return m
 }
 
-// withWaterID sets the ID field of the mutation.
-func withWaterID(id string) waterOption {
-	return func(m *WaterMutation) {
+// withNhRecordID sets the ID field of the mutation.
+func withNhRecordID(id string) nhrecordOption {
+	return func(m *NhRecordMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *Water
+			value *NhRecord
 		)
-		m.oldValue = func(ctx context.Context) (*Water, error) {
+		m.oldValue = func(ctx context.Context) (*NhRecord, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().Water.Get(ctx, id)
+					value, err = m.Client().NhRecord.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -1401,10 +95,10 @@ func withWaterID(id string) waterOption {
 	}
 }
 
-// withWater sets the old Water of the mutation.
-func withWater(node *Water) waterOption {
-	return func(m *WaterMutation) {
-		m.oldValue = func(context.Context) (*Water, error) {
+// withNhRecord sets the old NhRecord of the mutation.
+func withNhRecord(node *NhRecord) nhrecordOption {
+	return func(m *NhRecordMutation) {
+		m.oldValue = func(context.Context) (*NhRecord, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -1413,7 +107,7 @@ func withWater(node *Water) waterOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m WaterMutation) Client() *Client {
+func (m NhRecordMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -1421,7 +115,7 @@ func (m WaterMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m WaterMutation) Tx() (*Tx, error) {
+func (m NhRecordMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -1431,14 +125,14 @@ func (m WaterMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Water entities.
-func (m *WaterMutation) SetID(id string) {
+// operation is only accepted on creation of NhRecord entities.
+func (m *NhRecordMutation) SetID(id string) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *WaterMutation) ID() (id string, exists bool) {
+func (m *NhRecordMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -1449,7 +143,7 @@ func (m *WaterMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *WaterMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *NhRecordMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -1458,19 +152,19 @@ func (m *WaterMutation) IDs(ctx context.Context) ([]string, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Water.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().NhRecord.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreateTime sets the "create_time" field.
-func (m *WaterMutation) SetCreateTime(t time.Time) {
+func (m *NhRecordMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
 // CreateTime returns the value of the "create_time" field in the mutation.
-func (m *WaterMutation) CreateTime() (r time.Time, exists bool) {
+func (m *NhRecordMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
 		return
@@ -1478,10 +172,10 @@ func (m *WaterMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old "create_time" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldCreateTime returns the old "create_time" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
+func (m *NhRecordMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
 	}
@@ -1496,17 +190,17 @@ func (m *WaterMutation) OldCreateTime(ctx context.Context) (v time.Time, err err
 }
 
 // ResetCreateTime resets all changes to the "create_time" field.
-func (m *WaterMutation) ResetCreateTime() {
+func (m *NhRecordMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (m *WaterMutation) SetUpdateTime(t time.Time) {
+func (m *NhRecordMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
 // UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *WaterMutation) UpdateTime() (r time.Time, exists bool) {
+func (m *NhRecordMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
 		return
@@ -1514,10 +208,10 @@ func (m *WaterMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old "update_time" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdateTime returns the old "update_time" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+func (m *NhRecordMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
 	}
@@ -1532,17 +226,17 @@ func (m *WaterMutation) OldUpdateTime(ctx context.Context) (v time.Time, err err
 }
 
 // ResetUpdateTime resets all changes to the "update_time" field.
-func (m *WaterMutation) ResetUpdateTime() {
+func (m *NhRecordMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
 // SetPCode sets the "p_code" field.
-func (m *WaterMutation) SetPCode(s string) {
+func (m *NhRecordMutation) SetPCode(s string) {
 	m.p_code = &s
 }
 
 // PCode returns the value of the "p_code" field in the mutation.
-func (m *WaterMutation) PCode() (r string, exists bool) {
+func (m *NhRecordMutation) PCode() (r string, exists bool) {
 	v := m.p_code
 	if v == nil {
 		return
@@ -1550,10 +244,10 @@ func (m *WaterMutation) PCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPCode returns the old "p_code" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldPCode returns the old "p_code" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldPCode(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldPCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPCode is only allowed on UpdateOne operations")
 	}
@@ -1568,17 +262,17 @@ func (m *WaterMutation) OldPCode(ctx context.Context) (v string, err error) {
 }
 
 // ResetPCode resets all changes to the "p_code" field.
-func (m *WaterMutation) ResetPCode() {
+func (m *NhRecordMutation) ResetPCode() {
 	m.p_code = nil
 }
 
 // SetDeviceSn sets the "device_sn" field.
-func (m *WaterMutation) SetDeviceSn(s string) {
+func (m *NhRecordMutation) SetDeviceSn(s string) {
 	m.device_sn = &s
 }
 
 // DeviceSn returns the value of the "device_sn" field in the mutation.
-func (m *WaterMutation) DeviceSn() (r string, exists bool) {
+func (m *NhRecordMutation) DeviceSn() (r string, exists bool) {
 	v := m.device_sn
 	if v == nil {
 		return
@@ -1586,10 +280,10 @@ func (m *WaterMutation) DeviceSn() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceSn returns the old "device_sn" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceSn returns the old "device_sn" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
 	}
@@ -1604,30 +298,30 @@ func (m *WaterMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
 }
 
 // ClearDeviceSn clears the value of the "device_sn" field.
-func (m *WaterMutation) ClearDeviceSn() {
+func (m *NhRecordMutation) ClearDeviceSn() {
 	m.device_sn = nil
-	m.clearedFields[water.FieldDeviceSn] = struct{}{}
+	m.clearedFields[nhrecord.FieldDeviceSn] = struct{}{}
 }
 
 // DeviceSnCleared returns if the "device_sn" field was cleared in this mutation.
-func (m *WaterMutation) DeviceSnCleared() bool {
-	_, ok := m.clearedFields[water.FieldDeviceSn]
+func (m *NhRecordMutation) DeviceSnCleared() bool {
+	_, ok := m.clearedFields[nhrecord.FieldDeviceSn]
 	return ok
 }
 
 // ResetDeviceSn resets all changes to the "device_sn" field.
-func (m *WaterMutation) ResetDeviceSn() {
+func (m *NhRecordMutation) ResetDeviceSn() {
 	m.device_sn = nil
-	delete(m.clearedFields, water.FieldDeviceSn)
+	delete(m.clearedFields, nhrecord.FieldDeviceSn)
 }
 
 // SetDeviceCode sets the "device_code" field.
-func (m *WaterMutation) SetDeviceCode(s string) {
+func (m *NhRecordMutation) SetDeviceCode(s string) {
 	m.device_code = &s
 }
 
 // DeviceCode returns the value of the "device_code" field in the mutation.
-func (m *WaterMutation) DeviceCode() (r string, exists bool) {
+func (m *NhRecordMutation) DeviceCode() (r string, exists bool) {
 	v := m.device_code
 	if v == nil {
 		return
@@ -1635,10 +329,10 @@ func (m *WaterMutation) DeviceCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceCode returns the old "device_code" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceCode returns the old "device_code" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceCode is only allowed on UpdateOne operations")
 	}
@@ -1653,17 +347,17 @@ func (m *WaterMutation) OldDeviceCode(ctx context.Context) (v string, err error)
 }
 
 // ResetDeviceCode resets all changes to the "device_code" field.
-func (m *WaterMutation) ResetDeviceCode() {
+func (m *NhRecordMutation) ResetDeviceCode() {
 	m.device_code = nil
 }
 
 // SetDeviceType sets the "device_type" field.
-func (m *WaterMutation) SetDeviceType(s string) {
+func (m *NhRecordMutation) SetDeviceType(s string) {
 	m.device_type = &s
 }
 
 // DeviceType returns the value of the "device_type" field in the mutation.
-func (m *WaterMutation) DeviceType() (r string, exists bool) {
+func (m *NhRecordMutation) DeviceType() (r string, exists bool) {
 	v := m.device_type
 	if v == nil {
 		return
@@ -1671,10 +365,10 @@ func (m *WaterMutation) DeviceType() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceType returns the old "device_type" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceType returns the old "device_type" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDeviceType(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDeviceType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceType is only allowed on UpdateOne operations")
 	}
@@ -1689,17 +383,17 @@ func (m *WaterMutation) OldDeviceType(ctx context.Context) (v string, err error)
 }
 
 // ResetDeviceType resets all changes to the "device_type" field.
-func (m *WaterMutation) ResetDeviceType() {
+func (m *NhRecordMutation) ResetDeviceType() {
 	m.device_type = nil
 }
 
 // SetDeviceName sets the "device_name" field.
-func (m *WaterMutation) SetDeviceName(s string) {
+func (m *NhRecordMutation) SetDeviceName(s string) {
 	m.device_name = &s
 }
 
 // DeviceName returns the value of the "device_name" field in the mutation.
-func (m *WaterMutation) DeviceName() (r string, exists bool) {
+func (m *NhRecordMutation) DeviceName() (r string, exists bool) {
 	v := m.device_name
 	if v == nil {
 		return
@@ -1707,10 +401,10 @@ func (m *WaterMutation) DeviceName() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceName returns the old "device_name" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceName returns the old "device_name" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDeviceName(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDeviceName(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
 	}
@@ -1725,31 +419,31 @@ func (m *WaterMutation) OldDeviceName(ctx context.Context) (v string, err error)
 }
 
 // ClearDeviceName clears the value of the "device_name" field.
-func (m *WaterMutation) ClearDeviceName() {
+func (m *NhRecordMutation) ClearDeviceName() {
 	m.device_name = nil
-	m.clearedFields[water.FieldDeviceName] = struct{}{}
+	m.clearedFields[nhrecord.FieldDeviceName] = struct{}{}
 }
 
 // DeviceNameCleared returns if the "device_name" field was cleared in this mutation.
-func (m *WaterMutation) DeviceNameCleared() bool {
-	_, ok := m.clearedFields[water.FieldDeviceName]
+func (m *NhRecordMutation) DeviceNameCleared() bool {
+	_, ok := m.clearedFields[nhrecord.FieldDeviceName]
 	return ok
 }
 
 // ResetDeviceName resets all changes to the "device_name" field.
-func (m *WaterMutation) ResetDeviceName() {
+func (m *NhRecordMutation) ResetDeviceName() {
 	m.device_name = nil
-	delete(m.clearedFields, water.FieldDeviceName)
+	delete(m.clearedFields, nhrecord.FieldDeviceName)
 }
 
 // SetDataValue sets the "data_value" field.
-func (m *WaterMutation) SetDataValue(i int64) {
+func (m *NhRecordMutation) SetDataValue(i int64) {
 	m.data_value = &i
 	m.adddata_value = nil
 }
 
 // DataValue returns the value of the "data_value" field in the mutation.
-func (m *WaterMutation) DataValue() (r int64, exists bool) {
+func (m *NhRecordMutation) DataValue() (r int64, exists bool) {
 	v := m.data_value
 	if v == nil {
 		return
@@ -1757,10 +451,10 @@ func (m *WaterMutation) DataValue() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldDataValue returns the old "data_value" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDataValue returns the old "data_value" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDataValue(ctx context.Context) (v int64, err error) {
+func (m *NhRecordMutation) OldDataValue(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDataValue is only allowed on UpdateOne operations")
 	}
@@ -1775,7 +469,7 @@ func (m *WaterMutation) OldDataValue(ctx context.Context) (v int64, err error) {
 }
 
 // AddDataValue adds i to the "data_value" field.
-func (m *WaterMutation) AddDataValue(i int64) {
+func (m *NhRecordMutation) AddDataValue(i int64) {
 	if m.adddata_value != nil {
 		*m.adddata_value += i
 	} else {
@@ -1784,7 +478,7 @@ func (m *WaterMutation) AddDataValue(i int64) {
 }
 
 // AddedDataValue returns the value that was added to the "data_value" field in this mutation.
-func (m *WaterMutation) AddedDataValue() (r int64, exists bool) {
+func (m *NhRecordMutation) AddedDataValue() (r int64, exists bool) {
 	v := m.adddata_value
 	if v == nil {
 		return
@@ -1793,18 +487,18 @@ func (m *WaterMutation) AddedDataValue() (r int64, exists bool) {
 }
 
 // ResetDataValue resets all changes to the "data_value" field.
-func (m *WaterMutation) ResetDataValue() {
+func (m *NhRecordMutation) ResetDataValue() {
 	m.data_value = nil
 	m.adddata_value = nil
 }
 
 // SetDataCode sets the "data_code" field.
-func (m *WaterMutation) SetDataCode(s string) {
+func (m *NhRecordMutation) SetDataCode(s string) {
 	m.data_code = &s
 }
 
 // DataCode returns the value of the "data_code" field in the mutation.
-func (m *WaterMutation) DataCode() (r string, exists bool) {
+func (m *NhRecordMutation) DataCode() (r string, exists bool) {
 	v := m.data_code
 	if v == nil {
 		return
@@ -1812,10 +506,10 @@ func (m *WaterMutation) DataCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDataCode returns the old "data_code" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDataCode returns the old "data_code" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDataCode(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDataCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDataCode is only allowed on UpdateOne operations")
 	}
@@ -1830,17 +524,17 @@ func (m *WaterMutation) OldDataCode(ctx context.Context) (v string, err error) {
 }
 
 // ResetDataCode resets all changes to the "data_code" field.
-func (m *WaterMutation) ResetDataCode() {
+func (m *NhRecordMutation) ResetDataCode() {
 	m.data_code = nil
 }
 
 // SetDataTime sets the "data_time" field.
-func (m *WaterMutation) SetDataTime(t time.Time) {
+func (m *NhRecordMutation) SetDataTime(t time.Time) {
 	m.data_time = &t
 }
 
 // DataTime returns the value of the "data_time" field in the mutation.
-func (m *WaterMutation) DataTime() (r time.Time, exists bool) {
+func (m *NhRecordMutation) DataTime() (r time.Time, exists bool) {
 	v := m.data_time
 	if v == nil {
 		return
@@ -1848,10 +542,10 @@ func (m *WaterMutation) DataTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldDataTime returns the old "data_time" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDataTime returns the old "data_time" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDataTime(ctx context.Context) (v time.Time, err error) {
+func (m *NhRecordMutation) OldDataTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDataTime is only allowed on UpdateOne operations")
 	}
@@ -1866,17 +560,17 @@ func (m *WaterMutation) OldDataTime(ctx context.Context) (v time.Time, err error
 }
 
 // ResetDataTime resets all changes to the "data_time" field.
-func (m *WaterMutation) ResetDataTime() {
+func (m *NhRecordMutation) ResetDataTime() {
 	m.data_time = nil
 }
 
 // SetDataTs sets the "data_ts" field.
-func (m *WaterMutation) SetDataTs(s string) {
+func (m *NhRecordMutation) SetDataTs(s string) {
 	m.data_ts = &s
 }
 
 // DataTs returns the value of the "data_ts" field in the mutation.
-func (m *WaterMutation) DataTs() (r string, exists bool) {
+func (m *NhRecordMutation) DataTs() (r string, exists bool) {
 	v := m.data_ts
 	if v == nil {
 		return
@@ -1884,10 +578,10 @@ func (m *WaterMutation) DataTs() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDataTs returns the old "data_ts" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldDataTs returns the old "data_ts" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldDataTs(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldDataTs(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDataTs is only allowed on UpdateOne operations")
 	}
@@ -1902,17 +596,17 @@ func (m *WaterMutation) OldDataTs(ctx context.Context) (v string, err error) {
 }
 
 // ResetDataTs resets all changes to the "data_ts" field.
-func (m *WaterMutation) ResetDataTs() {
+func (m *NhRecordMutation) ResetDataTs() {
 	m.data_ts = nil
 }
 
 // SetPosCode sets the "pos_code" field.
-func (m *WaterMutation) SetPosCode(s string) {
+func (m *NhRecordMutation) SetPosCode(s string) {
 	m.pos_code = &s
 }
 
 // PosCode returns the value of the "pos_code" field in the mutation.
-func (m *WaterMutation) PosCode() (r string, exists bool) {
+func (m *NhRecordMutation) PosCode() (r string, exists bool) {
 	v := m.pos_code
 	if v == nil {
 		return
@@ -1920,10 +614,10 @@ func (m *WaterMutation) PosCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPosCode returns the old "pos_code" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldPosCode returns the old "pos_code" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldPosCode(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldPosCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
 	}
@@ -1938,17 +632,17 @@ func (m *WaterMutation) OldPosCode(ctx context.Context) (v string, err error) {
 }
 
 // ResetPosCode resets all changes to the "pos_code" field.
-func (m *WaterMutation) ResetPosCode() {
+func (m *NhRecordMutation) ResetPosCode() {
 	m.pos_code = nil
 }
 
 // SetProject sets the "project" field.
-func (m *WaterMutation) SetProject(s string) {
+func (m *NhRecordMutation) SetProject(s string) {
 	m.project = &s
 }
 
 // Project returns the value of the "project" field in the mutation.
-func (m *WaterMutation) Project() (r string, exists bool) {
+func (m *NhRecordMutation) Project() (r string, exists bool) {
 	v := m.project
 	if v == nil {
 		return
@@ -1956,10 +650,10 @@ func (m *WaterMutation) Project() (r string, exists bool) {
 	return *v, true
 }
 
-// OldProject returns the old "project" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldProject returns the old "project" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldProject(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldProject(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldProject is only allowed on UpdateOne operations")
 	}
@@ -1974,17 +668,17 @@ func (m *WaterMutation) OldProject(ctx context.Context) (v string, err error) {
 }
 
 // ResetProject resets all changes to the "project" field.
-func (m *WaterMutation) ResetProject() {
+func (m *NhRecordMutation) ResetProject() {
 	m.project = nil
 }
 
 // SetOwner sets the "owner" field.
-func (m *WaterMutation) SetOwner(s string) {
+func (m *NhRecordMutation) SetOwner(s string) {
 	m.owner = &s
 }
 
 // Owner returns the value of the "owner" field in the mutation.
-func (m *WaterMutation) Owner() (r string, exists bool) {
+func (m *NhRecordMutation) Owner() (r string, exists bool) {
 	v := m.owner
 	if v == nil {
 		return
@@ -1992,10 +686,10 @@ func (m *WaterMutation) Owner() (r string, exists bool) {
 	return *v, true
 }
 
-// OldOwner returns the old "owner" field's value of the Water entity.
-// If the Water object wasn't provided to the builder, the object is fetched from the database.
+// OldOwner returns the old "owner" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *WaterMutation) OldOwner(ctx context.Context) (v string, err error) {
+func (m *NhRecordMutation) OldOwner(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
 	}
@@ -2010,32 +704,32 @@ func (m *WaterMutation) OldOwner(ctx context.Context) (v string, err error) {
 }
 
 // ClearOwner clears the value of the "owner" field.
-func (m *WaterMutation) ClearOwner() {
+func (m *NhRecordMutation) ClearOwner() {
 	m.owner = nil
-	m.clearedFields[water.FieldOwner] = struct{}{}
+	m.clearedFields[nhrecord.FieldOwner] = struct{}{}
 }
 
 // OwnerCleared returns if the "owner" field was cleared in this mutation.
-func (m *WaterMutation) OwnerCleared() bool {
-	_, ok := m.clearedFields[water.FieldOwner]
+func (m *NhRecordMutation) OwnerCleared() bool {
+	_, ok := m.clearedFields[nhrecord.FieldOwner]
 	return ok
 }
 
 // ResetOwner resets all changes to the "owner" field.
-func (m *WaterMutation) ResetOwner() {
+func (m *NhRecordMutation) ResetOwner() {
 	m.owner = nil
-	delete(m.clearedFields, water.FieldOwner)
+	delete(m.clearedFields, nhrecord.FieldOwner)
 }
 
-// Where appends a list predicates to the WaterMutation builder.
-func (m *WaterMutation) Where(ps ...predicate.Water) {
+// Where appends a list predicates to the NhRecordMutation builder.
+func (m *NhRecordMutation) Where(ps ...predicate.NhRecord) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the WaterMutation builder. Using this method,
+// WhereP appends storage-level predicates to the NhRecordMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *WaterMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Water, len(ps))
+func (m *NhRecordMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.NhRecord, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -2043,66 +737,66 @@ func (m *WaterMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *WaterMutation) Op() Op {
+func (m *NhRecordMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *WaterMutation) SetOp(op Op) {
+func (m *NhRecordMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (Water).
-func (m *WaterMutation) Type() string {
+// Type returns the node type of this mutation (NhRecord).
+func (m *NhRecordMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *WaterMutation) Fields() []string {
+func (m *NhRecordMutation) Fields() []string {
 	fields := make([]string, 0, 14)
 	if m.create_time != nil {
-		fields = append(fields, water.FieldCreateTime)
+		fields = append(fields, nhrecord.FieldCreateTime)
 	}
 	if m.update_time != nil {
-		fields = append(fields, water.FieldUpdateTime)
+		fields = append(fields, nhrecord.FieldUpdateTime)
 	}
 	if m.p_code != nil {
-		fields = append(fields, water.FieldPCode)
+		fields = append(fields, nhrecord.FieldPCode)
 	}
 	if m.device_sn != nil {
-		fields = append(fields, water.FieldDeviceSn)
+		fields = append(fields, nhrecord.FieldDeviceSn)
 	}
 	if m.device_code != nil {
-		fields = append(fields, water.FieldDeviceCode)
+		fields = append(fields, nhrecord.FieldDeviceCode)
 	}
 	if m.device_type != nil {
-		fields = append(fields, water.FieldDeviceType)
+		fields = append(fields, nhrecord.FieldDeviceType)
 	}
 	if m.device_name != nil {
-		fields = append(fields, water.FieldDeviceName)
+		fields = append(fields, nhrecord.FieldDeviceName)
 	}
 	if m.data_value != nil {
-		fields = append(fields, water.FieldDataValue)
+		fields = append(fields, nhrecord.FieldDataValue)
 	}
 	if m.data_code != nil {
-		fields = append(fields, water.FieldDataCode)
+		fields = append(fields, nhrecord.FieldDataCode)
 	}
 	if m.data_time != nil {
-		fields = append(fields, water.FieldDataTime)
+		fields = append(fields, nhrecord.FieldDataTime)
 	}
 	if m.data_ts != nil {
-		fields = append(fields, water.FieldDataTs)
+		fields = append(fields, nhrecord.FieldDataTs)
 	}
 	if m.pos_code != nil {
-		fields = append(fields, water.FieldPosCode)
+		fields = append(fields, nhrecord.FieldPosCode)
 	}
 	if m.project != nil {
-		fields = append(fields, water.FieldProject)
+		fields = append(fields, nhrecord.FieldProject)
 	}
 	if m.owner != nil {
-		fields = append(fields, water.FieldOwner)
+		fields = append(fields, nhrecord.FieldOwner)
 	}
 	return fields
 }
@@ -2110,35 +804,35 @@ func (m *WaterMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *WaterMutation) Field(name string) (ent.Value, bool) {
+func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case water.FieldCreateTime:
+	case nhrecord.FieldCreateTime:
 		return m.CreateTime()
-	case water.FieldUpdateTime:
+	case nhrecord.FieldUpdateTime:
 		return m.UpdateTime()
-	case water.FieldPCode:
+	case nhrecord.FieldPCode:
 		return m.PCode()
-	case water.FieldDeviceSn:
+	case nhrecord.FieldDeviceSn:
 		return m.DeviceSn()
-	case water.FieldDeviceCode:
+	case nhrecord.FieldDeviceCode:
 		return m.DeviceCode()
-	case water.FieldDeviceType:
+	case nhrecord.FieldDeviceType:
 		return m.DeviceType()
-	case water.FieldDeviceName:
+	case nhrecord.FieldDeviceName:
 		return m.DeviceName()
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		return m.DataValue()
-	case water.FieldDataCode:
+	case nhrecord.FieldDataCode:
 		return m.DataCode()
-	case water.FieldDataTime:
+	case nhrecord.FieldDataTime:
 		return m.DataTime()
-	case water.FieldDataTs:
+	case nhrecord.FieldDataTs:
 		return m.DataTs()
-	case water.FieldPosCode:
+	case nhrecord.FieldPosCode:
 		return m.PosCode()
-	case water.FieldProject:
+	case nhrecord.FieldProject:
 		return m.Project()
-	case water.FieldOwner:
+	case nhrecord.FieldOwner:
 		return m.Owner()
 	}
 	return nil, false
@@ -2147,137 +841,137 @@ func (m *WaterMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *WaterMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case water.FieldCreateTime:
+	case nhrecord.FieldCreateTime:
 		return m.OldCreateTime(ctx)
-	case water.FieldUpdateTime:
+	case nhrecord.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case water.FieldPCode:
+	case nhrecord.FieldPCode:
 		return m.OldPCode(ctx)
-	case water.FieldDeviceSn:
+	case nhrecord.FieldDeviceSn:
 		return m.OldDeviceSn(ctx)
-	case water.FieldDeviceCode:
+	case nhrecord.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
-	case water.FieldDeviceType:
+	case nhrecord.FieldDeviceType:
 		return m.OldDeviceType(ctx)
-	case water.FieldDeviceName:
+	case nhrecord.FieldDeviceName:
 		return m.OldDeviceName(ctx)
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		return m.OldDataValue(ctx)
-	case water.FieldDataCode:
+	case nhrecord.FieldDataCode:
 		return m.OldDataCode(ctx)
-	case water.FieldDataTime:
+	case nhrecord.FieldDataTime:
 		return m.OldDataTime(ctx)
-	case water.FieldDataTs:
+	case nhrecord.FieldDataTs:
 		return m.OldDataTs(ctx)
-	case water.FieldPosCode:
+	case nhrecord.FieldPosCode:
 		return m.OldPosCode(ctx)
-	case water.FieldProject:
+	case nhrecord.FieldProject:
 		return m.OldProject(ctx)
-	case water.FieldOwner:
+	case nhrecord.FieldOwner:
 		return m.OldOwner(ctx)
 	}
-	return nil, fmt.Errorf("unknown Water field %s", name)
+	return nil, fmt.Errorf("unknown NhRecord field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *WaterMutation) SetField(name string, value ent.Value) error {
+func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case water.FieldCreateTime:
+	case nhrecord.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateTime(v)
 		return nil
-	case water.FieldUpdateTime:
+	case nhrecord.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
 		return nil
-	case water.FieldPCode:
+	case nhrecord.FieldPCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPCode(v)
 		return nil
-	case water.FieldDeviceSn:
+	case nhrecord.FieldDeviceSn:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceSn(v)
 		return nil
-	case water.FieldDeviceCode:
+	case nhrecord.FieldDeviceCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceCode(v)
 		return nil
-	case water.FieldDeviceType:
+	case nhrecord.FieldDeviceType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
 		return nil
-	case water.FieldDeviceName:
+	case nhrecord.FieldDeviceName:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceName(v)
 		return nil
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataValue(v)
 		return nil
-	case water.FieldDataCode:
+	case nhrecord.FieldDataCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataCode(v)
 		return nil
-	case water.FieldDataTime:
+	case nhrecord.FieldDataTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataTime(v)
 		return nil
-	case water.FieldDataTs:
+	case nhrecord.FieldDataTs:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDataTs(v)
 		return nil
-	case water.FieldPosCode:
+	case nhrecord.FieldPosCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPosCode(v)
 		return nil
-	case water.FieldProject:
+	case nhrecord.FieldProject:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProject(v)
 		return nil
-	case water.FieldOwner:
+	case nhrecord.FieldOwner:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -2285,15 +979,15 @@ func (m *WaterMutation) SetField(name string, value ent.Value) error {
 		m.SetOwner(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Water field %s", name)
+	return fmt.Errorf("unknown NhRecord field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *WaterMutation) AddedFields() []string {
+func (m *NhRecordMutation) AddedFields() []string {
 	var fields []string
 	if m.adddata_value != nil {
-		fields = append(fields, water.FieldDataValue)
+		fields = append(fields, nhrecord.FieldDataValue)
 	}
 	return fields
 }
@@ -2301,9 +995,9 @@ func (m *WaterMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *WaterMutation) AddedField(name string) (ent.Value, bool) {
+func (m *NhRecordMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		return m.AddedDataValue()
 	}
 	return nil, false
@@ -2312,9 +1006,9 @@ func (m *WaterMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *WaterMutation) AddField(name string, value ent.Value) error {
+func (m *NhRecordMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -2322,143 +1016,143 @@ func (m *WaterMutation) AddField(name string, value ent.Value) error {
 		m.AddDataValue(v)
 		return nil
 	}
-	return fmt.Errorf("unknown Water numeric field %s", name)
+	return fmt.Errorf("unknown NhRecord numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *WaterMutation) ClearedFields() []string {
+func (m *NhRecordMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(water.FieldDeviceSn) {
-		fields = append(fields, water.FieldDeviceSn)
+	if m.FieldCleared(nhrecord.FieldDeviceSn) {
+		fields = append(fields, nhrecord.FieldDeviceSn)
 	}
-	if m.FieldCleared(water.FieldDeviceName) {
-		fields = append(fields, water.FieldDeviceName)
+	if m.FieldCleared(nhrecord.FieldDeviceName) {
+		fields = append(fields, nhrecord.FieldDeviceName)
 	}
-	if m.FieldCleared(water.FieldOwner) {
-		fields = append(fields, water.FieldOwner)
+	if m.FieldCleared(nhrecord.FieldOwner) {
+		fields = append(fields, nhrecord.FieldOwner)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *WaterMutation) FieldCleared(name string) bool {
+func (m *NhRecordMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *WaterMutation) ClearField(name string) error {
+func (m *NhRecordMutation) ClearField(name string) error {
 	switch name {
-	case water.FieldDeviceSn:
+	case nhrecord.FieldDeviceSn:
 		m.ClearDeviceSn()
 		return nil
-	case water.FieldDeviceName:
+	case nhrecord.FieldDeviceName:
 		m.ClearDeviceName()
 		return nil
-	case water.FieldOwner:
+	case nhrecord.FieldOwner:
 		m.ClearOwner()
 		return nil
 	}
-	return fmt.Errorf("unknown Water nullable field %s", name)
+	return fmt.Errorf("unknown NhRecord nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *WaterMutation) ResetField(name string) error {
+func (m *NhRecordMutation) ResetField(name string) error {
 	switch name {
-	case water.FieldCreateTime:
+	case nhrecord.FieldCreateTime:
 		m.ResetCreateTime()
 		return nil
-	case water.FieldUpdateTime:
+	case nhrecord.FieldUpdateTime:
 		m.ResetUpdateTime()
 		return nil
-	case water.FieldPCode:
+	case nhrecord.FieldPCode:
 		m.ResetPCode()
 		return nil
-	case water.FieldDeviceSn:
+	case nhrecord.FieldDeviceSn:
 		m.ResetDeviceSn()
 		return nil
-	case water.FieldDeviceCode:
+	case nhrecord.FieldDeviceCode:
 		m.ResetDeviceCode()
 		return nil
-	case water.FieldDeviceType:
+	case nhrecord.FieldDeviceType:
 		m.ResetDeviceType()
 		return nil
-	case water.FieldDeviceName:
+	case nhrecord.FieldDeviceName:
 		m.ResetDeviceName()
 		return nil
-	case water.FieldDataValue:
+	case nhrecord.FieldDataValue:
 		m.ResetDataValue()
 		return nil
-	case water.FieldDataCode:
+	case nhrecord.FieldDataCode:
 		m.ResetDataCode()
 		return nil
-	case water.FieldDataTime:
+	case nhrecord.FieldDataTime:
 		m.ResetDataTime()
 		return nil
-	case water.FieldDataTs:
+	case nhrecord.FieldDataTs:
 		m.ResetDataTs()
 		return nil
-	case water.FieldPosCode:
+	case nhrecord.FieldPosCode:
 		m.ResetPosCode()
 		return nil
-	case water.FieldProject:
+	case nhrecord.FieldProject:
 		m.ResetProject()
 		return nil
-	case water.FieldOwner:
+	case nhrecord.FieldOwner:
 		m.ResetOwner()
 		return nil
 	}
-	return fmt.Errorf("unknown Water field %s", name)
+	return fmt.Errorf("unknown NhRecord field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *WaterMutation) AddedEdges() []string {
+func (m *NhRecordMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *WaterMutation) AddedIDs(name string) []ent.Value {
+func (m *NhRecordMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *WaterMutation) RemovedEdges() []string {
+func (m *NhRecordMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *WaterMutation) RemovedIDs(name string) []ent.Value {
+func (m *NhRecordMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *WaterMutation) ClearedEdges() []string {
+func (m *NhRecordMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *WaterMutation) EdgeCleared(name string) bool {
+func (m *NhRecordMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *WaterMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Water unique edge %s", name)
+func (m *NhRecordMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown NhRecord unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *WaterMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Water edge %s", name)
+func (m *NhRecordMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown NhRecord edge %s", name)
 }

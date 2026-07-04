@@ -14,10 +14,8 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
-	// Electy is the client for interacting with the Electy builders.
-	Electy *ElectyClient
-	// Water is the client for interacting with the Water builders.
-	Water *WaterClient
+	// NhRecord is the client for interacting with the NhRecord builders.
+	NhRecord *NhRecordClient
 
 	// lazily loaded.
 	client     *Client
@@ -149,8 +147,7 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
-	tx.Electy = NewElectyClient(tx.config)
-	tx.Water = NewWaterClient(tx.config)
+	tx.NhRecord = NewNhRecordClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -160,7 +157,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Electy.QueryXXX(), the query will be executed
+// applies a query, for example: NhRecord.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

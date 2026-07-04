@@ -110,50 +110,26 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The ElectyQueryRuleFunc type is an adapter to allow the use of ordinary
+// The NhRecordQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type ElectyQueryRuleFunc func(context.Context, *ent.ElectyQuery) error
+type NhRecordQueryRuleFunc func(context.Context, *ent.NhRecordQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f ElectyQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.ElectyQuery); ok {
+func (f NhRecordQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.NhRecordQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ElectyQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.NhRecordQuery", q)
 }
 
-// The ElectyMutationRuleFunc type is an adapter to allow the use of ordinary
+// The NhRecordMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type ElectyMutationRuleFunc func(context.Context, *ent.ElectyMutation) error
+type NhRecordMutationRuleFunc func(context.Context, *ent.NhRecordMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f ElectyMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.ElectyMutation); ok {
+func (f NhRecordMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.NhRecordMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ElectyMutation", m)
-}
-
-// The WaterQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type WaterQueryRuleFunc func(context.Context, *ent.WaterQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f WaterQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.WaterQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.WaterQuery", q)
-}
-
-// The WaterMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type WaterMutationRuleFunc func(context.Context, *ent.WaterMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f WaterMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.WaterMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.WaterMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.NhRecordMutation", m)
 }

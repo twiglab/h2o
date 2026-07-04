@@ -9,11 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/vigil/orm/ent/water"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 )
 
-// Water is the model entity for the Water schema.
-type Water struct {
+// NhRecord is the model entity for the NhRecord schema.
+type NhRecord struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
@@ -49,15 +49,15 @@ type Water struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Water) scanValues(columns []string) ([]any, error) {
+func (*NhRecord) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case water.FieldDataValue:
+		case nhrecord.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case water.FieldID, water.FieldPCode, water.FieldDeviceSn, water.FieldDeviceCode, water.FieldDeviceType, water.FieldDeviceName, water.FieldDataCode, water.FieldDataTs, water.FieldPosCode, water.FieldProject, water.FieldOwner:
+		case nhrecord.FieldID, nhrecord.FieldPCode, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldProject, nhrecord.FieldOwner:
 			values[i] = new(sql.NullString)
-		case water.FieldCreateTime, water.FieldUpdateTime, water.FieldDataTime:
+		case nhrecord.FieldCreateTime, nhrecord.FieldUpdateTime, nhrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -67,98 +67,98 @@ func (*Water) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Water fields.
-func (_m *Water) assignValues(columns []string, values []any) error {
+// to the NhRecord fields.
+func (_m *NhRecord) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case water.FieldID:
+		case nhrecord.FieldID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				_m.ID = value.String
 			}
-		case water.FieldCreateTime:
+		case nhrecord.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
 				_m.CreateTime = value.Time
 			}
-		case water.FieldUpdateTime:
+		case nhrecord.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
 			}
-		case water.FieldPCode:
+		case nhrecord.FieldPCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field p_code", values[i])
 			} else if value.Valid {
 				_m.PCode = value.String
 			}
-		case water.FieldDeviceSn:
+		case nhrecord.FieldDeviceSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
 			} else if value.Valid {
 				_m.DeviceSn = value.String
 			}
-		case water.FieldDeviceCode:
+		case nhrecord.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_code", values[i])
 			} else if value.Valid {
 				_m.DeviceCode = value.String
 			}
-		case water.FieldDeviceType:
+		case nhrecord.FieldDeviceType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
 			}
-		case water.FieldDeviceName:
+		case nhrecord.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
 				_m.DeviceName = value.String
 			}
-		case water.FieldDataValue:
+		case nhrecord.FieldDataValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field data_value", values[i])
 			} else if value.Valid {
 				_m.DataValue = value.Int64
 			}
-		case water.FieldDataCode:
+		case nhrecord.FieldDataCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field data_code", values[i])
 			} else if value.Valid {
 				_m.DataCode = value.String
 			}
-		case water.FieldDataTime:
+		case nhrecord.FieldDataTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field data_time", values[i])
 			} else if value.Valid {
 				_m.DataTime = value.Time
 			}
-		case water.FieldDataTs:
+		case nhrecord.FieldDataTs:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field data_ts", values[i])
 			} else if value.Valid {
 				_m.DataTs = value.String
 			}
-		case water.FieldPosCode:
+		case nhrecord.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
 			} else if value.Valid {
 				_m.PosCode = value.String
 			}
-		case water.FieldProject:
+		case nhrecord.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field project", values[i])
 			} else if value.Valid {
 				_m.Project = value.String
 			}
-		case water.FieldOwner:
+		case nhrecord.FieldOwner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
@@ -171,34 +171,34 @@ func (_m *Water) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Water.
+// Value returns the ent.Value that was dynamically selected and assigned to the NhRecord.
 // This includes values selected through modifiers, order, etc.
-func (_m *Water) Value(name string) (ent.Value, error) {
+func (_m *NhRecord) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Water.
-// Note that you need to call Water.Unwrap() before calling this method if this Water
+// Update returns a builder for updating this NhRecord.
+// Note that you need to call NhRecord.Unwrap() before calling this method if this NhRecord
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *Water) Update() *WaterUpdateOne {
-	return NewWaterClient(_m.config).UpdateOne(_m)
+func (_m *NhRecord) Update() *NhRecordUpdateOne {
+	return NewNhRecordClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the Water entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the NhRecord entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *Water) Unwrap() *Water {
+func (_m *NhRecord) Unwrap() *NhRecord {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Water is not a transactional entity")
+		panic("ent: NhRecord is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *Water) String() string {
+func (_m *NhRecord) String() string {
 	var builder strings.Builder
-	builder.WriteString("Water(")
+	builder.WriteString("NhRecord(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("create_time=")
 	builder.WriteString(_m.CreateTime.Format(time.ANSIC))
@@ -245,5 +245,5 @@ func (_m *Water) String() string {
 	return builder.String()
 }
 
-// Waters is a parsable slice of Water.
-type Waters []*Water
+// NhRecords is a parsable slice of NhRecord.
+type NhRecords []*NhRecord

@@ -12,25 +12,25 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/h2o/vigil/orm/ent/electy"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 )
 
-// ElectyCreate is the builder for creating a Electy entity.
-type ElectyCreate struct {
+// NhRecordCreate is the builder for creating a NhRecord entity.
+type NhRecordCreate struct {
 	config
-	mutation *ElectyMutation
+	mutation *NhRecordMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
 }
 
 // SetCreateTime sets the "create_time" field.
-func (_c *ElectyCreate) SetCreateTime(v time.Time) *ElectyCreate {
+func (_c *NhRecordCreate) SetCreateTime(v time.Time) *NhRecordCreate {
 	_c.mutation.SetCreateTime(v)
 	return _c
 }
 
 // SetNillableCreateTime sets the "create_time" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableCreateTime(v *time.Time) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableCreateTime(v *time.Time) *NhRecordCreate {
 	if v != nil {
 		_c.SetCreateTime(*v)
 	}
@@ -38,13 +38,13 @@ func (_c *ElectyCreate) SetNillableCreateTime(v *time.Time) *ElectyCreate {
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (_c *ElectyCreate) SetUpdateTime(v time.Time) *ElectyCreate {
+func (_c *NhRecordCreate) SetUpdateTime(v time.Time) *NhRecordCreate {
 	_c.mutation.SetUpdateTime(v)
 	return _c
 }
 
 // SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableUpdateTime(v *time.Time) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableUpdateTime(v *time.Time) *NhRecordCreate {
 	if v != nil {
 		_c.SetUpdateTime(*v)
 	}
@@ -52,19 +52,19 @@ func (_c *ElectyCreate) SetNillableUpdateTime(v *time.Time) *ElectyCreate {
 }
 
 // SetPCode sets the "p_code" field.
-func (_c *ElectyCreate) SetPCode(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetPCode(v string) *NhRecordCreate {
 	_c.mutation.SetPCode(v)
 	return _c
 }
 
 // SetDeviceSn sets the "device_sn" field.
-func (_c *ElectyCreate) SetDeviceSn(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDeviceSn(v string) *NhRecordCreate {
 	_c.mutation.SetDeviceSn(v)
 	return _c
 }
 
 // SetNillableDeviceSn sets the "device_sn" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableDeviceSn(v *string) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableDeviceSn(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetDeviceSn(*v)
 	}
@@ -72,25 +72,25 @@ func (_c *ElectyCreate) SetNillableDeviceSn(v *string) *ElectyCreate {
 }
 
 // SetDeviceCode sets the "device_code" field.
-func (_c *ElectyCreate) SetDeviceCode(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDeviceCode(v string) *NhRecordCreate {
 	_c.mutation.SetDeviceCode(v)
 	return _c
 }
 
 // SetDeviceType sets the "device_type" field.
-func (_c *ElectyCreate) SetDeviceType(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDeviceType(v string) *NhRecordCreate {
 	_c.mutation.SetDeviceType(v)
 	return _c
 }
 
 // SetDeviceName sets the "device_name" field.
-func (_c *ElectyCreate) SetDeviceName(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDeviceName(v string) *NhRecordCreate {
 	_c.mutation.SetDeviceName(v)
 	return _c
 }
 
 // SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableDeviceName(v *string) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableDeviceName(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetDeviceName(*v)
 	}
@@ -98,85 +98,57 @@ func (_c *ElectyCreate) SetNillableDeviceName(v *string) *ElectyCreate {
 }
 
 // SetDataValue sets the "data_value" field.
-func (_c *ElectyCreate) SetDataValue(v int64) *ElectyCreate {
+func (_c *NhRecordCreate) SetDataValue(v int64) *NhRecordCreate {
 	_c.mutation.SetDataValue(v)
 	return _c
 }
 
 // SetNillableDataValue sets the "data_value" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableDataValue(v *int64) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableDataValue(v *int64) *NhRecordCreate {
 	if v != nil {
 		_c.SetDataValue(*v)
 	}
 	return _c
 }
 
-// SetXDataValue sets the "x_data_value" field.
-func (_c *ElectyCreate) SetXDataValue(v int64) *ElectyCreate {
-	_c.mutation.SetXDataValue(v)
-	return _c
-}
-
-// SetNillableXDataValue sets the "x_data_value" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableXDataValue(v *int64) *ElectyCreate {
-	if v != nil {
-		_c.SetXDataValue(*v)
-	}
-	return _c
-}
-
-// SetFactor sets the "factor" field.
-func (_c *ElectyCreate) SetFactor(v int) *ElectyCreate {
-	_c.mutation.SetFactor(v)
-	return _c
-}
-
-// SetNillableFactor sets the "factor" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableFactor(v *int) *ElectyCreate {
-	if v != nil {
-		_c.SetFactor(*v)
-	}
-	return _c
-}
-
 // SetDataCode sets the "data_code" field.
-func (_c *ElectyCreate) SetDataCode(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDataCode(v string) *NhRecordCreate {
 	_c.mutation.SetDataCode(v)
 	return _c
 }
 
 // SetDataTime sets the "data_time" field.
-func (_c *ElectyCreate) SetDataTime(v time.Time) *ElectyCreate {
+func (_c *NhRecordCreate) SetDataTime(v time.Time) *NhRecordCreate {
 	_c.mutation.SetDataTime(v)
 	return _c
 }
 
 // SetDataTs sets the "data_ts" field.
-func (_c *ElectyCreate) SetDataTs(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetDataTs(v string) *NhRecordCreate {
 	_c.mutation.SetDataTs(v)
 	return _c
 }
 
 // SetPosCode sets the "pos_code" field.
-func (_c *ElectyCreate) SetPosCode(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetPosCode(v string) *NhRecordCreate {
 	_c.mutation.SetPosCode(v)
 	return _c
 }
 
 // SetProject sets the "project" field.
-func (_c *ElectyCreate) SetProject(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
 	_c.mutation.SetProject(v)
 	return _c
 }
 
 // SetOwner sets the "owner" field.
-func (_c *ElectyCreate) SetOwner(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetOwner(v string) *NhRecordCreate {
 	_c.mutation.SetOwner(v)
 	return _c
 }
 
 // SetNillableOwner sets the "owner" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableOwner(v *string) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableOwner(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetOwner(*v)
 	}
@@ -184,32 +156,32 @@ func (_c *ElectyCreate) SetNillableOwner(v *string) *ElectyCreate {
 }
 
 // SetID sets the "id" field.
-func (_c *ElectyCreate) SetID(v string) *ElectyCreate {
+func (_c *NhRecordCreate) SetID(v string) *NhRecordCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (_c *ElectyCreate) SetNillableID(v *string) *ElectyCreate {
+func (_c *NhRecordCreate) SetNillableID(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetID(*v)
 	}
 	return _c
 }
 
-// Mutation returns the ElectyMutation object of the builder.
-func (_c *ElectyCreate) Mutation() *ElectyMutation {
+// Mutation returns the NhRecordMutation object of the builder.
+func (_c *NhRecordCreate) Mutation() *NhRecordMutation {
 	return _c.mutation
 }
 
-// Save creates the Electy in the database.
-func (_c *ElectyCreate) Save(ctx context.Context) (*Electy, error) {
+// Save creates the NhRecord in the database.
+func (_c *NhRecordCreate) Save(ctx context.Context) (*NhRecord, error) {
 	_c.defaults()
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (_c *ElectyCreate) SaveX(ctx context.Context) *Electy {
+func (_c *NhRecordCreate) SaveX(ctx context.Context) *NhRecord {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -218,126 +190,112 @@ func (_c *ElectyCreate) SaveX(ctx context.Context) *Electy {
 }
 
 // Exec executes the query.
-func (_c *ElectyCreate) Exec(ctx context.Context) error {
+func (_c *NhRecordCreate) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ElectyCreate) ExecX(ctx context.Context) {
+func (_c *NhRecordCreate) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *ElectyCreate) defaults() {
+func (_c *NhRecordCreate) defaults() {
 	if _, ok := _c.mutation.CreateTime(); !ok {
-		v := electy.DefaultCreateTime()
+		v := nhrecord.DefaultCreateTime()
 		_c.mutation.SetCreateTime(v)
 	}
 	if _, ok := _c.mutation.UpdateTime(); !ok {
-		v := electy.DefaultUpdateTime()
+		v := nhrecord.DefaultUpdateTime()
 		_c.mutation.SetUpdateTime(v)
 	}
 	if _, ok := _c.mutation.DataValue(); !ok {
-		v := electy.DefaultDataValue
+		v := nhrecord.DefaultDataValue
 		_c.mutation.SetDataValue(v)
 	}
-	if _, ok := _c.mutation.XDataValue(); !ok {
-		v := electy.DefaultXDataValue
-		_c.mutation.SetXDataValue(v)
-	}
-	if _, ok := _c.mutation.Factor(); !ok {
-		v := electy.DefaultFactor
-		_c.mutation.SetFactor(v)
-	}
 	if _, ok := _c.mutation.ID(); !ok {
-		v := electy.DefaultID()
+		v := nhrecord.DefaultID()
 		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (_c *ElectyCreate) check() error {
+func (_c *NhRecordCreate) check() error {
 	if _, ok := _c.mutation.CreateTime(); !ok {
-		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "Electy.create_time"`)}
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "NhRecord.create_time"`)}
 	}
 	if _, ok := _c.mutation.UpdateTime(); !ok {
-		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Electy.update_time"`)}
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "NhRecord.update_time"`)}
 	}
 	if _, ok := _c.mutation.PCode(); !ok {
-		return &ValidationError{Name: "p_code", err: errors.New(`ent: missing required field "Electy.p_code"`)}
+		return &ValidationError{Name: "p_code", err: errors.New(`ent: missing required field "NhRecord.p_code"`)}
 	}
 	if v, ok := _c.mutation.PCode(); ok {
-		if err := electy.PCodeValidator(v); err != nil {
-			return &ValidationError{Name: "p_code", err: fmt.Errorf(`ent: validator failed for field "Electy.p_code": %w`, err)}
+		if err := nhrecord.PCodeValidator(v); err != nil {
+			return &ValidationError{Name: "p_code", err: fmt.Errorf(`ent: validator failed for field "NhRecord.p_code": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.DeviceCode(); !ok {
-		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "Electy.device_code"`)}
+		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "NhRecord.device_code"`)}
 	}
 	if v, ok := _c.mutation.DeviceCode(); ok {
-		if err := electy.DeviceCodeValidator(v); err != nil {
-			return &ValidationError{Name: "device_code", err: fmt.Errorf(`ent: validator failed for field "Electy.device_code": %w`, err)}
+		if err := nhrecord.DeviceCodeValidator(v); err != nil {
+			return &ValidationError{Name: "device_code", err: fmt.Errorf(`ent: validator failed for field "NhRecord.device_code": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.DeviceType(); !ok {
-		return &ValidationError{Name: "device_type", err: errors.New(`ent: missing required field "Electy.device_type"`)}
+		return &ValidationError{Name: "device_type", err: errors.New(`ent: missing required field "NhRecord.device_type"`)}
 	}
 	if v, ok := _c.mutation.DeviceType(); ok {
-		if err := electy.DeviceTypeValidator(v); err != nil {
-			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "Electy.device_type": %w`, err)}
+		if err := nhrecord.DeviceTypeValidator(v); err != nil {
+			return &ValidationError{Name: "device_type", err: fmt.Errorf(`ent: validator failed for field "NhRecord.device_type": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.DataValue(); !ok {
-		return &ValidationError{Name: "data_value", err: errors.New(`ent: missing required field "Electy.data_value"`)}
-	}
-	if _, ok := _c.mutation.XDataValue(); !ok {
-		return &ValidationError{Name: "x_data_value", err: errors.New(`ent: missing required field "Electy.x_data_value"`)}
-	}
-	if _, ok := _c.mutation.Factor(); !ok {
-		return &ValidationError{Name: "factor", err: errors.New(`ent: missing required field "Electy.factor"`)}
+		return &ValidationError{Name: "data_value", err: errors.New(`ent: missing required field "NhRecord.data_value"`)}
 	}
 	if _, ok := _c.mutation.DataCode(); !ok {
-		return &ValidationError{Name: "data_code", err: errors.New(`ent: missing required field "Electy.data_code"`)}
+		return &ValidationError{Name: "data_code", err: errors.New(`ent: missing required field "NhRecord.data_code"`)}
 	}
 	if v, ok := _c.mutation.DataCode(); ok {
-		if err := electy.DataCodeValidator(v); err != nil {
-			return &ValidationError{Name: "data_code", err: fmt.Errorf(`ent: validator failed for field "Electy.data_code": %w`, err)}
+		if err := nhrecord.DataCodeValidator(v); err != nil {
+			return &ValidationError{Name: "data_code", err: fmt.Errorf(`ent: validator failed for field "NhRecord.data_code": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.DataTime(); !ok {
-		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "Electy.data_time"`)}
+		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "NhRecord.data_time"`)}
 	}
 	if _, ok := _c.mutation.DataTs(); !ok {
-		return &ValidationError{Name: "data_ts", err: errors.New(`ent: missing required field "Electy.data_ts"`)}
+		return &ValidationError{Name: "data_ts", err: errors.New(`ent: missing required field "NhRecord.data_ts"`)}
 	}
 	if v, ok := _c.mutation.DataTs(); ok {
-		if err := electy.DataTsValidator(v); err != nil {
-			return &ValidationError{Name: "data_ts", err: fmt.Errorf(`ent: validator failed for field "Electy.data_ts": %w`, err)}
+		if err := nhrecord.DataTsValidator(v); err != nil {
+			return &ValidationError{Name: "data_ts", err: fmt.Errorf(`ent: validator failed for field "NhRecord.data_ts": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.PosCode(); !ok {
-		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "Electy.pos_code"`)}
+		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "NhRecord.pos_code"`)}
 	}
 	if _, ok := _c.mutation.Project(); !ok {
-		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "Electy.project"`)}
+		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "NhRecord.project"`)}
 	}
 	if v, ok := _c.mutation.Project(); ok {
-		if err := electy.ProjectValidator(v); err != nil {
-			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "Electy.project": %w`, err)}
+		if err := nhrecord.ProjectValidator(v); err != nil {
+			return &ValidationError{Name: "project", err: fmt.Errorf(`ent: validator failed for field "NhRecord.project": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
-		if err := electy.IDValidator(v); err != nil {
-			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "Electy.id": %w`, err)}
+		if err := nhrecord.IDValidator(v); err != nil {
+			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "NhRecord.id": %w`, err)}
 		}
 	}
 	return nil
 }
 
-func (_c *ElectyCreate) sqlSave(ctx context.Context) (*Electy, error) {
+func (_c *NhRecordCreate) sqlSave(ctx context.Context) (*NhRecord, error) {
 	if err := _c.check(); err != nil {
 		return nil, err
 	}
@@ -352,7 +310,7 @@ func (_c *ElectyCreate) sqlSave(ctx context.Context) (*Electy, error) {
 		if id, ok := _spec.ID.Value.(string); ok {
 			_node.ID = id
 		} else {
-			return nil, fmt.Errorf("unexpected Electy.ID type: %T", _spec.ID.Value)
+			return nil, fmt.Errorf("unexpected NhRecord.ID type: %T", _spec.ID.Value)
 		}
 	}
 	_c.mutation.id = &_node.ID
@@ -360,10 +318,10 @@ func (_c *ElectyCreate) sqlSave(ctx context.Context) (*Electy, error) {
 	return _node, nil
 }
 
-func (_c *ElectyCreate) createSpec() (*Electy, *sqlgraph.CreateSpec) {
+func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Electy{config: _c.config}
-		_spec = sqlgraph.NewCreateSpec(electy.Table, sqlgraph.NewFieldSpec(electy.FieldID, field.TypeString))
+		_node = &NhRecord{config: _c.config}
+		_spec = sqlgraph.NewCreateSpec(nhrecord.Table, sqlgraph.NewFieldSpec(nhrecord.FieldID, field.TypeString))
 	)
 	_spec.OnConflict = _c.conflict
 	if id, ok := _c.mutation.ID(); ok {
@@ -371,67 +329,59 @@ func (_c *ElectyCreate) createSpec() (*Electy, *sqlgraph.CreateSpec) {
 		_spec.ID.Value = id
 	}
 	if value, ok := _c.mutation.CreateTime(); ok {
-		_spec.SetField(electy.FieldCreateTime, field.TypeTime, value)
+		_spec.SetField(nhrecord.FieldCreateTime, field.TypeTime, value)
 		_node.CreateTime = value
 	}
 	if value, ok := _c.mutation.UpdateTime(); ok {
-		_spec.SetField(electy.FieldUpdateTime, field.TypeTime, value)
+		_spec.SetField(nhrecord.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
 	}
 	if value, ok := _c.mutation.PCode(); ok {
-		_spec.SetField(electy.FieldPCode, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldPCode, field.TypeString, value)
 		_node.PCode = value
 	}
 	if value, ok := _c.mutation.DeviceSn(); ok {
-		_spec.SetField(electy.FieldDeviceSn, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDeviceSn, field.TypeString, value)
 		_node.DeviceSn = value
 	}
 	if value, ok := _c.mutation.DeviceCode(); ok {
-		_spec.SetField(electy.FieldDeviceCode, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDeviceCode, field.TypeString, value)
 		_node.DeviceCode = value
 	}
 	if value, ok := _c.mutation.DeviceType(); ok {
-		_spec.SetField(electy.FieldDeviceType, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDeviceType, field.TypeString, value)
 		_node.DeviceType = value
 	}
 	if value, ok := _c.mutation.DeviceName(); ok {
-		_spec.SetField(electy.FieldDeviceName, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDeviceName, field.TypeString, value)
 		_node.DeviceName = value
 	}
 	if value, ok := _c.mutation.DataValue(); ok {
-		_spec.SetField(electy.FieldDataValue, field.TypeInt64, value)
+		_spec.SetField(nhrecord.FieldDataValue, field.TypeInt64, value)
 		_node.DataValue = value
 	}
-	if value, ok := _c.mutation.XDataValue(); ok {
-		_spec.SetField(electy.FieldXDataValue, field.TypeInt64, value)
-		_node.XDataValue = value
-	}
-	if value, ok := _c.mutation.Factor(); ok {
-		_spec.SetField(electy.FieldFactor, field.TypeInt, value)
-		_node.Factor = value
-	}
 	if value, ok := _c.mutation.DataCode(); ok {
-		_spec.SetField(electy.FieldDataCode, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDataCode, field.TypeString, value)
 		_node.DataCode = value
 	}
 	if value, ok := _c.mutation.DataTime(); ok {
-		_spec.SetField(electy.FieldDataTime, field.TypeTime, value)
+		_spec.SetField(nhrecord.FieldDataTime, field.TypeTime, value)
 		_node.DataTime = value
 	}
 	if value, ok := _c.mutation.DataTs(); ok {
-		_spec.SetField(electy.FieldDataTs, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldDataTs, field.TypeString, value)
 		_node.DataTs = value
 	}
 	if value, ok := _c.mutation.PosCode(); ok {
-		_spec.SetField(electy.FieldPosCode, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
 	}
 	if value, ok := _c.mutation.Project(); ok {
-		_spec.SetField(electy.FieldProject, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
 		_node.Project = value
 	}
 	if value, ok := _c.mutation.Owner(); ok {
-		_spec.SetField(electy.FieldOwner, field.TypeString, value)
+		_spec.SetField(nhrecord.FieldOwner, field.TypeString, value)
 		_node.Owner = value
 	}
 	return _node, _spec
@@ -440,7 +390,7 @@ func (_c *ElectyCreate) createSpec() (*Electy, *sqlgraph.CreateSpec) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		SetCreateTime(v).
 //		OnConflict(
 //			// Update the row with the new values
@@ -449,13 +399,13 @@ func (_c *ElectyCreate) createSpec() (*Electy, *sqlgraph.CreateSpec) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.ElectyUpsert) {
+//		Update(func(u *ent.NhRecordUpsert) {
 //			SetCreateTime(v+v).
 //		}).
 //		Exec(ctx)
-func (_c *ElectyCreate) OnConflict(opts ...sql.ConflictOption) *ElectyUpsertOne {
+func (_c *NhRecordCreate) OnConflict(opts ...sql.ConflictOption) *NhRecordUpsertOne {
 	_c.conflict = opts
-	return &ElectyUpsertOne{
+	return &NhRecordUpsertOne{
 		create: _c,
 	}
 }
@@ -463,102 +413,96 @@ func (_c *ElectyCreate) OnConflict(opts ...sql.ConflictOption) *ElectyUpsertOne 
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (_c *ElectyCreate) OnConflictColumns(columns ...string) *ElectyUpsertOne {
+func (_c *NhRecordCreate) OnConflictColumns(columns ...string) *NhRecordUpsertOne {
 	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
-	return &ElectyUpsertOne{
+	return &NhRecordUpsertOne{
 		create: _c,
 	}
 }
 
 type (
-	// ElectyUpsertOne is the builder for "upsert"-ing
-	//  one Electy node.
-	ElectyUpsertOne struct {
-		create *ElectyCreate
+	// NhRecordUpsertOne is the builder for "upsert"-ing
+	//  one NhRecord node.
+	NhRecordUpsertOne struct {
+		create *NhRecordCreate
 	}
 
-	// ElectyUpsert is the "OnConflict" setter.
-	ElectyUpsert struct {
+	// NhRecordUpsert is the "OnConflict" setter.
+	NhRecordUpsert struct {
 		*sql.UpdateSet
 	}
 )
 
 // SetUpdateTime sets the "update_time" field.
-func (u *ElectyUpsert) SetUpdateTime(v time.Time) *ElectyUpsert {
-	u.Set(electy.FieldUpdateTime, v)
+func (u *NhRecordUpsert) SetUpdateTime(v time.Time) *NhRecordUpsert {
+	u.Set(nhrecord.FieldUpdateTime, v)
 	return u
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *ElectyUpsert) UpdateUpdateTime() *ElectyUpsert {
-	u.SetExcluded(electy.FieldUpdateTime)
+func (u *NhRecordUpsert) UpdateUpdateTime() *NhRecordUpsert {
+	u.SetExcluded(nhrecord.FieldUpdateTime)
 	return u
 }
 
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(electy.FieldID)
+//				u.SetIgnore(nhrecord.FieldID)
 //			}),
 //		).
 //		Exec(ctx)
-func (u *ElectyUpsertOne) UpdateNewValues() *ElectyUpsertOne {
+func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		if _, exists := u.create.mutation.ID(); exists {
-			s.SetIgnore(electy.FieldID)
+			s.SetIgnore(nhrecord.FieldID)
 		}
 		if _, exists := u.create.mutation.CreateTime(); exists {
-			s.SetIgnore(electy.FieldCreateTime)
+			s.SetIgnore(nhrecord.FieldCreateTime)
 		}
 		if _, exists := u.create.mutation.PCode(); exists {
-			s.SetIgnore(electy.FieldPCode)
+			s.SetIgnore(nhrecord.FieldPCode)
 		}
 		if _, exists := u.create.mutation.DeviceSn(); exists {
-			s.SetIgnore(electy.FieldDeviceSn)
+			s.SetIgnore(nhrecord.FieldDeviceSn)
 		}
 		if _, exists := u.create.mutation.DeviceCode(); exists {
-			s.SetIgnore(electy.FieldDeviceCode)
+			s.SetIgnore(nhrecord.FieldDeviceCode)
 		}
 		if _, exists := u.create.mutation.DeviceType(); exists {
-			s.SetIgnore(electy.FieldDeviceType)
+			s.SetIgnore(nhrecord.FieldDeviceType)
 		}
 		if _, exists := u.create.mutation.DeviceName(); exists {
-			s.SetIgnore(electy.FieldDeviceName)
+			s.SetIgnore(nhrecord.FieldDeviceName)
 		}
 		if _, exists := u.create.mutation.DataValue(); exists {
-			s.SetIgnore(electy.FieldDataValue)
-		}
-		if _, exists := u.create.mutation.XDataValue(); exists {
-			s.SetIgnore(electy.FieldXDataValue)
-		}
-		if _, exists := u.create.mutation.Factor(); exists {
-			s.SetIgnore(electy.FieldFactor)
+			s.SetIgnore(nhrecord.FieldDataValue)
 		}
 		if _, exists := u.create.mutation.DataCode(); exists {
-			s.SetIgnore(electy.FieldDataCode)
+			s.SetIgnore(nhrecord.FieldDataCode)
 		}
 		if _, exists := u.create.mutation.DataTime(); exists {
-			s.SetIgnore(electy.FieldDataTime)
+			s.SetIgnore(nhrecord.FieldDataTime)
 		}
 		if _, exists := u.create.mutation.DataTs(); exists {
-			s.SetIgnore(electy.FieldDataTs)
+			s.SetIgnore(nhrecord.FieldDataTs)
 		}
 		if _, exists := u.create.mutation.PosCode(); exists {
-			s.SetIgnore(electy.FieldPosCode)
+			s.SetIgnore(nhrecord.FieldPosCode)
 		}
 		if _, exists := u.create.mutation.Project(); exists {
-			s.SetIgnore(electy.FieldProject)
+			s.SetIgnore(nhrecord.FieldProject)
 		}
 		if _, exists := u.create.mutation.Owner(); exists {
-			s.SetIgnore(electy.FieldOwner)
+			s.SetIgnore(nhrecord.FieldOwner)
 		}
 	}))
 	return u
@@ -567,65 +511,65 @@ func (u *ElectyUpsertOne) UpdateNewValues() *ElectyUpsertOne {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //	    OnConflict(sql.ResolveWithIgnore()).
 //	    Exec(ctx)
-func (u *ElectyUpsertOne) Ignore() *ElectyUpsertOne {
+func (u *NhRecordUpsertOne) Ignore() *NhRecordUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *ElectyUpsertOne) DoNothing() *ElectyUpsertOne {
+func (u *NhRecordUpsertOne) DoNothing() *NhRecordUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
-// Update allows overriding fields `UPDATE` values. See the ElectyCreate.OnConflict
+// Update allows overriding fields `UPDATE` values. See the NhRecordCreate.OnConflict
 // documentation for more info.
-func (u *ElectyUpsertOne) Update(set func(*ElectyUpsert)) *ElectyUpsertOne {
+func (u *NhRecordUpsertOne) Update(set func(*NhRecordUpsert)) *NhRecordUpsertOne {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&ElectyUpsert{UpdateSet: update})
+		set(&NhRecordUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (u *ElectyUpsertOne) SetUpdateTime(v time.Time) *ElectyUpsertOne {
-	return u.Update(func(s *ElectyUpsert) {
+func (u *NhRecordUpsertOne) SetUpdateTime(v time.Time) *NhRecordUpsertOne {
+	return u.Update(func(s *NhRecordUpsert) {
 		s.SetUpdateTime(v)
 	})
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *ElectyUpsertOne) UpdateUpdateTime() *ElectyUpsertOne {
-	return u.Update(func(s *ElectyUpsert) {
+func (u *NhRecordUpsertOne) UpdateUpdateTime() *NhRecordUpsertOne {
+	return u.Update(func(s *NhRecordUpsert) {
 		s.UpdateUpdateTime()
 	})
 }
 
 // Exec executes the query.
-func (u *ElectyUpsertOne) Exec(ctx context.Context) error {
+func (u *NhRecordUpsertOne) Exec(ctx context.Context) error {
 	if len(u.create.conflict) == 0 {
-		return errors.New("ent: missing options for ElectyCreate.OnConflict")
+		return errors.New("ent: missing options for NhRecordCreate.OnConflict")
 	}
 	return u.create.Exec(ctx)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *ElectyUpsertOne) ExecX(ctx context.Context) {
+func (u *NhRecordUpsertOne) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *ElectyUpsertOne) ID(ctx context.Context) (id string, err error) {
+func (u *NhRecordUpsertOne) ID(ctx context.Context) (id string, err error) {
 	if u.create.driver.Dialect() == dialect.MySQL {
 		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
 		// fields from the database since MySQL does not support the RETURNING clause.
-		return id, errors.New("ent: ElectyUpsertOne.ID is not supported by MySQL driver. Use ElectyUpsertOne.Exec instead")
+		return id, errors.New("ent: NhRecordUpsertOne.ID is not supported by MySQL driver. Use NhRecordUpsertOne.Exec instead")
 	}
 	node, err := u.create.Save(ctx)
 	if err != nil {
@@ -635,7 +579,7 @@ func (u *ElectyUpsertOne) ID(ctx context.Context) (id string, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *ElectyUpsertOne) IDX(ctx context.Context) string {
+func (u *NhRecordUpsertOne) IDX(ctx context.Context) string {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -643,28 +587,28 @@ func (u *ElectyUpsertOne) IDX(ctx context.Context) string {
 	return id
 }
 
-// ElectyCreateBulk is the builder for creating many Electy entities in bulk.
-type ElectyCreateBulk struct {
+// NhRecordCreateBulk is the builder for creating many NhRecord entities in bulk.
+type NhRecordCreateBulk struct {
 	config
 	err      error
-	builders []*ElectyCreate
+	builders []*NhRecordCreate
 	conflict []sql.ConflictOption
 }
 
-// Save creates the Electy entities in the database.
-func (_c *ElectyCreateBulk) Save(ctx context.Context) ([]*Electy, error) {
+// Save creates the NhRecord entities in the database.
+func (_c *NhRecordCreateBulk) Save(ctx context.Context) ([]*NhRecord, error) {
 	if _c.err != nil {
 		return nil, _c.err
 	}
 	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
-	nodes := make([]*Electy, len(_c.builders))
+	nodes := make([]*NhRecord, len(_c.builders))
 	mutators := make([]Mutator, len(_c.builders))
 	for i := range _c.builders {
 		func(i int, root context.Context) {
 			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-				mutation, ok := m.(*ElectyMutation)
+				mutation, ok := m.(*NhRecordMutation)
 				if !ok {
 					return nil, fmt.Errorf("unexpected mutation type %T", m)
 				}
@@ -708,7 +652,7 @@ func (_c *ElectyCreateBulk) Save(ctx context.Context) ([]*Electy, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (_c *ElectyCreateBulk) SaveX(ctx context.Context) []*Electy {
+func (_c *NhRecordCreateBulk) SaveX(ctx context.Context) []*NhRecord {
 	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -717,13 +661,13 @@ func (_c *ElectyCreateBulk) SaveX(ctx context.Context) []*Electy {
 }
 
 // Exec executes the query.
-func (_c *ElectyCreateBulk) Exec(ctx context.Context) error {
+func (_c *NhRecordCreateBulk) Exec(ctx context.Context) error {
 	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_c *ElectyCreateBulk) ExecX(ctx context.Context) {
+func (_c *NhRecordCreateBulk) ExecX(ctx context.Context) {
 	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
@@ -732,7 +676,7 @@ func (_c *ElectyCreateBulk) ExecX(ctx context.Context) {
 // OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
 // of the `INSERT` statement. For example:
 //
-//	client.Electy.CreateBulk(builders...).
+//	client.NhRecord.CreateBulk(builders...).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -740,13 +684,13 @@ func (_c *ElectyCreateBulk) ExecX(ctx context.Context) {
 //		).
 //		// Override some of the fields with custom
 //		// update values.
-//		Update(func(u *ent.ElectyUpsert) {
+//		Update(func(u *ent.NhRecordUpsert) {
 //			SetCreateTime(v+v).
 //		}).
 //		Exec(ctx)
-func (_c *ElectyCreateBulk) OnConflict(opts ...sql.ConflictOption) *ElectyUpsertBulk {
+func (_c *NhRecordCreateBulk) OnConflict(opts ...sql.ConflictOption) *NhRecordUpsertBulk {
 	_c.conflict = opts
-	return &ElectyUpsertBulk{
+	return &NhRecordUpsertBulk{
 		create: _c,
 	}
 }
@@ -754,84 +698,78 @@ func (_c *ElectyCreateBulk) OnConflict(opts ...sql.ConflictOption) *ElectyUpsert
 // OnConflictColumns calls `OnConflict` and configures the columns
 // as conflict target. Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (_c *ElectyCreateBulk) OnConflictColumns(columns ...string) *ElectyUpsertBulk {
+func (_c *NhRecordCreateBulk) OnConflictColumns(columns ...string) *NhRecordUpsertBulk {
 	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
-	return &ElectyUpsertBulk{
+	return &NhRecordUpsertBulk{
 		create: _c,
 	}
 }
 
-// ElectyUpsertBulk is the builder for "upsert"-ing
-// a bulk of Electy nodes.
-type ElectyUpsertBulk struct {
-	create *ElectyCreateBulk
+// NhRecordUpsertBulk is the builder for "upsert"-ing
+// a bulk of NhRecord nodes.
+type NhRecordUpsertBulk struct {
+	create *NhRecordCreateBulk
 }
 
 // UpdateNewValues updates the mutable fields using the new values that
 // were set on create. Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		OnConflict(
 //			sql.ResolveWithNewValues(),
 //			sql.ResolveWith(func(u *sql.UpdateSet) {
-//				u.SetIgnore(electy.FieldID)
+//				u.SetIgnore(nhrecord.FieldID)
 //			}),
 //		).
 //		Exec(ctx)
-func (u *ElectyUpsertBulk) UpdateNewValues() *ElectyUpsertBulk {
+func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
 		for _, b := range u.create.builders {
 			if _, exists := b.mutation.ID(); exists {
-				s.SetIgnore(electy.FieldID)
+				s.SetIgnore(nhrecord.FieldID)
 			}
 			if _, exists := b.mutation.CreateTime(); exists {
-				s.SetIgnore(electy.FieldCreateTime)
+				s.SetIgnore(nhrecord.FieldCreateTime)
 			}
 			if _, exists := b.mutation.PCode(); exists {
-				s.SetIgnore(electy.FieldPCode)
+				s.SetIgnore(nhrecord.FieldPCode)
 			}
 			if _, exists := b.mutation.DeviceSn(); exists {
-				s.SetIgnore(electy.FieldDeviceSn)
+				s.SetIgnore(nhrecord.FieldDeviceSn)
 			}
 			if _, exists := b.mutation.DeviceCode(); exists {
-				s.SetIgnore(electy.FieldDeviceCode)
+				s.SetIgnore(nhrecord.FieldDeviceCode)
 			}
 			if _, exists := b.mutation.DeviceType(); exists {
-				s.SetIgnore(electy.FieldDeviceType)
+				s.SetIgnore(nhrecord.FieldDeviceType)
 			}
 			if _, exists := b.mutation.DeviceName(); exists {
-				s.SetIgnore(electy.FieldDeviceName)
+				s.SetIgnore(nhrecord.FieldDeviceName)
 			}
 			if _, exists := b.mutation.DataValue(); exists {
-				s.SetIgnore(electy.FieldDataValue)
-			}
-			if _, exists := b.mutation.XDataValue(); exists {
-				s.SetIgnore(electy.FieldXDataValue)
-			}
-			if _, exists := b.mutation.Factor(); exists {
-				s.SetIgnore(electy.FieldFactor)
+				s.SetIgnore(nhrecord.FieldDataValue)
 			}
 			if _, exists := b.mutation.DataCode(); exists {
-				s.SetIgnore(electy.FieldDataCode)
+				s.SetIgnore(nhrecord.FieldDataCode)
 			}
 			if _, exists := b.mutation.DataTime(); exists {
-				s.SetIgnore(electy.FieldDataTime)
+				s.SetIgnore(nhrecord.FieldDataTime)
 			}
 			if _, exists := b.mutation.DataTs(); exists {
-				s.SetIgnore(electy.FieldDataTs)
+				s.SetIgnore(nhrecord.FieldDataTs)
 			}
 			if _, exists := b.mutation.PosCode(); exists {
-				s.SetIgnore(electy.FieldPosCode)
+				s.SetIgnore(nhrecord.FieldPosCode)
 			}
 			if _, exists := b.mutation.Project(); exists {
-				s.SetIgnore(electy.FieldProject)
+				s.SetIgnore(nhrecord.FieldProject)
 			}
 			if _, exists := b.mutation.Owner(); exists {
-				s.SetIgnore(electy.FieldOwner)
+				s.SetIgnore(nhrecord.FieldOwner)
 			}
 		}
 	}))
@@ -841,62 +779,62 @@ func (u *ElectyUpsertBulk) UpdateNewValues() *ElectyUpsertBulk {
 // Ignore sets each column to itself in case of conflict.
 // Using this option is equivalent to using:
 //
-//	client.Electy.Create().
+//	client.NhRecord.Create().
 //		OnConflict(sql.ResolveWithIgnore()).
 //		Exec(ctx)
-func (u *ElectyUpsertBulk) Ignore() *ElectyUpsertBulk {
+func (u *NhRecordUpsertBulk) Ignore() *NhRecordUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
 	return u
 }
 
 // DoNothing configures the conflict_action to `DO NOTHING`.
 // Supported only by SQLite and PostgreSQL.
-func (u *ElectyUpsertBulk) DoNothing() *ElectyUpsertBulk {
+func (u *NhRecordUpsertBulk) DoNothing() *NhRecordUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.DoNothing())
 	return u
 }
 
-// Update allows overriding fields `UPDATE` values. See the ElectyCreateBulk.OnConflict
+// Update allows overriding fields `UPDATE` values. See the NhRecordCreateBulk.OnConflict
 // documentation for more info.
-func (u *ElectyUpsertBulk) Update(set func(*ElectyUpsert)) *ElectyUpsertBulk {
+func (u *NhRecordUpsertBulk) Update(set func(*NhRecordUpsert)) *NhRecordUpsertBulk {
 	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
-		set(&ElectyUpsert{UpdateSet: update})
+		set(&NhRecordUpsert{UpdateSet: update})
 	}))
 	return u
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (u *ElectyUpsertBulk) SetUpdateTime(v time.Time) *ElectyUpsertBulk {
-	return u.Update(func(s *ElectyUpsert) {
+func (u *NhRecordUpsertBulk) SetUpdateTime(v time.Time) *NhRecordUpsertBulk {
+	return u.Update(func(s *NhRecordUpsert) {
 		s.SetUpdateTime(v)
 	})
 }
 
 // UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
-func (u *ElectyUpsertBulk) UpdateUpdateTime() *ElectyUpsertBulk {
-	return u.Update(func(s *ElectyUpsert) {
+func (u *NhRecordUpsertBulk) UpdateUpdateTime() *NhRecordUpsertBulk {
+	return u.Update(func(s *NhRecordUpsert) {
 		s.UpdateUpdateTime()
 	})
 }
 
 // Exec executes the query.
-func (u *ElectyUpsertBulk) Exec(ctx context.Context) error {
+func (u *NhRecordUpsertBulk) Exec(ctx context.Context) error {
 	if u.create.err != nil {
 		return u.create.err
 	}
 	for i, b := range u.create.builders {
 		if len(b.conflict) != 0 {
-			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the ElectyCreateBulk instead", i)
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the NhRecordCreateBulk instead", i)
 		}
 	}
 	if len(u.create.conflict) == 0 {
-		return errors.New("ent: missing options for ElectyCreateBulk.OnConflict")
+		return errors.New("ent: missing options for NhRecordCreateBulk.OnConflict")
 	}
 	return u.create.Exec(ctx)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (u *ElectyUpsertBulk) ExecX(ctx context.Context) {
+func (u *NhRecordUpsertBulk) ExecX(ctx context.Context) {
 	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}

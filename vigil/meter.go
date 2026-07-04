@@ -18,11 +18,9 @@ type Meter struct {
 
 type ElectricityMeter struct {
 	Meter
-	Data  common.Electricity      `json:"data,omitzero"`
-	Param common.ElectricityParam `json:"param,omitzero"`
+	Data common.Electricity `json:"data,omitzero"`
 
-	XDateValue int64
-	STD        float64
+	STD float64
 }
 
 func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
@@ -31,8 +29,6 @@ func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
 
 func (d *ElectricityMeter) setup() {
 	d.Ts = d.DataTime.Format(f)
-	d.XDateValue = d.Data.DataValue * int64(d.Param.Factor)
-
 	fd := stats.LoadRawData([]int64{d.Data.CurrentA, d.Data.CurrentB, d.Data.CurrentC})
 	d.STD, _ = fd.StandardDeviationPopulation()
 }

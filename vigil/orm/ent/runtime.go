@@ -5,8 +5,7 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/h2o/vigil/orm/ent/electy"
-	"github.com/twiglab/h2o/vigil/orm/ent/water"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 	"github.com/twiglab/h2o/vigil/orm/schema"
 )
 
@@ -14,110 +13,53 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	electyMixin := schema.Electy{}.Mixin()
-	electyMixinFields0 := electyMixin[0].Fields()
-	_ = electyMixinFields0
-	electyFields := schema.Electy{}.Fields()
-	_ = electyFields
-	// electyDescCreateTime is the schema descriptor for create_time field.
-	electyDescCreateTime := electyMixinFields0[0].Descriptor()
-	// electy.DefaultCreateTime holds the default value on creation for the create_time field.
-	electy.DefaultCreateTime = electyDescCreateTime.Default.(func() time.Time)
-	// electyDescUpdateTime is the schema descriptor for update_time field.
-	electyDescUpdateTime := electyMixinFields0[1].Descriptor()
-	// electy.DefaultUpdateTime holds the default value on creation for the update_time field.
-	electy.DefaultUpdateTime = electyDescUpdateTime.Default.(func() time.Time)
-	// electy.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	electy.UpdateDefaultUpdateTime = electyDescUpdateTime.UpdateDefault.(func() time.Time)
-	// electyDescPCode is the schema descriptor for p_code field.
-	electyDescPCode := electyFields[1].Descriptor()
-	// electy.PCodeValidator is a validator for the "p_code" field. It is called by the builders before save.
-	electy.PCodeValidator = electyDescPCode.Validators[0].(func(string) error)
-	// electyDescDeviceCode is the schema descriptor for device_code field.
-	electyDescDeviceCode := electyFields[3].Descriptor()
-	// electy.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
-	electy.DeviceCodeValidator = electyDescDeviceCode.Validators[0].(func(string) error)
-	// electyDescDeviceType is the schema descriptor for device_type field.
-	electyDescDeviceType := electyFields[4].Descriptor()
-	// electy.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
-	electy.DeviceTypeValidator = electyDescDeviceType.Validators[0].(func(string) error)
-	// electyDescDataValue is the schema descriptor for data_value field.
-	electyDescDataValue := electyFields[6].Descriptor()
-	// electy.DefaultDataValue holds the default value on creation for the data_value field.
-	electy.DefaultDataValue = electyDescDataValue.Default.(int64)
-	// electyDescXDataValue is the schema descriptor for x_data_value field.
-	electyDescXDataValue := electyFields[7].Descriptor()
-	// electy.DefaultXDataValue holds the default value on creation for the x_data_value field.
-	electy.DefaultXDataValue = electyDescXDataValue.Default.(int64)
-	// electyDescFactor is the schema descriptor for factor field.
-	electyDescFactor := electyFields[8].Descriptor()
-	// electy.DefaultFactor holds the default value on creation for the factor field.
-	electy.DefaultFactor = electyDescFactor.Default.(int)
-	// electyDescDataCode is the schema descriptor for data_code field.
-	electyDescDataCode := electyFields[9].Descriptor()
-	// electy.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
-	electy.DataCodeValidator = electyDescDataCode.Validators[0].(func(string) error)
-	// electyDescDataTs is the schema descriptor for data_ts field.
-	electyDescDataTs := electyFields[11].Descriptor()
-	// electy.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
-	electy.DataTsValidator = electyDescDataTs.Validators[0].(func(string) error)
-	// electyDescProject is the schema descriptor for project field.
-	electyDescProject := electyFields[13].Descriptor()
-	// electy.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
-	electy.ProjectValidator = electyDescProject.Validators[0].(func(string) error)
-	// electyDescID is the schema descriptor for id field.
-	electyDescID := electyFields[0].Descriptor()
-	// electy.DefaultID holds the default value on creation for the id field.
-	electy.DefaultID = electyDescID.Default.(func() string)
-	// electy.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	electy.IDValidator = electyDescID.Validators[0].(func(string) error)
-	waterMixin := schema.Water{}.Mixin()
-	waterMixinFields0 := waterMixin[0].Fields()
-	_ = waterMixinFields0
-	waterFields := schema.Water{}.Fields()
-	_ = waterFields
-	// waterDescCreateTime is the schema descriptor for create_time field.
-	waterDescCreateTime := waterMixinFields0[0].Descriptor()
-	// water.DefaultCreateTime holds the default value on creation for the create_time field.
-	water.DefaultCreateTime = waterDescCreateTime.Default.(func() time.Time)
-	// waterDescUpdateTime is the schema descriptor for update_time field.
-	waterDescUpdateTime := waterMixinFields0[1].Descriptor()
-	// water.DefaultUpdateTime holds the default value on creation for the update_time field.
-	water.DefaultUpdateTime = waterDescUpdateTime.Default.(func() time.Time)
-	// water.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	water.UpdateDefaultUpdateTime = waterDescUpdateTime.UpdateDefault.(func() time.Time)
-	// waterDescPCode is the schema descriptor for p_code field.
-	waterDescPCode := waterFields[1].Descriptor()
-	// water.PCodeValidator is a validator for the "p_code" field. It is called by the builders before save.
-	water.PCodeValidator = waterDescPCode.Validators[0].(func(string) error)
-	// waterDescDeviceCode is the schema descriptor for device_code field.
-	waterDescDeviceCode := waterFields[3].Descriptor()
-	// water.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
-	water.DeviceCodeValidator = waterDescDeviceCode.Validators[0].(func(string) error)
-	// waterDescDeviceType is the schema descriptor for device_type field.
-	waterDescDeviceType := waterFields[4].Descriptor()
-	// water.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
-	water.DeviceTypeValidator = waterDescDeviceType.Validators[0].(func(string) error)
-	// waterDescDataValue is the schema descriptor for data_value field.
-	waterDescDataValue := waterFields[6].Descriptor()
-	// water.DefaultDataValue holds the default value on creation for the data_value field.
-	water.DefaultDataValue = waterDescDataValue.Default.(int64)
-	// waterDescDataCode is the schema descriptor for data_code field.
-	waterDescDataCode := waterFields[7].Descriptor()
-	// water.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
-	water.DataCodeValidator = waterDescDataCode.Validators[0].(func(string) error)
-	// waterDescDataTs is the schema descriptor for data_ts field.
-	waterDescDataTs := waterFields[9].Descriptor()
-	// water.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
-	water.DataTsValidator = waterDescDataTs.Validators[0].(func(string) error)
-	// waterDescProject is the schema descriptor for project field.
-	waterDescProject := waterFields[11].Descriptor()
-	// water.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
-	water.ProjectValidator = waterDescProject.Validators[0].(func(string) error)
-	// waterDescID is the schema descriptor for id field.
-	waterDescID := waterFields[0].Descriptor()
-	// water.DefaultID holds the default value on creation for the id field.
-	water.DefaultID = waterDescID.Default.(func() string)
-	// water.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	water.IDValidator = waterDescID.Validators[0].(func(string) error)
+	nhrecordMixin := schema.NhRecord{}.Mixin()
+	nhrecordMixinFields0 := nhrecordMixin[0].Fields()
+	_ = nhrecordMixinFields0
+	nhrecordFields := schema.NhRecord{}.Fields()
+	_ = nhrecordFields
+	// nhrecordDescCreateTime is the schema descriptor for create_time field.
+	nhrecordDescCreateTime := nhrecordMixinFields0[0].Descriptor()
+	// nhrecord.DefaultCreateTime holds the default value on creation for the create_time field.
+	nhrecord.DefaultCreateTime = nhrecordDescCreateTime.Default.(func() time.Time)
+	// nhrecordDescUpdateTime is the schema descriptor for update_time field.
+	nhrecordDescUpdateTime := nhrecordMixinFields0[1].Descriptor()
+	// nhrecord.DefaultUpdateTime holds the default value on creation for the update_time field.
+	nhrecord.DefaultUpdateTime = nhrecordDescUpdateTime.Default.(func() time.Time)
+	// nhrecord.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	nhrecord.UpdateDefaultUpdateTime = nhrecordDescUpdateTime.UpdateDefault.(func() time.Time)
+	// nhrecordDescPCode is the schema descriptor for p_code field.
+	nhrecordDescPCode := nhrecordFields[1].Descriptor()
+	// nhrecord.PCodeValidator is a validator for the "p_code" field. It is called by the builders before save.
+	nhrecord.PCodeValidator = nhrecordDescPCode.Validators[0].(func(string) error)
+	// nhrecordDescDeviceCode is the schema descriptor for device_code field.
+	nhrecordDescDeviceCode := nhrecordFields[3].Descriptor()
+	// nhrecord.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
+	nhrecord.DeviceCodeValidator = nhrecordDescDeviceCode.Validators[0].(func(string) error)
+	// nhrecordDescDeviceType is the schema descriptor for device_type field.
+	nhrecordDescDeviceType := nhrecordFields[4].Descriptor()
+	// nhrecord.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
+	nhrecord.DeviceTypeValidator = nhrecordDescDeviceType.Validators[0].(func(string) error)
+	// nhrecordDescDataValue is the schema descriptor for data_value field.
+	nhrecordDescDataValue := nhrecordFields[6].Descriptor()
+	// nhrecord.DefaultDataValue holds the default value on creation for the data_value field.
+	nhrecord.DefaultDataValue = nhrecordDescDataValue.Default.(int64)
+	// nhrecordDescDataCode is the schema descriptor for data_code field.
+	nhrecordDescDataCode := nhrecordFields[7].Descriptor()
+	// nhrecord.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
+	nhrecord.DataCodeValidator = nhrecordDescDataCode.Validators[0].(func(string) error)
+	// nhrecordDescDataTs is the schema descriptor for data_ts field.
+	nhrecordDescDataTs := nhrecordFields[9].Descriptor()
+	// nhrecord.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
+	nhrecord.DataTsValidator = nhrecordDescDataTs.Validators[0].(func(string) error)
+	// nhrecordDescProject is the schema descriptor for project field.
+	nhrecordDescProject := nhrecordFields[11].Descriptor()
+	// nhrecord.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
+	nhrecord.ProjectValidator = nhrecordDescProject.Validators[0].(func(string) error)
+	// nhrecordDescID is the schema descriptor for id field.
+	nhrecordDescID := nhrecordFields[0].Descriptor()
+	// nhrecord.DefaultID holds the default value on creation for the id field.
+	nhrecord.DefaultID = nhrecordDescID.Default.(func() string)
+	// nhrecord.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	nhrecord.IDValidator = nhrecordDescID.Validators[0].(func(string) error)
 }

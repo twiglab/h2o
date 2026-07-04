@@ -12,69 +12,69 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/twiglab/h2o/vigil/orm/ent/nhrecord"
 	"github.com/twiglab/h2o/vigil/orm/ent/predicate"
-	"github.com/twiglab/h2o/vigil/orm/ent/water"
 )
 
-// WaterQuery is the builder for querying Water entities.
-type WaterQuery struct {
+// NhRecordQuery is the builder for querying NhRecord entities.
+type NhRecordQuery struct {
 	config
 	ctx        *QueryContext
-	order      []water.OrderOption
+	order      []nhrecord.OrderOption
 	inters     []Interceptor
-	predicates []predicate.Water
+	predicates []predicate.NhRecord
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the WaterQuery builder.
-func (_q *WaterQuery) Where(ps ...predicate.Water) *WaterQuery {
+// Where adds a new predicate for the NhRecordQuery builder.
+func (_q *NhRecordQuery) Where(ps ...predicate.NhRecord) *NhRecordQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *WaterQuery) Limit(limit int) *WaterQuery {
+func (_q *NhRecordQuery) Limit(limit int) *NhRecordQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *WaterQuery) Offset(offset int) *WaterQuery {
+func (_q *NhRecordQuery) Offset(offset int) *NhRecordQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *WaterQuery) Unique(unique bool) *WaterQuery {
+func (_q *NhRecordQuery) Unique(unique bool) *NhRecordQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *WaterQuery) Order(o ...water.OrderOption) *WaterQuery {
+func (_q *NhRecordQuery) Order(o ...nhrecord.OrderOption) *NhRecordQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
-// First returns the first Water entity from the query.
-// Returns a *NotFoundError when no Water was found.
-func (_q *WaterQuery) First(ctx context.Context) (*Water, error) {
+// First returns the first NhRecord entity from the query.
+// Returns a *NotFoundError when no NhRecord was found.
+func (_q *NhRecordQuery) First(ctx context.Context) (*NhRecord, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{water.Label}
+		return nil, &NotFoundError{nhrecord.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *WaterQuery) FirstX(ctx context.Context) *Water {
+func (_q *NhRecordQuery) FirstX(ctx context.Context) *NhRecord {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -82,22 +82,22 @@ func (_q *WaterQuery) FirstX(ctx context.Context) *Water {
 	return node
 }
 
-// FirstID returns the first Water ID from the query.
-// Returns a *NotFoundError when no Water ID was found.
-func (_q *WaterQuery) FirstID(ctx context.Context) (id string, err error) {
+// FirstID returns the first NhRecord ID from the query.
+// Returns a *NotFoundError when no NhRecord ID was found.
+func (_q *NhRecordQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{water.Label}
+		err = &NotFoundError{nhrecord.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *WaterQuery) FirstIDX(ctx context.Context) string {
+func (_q *NhRecordQuery) FirstIDX(ctx context.Context) string {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -105,10 +105,10 @@ func (_q *WaterQuery) FirstIDX(ctx context.Context) string {
 	return id
 }
 
-// Only returns a single Water entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Water entity is found.
-// Returns a *NotFoundError when no Water entities are found.
-func (_q *WaterQuery) Only(ctx context.Context) (*Water, error) {
+// Only returns a single NhRecord entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one NhRecord entity is found.
+// Returns a *NotFoundError when no NhRecord entities are found.
+func (_q *NhRecordQuery) Only(ctx context.Context) (*NhRecord, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -117,14 +117,14 @@ func (_q *WaterQuery) Only(ctx context.Context) (*Water, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{water.Label}
+		return nil, &NotFoundError{nhrecord.Label}
 	default:
-		return nil, &NotSingularError{water.Label}
+		return nil, &NotSingularError{nhrecord.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *WaterQuery) OnlyX(ctx context.Context) *Water {
+func (_q *NhRecordQuery) OnlyX(ctx context.Context) *NhRecord {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -132,10 +132,10 @@ func (_q *WaterQuery) OnlyX(ctx context.Context) *Water {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Water ID in the query.
-// Returns a *NotSingularError when more than one Water ID is found.
+// OnlyID is like Only, but returns the only NhRecord ID in the query.
+// Returns a *NotSingularError when more than one NhRecord ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *WaterQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (_q *NhRecordQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -144,15 +144,15 @@ func (_q *WaterQuery) OnlyID(ctx context.Context) (id string, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{water.Label}
+		err = &NotFoundError{nhrecord.Label}
 	default:
-		err = &NotSingularError{water.Label}
+		err = &NotSingularError{nhrecord.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *WaterQuery) OnlyIDX(ctx context.Context) string {
+func (_q *NhRecordQuery) OnlyIDX(ctx context.Context) string {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -160,18 +160,18 @@ func (_q *WaterQuery) OnlyIDX(ctx context.Context) string {
 	return id
 }
 
-// All executes the query and returns a list of Waters.
-func (_q *WaterQuery) All(ctx context.Context) ([]*Water, error) {
+// All executes the query and returns a list of NhRecords.
+func (_q *NhRecordQuery) All(ctx context.Context) ([]*NhRecord, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*Water, *WaterQuery]()
-	return withInterceptors[[]*Water](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*NhRecord, *NhRecordQuery]()
+	return withInterceptors[[]*NhRecord](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *WaterQuery) AllX(ctx context.Context) []*Water {
+func (_q *NhRecordQuery) AllX(ctx context.Context) []*NhRecord {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -179,20 +179,20 @@ func (_q *WaterQuery) AllX(ctx context.Context) []*Water {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Water IDs.
-func (_q *WaterQuery) IDs(ctx context.Context) (ids []string, err error) {
+// IDs executes the query and returns a list of NhRecord IDs.
+func (_q *NhRecordQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(water.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(nhrecord.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *WaterQuery) IDsX(ctx context.Context) []string {
+func (_q *NhRecordQuery) IDsX(ctx context.Context) []string {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -201,16 +201,16 @@ func (_q *WaterQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (_q *WaterQuery) Count(ctx context.Context) (int, error) {
+func (_q *NhRecordQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*WaterQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*NhRecordQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *WaterQuery) CountX(ctx context.Context) int {
+func (_q *NhRecordQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -219,7 +219,7 @@ func (_q *WaterQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *WaterQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *NhRecordQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -232,7 +232,7 @@ func (_q *WaterQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *WaterQuery) ExistX(ctx context.Context) bool {
+func (_q *NhRecordQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -240,18 +240,18 @@ func (_q *WaterQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the WaterQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the NhRecordQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *WaterQuery) Clone() *WaterQuery {
+func (_q *NhRecordQuery) Clone() *NhRecordQuery {
 	if _q == nil {
 		return nil
 	}
-	return &WaterQuery{
+	return &NhRecordQuery{
 		config:     _q.config,
 		ctx:        _q.ctx.Clone(),
-		order:      append([]water.OrderOption{}, _q.order...),
+		order:      append([]nhrecord.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.Water{}, _q.predicates...),
+		predicates: append([]predicate.NhRecord{}, _q.predicates...),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -268,15 +268,15 @@ func (_q *WaterQuery) Clone() *WaterQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Water.Query().
-//		GroupBy(water.FieldCreateTime).
+//	client.NhRecord.Query().
+//		GroupBy(nhrecord.FieldCreateTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *WaterQuery) GroupBy(field string, fields ...string) *WaterGroupBy {
+func (_q *NhRecordQuery) GroupBy(field string, fields ...string) *NhRecordGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &WaterGroupBy{build: _q}
+	grbuild := &NhRecordGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = water.Label
+	grbuild.label = nhrecord.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -290,23 +290,23 @@ func (_q *WaterQuery) GroupBy(field string, fields ...string) *WaterGroupBy {
 //		CreateTime time.Time `json:"create_time,omitempty"`
 //	}
 //
-//	client.Water.Query().
-//		Select(water.FieldCreateTime).
+//	client.NhRecord.Query().
+//		Select(nhrecord.FieldCreateTime).
 //		Scan(ctx, &v)
-func (_q *WaterQuery) Select(fields ...string) *WaterSelect {
+func (_q *NhRecordQuery) Select(fields ...string) *NhRecordSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &WaterSelect{WaterQuery: _q}
-	sbuild.label = water.Label
+	sbuild := &NhRecordSelect{NhRecordQuery: _q}
+	sbuild.label = nhrecord.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a WaterSelect configured with the given aggregations.
-func (_q *WaterQuery) Aggregate(fns ...AggregateFunc) *WaterSelect {
+// Aggregate returns a NhRecordSelect configured with the given aggregations.
+func (_q *NhRecordQuery) Aggregate(fns ...AggregateFunc) *NhRecordSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *WaterQuery) prepareQuery(ctx context.Context) error {
+func (_q *NhRecordQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -318,7 +318,7 @@ func (_q *WaterQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !water.ValidColumn(f) {
+		if !nhrecord.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -332,16 +332,16 @@ func (_q *WaterQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *WaterQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Water, error) {
+func (_q *NhRecordQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*NhRecord, error) {
 	var (
-		nodes = []*Water{}
+		nodes = []*NhRecord{}
 		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Water).scanValues(nil, columns)
+		return (*NhRecord).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Water{config: _q.config}
+		node := &NhRecord{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -360,7 +360,7 @@ func (_q *WaterQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Water,
 	return nodes, nil
 }
 
-func (_q *WaterQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *NhRecordQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	if len(_q.modifiers) > 0 {
 		_spec.Modifiers = _q.modifiers
@@ -372,8 +372,8 @@ func (_q *WaterQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *WaterQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(water.Table, water.Columns, sqlgraph.NewFieldSpec(water.FieldID, field.TypeString))
+func (_q *NhRecordQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(nhrecord.Table, nhrecord.Columns, sqlgraph.NewFieldSpec(nhrecord.FieldID, field.TypeString))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -382,9 +382,9 @@ func (_q *WaterQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, water.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, nhrecord.FieldID)
 		for i := range fields {
-			if fields[i] != water.FieldID {
+			if fields[i] != nhrecord.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -412,12 +412,12 @@ func (_q *WaterQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *WaterQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *NhRecordQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(water.Table)
+	t1 := builder.Table(nhrecord.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = water.Columns
+		columns = nhrecord.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -450,7 +450,7 @@ func (_q *WaterQuery) sqlQuery(ctx context.Context) *sql.Selector {
 // ForUpdate locks the selected rows against concurrent updates, and prevent them from being
 // updated, deleted or "selected ... for update" by other sessions, until the transaction is
 // either committed or rolled-back.
-func (_q *WaterQuery) ForUpdate(opts ...sql.LockOption) *WaterQuery {
+func (_q *NhRecordQuery) ForUpdate(opts ...sql.LockOption) *NhRecordQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -463,7 +463,7 @@ func (_q *WaterQuery) ForUpdate(opts ...sql.LockOption) *WaterQuery {
 // ForShare behaves similarly to ForUpdate, except that it acquires a shared mode lock
 // on any rows that are read. Other sessions can read the rows, but cannot modify them
 // until your transaction commits.
-func (_q *WaterQuery) ForShare(opts ...sql.LockOption) *WaterQuery {
+func (_q *NhRecordQuery) ForShare(opts ...sql.LockOption) *NhRecordQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -473,28 +473,28 @@ func (_q *WaterQuery) ForShare(opts ...sql.LockOption) *WaterQuery {
 	return _q
 }
 
-// WaterGroupBy is the group-by builder for Water entities.
-type WaterGroupBy struct {
+// NhRecordGroupBy is the group-by builder for NhRecord entities.
+type NhRecordGroupBy struct {
 	selector
-	build *WaterQuery
+	build *NhRecordQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *WaterGroupBy) Aggregate(fns ...AggregateFunc) *WaterGroupBy {
+func (_g *NhRecordGroupBy) Aggregate(fns ...AggregateFunc) *NhRecordGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *WaterGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *NhRecordGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*WaterQuery, *WaterGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*NhRecordQuery, *NhRecordGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *WaterGroupBy) sqlScan(ctx context.Context, root *WaterQuery, v any) error {
+func (_g *NhRecordGroupBy) sqlScan(ctx context.Context, root *NhRecordQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -521,28 +521,28 @@ func (_g *WaterGroupBy) sqlScan(ctx context.Context, root *WaterQuery, v any) er
 	return sql.ScanSlice(rows, v)
 }
 
-// WaterSelect is the builder for selecting fields of Water entities.
-type WaterSelect struct {
-	*WaterQuery
+// NhRecordSelect is the builder for selecting fields of NhRecord entities.
+type NhRecordSelect struct {
+	*NhRecordQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *WaterSelect) Aggregate(fns ...AggregateFunc) *WaterSelect {
+func (_s *NhRecordSelect) Aggregate(fns ...AggregateFunc) *NhRecordSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *WaterSelect) Scan(ctx context.Context, v any) error {
+func (_s *NhRecordSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*WaterQuery, *WaterSelect](ctx, _s.WaterQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*NhRecordQuery, *NhRecordSelect](ctx, _s.NhRecordQuery, _s, _s.inters, v)
 }
 
-func (_s *WaterSelect) sqlScan(ctx context.Context, root *WaterQuery, v any) error {
+func (_s *NhRecordSelect) sqlScan(ctx context.Context, root *NhRecordQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {
