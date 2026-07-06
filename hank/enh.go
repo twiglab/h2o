@@ -39,6 +39,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 				Project: meta.Project,
 				PosCode: meta.PosCode,
 				PCode:   meta.PCode,
+				Owner:   meta.Owner,
 			},
 		},
 		Data: data,
@@ -70,6 +71,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				Project: meta.Project,
 				PosCode: meta.PosCode,
 				PCode:   meta.PCode,
+				Owner:   meta.Owner,
 			},
 		},
 		Param: common.ElectricityParam{
