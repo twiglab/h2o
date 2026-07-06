@@ -23,6 +23,7 @@ type Pos struct {
 	FloorCode string `json:"floor_code,omitempty"` // 楼层
 	AreaCode  string `json:"area_code,omitempty"`  // 区域
 	PCode     string `json:"pcode,omitempty"`      // 全局位置编码，默认实现为 Project + PosCode
+	Owner     string `json:"owner,omitempty"`      // 归属方
 }
 
 type ElectricityParam struct {
