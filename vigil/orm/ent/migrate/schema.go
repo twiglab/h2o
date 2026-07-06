@@ -73,6 +73,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{NhRecordColumns[13]},
 			},
+			{
+				Name:    "nhrecord_owner",
+				Unique:  false,
+				Columns: []*schema.Column{NhRecordColumns[14]},
+			},
 		},
 	}
 	// Tables holds all the tables in the schema.

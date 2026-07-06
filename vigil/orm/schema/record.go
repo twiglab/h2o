@@ -76,6 +76,7 @@ func (NhRecord) Indexes() []ent.Index {
 		index.Fields("data_ts"),
 		index.Fields("pos_code"),
 		index.Fields("project"),
+		index.Fields("owner"),
 	}
 }
 
