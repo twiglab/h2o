@@ -8,7 +8,10 @@ type MetaData struct {
 	Project string `json:"project"`                // 所属项目编号
 	PosCode string `json:"pos_code" db:"pos_code"` // 位置编号
 
-	Factor int `json:"factor"`
+	PCode string `json:"pcode,omitempty"` // 外部位置编号
+
+	Factor int    `json:"factor,omitempty"`
+	Owner  string `json:"owner,omitempty"`
 }
 
 func (m MetaData) ToStrings() []string {
