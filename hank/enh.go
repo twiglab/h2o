@@ -38,7 +38,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 			Pos: common.Pos{
 				Project: meta.Project,
 				PosCode: meta.PosCode,
-				PCode:   pcode(cmp.Or(meta.PosCode, dd.No), meta.Project, common.WATER),
+				PCode:   meta.PCode,
 			},
 		},
 		Data: data,
@@ -69,7 +69,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 			Pos: common.Pos{
 				Project: meta.Project,
 				PosCode: meta.PosCode,
-				PCode:   pcode(cmp.Or(meta.PosCode, dd.No), meta.Project, common.ELECTRICITY),
+				PCode:   meta.PCode,
 			},
 		},
 		Param: common.ElectricityParam{
@@ -140,8 +140,4 @@ func parseTime(s string) time.Time {
 		return xdate
 	}
 	return t
-}
-
-func pcode(c, p, t string) string {
-	return c + "@" + p + "#" + t
 }
