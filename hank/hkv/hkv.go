@@ -56,7 +56,7 @@ func (h *HankDB) Get(ctx context.Context, code string) (data hank.MetaData, ok b
 	if data, err = h.GetOne(ctx, code); err != nil {
 		data.Project = h.Project
 		data.Code = code
-		h.Logger.WarnContext(ctx, "get", slog.Any("data", data), slog.Any("error", err))
+		h.Logger.WarnContext(ctx, "get", slog.String("code", code), slog.Any("data", data), slog.Any("error", err))
 	}
 	ok = true
 	return
@@ -77,7 +77,7 @@ func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error)
 		Name:    d.Name,
 		PosCode: d.Room,
 		Factor:  float64int(d.Rate),
-		PCode:   pcode(cmp.Or(d.Room, d.SN), h.Project),
+		PCode:   pcode(cmp.Or(d.Room, d.Code), h.Project),
 	}, nil
 }
 
