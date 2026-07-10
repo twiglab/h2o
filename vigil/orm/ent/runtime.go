@@ -28,32 +28,28 @@ func init() {
 	nhrecord.DefaultUpdateTime = nhrecordDescUpdateTime.Default.(func() time.Time)
 	// nhrecord.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	nhrecord.UpdateDefaultUpdateTime = nhrecordDescUpdateTime.UpdateDefault.(func() time.Time)
-	// nhrecordDescPCode is the schema descriptor for p_code field.
-	nhrecordDescPCode := nhrecordFields[1].Descriptor()
-	// nhrecord.PCodeValidator is a validator for the "p_code" field. It is called by the builders before save.
-	nhrecord.PCodeValidator = nhrecordDescPCode.Validators[0].(func(string) error)
 	// nhrecordDescDeviceCode is the schema descriptor for device_code field.
-	nhrecordDescDeviceCode := nhrecordFields[3].Descriptor()
+	nhrecordDescDeviceCode := nhrecordFields[2].Descriptor()
 	// nhrecord.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	nhrecord.DeviceCodeValidator = nhrecordDescDeviceCode.Validators[0].(func(string) error)
 	// nhrecordDescDeviceType is the schema descriptor for device_type field.
-	nhrecordDescDeviceType := nhrecordFields[4].Descriptor()
+	nhrecordDescDeviceType := nhrecordFields[3].Descriptor()
 	// nhrecord.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	nhrecord.DeviceTypeValidator = nhrecordDescDeviceType.Validators[0].(func(string) error)
 	// nhrecordDescDataValue is the schema descriptor for data_value field.
-	nhrecordDescDataValue := nhrecordFields[6].Descriptor()
+	nhrecordDescDataValue := nhrecordFields[5].Descriptor()
 	// nhrecord.DefaultDataValue holds the default value on creation for the data_value field.
 	nhrecord.DefaultDataValue = nhrecordDescDataValue.Default.(int64)
 	// nhrecordDescDataCode is the schema descriptor for data_code field.
-	nhrecordDescDataCode := nhrecordFields[7].Descriptor()
+	nhrecordDescDataCode := nhrecordFields[6].Descriptor()
 	// nhrecord.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	nhrecord.DataCodeValidator = nhrecordDescDataCode.Validators[0].(func(string) error)
 	// nhrecordDescDataTs is the schema descriptor for data_ts field.
-	nhrecordDescDataTs := nhrecordFields[9].Descriptor()
+	nhrecordDescDataTs := nhrecordFields[8].Descriptor()
 	// nhrecord.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
 	nhrecord.DataTsValidator = nhrecordDescDataTs.Validators[0].(func(string) error)
 	// nhrecordDescProject is the schema descriptor for project field.
-	nhrecordDescProject := nhrecordFields[11].Descriptor()
+	nhrecordDescProject := nhrecordFields[10].Descriptor()
 	// nhrecord.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	nhrecord.ProjectValidator = nhrecordDescProject.Validators[0].(func(string) error)
 	// nhrecordDescID is the schema descriptor for id field.

@@ -74,11 +74,6 @@ func UpdateTime(v time.Time) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldUpdateTime, v))
 }
 
-// PCode applies equality check predicate on the "p_code" field. It's identical to PCodeEQ.
-func PCode(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
-}
-
 // DeviceSn applies equality check predicate on the "device_sn" field. It's identical to DeviceSnEQ.
 func DeviceSn(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldDeviceSn, v))
@@ -132,6 +127,11 @@ func Project(v string) predicate.NhRecord {
 // Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
 func Owner(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldOwner, v))
+}
+
+// PCode applies equality check predicate on the "p_code" field. It's identical to PCodeEQ.
+func PCode(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -212,71 +212,6 @@ func UpdateTimeLT(v time.Time) predicate.NhRecord {
 // UpdateTimeLTE applies the LTE predicate on the "update_time" field.
 func UpdateTimeLTE(v time.Time) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldLTE(FieldUpdateTime, v))
-}
-
-// PCodeEQ applies the EQ predicate on the "p_code" field.
-func PCodeEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
-}
-
-// PCodeNEQ applies the NEQ predicate on the "p_code" field.
-func PCodeNEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNEQ(FieldPCode, v))
-}
-
-// PCodeIn applies the In predicate on the "p_code" field.
-func PCodeIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIn(FieldPCode, vs...))
-}
-
-// PCodeNotIn applies the NotIn predicate on the "p_code" field.
-func PCodeNotIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotIn(FieldPCode, vs...))
-}
-
-// PCodeGT applies the GT predicate on the "p_code" field.
-func PCodeGT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGT(FieldPCode, v))
-}
-
-// PCodeGTE applies the GTE predicate on the "p_code" field.
-func PCodeGTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGTE(FieldPCode, v))
-}
-
-// PCodeLT applies the LT predicate on the "p_code" field.
-func PCodeLT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLT(FieldPCode, v))
-}
-
-// PCodeLTE applies the LTE predicate on the "p_code" field.
-func PCodeLTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLTE(FieldPCode, v))
-}
-
-// PCodeContains applies the Contains predicate on the "p_code" field.
-func PCodeContains(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContains(FieldPCode, v))
-}
-
-// PCodeHasPrefix applies the HasPrefix predicate on the "p_code" field.
-func PCodeHasPrefix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasPrefix(FieldPCode, v))
-}
-
-// PCodeHasSuffix applies the HasSuffix predicate on the "p_code" field.
-func PCodeHasSuffix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasSuffix(FieldPCode, v))
-}
-
-// PCodeEqualFold applies the EqualFold predicate on the "p_code" field.
-func PCodeEqualFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEqualFold(FieldPCode, v))
-}
-
-// PCodeContainsFold applies the ContainsFold predicate on the "p_code" field.
-func PCodeContainsFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContainsFold(FieldPCode, v))
 }
 
 // DeviceSnEQ applies the EQ predicate on the "device_sn" field.
@@ -972,6 +907,81 @@ func OwnerEqualFold(v string) predicate.NhRecord {
 // OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
 func OwnerContainsFold(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldContainsFold(FieldOwner, v))
+}
+
+// PCodeEQ applies the EQ predicate on the "p_code" field.
+func PCodeEQ(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
+}
+
+// PCodeNEQ applies the NEQ predicate on the "p_code" field.
+func PCodeNEQ(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldNEQ(FieldPCode, v))
+}
+
+// PCodeIn applies the In predicate on the "p_code" field.
+func PCodeIn(vs ...string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldIn(FieldPCode, vs...))
+}
+
+// PCodeNotIn applies the NotIn predicate on the "p_code" field.
+func PCodeNotIn(vs ...string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldNotIn(FieldPCode, vs...))
+}
+
+// PCodeGT applies the GT predicate on the "p_code" field.
+func PCodeGT(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldGT(FieldPCode, v))
+}
+
+// PCodeGTE applies the GTE predicate on the "p_code" field.
+func PCodeGTE(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldGTE(FieldPCode, v))
+}
+
+// PCodeLT applies the LT predicate on the "p_code" field.
+func PCodeLT(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldLT(FieldPCode, v))
+}
+
+// PCodeLTE applies the LTE predicate on the "p_code" field.
+func PCodeLTE(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldLTE(FieldPCode, v))
+}
+
+// PCodeContains applies the Contains predicate on the "p_code" field.
+func PCodeContains(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldContains(FieldPCode, v))
+}
+
+// PCodeHasPrefix applies the HasPrefix predicate on the "p_code" field.
+func PCodeHasPrefix(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldHasPrefix(FieldPCode, v))
+}
+
+// PCodeHasSuffix applies the HasSuffix predicate on the "p_code" field.
+func PCodeHasSuffix(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldHasSuffix(FieldPCode, v))
+}
+
+// PCodeIsNil applies the IsNil predicate on the "p_code" field.
+func PCodeIsNil() predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldIsNull(FieldPCode))
+}
+
+// PCodeNotNil applies the NotNil predicate on the "p_code" field.
+func PCodeNotNil() predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldNotNull(FieldPCode))
+}
+
+// PCodeEqualFold applies the EqualFold predicate on the "p_code" field.
+func PCodeEqualFold(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEqualFold(FieldPCode, v))
+}
+
+// PCodeContainsFold applies the ContainsFold predicate on the "p_code" field.
+func PCodeContainsFold(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldContainsFold(FieldPCode, v))
 }
 
 // And groups predicates with the AND operator between them.

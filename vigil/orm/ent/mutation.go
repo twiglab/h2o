@@ -35,7 +35,6 @@ type NhRecordMutation struct {
 	id            *string
 	create_time   *time.Time
 	update_time   *time.Time
-	p_code        *string
 	device_sn     *string
 	device_code   *string
 	device_type   *string
@@ -48,6 +47,7 @@ type NhRecordMutation struct {
 	pos_code      *string
 	project       *string
 	owner         *string
+	p_code        *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*NhRecord, error)
@@ -228,42 +228,6 @@ func (m *NhRecordMutation) OldUpdateTime(ctx context.Context) (v time.Time, err 
 // ResetUpdateTime resets all changes to the "update_time" field.
 func (m *NhRecordMutation) ResetUpdateTime() {
 	m.update_time = nil
-}
-
-// SetPCode sets the "p_code" field.
-func (m *NhRecordMutation) SetPCode(s string) {
-	m.p_code = &s
-}
-
-// PCode returns the value of the "p_code" field in the mutation.
-func (m *NhRecordMutation) PCode() (r string, exists bool) {
-	v := m.p_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPCode returns the old "p_code" field's value of the NhRecord entity.
-// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NhRecordMutation) OldPCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPCode: %w", err)
-	}
-	return oldValue.PCode, nil
-}
-
-// ResetPCode resets all changes to the "p_code" field.
-func (m *NhRecordMutation) ResetPCode() {
-	m.p_code = nil
 }
 
 // SetDeviceSn sets the "device_sn" field.
@@ -721,6 +685,55 @@ func (m *NhRecordMutation) ResetOwner() {
 	delete(m.clearedFields, nhrecord.FieldOwner)
 }
 
+// SetPCode sets the "p_code" field.
+func (m *NhRecordMutation) SetPCode(s string) {
+	m.p_code = &s
+}
+
+// PCode returns the value of the "p_code" field in the mutation.
+func (m *NhRecordMutation) PCode() (r string, exists bool) {
+	v := m.p_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPCode returns the old "p_code" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NhRecordMutation) OldPCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPCode: %w", err)
+	}
+	return oldValue.PCode, nil
+}
+
+// ClearPCode clears the value of the "p_code" field.
+func (m *NhRecordMutation) ClearPCode() {
+	m.p_code = nil
+	m.clearedFields[nhrecord.FieldPCode] = struct{}{}
+}
+
+// PCodeCleared returns if the "p_code" field was cleared in this mutation.
+func (m *NhRecordMutation) PCodeCleared() bool {
+	_, ok := m.clearedFields[nhrecord.FieldPCode]
+	return ok
+}
+
+// ResetPCode resets all changes to the "p_code" field.
+func (m *NhRecordMutation) ResetPCode() {
+	m.p_code = nil
+	delete(m.clearedFields, nhrecord.FieldPCode)
+}
+
 // Where appends a list predicates to the NhRecordMutation builder.
 func (m *NhRecordMutation) Where(ps ...predicate.NhRecord) {
 	m.predicates = append(m.predicates, ps...)
@@ -762,9 +775,6 @@ func (m *NhRecordMutation) Fields() []string {
 	if m.update_time != nil {
 		fields = append(fields, nhrecord.FieldUpdateTime)
 	}
-	if m.p_code != nil {
-		fields = append(fields, nhrecord.FieldPCode)
-	}
 	if m.device_sn != nil {
 		fields = append(fields, nhrecord.FieldDeviceSn)
 	}
@@ -798,6 +808,9 @@ func (m *NhRecordMutation) Fields() []string {
 	if m.owner != nil {
 		fields = append(fields, nhrecord.FieldOwner)
 	}
+	if m.p_code != nil {
+		fields = append(fields, nhrecord.FieldPCode)
+	}
 	return fields
 }
 
@@ -810,8 +823,6 @@ func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.CreateTime()
 	case nhrecord.FieldUpdateTime:
 		return m.UpdateTime()
-	case nhrecord.FieldPCode:
-		return m.PCode()
 	case nhrecord.FieldDeviceSn:
 		return m.DeviceSn()
 	case nhrecord.FieldDeviceCode:
@@ -834,6 +845,8 @@ func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.Project()
 	case nhrecord.FieldOwner:
 		return m.Owner()
+	case nhrecord.FieldPCode:
+		return m.PCode()
 	}
 	return nil, false
 }
@@ -847,8 +860,6 @@ func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldCreateTime(ctx)
 	case nhrecord.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case nhrecord.FieldPCode:
-		return m.OldPCode(ctx)
 	case nhrecord.FieldDeviceSn:
 		return m.OldDeviceSn(ctx)
 	case nhrecord.FieldDeviceCode:
@@ -871,6 +882,8 @@ func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldProject(ctx)
 	case nhrecord.FieldOwner:
 		return m.OldOwner(ctx)
+	case nhrecord.FieldPCode:
+		return m.OldPCode(ctx)
 	}
 	return nil, fmt.Errorf("unknown NhRecord field %s", name)
 }
@@ -893,13 +906,6 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
-		return nil
-	case nhrecord.FieldPCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPCode(v)
 		return nil
 	case nhrecord.FieldDeviceSn:
 		v, ok := value.(string)
@@ -978,6 +984,13 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetOwner(v)
 		return nil
+	case nhrecord.FieldPCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPCode(v)
+		return nil
 	}
 	return fmt.Errorf("unknown NhRecord field %s", name)
 }
@@ -1032,6 +1045,9 @@ func (m *NhRecordMutation) ClearedFields() []string {
 	if m.FieldCleared(nhrecord.FieldOwner) {
 		fields = append(fields, nhrecord.FieldOwner)
 	}
+	if m.FieldCleared(nhrecord.FieldPCode) {
+		fields = append(fields, nhrecord.FieldPCode)
+	}
 	return fields
 }
 
@@ -1055,6 +1071,9 @@ func (m *NhRecordMutation) ClearField(name string) error {
 	case nhrecord.FieldOwner:
 		m.ClearOwner()
 		return nil
+	case nhrecord.FieldPCode:
+		m.ClearPCode()
+		return nil
 	}
 	return fmt.Errorf("unknown NhRecord nullable field %s", name)
 }
@@ -1068,9 +1087,6 @@ func (m *NhRecordMutation) ResetField(name string) error {
 		return nil
 	case nhrecord.FieldUpdateTime:
 		m.ResetUpdateTime()
-		return nil
-	case nhrecord.FieldPCode:
-		m.ResetPCode()
 		return nil
 	case nhrecord.FieldDeviceSn:
 		m.ResetDeviceSn()
@@ -1104,6 +1120,9 @@ func (m *NhRecordMutation) ResetField(name string) error {
 		return nil
 	case nhrecord.FieldOwner:
 		m.ResetOwner()
+		return nil
+	case nhrecord.FieldPCode:
+		m.ResetPCode()
 		return nil
 	}
 	return fmt.Errorf("unknown NhRecord field %s", name)

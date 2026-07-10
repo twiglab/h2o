@@ -14,7 +14,6 @@ var (
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "p_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -26,6 +25,7 @@ var (
 		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "p_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// NhRecordTable holds the schema information for the "nh_record" table.
 	NhRecordTable = &schema.Table{
@@ -36,47 +36,47 @@ var (
 			{
 				Name:    "nhrecord_p_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[3]},
+				Columns: []*schema.Column{NhRecordColumns[14]},
 			},
 			{
 				Name:    "nhrecord_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[5]},
+				Columns: []*schema.Column{NhRecordColumns[4]},
 			},
 			{
 				Name:    "nhrecord_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[6]},
+				Columns: []*schema.Column{NhRecordColumns[5]},
 			},
 			{
 				Name:    "nhrecord_data_code",
 				Unique:  true,
-				Columns: []*schema.Column{NhRecordColumns[9]},
+				Columns: []*schema.Column{NhRecordColumns[8]},
 			},
 			{
 				Name:    "nhrecord_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[10]},
+				Columns: []*schema.Column{NhRecordColumns[9]},
 			},
 			{
 				Name:    "nhrecord_data_ts",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[11]},
+				Columns: []*schema.Column{NhRecordColumns[10]},
 			},
 			{
 				Name:    "nhrecord_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[12]},
+				Columns: []*schema.Column{NhRecordColumns[11]},
 			},
 			{
 				Name:    "nhrecord_project",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[13]},
+				Columns: []*schema.Column{NhRecordColumns[12]},
 			},
 			{
 				Name:    "nhrecord_owner",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[14]},
+				Columns: []*schema.Column{NhRecordColumns[13]},
 			},
 		},
 	}

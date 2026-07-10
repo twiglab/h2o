@@ -41,8 +41,6 @@ func (NhRecord) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Immutable().NotEmpty().DefaultFunc(cdrid).SchemaType(char(36)),
 
-		field.String("p_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备位置业务编号"),
-
 		field.String("device_sn").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("device_type").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
@@ -52,11 +50,14 @@ func (NhRecord) Fields() []ent.Field {
 
 		field.String("data_code").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("当前记录code"),
 		field.Time("data_time").Immutable().Comment("采集时间"),
+
 		field.String("data_ts").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("采集时间字符串"),
 
 		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("owner").Immutable().Optional().SchemaType(varchar(64)).Comment("归属"),
+
+		field.String("p_code").Immutable().Optional().SchemaType(varchar(64)).Comment("设备位置业务编号"),
 	}
 }
 

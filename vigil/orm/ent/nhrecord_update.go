@@ -96,6 +96,9 @@ func (_u *NhRecordUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)
 	}
+	if _u.mutation.PCodeCleared() {
+		_spec.ClearField(nhrecord.FieldPCode, field.TypeString)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{nhrecord.Label}
@@ -213,6 +216,9 @@ func (_u *NhRecordUpdateOne) sqlSave(ctx context.Context) (_node *NhRecord, err 
 	}
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)
+	}
+	if _u.mutation.PCodeCleared() {
+		_spec.ClearField(nhrecord.FieldPCode, field.TypeString)
 	}
 	_node = &NhRecord{config: _u.config}
 	_spec.Assign = _node.assignValues

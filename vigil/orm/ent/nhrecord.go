@@ -21,8 +21,6 @@ type NhRecord struct {
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
-	// 设备位置业务编号
-	PCode string `json:"p_code,omitempty"`
 	// 设备序列号
 	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备号
@@ -44,7 +42,9 @@ type NhRecord struct {
 	// 项目编号
 	Project string `json:"project,omitempty"`
 	// 归属
-	Owner        string `json:"owner,omitempty"`
+	Owner string `json:"owner,omitempty"`
+	// 设备位置业务编号
+	PCode        string `json:"p_code,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -55,7 +55,7 @@ func (*NhRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case nhrecord.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case nhrecord.FieldID, nhrecord.FieldPCode, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldProject, nhrecord.FieldOwner:
+		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldProject, nhrecord.FieldOwner, nhrecord.FieldPCode:
 			values[i] = new(sql.NullString)
 		case nhrecord.FieldCreateTime, nhrecord.FieldUpdateTime, nhrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -91,12 +91,6 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
-			}
-		case nhrecord.FieldPCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field p_code", values[i])
-			} else if value.Valid {
-				_m.PCode = value.String
 			}
 		case nhrecord.FieldDeviceSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -164,6 +158,12 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Owner = value.String
 			}
+		case nhrecord.FieldPCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field p_code", values[i])
+			} else if value.Valid {
+				_m.PCode = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -206,9 +206,6 @@ func (_m *NhRecord) String() string {
 	builder.WriteString("update_time=")
 	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("p_code=")
-	builder.WriteString(_m.PCode)
-	builder.WriteString(", ")
 	builder.WriteString("device_sn=")
 	builder.WriteString(_m.DeviceSn)
 	builder.WriteString(", ")
@@ -241,6 +238,9 @@ func (_m *NhRecord) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("owner=")
 	builder.WriteString(_m.Owner)
+	builder.WriteString(", ")
+	builder.WriteString("p_code=")
+	builder.WriteString(_m.PCode)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -17,8 +17,6 @@ const (
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
 	FieldUpdateTime = "update_time"
-	// FieldPCode holds the string denoting the p_code field in the database.
-	FieldPCode = "p_code"
 	// FieldDeviceSn holds the string denoting the device_sn field in the database.
 	FieldDeviceSn = "device_sn"
 	// FieldDeviceCode holds the string denoting the device_code field in the database.
@@ -41,6 +39,8 @@ const (
 	FieldProject = "project"
 	// FieldOwner holds the string denoting the owner field in the database.
 	FieldOwner = "owner"
+	// FieldPCode holds the string denoting the p_code field in the database.
+	FieldPCode = "p_code"
 	// Table holds the table name of the nhrecord in the database.
 	Table = "nh_record"
 )
@@ -50,7 +50,6 @@ var Columns = []string{
 	FieldID,
 	FieldCreateTime,
 	FieldUpdateTime,
-	FieldPCode,
 	FieldDeviceSn,
 	FieldDeviceCode,
 	FieldDeviceType,
@@ -62,6 +61,7 @@ var Columns = []string{
 	FieldPosCode,
 	FieldProject,
 	FieldOwner,
+	FieldPCode,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -81,8 +81,6 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
-	// PCodeValidator is a validator for the "p_code" field. It is called by the builders before save.
-	PCodeValidator func(string) error
 	// DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	DeviceCodeValidator func(string) error
 	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
@@ -117,11 +115,6 @@ func ByCreateTime(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdateTime orders the results by the update_time field.
 func ByUpdateTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdateTime, opts...).ToFunc()
-}
-
-// ByPCode orders the results by the p_code field.
-func ByPCode(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPCode, opts...).ToFunc()
 }
 
 // ByDeviceSn orders the results by the device_sn field.
@@ -177,4 +170,9 @@ func ByProject(opts ...sql.OrderTermOption) OrderOption {
 // ByOwner orders the results by the owner field.
 func ByOwner(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwner, opts...).ToFunc()
+}
+
+// ByPCode orders the results by the p_code field.
+func ByPCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPCode, opts...).ToFunc()
 }

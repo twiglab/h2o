@@ -51,12 +51,6 @@ func (_c *NhRecordCreate) SetNillableUpdateTime(v *time.Time) *NhRecordCreate {
 	return _c
 }
 
-// SetPCode sets the "p_code" field.
-func (_c *NhRecordCreate) SetPCode(v string) *NhRecordCreate {
-	_c.mutation.SetPCode(v)
-	return _c
-}
-
 // SetDeviceSn sets the "device_sn" field.
 func (_c *NhRecordCreate) SetDeviceSn(v string) *NhRecordCreate {
 	_c.mutation.SetDeviceSn(v)
@@ -155,6 +149,20 @@ func (_c *NhRecordCreate) SetNillableOwner(v *string) *NhRecordCreate {
 	return _c
 }
 
+// SetPCode sets the "p_code" field.
+func (_c *NhRecordCreate) SetPCode(v string) *NhRecordCreate {
+	_c.mutation.SetPCode(v)
+	return _c
+}
+
+// SetNillablePCode sets the "p_code" field if the given value is not nil.
+func (_c *NhRecordCreate) SetNillablePCode(v *string) *NhRecordCreate {
+	if v != nil {
+		_c.SetPCode(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *NhRecordCreate) SetID(v string) *NhRecordCreate {
 	_c.mutation.SetID(v)
@@ -229,14 +237,6 @@ func (_c *NhRecordCreate) check() error {
 	}
 	if _, ok := _c.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "NhRecord.update_time"`)}
-	}
-	if _, ok := _c.mutation.PCode(); !ok {
-		return &ValidationError{Name: "p_code", err: errors.New(`ent: missing required field "NhRecord.p_code"`)}
-	}
-	if v, ok := _c.mutation.PCode(); ok {
-		if err := nhrecord.PCodeValidator(v); err != nil {
-			return &ValidationError{Name: "p_code", err: fmt.Errorf(`ent: validator failed for field "NhRecord.p_code": %w`, err)}
-		}
 	}
 	if _, ok := _c.mutation.DeviceCode(); !ok {
 		return &ValidationError{Name: "device_code", err: errors.New(`ent: missing required field "NhRecord.device_code"`)}
@@ -336,10 +336,6 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(nhrecord.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
 	}
-	if value, ok := _c.mutation.PCode(); ok {
-		_spec.SetField(nhrecord.FieldPCode, field.TypeString, value)
-		_node.PCode = value
-	}
 	if value, ok := _c.mutation.DeviceSn(); ok {
 		_spec.SetField(nhrecord.FieldDeviceSn, field.TypeString, value)
 		_node.DeviceSn = value
@@ -383,6 +379,10 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Owner(); ok {
 		_spec.SetField(nhrecord.FieldOwner, field.TypeString, value)
 		_node.Owner = value
+	}
+	if value, ok := _c.mutation.PCode(); ok {
+		_spec.SetField(nhrecord.FieldPCode, field.TypeString, value)
+		_node.PCode = value
 	}
 	return _node, _spec
 }
@@ -468,9 +468,6 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		if _, exists := u.create.mutation.CreateTime(); exists {
 			s.SetIgnore(nhrecord.FieldCreateTime)
 		}
-		if _, exists := u.create.mutation.PCode(); exists {
-			s.SetIgnore(nhrecord.FieldPCode)
-		}
 		if _, exists := u.create.mutation.DeviceSn(); exists {
 			s.SetIgnore(nhrecord.FieldDeviceSn)
 		}
@@ -503,6 +500,9 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.Owner(); exists {
 			s.SetIgnore(nhrecord.FieldOwner)
+		}
+		if _, exists := u.create.mutation.PCode(); exists {
+			s.SetIgnore(nhrecord.FieldPCode)
 		}
 	}))
 	return u
@@ -735,9 +735,6 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			if _, exists := b.mutation.CreateTime(); exists {
 				s.SetIgnore(nhrecord.FieldCreateTime)
 			}
-			if _, exists := b.mutation.PCode(); exists {
-				s.SetIgnore(nhrecord.FieldPCode)
-			}
 			if _, exists := b.mutation.DeviceSn(); exists {
 				s.SetIgnore(nhrecord.FieldDeviceSn)
 			}
@@ -770,6 +767,9 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			}
 			if _, exists := b.mutation.Owner(); exists {
 				s.SetIgnore(nhrecord.FieldOwner)
+			}
+			if _, exists := b.mutation.PCode(); exists {
+				s.SetIgnore(nhrecord.FieldPCode)
 			}
 		}
 	}))
