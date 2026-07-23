@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"cmp"
+	"fmt"
 	"log"
 	"log/slog"
 
@@ -22,7 +23,7 @@ func mqttcli() mqtt.Client {
 	}
 	cli, err := vigil.NewMQTTClient(vigil.CLIENT_ID, broker)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("mqttcli err: %w", err))
 	}
 	return cli
 }
@@ -46,7 +47,7 @@ func entcli() *ent.Client {
 
 	cli, err := orm.OpenEntClient(name, dsn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("ent err: %w", err))
 	}
 	return cli
 }
@@ -59,7 +60,7 @@ func tdb() *tsdb.Schemaless {
 	dsn := viper.GetString("vigil.tsdb.dsn")
 	sch, err := tsdb.NewSchLe(dsn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("SchLe err: %w", err))
 	}
 	return sch
 }
