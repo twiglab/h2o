@@ -38,6 +38,7 @@ func run() {
 		DB:     vigil.WithRecorder(dbx(cli)),
 		TSDB:   tdb(),
 		Logger: serverLog(),
+		WAL:    wallog(),
 	}
 	mcli := mqttcli()
 	token := mcli.SubscribeMultiple(topics(), vigil.Handle(hub))

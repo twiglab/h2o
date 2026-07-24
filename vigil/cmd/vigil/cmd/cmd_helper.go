@@ -9,6 +9,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
+	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
@@ -84,4 +85,13 @@ func serverLog() *slog.Logger {
 	level := clog.Level(cmp.Or(sLogL, logL))
 	l := clog.NewLog(sLogF, level)
 	return l
+}
+
+func wallog() *wal.WAL {
+	logf := viper.GetString("vigil.wal.file")
+	if logf == "" {
+		log.Fatalln("wal file is null. ***MUST*** set vigil.wal.file")
+	}
+	log.Println("wal file:", logf)
+	return wal.New(wal.Conf{Filename: logf})
 }

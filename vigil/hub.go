@@ -3,6 +3,8 @@ package vigil
 import (
 	"context"
 	"log/slog"
+
+	"github.com/twiglab/h2o/clog/wal"
 )
 
 type Hub struct {
@@ -12,6 +14,8 @@ type Hub struct {
 	Logger *slog.Logger
 
 	BaseContext func(h *Hub) context.Context
+
+	WAL *wal.WAL
 }
 
 func (h *Hub) HandleWater(ctx context.Context, data WaterMeter) error {
@@ -25,6 +29,12 @@ func (h *Hub) HandleWater(ctx context.Context, data WaterMeter) error {
 }
 
 func (h *Hub) HandleElecty(ctx context.Context, data ElectricityMeter) error {
+
+	h.WAL.WriteLogContext(ctx,
+		wal.String("type", data.Type),
+		wal.Any("data", data),
+	)
+
 	h.TSDB.TabbElecty(ctx, data)
 
 	if err := h.DB.TabbElecty(ctx, data); err != nil {
