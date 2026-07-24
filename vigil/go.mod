@@ -13,7 +13,7 @@ require (
 	github.com/montanaflynn/stats v0.12.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
-	github.com/taosdata/driver-go/v3 v3.8.1
+	github.com/taosdata/driver-go/v3 v3.8.2
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
 	github.com/vektah/gqlparser/v2 v2.5.36
 )
