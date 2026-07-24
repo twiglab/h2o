@@ -1,7 +1,6 @@
 package hkv
 
 import (
-	"cmp"
 	"context"
 	"database/sql"
 	"log/slog"
@@ -77,7 +76,7 @@ func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error)
 		Name:    d.Name,
 		PosCode: d.Room,
 		Factor:  float64int(d.Rate),
-		PCode:   pcode(cmp.Or(d.Room, d.Code), h.Project),
+		PCode:   pcode(d.Code, h.Project),
 	}, nil
 }
 
