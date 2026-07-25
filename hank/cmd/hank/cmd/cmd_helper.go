@@ -5,7 +5,6 @@ import (
 	"context"
 	"log"
 	"log/slog"
-	"time"
 
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/abm"
@@ -13,7 +12,6 @@ import (
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/hank"
-	"github.com/twiglab/h2o/hank/hkv"
 )
 
 func rootLog() *slog.Logger {
@@ -104,42 +102,22 @@ func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
 	return db, c
 }
 
-func bhkv() cache.Cache[string, hank.MetaData] {
-	log.Println("backend:", hkv.Key)
-
-	dbname := viper.GetString("hank.meta.hkv.dbname")
-	dsn := viper.GetString("hank.meta.hkv.dsn")
-	sqlget := viper.GetString("hank.meta.hkv.sql_get")
-	project := viper.GetString("hank.meta.hkv.project")
-
-	logf := viper.GetString("hank.meta.hkv.logfile")
-	logl := viper.GetString("hank.meta.hkv.loglevel")
-
-	conf := hkv.HankDBConf{
-		DBName:  dbname,
-		DSN:     dsn,
-		Project: project,
-		SQLGet:  sqlget,
-		Logger:  clog.NewLog(logf, clog.Level(logl)),
+func simple() hank.SimpleMD {
+	proj := viper.GetString("hank.meta.simple.project")
+	if proj == "" {
+		log.Fatal("hank.meta.simple.project is empty")
 	}
-
-	hdb, err := hkv.NewHankDB(conf)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return cache.WithCache(hdb, hkv.NewCache(60*time.Minute))
+	return hank.SimpleMD{Project: proj}
 }
 
 func backend() cache.Cache[string, hank.MetaData] {
 	var backend cache.Cache[string, hank.MetaData]
 	b := viper.GetString("hank.meta.backend")
 	switch b {
-	case hkv.Key:
-		backend = bhkv()
 	case "ddb":
 		backend, _ = ddb()
 	default:
-		backend = cache.EmptyCache[string, hank.MetaData]{}
+		backend = simple()
 	}
 	return backend
 }
