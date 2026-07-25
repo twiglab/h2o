@@ -76,7 +76,7 @@ func (h *HankDB) GetOne(ctx context.Context, code string) (hank.MetaData, error)
 		Name:    d.Name,
 		PosCode: d.Room,
 		Factor:  float64int(d.Rate),
-		PCode:   pcode(d.Code, h.Project),
+		PCode:   hank.MakePcode(d.Code, h.Project),
 	}, nil
 }
 
@@ -85,8 +85,4 @@ func float64int(f sql.Null[float64]) int {
 		return int(f.V)
 	}
 	return 0
-}
-
-func pcode(c, p string) string {
-	return c + "@" + p
 }
