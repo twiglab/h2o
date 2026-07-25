@@ -35,10 +35,10 @@ const (
 	FieldDataTs = "data_ts"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
-	// FieldProject holds the string denoting the project field in the database.
-	FieldProject = "project"
 	// FieldOwner holds the string denoting the owner field in the database.
 	FieldOwner = "owner"
+	// FieldProject holds the string denoting the project field in the database.
+	FieldProject = "project"
 	// FieldPCode holds the string denoting the p_code field in the database.
 	FieldPCode = "p_code"
 	// Table holds the table name of the nhrecord in the database.
@@ -59,8 +59,8 @@ var Columns = []string{
 	FieldDataTime,
 	FieldDataTs,
 	FieldPosCode,
-	FieldProject,
 	FieldOwner,
+	FieldProject,
 	FieldPCode,
 }
 
@@ -162,14 +162,14 @@ func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
 }
 
-// ByProject orders the results by the project field.
-func ByProject(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProject, opts...).ToFunc()
-}
-
 // ByOwner orders the results by the owner field.
 func ByOwner(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwner, opts...).ToFunc()
+}
+
+// ByProject orders the results by the project field.
+func ByProject(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProject, opts...).ToFunc()
 }
 
 // ByPCode orders the results by the p_code field.

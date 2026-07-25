@@ -93,6 +93,9 @@ func (_u *NhRecordUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(nhrecord.FieldDeviceName, field.TypeString)
 	}
+	if _u.mutation.PosCodeCleared() {
+		_spec.ClearField(nhrecord.FieldPosCode, field.TypeString)
+	}
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)
 	}
@@ -213,6 +216,9 @@ func (_u *NhRecordUpdateOne) sqlSave(ctx context.Context) (_node *NhRecord, err 
 	}
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(nhrecord.FieldDeviceName, field.TypeString)
+	}
+	if _u.mutation.PosCodeCleared() {
+		_spec.ClearField(nhrecord.FieldPosCode, field.TypeString)
 	}
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(nhrecord.FieldOwner, field.TypeString)

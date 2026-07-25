@@ -45,8 +45,8 @@ type NhRecordMutation struct {
 	data_time     *time.Time
 	data_ts       *string
 	pos_code      *string
-	project       *string
 	owner         *string
+	project       *string
 	p_code        *string
 	clearedFields map[string]struct{}
 	done          bool
@@ -595,45 +595,22 @@ func (m *NhRecordMutation) OldPosCode(ctx context.Context) (v string, err error)
 	return oldValue.PosCode, nil
 }
 
+// ClearPosCode clears the value of the "pos_code" field.
+func (m *NhRecordMutation) ClearPosCode() {
+	m.pos_code = nil
+	m.clearedFields[nhrecord.FieldPosCode] = struct{}{}
+}
+
+// PosCodeCleared returns if the "pos_code" field was cleared in this mutation.
+func (m *NhRecordMutation) PosCodeCleared() bool {
+	_, ok := m.clearedFields[nhrecord.FieldPosCode]
+	return ok
+}
+
 // ResetPosCode resets all changes to the "pos_code" field.
 func (m *NhRecordMutation) ResetPosCode() {
 	m.pos_code = nil
-}
-
-// SetProject sets the "project" field.
-func (m *NhRecordMutation) SetProject(s string) {
-	m.project = &s
-}
-
-// Project returns the value of the "project" field in the mutation.
-func (m *NhRecordMutation) Project() (r string, exists bool) {
-	v := m.project
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProject returns the old "project" field's value of the NhRecord entity.
-// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NhRecordMutation) OldProject(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProject is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProject requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProject: %w", err)
-	}
-	return oldValue.Project, nil
-}
-
-// ResetProject resets all changes to the "project" field.
-func (m *NhRecordMutation) ResetProject() {
-	m.project = nil
+	delete(m.clearedFields, nhrecord.FieldPosCode)
 }
 
 // SetOwner sets the "owner" field.
@@ -683,6 +660,42 @@ func (m *NhRecordMutation) OwnerCleared() bool {
 func (m *NhRecordMutation) ResetOwner() {
 	m.owner = nil
 	delete(m.clearedFields, nhrecord.FieldOwner)
+}
+
+// SetProject sets the "project" field.
+func (m *NhRecordMutation) SetProject(s string) {
+	m.project = &s
+}
+
+// Project returns the value of the "project" field in the mutation.
+func (m *NhRecordMutation) Project() (r string, exists bool) {
+	v := m.project
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProject returns the old "project" field's value of the NhRecord entity.
+// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *NhRecordMutation) OldProject(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProject is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProject requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProject: %w", err)
+	}
+	return oldValue.Project, nil
+}
+
+// ResetProject resets all changes to the "project" field.
+func (m *NhRecordMutation) ResetProject() {
+	m.project = nil
 }
 
 // SetPCode sets the "p_code" field.
@@ -802,11 +815,11 @@ func (m *NhRecordMutation) Fields() []string {
 	if m.pos_code != nil {
 		fields = append(fields, nhrecord.FieldPosCode)
 	}
-	if m.project != nil {
-		fields = append(fields, nhrecord.FieldProject)
-	}
 	if m.owner != nil {
 		fields = append(fields, nhrecord.FieldOwner)
+	}
+	if m.project != nil {
+		fields = append(fields, nhrecord.FieldProject)
 	}
 	if m.p_code != nil {
 		fields = append(fields, nhrecord.FieldPCode)
@@ -841,10 +854,10 @@ func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DataTs()
 	case nhrecord.FieldPosCode:
 		return m.PosCode()
-	case nhrecord.FieldProject:
-		return m.Project()
 	case nhrecord.FieldOwner:
 		return m.Owner()
+	case nhrecord.FieldProject:
+		return m.Project()
 	case nhrecord.FieldPCode:
 		return m.PCode()
 	}
@@ -878,10 +891,10 @@ func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDataTs(ctx)
 	case nhrecord.FieldPosCode:
 		return m.OldPosCode(ctx)
-	case nhrecord.FieldProject:
-		return m.OldProject(ctx)
 	case nhrecord.FieldOwner:
 		return m.OldOwner(ctx)
+	case nhrecord.FieldProject:
+		return m.OldProject(ctx)
 	case nhrecord.FieldPCode:
 		return m.OldPCode(ctx)
 	}
@@ -970,19 +983,19 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPosCode(v)
 		return nil
-	case nhrecord.FieldProject:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProject(v)
-		return nil
 	case nhrecord.FieldOwner:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOwner(v)
+		return nil
+	case nhrecord.FieldProject:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProject(v)
 		return nil
 	case nhrecord.FieldPCode:
 		v, ok := value.(string)
@@ -1042,6 +1055,9 @@ func (m *NhRecordMutation) ClearedFields() []string {
 	if m.FieldCleared(nhrecord.FieldDeviceName) {
 		fields = append(fields, nhrecord.FieldDeviceName)
 	}
+	if m.FieldCleared(nhrecord.FieldPosCode) {
+		fields = append(fields, nhrecord.FieldPosCode)
+	}
 	if m.FieldCleared(nhrecord.FieldOwner) {
 		fields = append(fields, nhrecord.FieldOwner)
 	}
@@ -1067,6 +1083,9 @@ func (m *NhRecordMutation) ClearField(name string) error {
 		return nil
 	case nhrecord.FieldDeviceName:
 		m.ClearDeviceName()
+		return nil
+	case nhrecord.FieldPosCode:
+		m.ClearPosCode()
 		return nil
 	case nhrecord.FieldOwner:
 		m.ClearOwner()
@@ -1115,11 +1134,11 @@ func (m *NhRecordMutation) ResetField(name string) error {
 	case nhrecord.FieldPosCode:
 		m.ResetPosCode()
 		return nil
-	case nhrecord.FieldProject:
-		m.ResetProject()
-		return nil
 	case nhrecord.FieldOwner:
 		m.ResetOwner()
+		return nil
+	case nhrecord.FieldProject:
+		m.ResetProject()
 		return nil
 	case nhrecord.FieldPCode:
 		m.ResetPCode()

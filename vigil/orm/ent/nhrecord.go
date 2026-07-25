@@ -39,10 +39,10 @@ type NhRecord struct {
 	DataTs string `json:"data_ts,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
-	// 项目编号
-	Project string `json:"project,omitempty"`
 	// 归属
 	Owner string `json:"owner,omitempty"`
+	// 项目编号
+	Project string `json:"project,omitempty"`
 	// 设备位置业务编号
 	PCode        string `json:"p_code,omitempty"`
 	selectValues sql.SelectValues
@@ -55,7 +55,7 @@ func (*NhRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case nhrecord.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldProject, nhrecord.FieldOwner, nhrecord.FieldPCode:
+		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldOwner, nhrecord.FieldProject, nhrecord.FieldPCode:
 			values[i] = new(sql.NullString)
 		case nhrecord.FieldCreateTime, nhrecord.FieldUpdateTime, nhrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -146,17 +146,17 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.PosCode = value.String
 			}
-		case nhrecord.FieldProject:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field project", values[i])
-			} else if value.Valid {
-				_m.Project = value.String
-			}
 		case nhrecord.FieldOwner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
 				_m.Owner = value.String
+			}
+		case nhrecord.FieldProject:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field project", values[i])
+			} else if value.Valid {
+				_m.Project = value.String
 			}
 		case nhrecord.FieldPCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -233,11 +233,11 @@ func (_m *NhRecord) String() string {
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
 	builder.WriteString(", ")
-	builder.WriteString("project=")
-	builder.WriteString(_m.Project)
-	builder.WriteString(", ")
 	builder.WriteString("owner=")
 	builder.WriteString(_m.Owner)
+	builder.WriteString(", ")
+	builder.WriteString("project=")
+	builder.WriteString(_m.Project)
 	builder.WriteString(", ")
 	builder.WriteString("p_code=")
 	builder.WriteString(_m.PCode)

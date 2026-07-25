@@ -53,10 +53,10 @@ func (NhRecord) Fields() []ent.Field {
 
 		field.String("data_ts").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("采集时间字符串"),
 
-		field.String("pos_code").Immutable().SchemaType(varchar(64)).Comment("位置编号"),
-		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
+		field.String("pos_code").Immutable().Optional().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("owner").Immutable().Optional().SchemaType(varchar(64)).Comment("归属"),
 
+		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("p_code").Immutable().Optional().SchemaType(varchar(64)).Comment("设备位置业务编号"),
 	}
 }

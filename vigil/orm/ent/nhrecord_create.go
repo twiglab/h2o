@@ -129,9 +129,11 @@ func (_c *NhRecordCreate) SetPosCode(v string) *NhRecordCreate {
 	return _c
 }
 
-// SetProject sets the "project" field.
-func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
-	_c.mutation.SetProject(v)
+// SetNillablePosCode sets the "pos_code" field if the given value is not nil.
+func (_c *NhRecordCreate) SetNillablePosCode(v *string) *NhRecordCreate {
+	if v != nil {
+		_c.SetPosCode(*v)
+	}
 	return _c
 }
 
@@ -146,6 +148,12 @@ func (_c *NhRecordCreate) SetNillableOwner(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetOwner(*v)
 	}
+	return _c
+}
+
+// SetProject sets the "project" field.
+func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
+	_c.mutation.SetProject(v)
 	return _c
 }
 
@@ -276,9 +284,6 @@ func (_c *NhRecordCreate) check() error {
 			return &ValidationError{Name: "data_ts", err: fmt.Errorf(`ent: validator failed for field "NhRecord.data_ts": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.PosCode(); !ok {
-		return &ValidationError{Name: "pos_code", err: errors.New(`ent: missing required field "NhRecord.pos_code"`)}
-	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "NhRecord.project"`)}
 	}
@@ -372,13 +377,13 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(nhrecord.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
 	}
-	if value, ok := _c.mutation.Project(); ok {
-		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
-		_node.Project = value
-	}
 	if value, ok := _c.mutation.Owner(); ok {
 		_spec.SetField(nhrecord.FieldOwner, field.TypeString, value)
 		_node.Owner = value
+	}
+	if value, ok := _c.mutation.Project(); ok {
+		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
+		_node.Project = value
 	}
 	if value, ok := _c.mutation.PCode(); ok {
 		_spec.SetField(nhrecord.FieldPCode, field.TypeString, value)
@@ -495,11 +500,11 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		if _, exists := u.create.mutation.PosCode(); exists {
 			s.SetIgnore(nhrecord.FieldPosCode)
 		}
-		if _, exists := u.create.mutation.Project(); exists {
-			s.SetIgnore(nhrecord.FieldProject)
-		}
 		if _, exists := u.create.mutation.Owner(); exists {
 			s.SetIgnore(nhrecord.FieldOwner)
+		}
+		if _, exists := u.create.mutation.Project(); exists {
+			s.SetIgnore(nhrecord.FieldProject)
 		}
 		if _, exists := u.create.mutation.PCode(); exists {
 			s.SetIgnore(nhrecord.FieldPCode)
@@ -762,11 +767,11 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			if _, exists := b.mutation.PosCode(); exists {
 				s.SetIgnore(nhrecord.FieldPosCode)
 			}
-			if _, exists := b.mutation.Project(); exists {
-				s.SetIgnore(nhrecord.FieldProject)
-			}
 			if _, exists := b.mutation.Owner(); exists {
 				s.SetIgnore(nhrecord.FieldOwner)
+			}
+			if _, exists := b.mutation.Project(); exists {
+				s.SetIgnore(nhrecord.FieldProject)
 			}
 			if _, exists := b.mutation.PCode(); exists {
 				s.SetIgnore(nhrecord.FieldPCode)
