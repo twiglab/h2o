@@ -1,10 +1,11 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
+	"log"
 	"os"
+
+	"net/http"
+	_ "net/http/pprof"
 
 	"github.com/ibuilding-x/driver-box/v2/driverbox"
 	"github.com/ibuilding-x/driver-box/v2/exports"
@@ -23,26 +24,37 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// 设置日志级别
-		_ = os.Setenv("LOG_LEVEL", "info")
-		plugins.EnableAll()
-		exports.EnableAll()
-		driverbox.Start()
-		select {}
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return run()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(runCmd)
+}
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// runCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// runCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+func run() error {
+	// 设置日志级别
+	_ = os.Setenv("LOG_LEVEL", "debug")
+	// 第一步: 启用内置Plugin
+	// 可选: plugins.EnableAll() 启用所有内置Plugin
+	// 或单独启用: 导入对应Plugin包,如 modbus.EnablePlugin()
+	plugins.EnableAll()
+	// 第二步: 启用Export模块
+	// 可选: exports.EnableAll() 启用所有内置Export模块
+	// 或单独启用: 导入对应Export包,如 gateway.EnableExport()
+	exports.EnableAll()
+	// 第三步: 启动 driver-box 服务
+	// 1. 初始化环境配置
+	// 2. 初始化日志记录器
+	// 3. 启动所有 Export
+	// 4. 启动所有 Plugin
+	// 5. 触发服务状态事件
+	err := driverbox.Start()
+	if err != nil {
+		log.Fatal(err)
+	}
+	// 第四步: 阻塞主线程
+	// driver-box 服务会在后台运行
+	return http.ListenAndServe(":10001", nil)
 }
