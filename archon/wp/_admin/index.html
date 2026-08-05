@@ -1,0 +1,861 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>设备管理</title>
+  <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #F5F6F8;
+      font-size: 16px;
+    }
+
+    .container-app {
+      max-width: 1200px;
+    }
+
+    h1.page-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .page-sub {
+      font-size: 14px;
+      color: #8a8f98;
+    }
+
+    .table {
+      table-layout: fixed;
+    }
+
+    .table> :not(caption)>*>* {
+      padding: .5rem .75rem;
+    }
+
+    table thead th {
+      font-size: 12.5px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #8a8f98;
+      background: #FAFAFB;
+      font-weight: 600;
+      border-bottom: 1px solid #ECECEF;
+    }
+
+    table tbody td {
+      font-size: 15px;
+      vertical-align: middle;
+    }
+
+    .code-pill {
+      font-family: Consolas, Menlo, monospace;
+      font-size: 13.5px;
+      font-weight: 600;
+      background: #EFF3F1;
+      color: #2F6F62;
+      padding: 2px 7px;
+      border-radius: 5px;
+    }
+
+    .text-dash {
+      color: #C2C6CC;
+    }
+
+    .card {
+      border: 1px solid #ECECEF;
+      border-radius: 10px;
+    }
+
+    .card-footer {
+      background: #FAFAFB;
+    }
+
+    #detailDrawer { --bs-offcanvas-width: 550px; }
+
+    .offcanvas-header {
+      padding: .9rem 1.1rem;
+      border-bottom: 1px solid #ECECEF;
+    }
+
+    .offcanvas-body {
+      padding: 1rem 1.1rem;
+    }
+
+    .offcanvas-footer {
+      padding: .7rem 1.1rem;
+      border-top: 1px solid #ECECEF;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      background: #FAFAFB;
+    }
+
+    .form-group-tight {
+      margin-bottom: .65rem;
+    }
+
+    .form-group-tight label {
+      font-size: 11.5px;
+      color: #8a8f98;
+      font-weight: 600;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .form-group-tight .form-control-plaintext {
+      padding: .2rem 0;
+      font-size: 13.5px;
+      min-height: 1.6em;
+    }
+
+    .form-group-tight .form-control {
+      font-size: 13.5px;
+      padding: .35rem .6rem;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2F6F62;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: .9rem 0 .4rem;
+    }
+
+    .section-label:first-child {
+      margin-top: 0;
+    }
+
+    .req-star {
+      color: #dc3545;
+    }
+
+    #idLine {
+      font-family: Consolas, Menlo, monospace;
+      font-size: 11px;
+      color: #8a8f98;
+      word-break: break-all;
+    }
+
+    .pagination {
+      margin-bottom: 0;
+    }
+
+    .page-link {
+      font-size: 13px;
+      padding: .3rem .65rem;
+    }
+
+    .toast-container {
+      z-index: 1080;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #dee2e6;
+      border-top-color: #0d6efd;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .badge-status {
+      font-size: 11px;
+    }
+
+    textarea.form-control-plaintext {
+      resize: none;
+    }
+
+    select.form-select-plaintext {
+      font-size: 13.5px;
+      appearance: none;
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: inherit;
+      pointer-events: none;
+    }
+    select.form-select-plaintext option {
+      color: #212529;
+    }
+
+    .cell-truncate {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container-app mx-auto py-3 px-3">
+
+    <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+      <div>
+        <h1 class="page-title">设备管理</h1>
+        <div class="page-sub">点击「详情」查看设备信息，可在详情中编辑并保存</div>
+      </div>
+      <div class="d-flex gap-2 align-items-center">
+        <select id="typeFilter" class="form-select form-select-sm" style="width:120px;">
+          <option value="">全部类型</option>
+          <option value="E">电表</option>
+          <option value="W">水表</option>
+        </select>
+        <div class="input-group input-group-sm d-none" style="width:230px;">
+          <span class="input-group-text bg-white">🔍</span>
+          <input type="text" id="searchInput" class="form-control" placeholder="搜索位置编号">
+        </div>
+        <button class="btn btn-primary btn-sm" id="addBtn">＋ 新增</button>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th style="width:16%;">设备号</th>
+              <th style="width:8%;">设备类型</th>
+              <th style="width:20%;">设备名称</th>
+              <th class="text-center" style="width:80px;">当前倍率</th>
+              <th style="width:16%;">位置编号</th>
+              <th style="width:8%;">状态</th>
+              <th class="text-center" style="width:140px;">操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="7" class="text-center text-muted py-4"><span class="loading-spinner"></span>加载中...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-muted" style="font-size:12.5px;" id="countLabel">共 0 条</span>
+        <nav>
+          <ul class="pagination pagination-sm" id="pagination"></ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- 详情/编辑 面板 -->
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="detailDrawer">
+    <div class="offcanvas-header">
+      <div>
+        <h6 class="mb-0" id="drawerTitle">设备详情</h6>
+        <div id="idLine"></div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+
+      <div class="section-label">必填信息</div>
+      <div class="form-group-tight" data-field="deviceCode">
+        <label>设备号 <span class="req-star">*</span></label>
+        <input id="f_deviceCode" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+        <div class="invalid-feedback">设备号不能为空</div>
+      </div>
+      <div class="form-group-tight" data-field="deviceType">
+        <label>设备类型 <span class="req-star">*</span></label>
+        <select id="f_deviceType" class="form-select-plaintext" disabled>
+          <option value="">请选择设备类型</option>
+          <option value="E">E</option>
+          <option value="W">W</option>
+        </select>
+        <div class="invalid-feedback">设备类型不能为空</div>
+      </div>
+      <div class="form-group-tight" data-field="project">
+        <label>项目编号 <span class="req-star">*</span></label>
+        <input id="f_project" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+        <div class="invalid-feedback">项目编号不能为空</div>
+      </div>
+
+      <div class="section-label">基本信息</div>
+      <div class="form-group-tight" data-field="deviceName">
+        <label>设备名称</label>
+        <input id="f_deviceName" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+      <div class="form-group-tight" data-field="deviceSN">
+        <label>设备序列号</label>
+        <input id="f_deviceSN" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+      <div class="form-group-tight" data-field="rate">
+        <label>当前倍率</label>
+        <input id="f_rate" type="number" min="1" step="1" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+      <div class="form-group-tight" data-field="status">
+        <label>状态</label>
+        <select id="f_status" class="form-select-plaintext" disabled>
+          <option value="1">禁用</option>
+          <option value="0">启用</option>
+        </select>
+      </div>
+
+      <div class="section-label">位置信息</div>
+      <div class="form-group-tight" data-field="posCode">
+        <label>位置编号</label>
+        <input id="f_posCode" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+      <div class="form-group-tight" data-field="areaCode">
+        <label>区域编号</label>
+        <input id="f_areaCode" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+      <div class="form-group-tight" data-field="pcode">
+        <label>对外位置编号</label>
+        <input id="f_pcode" class="form-control-plaintext" readonly data-bs-toggle="tooltip">
+      </div>
+
+      <div class="section-label">备注</div>
+      <div class="form-group-tight" data-field="memo">
+        <label>备注</label>
+        <textarea id="f_memo" class="form-control-plaintext" readonly rows="3"></textarea>
+      </div>
+
+    </div>
+    <div class="offcanvas-footer">
+      <button class="btn btn-light btn-sm" id="cancelBtn">关闭</button>
+      <button class="btn btn-outline-primary btn-sm" id="editBtn">编辑</button>
+      <button class="btn btn-primary btn-sm d-none" id="saveBtn">保存</button>
+    </div>
+  </div>
+
+  <!-- 删除确认弹窗 -->
+  <div class="modal fade" tabindex="-1" id="confirmDeleteModal">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title">确认删除</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          确定要删除设备 <strong id="confirmDeviceName"></strong> 吗？此操作不可恢复。
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteBtn">确认删除</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x mt-3">
+    <div id="liveToast" class="toast align-items-center text-white bg-success border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toastText">已保存</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="errorToastText">操作失败</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.js"></script>
+  <script>
+    $(function () {
+
+      // ============================================================
+      // GraphQL API 配置
+      // 如果浏览器因跨域拦截，需在服务端配置 CORS 或使用 nginx 代理
+      // ============================================================
+      //  const GQL_URL = '/gql/query';
+      const GQL_URL = '/gql/query';
+
+      /**
+       * 通用 GraphQL 请求
+       */
+      function gql(query, variables) {
+        return $.ajax({
+          url: GQL_URL,
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ query, variables }),
+        }).then(function (res) {
+          if (res.errors) {
+            const msg = res.errors.map(function (e) { return e.message; }).join('; ');
+            throw new Error(msg);
+          }
+          return res.data;
+        });
+      }
+
+      // ============================================================
+      // API 方法
+      // ============================================================
+
+      /** 查询设备，支持 type 筛选 + posCode 搜索 */
+      function fetchDevices(keyword, deviceType) {
+        const input = {};
+        if (keyword) input.posCode = keyword;
+        if (deviceType) input.type = deviceType;
+        return gql(`query($input: DeviceListInput!) {
+          deviceQuery(input: $input) {
+            id deviceCode deviceType deviceSN deviceName
+            rate posCode areaCode project pcode status memo
+          }
+        }`, { input: input }).then(function (data) {
+          return data.deviceQuery;
+        });
+      }
+
+      /** 创建设备 */
+      function createDevice(input) {
+        return gql(`mutation($input: DeviceCreateInput!) {
+          deviceCreate(input: $input) {
+            id deviceCode deviceType deviceSN deviceName
+            rate posCode areaCode project pcode status memo
+          }
+        }`, { input: input }).then(function (data) {
+          return data.deviceCreate;
+        });
+      }
+
+      /** 修改设备 */
+      function modifyDevice(input) {
+        return gql(`mutation($input: DeviceModifyInput!) {
+          deviceModify(input: $input) {
+            id deviceCode deviceType deviceSN deviceName
+            rate posCode areaCode project pcode status memo
+          }
+        }`, { input: input }).then(function (data) {
+          return data.deviceModify;
+        });
+      }
+
+      /** 删除设备 */
+      function removeDevice(id) {
+        return gql(`mutation($input: DeviceRemoveInput!) {
+          deviceRemove(input: $input) { id }
+        }`, { input: { id: id } }).then(function (data) {
+          return data.deviceRemove;
+        });
+      }
+
+      // ============================================================
+      // 字段映射: GraphQL camelCase 表单字段 ID (snake_case 风格)
+      // 注意: 表单字段 ID 已改为 camelCase, 直接对应 GraphQL 字段
+      // ============================================================
+      const fieldIds = ['deviceCode', 'deviceType', 'deviceName', 'deviceSN', 'rate', 'status',
+                        'posCode', 'areaCode', 'project', 'pcode', 'memo'];
+
+      // GraphQL 字段在列表展示时的映射
+      const listColumns = ['deviceCode', 'deviceType', 'deviceName', 'rate', 'posCode', 'status'];
+
+      const pageSize = 15;
+      let currentPage = 1;
+      let currentType = '';
+      let editing = false;
+      let isNewDevice = false; // 区分新增/编辑模式
+      let currentDevice = null;
+      let devices = [];        // 当前缓存的数据
+      let drawer = new bootstrap.Offcanvas(document.getElementById('detailDrawer'));
+      let successToast = new bootstrap.Toast(document.getElementById('liveToast'), { delay: 2000 });
+      let errorToast = new bootstrap.Toast(document.getElementById('errorToast'), { delay: 3000 });
+      let deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+      let pendingDeleteId = null;
+
+      const TYPE_MAP = { 'E': '电表', 'W': '水表' };
+      function typeLabel(t) { return TYPE_MAP[t] || t || ''; }
+
+      function esc(s) {
+        if (s === null || s === undefined) return '';
+        return $('<div>').text(String(s)).html();
+      }
+      function cellOrDash(v) {
+        if (v === null || v === undefined || v === '') return '<span class="text-dash">未填写</span>';
+        return esc(v);
+      }
+      function statusBadge(v) {
+        if (v === null || v === undefined) return '<span class="text-dash">—</span>';
+        const s = parseInt(v, 10);
+        if (s === 1) return '<span class="badge bg-secondary badge-status">禁用</span>';
+        if (s === 0) return '<span class="badge bg-success badge-status">正常</span>';
+        return '<span class="badge bg-warning text-dark badge-status">' + esc(v) + '</span>';
+      }
+
+function renderTable() {
+        const totalPages = Math.max(1, Math.ceil(devices.length / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const start = (currentPage - 1) * pageSize;
+        const rows = devices.slice(start, start + pageSize);
+
+        if (rows.length === 0) {
+          $('#tableBody').html('<tr><td colspan="7" class="text-center text-muted py-4">没有找到匹配的设备</td></tr>');
+        } else {
+          $('#tableBody').html(rows.map(function (d) {
+            return '<tr>' +
+              '<td><span class="code-pill cell-truncate" title="' + esc(d.deviceCode) + '" data-bs-toggle="tooltip">' + esc(d.deviceCode) + '</span></td>' +
+              '<td><span class="cell-truncate" title="' + esc(typeLabel(d.deviceType)) + '" data-bs-toggle="tooltip">' + esc(typeLabel(d.deviceType)) + '</span></td>' +
+              '<td><span class="cell-truncate" title="' + esc(d.deviceName || '') + '" data-bs-toggle="tooltip">' + cellOrDash(d.deviceName) + '</span></td>' +
+              '<td class="text-center">×' + esc(d.rate ?? 1) + '</td>' +
+              '<td><span class="cell-truncate text-muted" title="' + esc(d.posCode || '') + '" data-bs-toggle="tooltip">' + cellOrDash(d.posCode) + '</span></td>' +
+              '<td>' + statusBadge(d.status) + '</td>' +
+              '<td class="text-end">' +
+                '<button class="btn btn-sm btn-outline-primary me-1" data-action="detail" data-id="' + esc(d.id) + '">详情</button>' +
+                '<button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="' + esc(d.id) + '" data-name="' + esc(d.deviceName || d.deviceCode) + '">删除</button>' +
+              '</td>' +
+            '</tr>';
+          }).join(''));
+        }
+
+        $('#countLabel').text('共 ' + devices.length + ' 条');
+        renderPagination(totalPages);
+        // 重新初始化 tooltip
+        setTimeout(function () {
+          $('[data-bs-toggle="tooltip"]').tooltip({ container: 'body', trigger: 'hover' });
+        }, 0);
+      }
+
+      function renderPagination(totalPages) {
+        let html = '';
+        html += '<li class="page-item ' + (currentPage === 1 ? 'disabled' : '') + '">' +
+                '<a class="page-link" href="#" data-page="' + (currentPage - 1) + '">上一页</a></li>';
+        for (let p = 1; p <= totalPages; p++) {
+          html += '<li class="page-item ' + (p === currentPage ? 'active' : '') + '">' +
+                  '<a class="page-link" href="#" data-page="' + p + '">' + p + '</a></li>';
+        }
+        html += '<li class="page-item ' + (currentPage === totalPages ? 'disabled' : '') + '">' +
+                '<a class="page-link" href="#" data-page="' + (currentPage + 1) + '">下一页</a></li>';
+        $('#pagination').html(html);
+      }
+
+      function showLoading() {
+        $('#tableBody').html('<tr><td colspan="7" class="text-center text-muted py-4"><span class="loading-spinner"></span>加载中...</td></tr>');
+      }
+
+      function showError(msg) {
+        $('#errorToastText').text(msg || '请求失败，请检查网络或服务端配置');
+        errorToast.show();
+      }
+
+      function showSuccess(msg) {
+        $('#toastText').text(msg || '操作成功');
+        successToast.show();
+      }
+
+      /** 刷新设备列表，支持 keyword 搜索 + type 筛选 */
+      function refreshDevices(keyword) {
+        showLoading();
+        fetchDevices(keyword, currentType)
+          .then(function (data) {
+            devices = data || [];
+            currentPage = 1;
+            renderTable();
+          })
+          .catch(function (err) {
+            console.error('获取设备列表失败:', err);
+            $('#tableBody').html('<tr><td colspan="7" class="text-center text-danger py-4">加载失败，请检查网络或服务端配置<br><small>' + esc(err.message) + '</small></td></tr>');
+            $('#countLabel').text('共 0 条');
+            $('#pagination').html('');
+          });
+      }
+
+      // ============================================================
+      // 事件绑定
+      // ============================================================
+
+      $('#pagination').on('click', 'a.page-link', function (e) {
+        e.preventDefault();
+        const p = parseInt($(this).data('page'), 10);
+        if (isNaN(p) || $(this).parent().hasClass('disabled')) return;
+        currentPage = p;
+        renderTable();
+      });
+
+      // 设备类型筛选
+      $('#typeFilter').on('change', function () {
+        currentType = $(this).val();
+        refreshDevices($('#searchInput').val().trim());
+      });
+
+      let searchTimer;
+      $('#searchInput').on('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(function () {
+          refreshDevices($('#searchInput').val().trim());
+        }, 300);
+      });
+
+      // 列表操作：详情 / 删除
+      $('#tableBody').on('click', 'button[data-action]', function () {
+        const action = $(this).data('action');
+        const id = $(this).data('id');
+
+        if (action === 'detail') {
+          const dev = devices.find(function (d) { return d.id === id; });
+          if (dev) openDrawer(dev);
+        } else if (action === 'delete') {
+          const name = $(this).data('name') || id;
+          pendingDeleteId = id;
+          $('#confirmDeviceName').text(name);
+          deleteModal.show();
+        }
+      });
+
+      // 确认删除
+      $('#confirmDeleteBtn').on('click', function () {
+        if (!pendingDeleteId) return;
+        const id = pendingDeleteId;
+        deleteModal.hide();
+
+        removeDevice(id)
+          .then(function () {
+            showSuccess('已删除');
+            refreshDevices();
+          })
+          .catch(function (err) {
+            console.error('删除失败:', err);
+            showError('删除失败: ' + err.message);
+          });
+        pendingDeleteId = null;
+      });
+
+      // 新增按钮
+      $('#addBtn').on('click', function () {
+        isNewDevice = true;
+        currentDevice = null;
+        // 初始化空设备对象
+        currentDevice = {
+          id: null,
+          deviceCode: '',
+          deviceType: '',
+          deviceSN: '',
+          deviceName: '',
+          rate: 1,
+          posCode: '',
+          areaCode: '',
+          project: '',
+          pcode: '',
+          status: 0,
+          memo: ''
+        };
+
+        $('#drawerTitle').text('新增设备');
+        $('#idLine').text('');
+
+        fieldIds.forEach(function (f) {
+          const val = (f === 'rate') ? 1 : (f === 'status') ? 0 : '';
+          $('#f_' + f).val(val);
+          $('.form-group-tight[data-field="' + f + '"]').removeClass('was-validated-error');
+          $('#f_' + f).removeClass('is-invalid');
+        });
+
+        // 新增模式下，设备号、设备类型、项目编号可编辑
+        $('#f_deviceCode').prop('readonly', false).removeClass('form-control-plaintext').addClass('form-control');
+        $('#f_deviceType').prop('disabled', false).removeClass('form-select-plaintext').addClass('form-select');
+        $('#f_project').prop('readonly', false).removeClass('form-control-plaintext').addClass('form-control');
+        // 其余字段也进入编辑态
+        fieldIds.forEach(function (f) {
+          if (f === 'deviceCode' || f === 'deviceType' || f === 'project') return;
+          const el = $('#f_' + f);
+          if (el.is('select')) {
+            el.removeClass('form-select-plaintext').addClass('form-select').prop('disabled', false);
+          } else {
+            el.removeClass('form-control-plaintext').addClass('form-control').prop('readonly', false);
+          }
+        });
+
+        editing = true;
+        $('#editBtn').addClass('d-none');
+        $('#deleteBtn').addClass('d-none');
+        $('#saveBtn').removeClass('d-none');
+        $('#cancelBtn').text('取消');
+        drawer.show();
+      });
+
+      // 详情：打开面板
+      function openDrawer(dev) {
+        isNewDevice = false;
+        currentDevice = dev;
+        $('#drawerTitle').text(dev.deviceName || dev.deviceCode);
+        $('#idLine').text('ID: ' + dev.id);
+
+        fieldIds.forEach(function (f) {
+          const val = dev[f] !== null && dev[f] !== undefined ? dev[f] : (f === 'rate' ? 1 : (f === 'status' ? 0 : ''));
+          const el = $('#f_' + f);
+          if (el.is('select')) {
+            // 如果值不在下拉选项中，动态添加
+            if (val && !el.find('option[value="' + val.replace(/"/g, '\\"') + '"]').length) {
+              el.append('<option value="' + esc(val) + '">' + esc(val) + '</option>');
+            }
+            el.val(val);
+          } else {
+            el.val(val);
+            // tooltip 展示完整内容
+            el.attr('title', val || '');
+          }
+          $('.form-group-tight[data-field="' + f + '"]').removeClass('was-validated-error');
+          el.removeClass('is-invalid');
+        });
+        setEditMode(false);
+        drawer.show();
+        // 初始化 tooltip
+        setTimeout(function () {
+          $('[data-bs-toggle="tooltip"]').tooltip({ container: 'body', trigger: 'hover' });
+        }, 0);
+      }
+
+      function setEditMode(on) {
+        editing = on;
+        fieldIds.forEach(function (f) {
+          const el = $('#f_' + f);
+          const isSelect = el.is('select');
+          if (on) {
+            // 编辑已有设备时，deviceCode、deviceType、project、status 不允许修改
+            if (!isNewDevice && /^(deviceCode|deviceType|project|status)$/.test(f)) {
+              el.prop(isSelect ? 'disabled' : 'readonly', true);
+            } else {
+              if (isSelect) {
+                el.removeClass('form-select-plaintext').addClass('form-select').prop('disabled', false);
+              } else {
+                el.removeClass('form-control-plaintext').addClass('form-control').prop('readonly', false);
+              }
+            }
+          } else {
+            if (isSelect) {
+              el.removeClass('form-select').addClass('form-select-plaintext').prop('disabled', true);
+            } else {
+              el.removeClass('form-control').addClass('form-control-plaintext').prop('readonly', true);
+            }
+          }
+        });
+        $('#editBtn').toggleClass('d-none', on);
+        $('#saveBtn').toggleClass('d-none', !on);
+        $('#cancelBtn').text(on ? '取消' : '关闭');
+        // 新增模式下不显示删除按钮
+      }
+
+      $('#editBtn').on('click', function () {
+        setEditMode(true);
+        $('#f_deviceName').trigger('focus');
+      });
+
+      $('#cancelBtn').on('click', function () {
+        if (editing) {
+          // 取消编辑：如果是新增则关闭，否则恢复原数据
+          if (isNewDevice) {
+            drawer.hide();
+          } else {
+            openDrawer(currentDevice);
+          }
+        } else {
+          drawer.hide();
+        }
+      });
+
+      // 保存
+      $('#saveBtn').on('click', function () {
+        // 校验
+        let valid = true;
+        const requiredFields = isNewDevice
+          ? ['deviceCode', 'deviceType', 'project']
+          : [];
+        requiredFields.forEach(function (f) {
+          const el = $('#f_' + f);
+          if (!el.val() || !el.val().trim()) {
+            el.addClass('is-invalid');
+            valid = false;
+          } else {
+            el.removeClass('is-invalid');
+          }
+        });
+        if (!valid) return;
+
+        if (isNewDevice) {
+          // 新建：只传 DeviceCreateInput 接受的字段
+          const createFields = ['deviceCode', 'deviceType', 'deviceSN', 'deviceName', 'rate',
+                                'posCode', 'areaCode', 'project', 'pcode', 'memo'];
+          const apiData = {};
+          createFields.forEach(function (f) {
+            let v = $('#f_' + f).val();
+            if (v === '' || v === null || v === undefined) {
+              apiData[f] = null;
+            } else if (f === 'rate') {
+              const n = parseInt(v, 10);
+              apiData[f] = isNaN(n) ? 1 : n;
+            } else {
+              apiData[f] = v;
+            }
+          });
+          createDevice(apiData)
+            .then(function (created) {
+              showSuccess('创建成功');
+              drawer.hide();
+              refreshDevices();
+            })
+            .catch(function (err) {
+              console.error('创建失败:', err);
+              showError('创建失败: ' + err.message);
+            });
+        } else {
+          // 修改：只传 DeviceModifyInput 接受的字段（不含 deviceCode/deviceType/project/status，API 不支持）
+          const modifyFields = ['deviceSN', 'deviceName', 'rate', 'posCode', 'areaCode', 'pcode', 'memo'];
+          const modifyInput = { id: currentDevice.id };
+          modifyFields.forEach(function (f) {
+            let v = $('#f_' + f).val();
+            if (v === '' || v === null || v === undefined) {
+              modifyInput[f] = null;
+            } else if (f === 'rate') {
+              const n = parseInt(v, 10);
+              modifyInput[f] = isNaN(n) ? 1 : n;
+            } else {
+              modifyInput[f] = v;
+            }
+          });
+
+          modifyDevice(modifyInput)
+            .then(function (updated) {
+              // 更新本地缓存
+              const idx = devices.findIndex(function (d) { return d.id === updated.id; });
+              if (idx >= 0) {
+                devices[idx] = updated;
+              }
+              currentDevice = updated;
+              setEditMode(false);
+              $('#drawerTitle').text(updated.deviceName || updated.deviceCode);
+              $('#idLine').text('ID: ' + updated.id);
+              // 刷新只读视图
+              fieldIds.forEach(function (f) {
+                const val = updated[f] !== null && updated[f] !== undefined ? updated[f] : '';
+                $('#f_' + f).val(val);
+              });
+              renderTable();
+              showSuccess('已保存');
+            })
+            .catch(function (err) {
+              console.error('保存失败:', err);
+              showError('保存失败: ' + err.message);
+            });
+        }
+      });
+
+      // ============================================================
+      // 初始加载
+      // ============================================================
+      refreshDevices();
+    });
+  </script>
+
+</body>
+
+</html>
+
+
+
+

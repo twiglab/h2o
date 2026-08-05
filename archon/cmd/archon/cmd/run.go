@@ -6,6 +6,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/twiglab/h2o/archon/gql"
+	"github.com/twiglab/h2o/archon/wp"
 
 	"github.com/spf13/cobra"
 
@@ -40,8 +41,8 @@ func run() {
 	http.Handle("/gql", playground.ApolloSandboxHandler("gql", "/gql/query"))
 	http.Handle("/gql/query", gql.Handle(cli))
 
-	fs := http.FileServer(http.Dir("static/"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	_, admin := wp.AdminPage()
+	http.Handle("/", admin)
 
 	if err := http.ListenAndServe(webaddr(), nil); err != nil {
 		log.Fatal(err)
