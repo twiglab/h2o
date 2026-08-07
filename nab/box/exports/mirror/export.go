@@ -1,0 +1,16 @@
+package mirror
+
+import (
+	"github.com/twiglab/h2o/nab/box/driverbox"
+	"github.com/twiglab/h2o/nab/box/exports/mirror/internal"
+	"github.com/twiglab/h2o/nab/box/exports/mirror/internal/plugin"
+)
+
+// LoadMirrorExport 加载镜像设备Export插件
+// 功能:
+//
+//	创建并加载mirror.NewExport()实例
+func EnableExport() {
+	plugin.EnablePlugin()
+	driverbox.EnableExport(internal.NewExport())
+}
