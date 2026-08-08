@@ -1,22 +1,25 @@
 scalar Time
 scalar Int64
 
-type Record {
+type NhRecord {
   id: ID!
-  code: String!
+
+  deviceSn   : String!
 
   deviceCode : String!
-  deviceName : String!
   deviceType : String!
 
-  dataCode   : String!
+  deviceName : String!
+
   dataValue  : Int64!
-  xDataValue : Int64!
-  factor     : Int!
+
+  dataCode   : String!
   dataTime   : Time!
+  dataTs     : String!
 
   posCode    : String!
   project    : String!
+  owner      : String!
 }
 
 input RecordPageIn {
@@ -31,21 +34,21 @@ input RecordPageIn {
   pageSize   : Int!
 }
 
-type RecordPageOut {
-  result     : [Record!]!
+type NhRecordBeforeOut {
+  result     : [NhRecord!]!
 
-  posCode    : String!
-  project    : String!
   deviceCode : String!
+  dataTs     : String!
+  pageSize   : Int!
+}
 
-  start      : String!
-  end        : String!
-
-  last       : String!
+input NhRecordBeforeIn {
+  deviceCode : String!
+  dataTs     : String!
   pageSize   : Int!
 }
 
 type Query {
-  RecordPage(input:  RecordPageIn!) : RecordPageOut
+  NhRecordBefore(input: NhRecordBeforeIn!) : NhRecordBeforeOut
 }
 
