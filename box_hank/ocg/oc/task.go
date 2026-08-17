@@ -2,18 +2,43 @@ package oc
 
 import (
 	"context"
+	"encoding/json/v2"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/simonvetter/modbus"
-	"github.com/twiglab/h2o/hank"
-	"github.com/twiglab/h2o/hank/pick"
+	"github.com/twiglab/h2o/pkg/common"
 )
+
+type Meter struct {
+	common.Device
+	Pos common.Pos `json:"pos,omitzero"`
+}
+
+func (m Meter) Topic() string {
+	return common.Topic(m.Device)
+}
+
+type ElectricityMeter struct {
+	Meter
+	Data common.Electricity `json:"data"`
+}
+
+func (m ElectricityMeter) MarshalBinary() ([]byte, error) {
+	return json.Marshal(m)
+}
+
+func NewDataCode() string {
+	id := uuid.Must(uuid.NewV7())
+	return id.String()
+}
 
 type TaskX struct {
 	Client  *modbus.ModbusClient
 	Addr    uint16
 	RegType modbus.RegType
-	Sender  hank.Sender
+	Sender  Sender
 
 	Code string
 	Type string
@@ -29,9 +54,9 @@ func (t *TaskX) Run(ctx context.Context) error {
 
 	now := time.Now()
 
-	var em hank.ElectricityMeter
+	var em ElectricityMeter
 	em.Data.DataValue = int64(val)
-	em.DataCode = pick.NewDataCode()
+	em.DataCode = NewDataCode()
 	em.DataTime = now
 	em.DataTs = now.Format(f)
 	em.Code = t.Code
@@ -81,4 +106,3 @@ func TaskChain(ctx context.Context, t ...*TaskX) error {
 	}
 	return nil
 }
-

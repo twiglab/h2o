@@ -7,10 +7,9 @@ import (
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/viper"
+	"github.com/twiglab/h2o/box/ocg/oc"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
-	"github.com/twiglab/h2o/hank"
-	"github.com/twiglab/h2o/hank/cmd/ocg/oc"
 )
 
 func rootLog() *slog.Logger {
@@ -38,33 +37,27 @@ func serverLog() *slog.Logger {
 func wallog() *wal.WAL {
 	logf := viper.GetString("ocg.wal.file")
 	if logf == "" {
-		log.Fatalln("wal file is null. ***MUST*** set hank.wal.file")
+		log.Fatalln("wal file is null. ***MUST*** set ocg.wal.file")
 	}
 	log.Println("wal file:", logf)
 	return wal.New(wal.Conf{Filename: logf})
 }
 
-func mqtt() *hank.MQTTAction {
+func mqtt() *oc.MQTTAction {
 	broker := viper.GetString("ocg.sender.mqtt.broker")
 	clientID := oc.ClientID("ocg")
 	log.Println("clientID", clientID)
 
-	cli, err := hank.NewMQTTClient(clientID, broker)
+	cli, err := oc.NewMQTTClient(clientID, broker)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return hank.NewMQTTAction(cli)
+	return oc.NewMQTTAction(cli)
 }
 
-func sender() hank.Sender {
-	use := viper.GetString("ocg.sender.use")
-	switch use {
-	case "mqtt":
-		log.Println("using mqtt")
-		return mqtt()
-	}
-	log.Println("using logAction")
-	return hank.LogAction{}
+func sender() oc.Sender {
+	log.Println("using mqtt")
+	return mqtt()
 }
 
 func modbusClient(url string) *modbus.ModbusClient {
