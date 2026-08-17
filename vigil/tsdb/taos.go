@@ -5,9 +5,8 @@ import (
 )
 
 const (
-	TAG_CODE  = "code"
-	TAG_PROJ  = "proj"
-	TAG_PCODE = "pcode"
+	TAG_CODE = "code"
+	TAG_PROJ = "proj"
 
 	FIELD_B = "b"
 

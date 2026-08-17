@@ -7,13 +7,9 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-const f = "20060102150405"
-
 type Meter struct {
 	common.Device
 	Pos common.Pos `json:"pos,omitzero"`
-
-	Ts string
 }
 
 type ElectricityMeter struct {
@@ -28,7 +24,6 @@ func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
 }
 
 func (d *ElectricityMeter) setup() {
-	d.Ts = d.DataTime.Format(f)
 	fd := stats.LoadRawData([]int64{d.Data.CurrentA, d.Data.CurrentB, d.Data.CurrentC})
 	d.STD, _ = fd.StandardDeviationPopulation()
 }
@@ -43,5 +38,4 @@ func (d *WaterMeter) UnmarshalBinary(data []byte) error {
 }
 
 func (d *WaterMeter) setup() {
-	d.Ts = d.DataTime.Format(f)
 }

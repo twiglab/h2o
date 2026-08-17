@@ -11,23 +11,17 @@ type Device struct {
 	Name string `json:"name,omitempty"` // 设备名称,可以为空
 
 	DataTime time.Time `json:"data_time"` // 采集时间
+	DataTs   string    `json:"data_ts"`   // 采集时间，字符串，到秒, 20060102150405
 	DataCode string    `json:"data_code"` // 采集的唯一标识,全局唯一单调递增
 
 	Status int `json:"status"` // 设备状态, 网关,采集程序或设备自定义, 0表示正常
 }
 
+// 点位信息
 type Pos struct {
-	Project   string `json:"project,omitempty"`    // 所属项目编号
-	PosCode   string `json:"pos_code,omitempty"`   // 位置编号
-	Building  string `json:"building,omitempty"`   // 大楼
-	FloorCode string `json:"floor_code,omitempty"` // 楼层
-	AreaCode  string `json:"area_code,omitempty"`  // 区域
-	PCode     string `json:"pcode,omitempty"`      // 全局位置编码，默认实现为 Project + PosCode
-	Owner     string `json:"owner,omitempty"`      // 归属方
-}
-
-type ElectricityParam struct {
-	Factor int `json:"factor,omitempty"` // 倍率的结果值，（CT*VT）
+	Project string `json:"project,omitempty"`  // 所属项目编号
+	PosCode string `json:"pos_code,omitempty"` // 位置编号
+	Owner   string `json:"owner,omitempty"`    // 归属方
 }
 
 type Electricity struct {
@@ -46,6 +40,8 @@ type Electricity struct {
 	// ApparentPowerTotal int64 `json:"apparent_power_total,omitempty"` // 总视在功率  S
 
 	Frequency int64 `json:"frequency,omitempty"` // 频率
+
+	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 type Water struct {
@@ -55,12 +51,4 @@ type Water struct {
 
 type MeterValue struct {
 	DataValue int64 `json:"data_value,omitempty"` // 表显读数
-}
-
-type Flag struct {
-	F1 string `json:"f1,omitempty"`
-	F2 string `json:"f2,omitempty"`
-	F3 string `json:"f3,omitempty"`
-	F4 string `json:"f4,omitempty"`
-	F5 string `json:"f5,omitempty"`
 }

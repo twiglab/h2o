@@ -1,7 +1,6 @@
 package hank
 
 import (
-	"cmp"
 	"context"
 	"strconv"
 	"time"
@@ -21,6 +20,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 	}
 
 	meta, _, _ := e.Cache.Get(context.Background(), dd.No)
+	t, ts := parseTime(dd.DataTime)
 
 	return WaterMeter{
 		Meter: Meter{
@@ -28,9 +28,11 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 				SN:   meta.SN,
 				Code: dd.No,
 				Type: common.WATER,
-				Name: cmp.Or(meta.Name, dd.No),
+				Name: meta.Name,
 
-				DataTime: parseTime(dd.DataTime),
+				DataTime: t,
+				DataTs:   ts,
+
 				DataCode: dd.DataCode,
 
 				Status: 0,
@@ -38,7 +40,6 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 			Pos: common.Pos{
 				Project: meta.Project,
 				PosCode: meta.PosCode,
-				PCode:   meta.PCode,
 				Owner:   meta.Owner,
 			},
 		},
@@ -53,6 +54,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 	}
 
 	meta, _, _ := e.Cache.Get(context.Background(), dd.No)
+	t, ts := parseTime(dd.DataTime)
 
 	return ElectricityMeter{
 		Meter: Meter{
@@ -60,9 +62,11 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 				SN:   meta.SN,
 				Code: dd.No,
 				Type: common.ELECTRICITY,
-				Name: cmp.Or(meta.Name, dd.No),
+				Name: meta.Name,
 
-				DataTime: parseTime(dd.DataTime),
+				DataTime: t,
+				DataTs:   ts,
+
 				DataCode: dd.DataCode,
 
 				Status: 0,
@@ -70,12 +74,8 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 			Pos: common.Pos{
 				Project: meta.Project,
 				PosCode: meta.PosCode,
-				PCode:   meta.PCode,
 				Owner:   meta.Owner,
 			},
-		},
-		Param: common.ElectricityParam{
-			Factor: cmp.Or(meta.Factor, 1),
 		},
 		Data: data,
 	}, nil
@@ -136,10 +136,12 @@ func str2I64E(s string, i int64) (v int64, err error) {
 
 var xdate = time.Date(2000, 0, 0, 0, 0, 0, 0, time.Local)
 
-func parseTime(s string) time.Time {
+const f = "20060102150405"
+
+func parseTime(s string) (time.Time, string) {
 	t, err := time.ParseInLocation(time.DateTime, s, time.Local)
 	if err != nil {
-		return xdate
+		return xdate, "20000000000000"
 	}
-	return t
+	return t, t.Format(f)
 }

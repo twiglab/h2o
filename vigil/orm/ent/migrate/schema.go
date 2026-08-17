@@ -22,10 +22,9 @@ var (
 		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "data_time", Type: field.TypeTime},
 		{Name: "data_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "p_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// NhRecordTable holds the schema information for the "nh_record" table.
 	NhRecordTable = &schema.Table{
@@ -33,11 +32,6 @@ var (
 		Columns:    NhRecordColumns,
 		PrimaryKey: []*schema.Column{NhRecordColumns[0]},
 		Indexes: []*schema.Index{
-			{
-				Name:    "nhrecord_p_code",
-				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[14]},
-			},
 			{
 				Name:    "nhrecord_device_code",
 				Unique:  false,
@@ -64,19 +58,19 @@ var (
 				Columns: []*schema.Column{NhRecordColumns[10]},
 			},
 			{
-				Name:    "nhrecord_pos_code",
+				Name:    "nhrecord_project",
 				Unique:  false,
 				Columns: []*schema.Column{NhRecordColumns[11]},
 			},
 			{
-				Name:    "nhrecord_project",
+				Name:    "nhrecord_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[13]},
+				Columns: []*schema.Column{NhRecordColumns[12]},
 			},
 			{
 				Name:    "nhrecord_owner",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[12]},
+				Columns: []*schema.Column{NhRecordColumns[13]},
 			},
 		},
 	}

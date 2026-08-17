@@ -12,6 +12,10 @@ type Recorder interface {
 	TabbWater(ctx context.Context, data WaterMeter) error
 }
 
+type LogRecord struct {
+}
+
+
 type recordCache struct {
 	r Recorder
 	c cache.SyncMapCache[string, time.Time]
@@ -24,21 +28,21 @@ func WithRecorder(r Recorder) Recorder {
 }
 
 func (r *recordCache) TabbElecty(ctx context.Context, data ElectricityMeter) error {
-	if t, ok, _ := r.c.Get(ctx, data.Pos.PCode); ok {
+	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
 		if t.Hour() == data.DataTime.Hour() {
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.Pos.PCode, data.DataTime)
+	r.c.Set(ctx, data.Code, data.DataTime)
 	return r.r.TabbElecty(ctx, data)
 }
 
 func (r *recordCache) TabbWater(ctx context.Context, data WaterMeter) error {
-	if t, ok, _ := r.c.Get(ctx, data.Pos.PCode); ok {
+	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
 		if t.Hour() == data.DataTime.Hour() {
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.Pos.PCode, data.DataTime)
+	r.c.Set(ctx, data.Code, data.DataTime)
 	return r.r.TabbWater(ctx, data)
 }

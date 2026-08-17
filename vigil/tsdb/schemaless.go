@@ -33,7 +33,6 @@ func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter
 	enc.StartLine(ELECTY_STB)
 
 	enc.AddTag(TAG_CODE, data.Code)
-	enc.AddTag(TAG_PCODE, data.Pos.PosCode)
 	enc.AddTag(TAG_PROJ, data.Pos.Project)
 
 	v, _ := lineprotocol.FloatValue(data.STD)
@@ -73,7 +72,6 @@ func (s *Schemaless) TabbWater(ctx context.Context, data vigil.WaterMeter) error
 	enc.StartLine(WATER_STB)
 
 	enc.AddTag(TAG_CODE, data.Code)
-	enc.AddTag(TAG_PCODE, data.Pos.PosCode)
 	enc.AddTag(TAG_PROJ, data.Pos.Project)
 
 	enc.AddField(FIELD_DATA_VALUE, lineprotocol.IntValue(data.Data.DataValue))

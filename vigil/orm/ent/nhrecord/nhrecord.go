@@ -33,14 +33,12 @@ const (
 	FieldDataTime = "data_time"
 	// FieldDataTs holds the string denoting the data_ts field in the database.
 	FieldDataTs = "data_ts"
+	// FieldProject holds the string denoting the project field in the database.
+	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
 	// FieldOwner holds the string denoting the owner field in the database.
 	FieldOwner = "owner"
-	// FieldProject holds the string denoting the project field in the database.
-	FieldProject = "project"
-	// FieldPCode holds the string denoting the p_code field in the database.
-	FieldPCode = "p_code"
 	// Table holds the table name of the nhrecord in the database.
 	Table = "nh_record"
 )
@@ -58,10 +56,9 @@ var Columns = []string{
 	FieldDataCode,
 	FieldDataTime,
 	FieldDataTs,
+	FieldProject,
 	FieldPosCode,
 	FieldOwner,
-	FieldProject,
-	FieldPCode,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -157,6 +154,11 @@ func ByDataTs(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDataTs, opts...).ToFunc()
 }
 
+// ByProject orders the results by the project field.
+func ByProject(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProject, opts...).ToFunc()
+}
+
 // ByPosCode orders the results by the pos_code field.
 func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
@@ -165,14 +167,4 @@ func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 // ByOwner orders the results by the owner field.
 func ByOwner(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldOwner, opts...).ToFunc()
-}
-
-// ByProject orders the results by the project field.
-func ByProject(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProject, opts...).ToFunc()
-}
-
-// ByPCode orders the results by the p_code field.
-func ByPCode(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPCode, opts...).ToFunc()
 }

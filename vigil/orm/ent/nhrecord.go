@@ -37,14 +37,12 @@ type NhRecord struct {
 	DataTime time.Time `json:"data_time,omitempty"`
 	// 采集时间字符串
 	DataTs string `json:"data_ts,omitempty"`
+	// 项目编号
+	Project string `json:"project,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
 	// 归属
-	Owner string `json:"owner,omitempty"`
-	// 项目编号
-	Project string `json:"project,omitempty"`
-	// 设备位置业务编号
-	PCode        string `json:"p_code,omitempty"`
+	Owner        string `json:"owner,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -55,7 +53,7 @@ func (*NhRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case nhrecord.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldPosCode, nhrecord.FieldOwner, nhrecord.FieldProject, nhrecord.FieldPCode:
+		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldProject, nhrecord.FieldPosCode, nhrecord.FieldOwner:
 			values[i] = new(sql.NullString)
 		case nhrecord.FieldCreateTime, nhrecord.FieldUpdateTime, nhrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -140,6 +138,12 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.DataTs = value.String
 			}
+		case nhrecord.FieldProject:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field project", values[i])
+			} else if value.Valid {
+				_m.Project = value.String
+			}
 		case nhrecord.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
@@ -151,18 +155,6 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
 				_m.Owner = value.String
-			}
-		case nhrecord.FieldProject:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field project", values[i])
-			} else if value.Valid {
-				_m.Project = value.String
-			}
-		case nhrecord.FieldPCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field p_code", values[i])
-			} else if value.Valid {
-				_m.PCode = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -230,17 +222,14 @@ func (_m *NhRecord) String() string {
 	builder.WriteString("data_ts=")
 	builder.WriteString(_m.DataTs)
 	builder.WriteString(", ")
+	builder.WriteString("project=")
+	builder.WriteString(_m.Project)
+	builder.WriteString(", ")
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
 	builder.WriteString(", ")
 	builder.WriteString("owner=")
 	builder.WriteString(_m.Owner)
-	builder.WriteString(", ")
-	builder.WriteString("project=")
-	builder.WriteString(_m.Project)
-	builder.WriteString(", ")
-	builder.WriteString("p_code=")
-	builder.WriteString(_m.PCode)
 	builder.WriteByte(')')
 	return builder.String()
 }

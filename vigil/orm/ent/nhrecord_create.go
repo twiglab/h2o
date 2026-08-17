@@ -123,6 +123,12 @@ func (_c *NhRecordCreate) SetDataTs(v string) *NhRecordCreate {
 	return _c
 }
 
+// SetProject sets the "project" field.
+func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
+	_c.mutation.SetProject(v)
+	return _c
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_c *NhRecordCreate) SetPosCode(v string) *NhRecordCreate {
 	_c.mutation.SetPosCode(v)
@@ -147,26 +153,6 @@ func (_c *NhRecordCreate) SetOwner(v string) *NhRecordCreate {
 func (_c *NhRecordCreate) SetNillableOwner(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetOwner(*v)
-	}
-	return _c
-}
-
-// SetProject sets the "project" field.
-func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
-	_c.mutation.SetProject(v)
-	return _c
-}
-
-// SetPCode sets the "p_code" field.
-func (_c *NhRecordCreate) SetPCode(v string) *NhRecordCreate {
-	_c.mutation.SetPCode(v)
-	return _c
-}
-
-// SetNillablePCode sets the "p_code" field if the given value is not nil.
-func (_c *NhRecordCreate) SetNillablePCode(v *string) *NhRecordCreate {
-	if v != nil {
-		_c.SetPCode(*v)
 	}
 	return _c
 }
@@ -373,6 +359,10 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(nhrecord.FieldDataTs, field.TypeString, value)
 		_node.DataTs = value
 	}
+	if value, ok := _c.mutation.Project(); ok {
+		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
+		_node.Project = value
+	}
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(nhrecord.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
@@ -380,14 +370,6 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Owner(); ok {
 		_spec.SetField(nhrecord.FieldOwner, field.TypeString, value)
 		_node.Owner = value
-	}
-	if value, ok := _c.mutation.Project(); ok {
-		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
-		_node.Project = value
-	}
-	if value, ok := _c.mutation.PCode(); ok {
-		_spec.SetField(nhrecord.FieldPCode, field.TypeString, value)
-		_node.PCode = value
 	}
 	return _node, _spec
 }
@@ -497,17 +479,14 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		if _, exists := u.create.mutation.DataTs(); exists {
 			s.SetIgnore(nhrecord.FieldDataTs)
 		}
+		if _, exists := u.create.mutation.Project(); exists {
+			s.SetIgnore(nhrecord.FieldProject)
+		}
 		if _, exists := u.create.mutation.PosCode(); exists {
 			s.SetIgnore(nhrecord.FieldPosCode)
 		}
 		if _, exists := u.create.mutation.Owner(); exists {
 			s.SetIgnore(nhrecord.FieldOwner)
-		}
-		if _, exists := u.create.mutation.Project(); exists {
-			s.SetIgnore(nhrecord.FieldProject)
-		}
-		if _, exists := u.create.mutation.PCode(); exists {
-			s.SetIgnore(nhrecord.FieldPCode)
 		}
 	}))
 	return u
@@ -764,17 +743,14 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			if _, exists := b.mutation.DataTs(); exists {
 				s.SetIgnore(nhrecord.FieldDataTs)
 			}
+			if _, exists := b.mutation.Project(); exists {
+				s.SetIgnore(nhrecord.FieldProject)
+			}
 			if _, exists := b.mutation.PosCode(); exists {
 				s.SetIgnore(nhrecord.FieldPosCode)
 			}
 			if _, exists := b.mutation.Owner(); exists {
 				s.SetIgnore(nhrecord.FieldOwner)
-			}
-			if _, exists := b.mutation.Project(); exists {
-				s.SetIgnore(nhrecord.FieldProject)
-			}
-			if _, exists := b.mutation.PCode(); exists {
-				s.SetIgnore(nhrecord.FieldPCode)
 			}
 		}
 	}))

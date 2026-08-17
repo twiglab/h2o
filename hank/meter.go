@@ -13,8 +13,7 @@ func (m Meter) Topic() string {
 
 type ElectricityMeter struct {
 	Meter
-	Param common.ElectricityParam `json:"param"`
-	Data  common.Electricity      `json:"data"`
+	Data common.Electricity `json:"data"`
 }
 
 func (m ElectricityMeter) MarshalBinary() ([]byte, error) {

@@ -114,6 +114,11 @@ func DataTs(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldDataTs, v))
 }
 
+// Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
+func Project(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
+}
+
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
 func PosCode(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldPosCode, v))
@@ -122,16 +127,6 @@ func PosCode(v string) predicate.NhRecord {
 // Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
 func Owner(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldOwner, v))
-}
-
-// Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
-func Project(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
-}
-
-// PCode applies equality check predicate on the "p_code" field. It's identical to PCodeEQ.
-func PCode(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -704,6 +699,71 @@ func DataTsContainsFold(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldContainsFold(FieldDataTs, v))
 }
 
+// ProjectEQ applies the EQ predicate on the "project" field.
+func ProjectEQ(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
+}
+
+// ProjectNEQ applies the NEQ predicate on the "project" field.
+func ProjectNEQ(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldNEQ(FieldProject, v))
+}
+
+// ProjectIn applies the In predicate on the "project" field.
+func ProjectIn(vs ...string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldIn(FieldProject, vs...))
+}
+
+// ProjectNotIn applies the NotIn predicate on the "project" field.
+func ProjectNotIn(vs ...string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldNotIn(FieldProject, vs...))
+}
+
+// ProjectGT applies the GT predicate on the "project" field.
+func ProjectGT(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldGT(FieldProject, v))
+}
+
+// ProjectGTE applies the GTE predicate on the "project" field.
+func ProjectGTE(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldGTE(FieldProject, v))
+}
+
+// ProjectLT applies the LT predicate on the "project" field.
+func ProjectLT(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldLT(FieldProject, v))
+}
+
+// ProjectLTE applies the LTE predicate on the "project" field.
+func ProjectLTE(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldLTE(FieldProject, v))
+}
+
+// ProjectContains applies the Contains predicate on the "project" field.
+func ProjectContains(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldContains(FieldProject, v))
+}
+
+// ProjectHasPrefix applies the HasPrefix predicate on the "project" field.
+func ProjectHasPrefix(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldHasPrefix(FieldProject, v))
+}
+
+// ProjectHasSuffix applies the HasSuffix predicate on the "project" field.
+func ProjectHasSuffix(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldHasSuffix(FieldProject, v))
+}
+
+// ProjectEqualFold applies the EqualFold predicate on the "project" field.
+func ProjectEqualFold(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldEqualFold(FieldProject, v))
+}
+
+// ProjectContainsFold applies the ContainsFold predicate on the "project" field.
+func ProjectContainsFold(v string) predicate.NhRecord {
+	return predicate.NhRecord(sql.FieldContainsFold(FieldProject, v))
+}
+
 // PosCodeEQ applies the EQ predicate on the "pos_code" field.
 func PosCodeEQ(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldPosCode, v))
@@ -852,146 +912,6 @@ func OwnerEqualFold(v string) predicate.NhRecord {
 // OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
 func OwnerContainsFold(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldContainsFold(FieldOwner, v))
-}
-
-// ProjectEQ applies the EQ predicate on the "project" field.
-func ProjectEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
-}
-
-// ProjectNEQ applies the NEQ predicate on the "project" field.
-func ProjectNEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNEQ(FieldProject, v))
-}
-
-// ProjectIn applies the In predicate on the "project" field.
-func ProjectIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIn(FieldProject, vs...))
-}
-
-// ProjectNotIn applies the NotIn predicate on the "project" field.
-func ProjectNotIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotIn(FieldProject, vs...))
-}
-
-// ProjectGT applies the GT predicate on the "project" field.
-func ProjectGT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGT(FieldProject, v))
-}
-
-// ProjectGTE applies the GTE predicate on the "project" field.
-func ProjectGTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGTE(FieldProject, v))
-}
-
-// ProjectLT applies the LT predicate on the "project" field.
-func ProjectLT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLT(FieldProject, v))
-}
-
-// ProjectLTE applies the LTE predicate on the "project" field.
-func ProjectLTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLTE(FieldProject, v))
-}
-
-// ProjectContains applies the Contains predicate on the "project" field.
-func ProjectContains(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContains(FieldProject, v))
-}
-
-// ProjectHasPrefix applies the HasPrefix predicate on the "project" field.
-func ProjectHasPrefix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasPrefix(FieldProject, v))
-}
-
-// ProjectHasSuffix applies the HasSuffix predicate on the "project" field.
-func ProjectHasSuffix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasSuffix(FieldProject, v))
-}
-
-// ProjectEqualFold applies the EqualFold predicate on the "project" field.
-func ProjectEqualFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEqualFold(FieldProject, v))
-}
-
-// ProjectContainsFold applies the ContainsFold predicate on the "project" field.
-func ProjectContainsFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContainsFold(FieldProject, v))
-}
-
-// PCodeEQ applies the EQ predicate on the "p_code" field.
-func PCodeEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldPCode, v))
-}
-
-// PCodeNEQ applies the NEQ predicate on the "p_code" field.
-func PCodeNEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNEQ(FieldPCode, v))
-}
-
-// PCodeIn applies the In predicate on the "p_code" field.
-func PCodeIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIn(FieldPCode, vs...))
-}
-
-// PCodeNotIn applies the NotIn predicate on the "p_code" field.
-func PCodeNotIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotIn(FieldPCode, vs...))
-}
-
-// PCodeGT applies the GT predicate on the "p_code" field.
-func PCodeGT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGT(FieldPCode, v))
-}
-
-// PCodeGTE applies the GTE predicate on the "p_code" field.
-func PCodeGTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGTE(FieldPCode, v))
-}
-
-// PCodeLT applies the LT predicate on the "p_code" field.
-func PCodeLT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLT(FieldPCode, v))
-}
-
-// PCodeLTE applies the LTE predicate on the "p_code" field.
-func PCodeLTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLTE(FieldPCode, v))
-}
-
-// PCodeContains applies the Contains predicate on the "p_code" field.
-func PCodeContains(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContains(FieldPCode, v))
-}
-
-// PCodeHasPrefix applies the HasPrefix predicate on the "p_code" field.
-func PCodeHasPrefix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasPrefix(FieldPCode, v))
-}
-
-// PCodeHasSuffix applies the HasSuffix predicate on the "p_code" field.
-func PCodeHasSuffix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasSuffix(FieldPCode, v))
-}
-
-// PCodeIsNil applies the IsNil predicate on the "p_code" field.
-func PCodeIsNil() predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIsNull(FieldPCode))
-}
-
-// PCodeNotNil applies the NotNil predicate on the "p_code" field.
-func PCodeNotNil() predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotNull(FieldPCode))
-}
-
-// PCodeEqualFold applies the EqualFold predicate on the "p_code" field.
-func PCodeEqualFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEqualFold(FieldPCode, v))
-}
-
-// PCodeContainsFold applies the ContainsFold predicate on the "p_code" field.
-func PCodeContainsFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContainsFold(FieldPCode, v))
 }
 
 // And groups predicates with the AND operator between them.
