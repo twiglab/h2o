@@ -8,8 +8,8 @@ import (
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/cobra"
-	"github.com/twiglab/h2o/hank/cmd/ocg/oc"
-	"github.com/twiglab/h2o/hank/pick"
+	"github.com/twiglab/h2o/box/ocg/oc"
+	"github.com/twiglab/h2o/box/ocg/pick"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
