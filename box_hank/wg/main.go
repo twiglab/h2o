@@ -10,12 +10,12 @@ import (
 
 func main() {
 	client, err := modbus.NewClient(&modbus.ClientConfiguration{
-		URL:      "rtu:///dev/tty0",
+		URL:      "rtu:///dev/ttyS0",
 		Speed:    9600,               // default
 		DataBits: 8,                  // default, optional
 		Parity:   modbus.PARITY_NONE, // default, optional
 		StopBits: 1,                  // default if no parity, optional
-		Timeout:  1 * time.Second,
+		Timeout:  5 * time.Second,
 	})
 
 	if err != nil {
@@ -28,7 +28,7 @@ func main() {
 
 	defer client.Close()
 
-	client.SetUnitId(21)
+	client.SetUnitId(0x21)
 
 	val, err := client.ReadUint32(0, modbus.INPUT_REGISTER)
 	if err != nil {
