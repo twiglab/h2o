@@ -1,6 +1,6 @@
 module github.com/twiglab/h2o/chrgg
 
-go 1.26.0
+go 1.27.0
 
 require (
 	entgo.io/ent v0.14.6

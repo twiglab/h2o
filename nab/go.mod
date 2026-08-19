@@ -1,6 +1,6 @@
 module github.com/twiglab/h2o/nab
 
-go 1.26.0
+go 1.27.0
 
 require (
 	github.com/cjoudrey/gluahttp v0.0.0-20201111170219-25003d9adfa9
