@@ -1,37 +1,13 @@
 package schema
 
 import (
-	"fmt"
-
 	"entgo.io/ent"
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"entgo.io/ent/schema/mixin"
-	"github.com/google/uuid"
 )
-
-func cdrid() string {
-	u, _ := uuid.NewV7()
-	return u.String()
-}
-
-func char(size int) map[string]string {
-	return map[string]string{
-		dialect.MySQL:    fmt.Sprintf("char(%d)", size),
-		dialect.SQLite:   fmt.Sprintf("char(%d)", size),
-		dialect.Postgres: fmt.Sprintf("char(%d)", size),
-	}
-}
-func varchar(size int) map[string]string {
-	return map[string]string{
-		dialect.MySQL:    fmt.Sprintf("varchar(%d)", size),
-		dialect.SQLite:   fmt.Sprintf("varchar(%d)", size),
-		dialect.Postgres: fmt.Sprintf("varchar(%d)", size),
-	}
-}
 
 type NhRecord struct {
 	ent.Schema

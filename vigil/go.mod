@@ -7,7 +7,6 @@ require (
 	github.com/99designs/gqlgen v0.17.94
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/go-chi/chi/v5 v5.3.1
-	github.com/google/uuid v1.6.0
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/montanaflynn/stats v0.12.4
@@ -35,6 +34,7 @@ require (
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goccy/go-yaml v1.19.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.18.1 // indirect
