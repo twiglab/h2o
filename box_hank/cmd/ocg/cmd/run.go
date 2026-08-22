@@ -8,8 +8,8 @@ import (
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/cobra"
-	"github.com/twiglab/h2o/box/ocg/oc"
-	"github.com/twiglab/h2o/box/ocg/pick"
+	"github.com/twiglab/h2o/box"
+	"github.com/twiglab/h2o/box/ocg"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
@@ -36,12 +36,12 @@ func run() error {
 
 	_ = rootLog()
 
-	mc := modbusClient("tcp://192.168.0.100:502")
+	mc := modbusClient()
 	defer mc.Close()
 
 	mqtt := sender()
 
-	t1 := &oc.TaskX{
+	t1 := &ocg.TaskX{
 		Client:  mc,
 		Addr:    2,
 		RegType: modbus.INPUT_REGISTER,
@@ -53,7 +53,7 @@ func run() error {
 		Project: "1006",
 	}
 
-	t2 := &oc.TaskX{
+	t2 := &ocg.TaskX{
 		Client:  mc,
 		Addr:    16,
 		RegType: modbus.INPUT_REGISTER,
@@ -65,11 +65,11 @@ func run() error {
 		Project: "1006",
 	}
 
-	cron := pick.NewCron()
+	cron := box.NewCron()
 
-	cron.AddFunc("@every 15m", func() {
+	cron.AddFunc("@every 5s", func() {
 		var err error
-		if err = oc.TaskChain(context.Background(), t1, t2); err != nil {
+		if err = ocg.TaskChain(context.Background(), t1, t2); err != nil {
 			slog.Error("task error", slog.Any("error", err))
 		}
 	})

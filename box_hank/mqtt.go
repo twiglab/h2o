@@ -1,10 +1,12 @@
-package oc
+package box
 
 import (
 	"context"
 	"encoding"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/twiglab/h2o/pkg/common"
 )
 
 type SendObject interface {
@@ -51,4 +53,12 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	}
 
 	return client, nil
+}
+
+const f = "20060102150405"
+
+func ClientID(code string) string {
+	now := time.Now()
+	ts := common.Ts(now)
+	return code + "@" + ts
 }

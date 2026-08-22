@@ -1,6 +1,6 @@
-package pick
+package box
 
-import "github.com/twiglab/h2o/box/ocg/pick/internal/cron"
+import "github.com/twiglab/h2o/box/internal/cron"
 
 func NewCron() *cron.Cron {
 	return cron.New(cron.WithSeconds())
