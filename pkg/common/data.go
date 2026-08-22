@@ -2,6 +2,7 @@ package common
 
 import (
 	"time"
+	"uuid"
 )
 
 type Device struct {
@@ -51,4 +52,9 @@ type Water struct {
 
 type MeterValue struct {
 	DataValue int64 `json:"data_value,omitempty"` // 表显读数
+}
+
+func NewDataCode() string {
+	id := uuid.NewV7()
+	return id.String()
 }
