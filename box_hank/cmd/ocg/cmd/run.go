@@ -39,13 +39,13 @@ func run() error {
 	mc := modbusClient()
 	defer mc.Close()
 
-	mqtt := sender()
+	s := sender()
 
 	t1 := &ocg.TaskX{
 		Client:  mc,
 		Addr:    2,
 		RegType: modbus.INPUT_REGISTER,
-		Sender:  mqtt,
+		Sender:  s,
 
 		Code: "PT-1-IN",
 		Type: common.ELECTRICITY,
@@ -57,7 +57,7 @@ func run() error {
 		Client:  mc,
 		Addr:    16,
 		RegType: modbus.INPUT_REGISTER,
-		Sender:  mqtt,
+		Sender:  s,
 
 		Code: "PT-2-IN",
 		Type: common.ELECTRICITY,
@@ -67,7 +67,7 @@ func run() error {
 
 	cron := box.NewCron()
 
-	cron.AddFunc("@every 5s", func() {
+	cron.AddFunc("@every 15m", func() {
 		var err error
 		if err = ocg.TaskChain(context.Background(), t1, t2); err != nil {
 			slog.Error("task error", slog.Any("error", err))

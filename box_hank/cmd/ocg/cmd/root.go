@@ -51,6 +51,6 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatal(viper.ConfigFileUsed(), " not found")
+		log.Fatal(viper.ConfigFileUsed(), " not found", err)
 	}
 }
