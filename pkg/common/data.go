@@ -58,3 +58,9 @@ func NewDataCode() string {
 	id := uuid.NewV7()
 	return id.String()
 }
+
+const f = "20060102150405"
+
+func Ts(now time.Time) string {
+	return now.Format(f)
+}
