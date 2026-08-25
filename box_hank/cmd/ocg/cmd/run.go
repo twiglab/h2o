@@ -1,15 +1,12 @@
 package cmd
 
 import (
-	"context"
-	"log/slog"
 	"net/http"
 	_ "net/http/pprof"
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/box"
-	"github.com/twiglab/h2o/box/ocg"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
@@ -41,7 +38,7 @@ func run() error {
 
 	s := sender()
 
-	t1 := &ocg.TaskX{
+	t1 := &box.ModbusTask{
 		Client:  mc,
 		Addr:    2,
 		RegType: modbus.INPUT_REGISTER,
@@ -53,7 +50,7 @@ func run() error {
 		Project: "1006",
 	}
 
-	t2 := &ocg.TaskX{
+	t2 := &box.ModbusTask{
 		Client:  mc,
 		Addr:    16,
 		RegType: modbus.INPUT_REGISTER,
@@ -65,15 +62,10 @@ func run() error {
 		Project: "1006",
 	}
 
-	cron := box.NewCron()
+	cron := box.NewCronExec()
 
-	cron.AddFunc("@every 15m", func() {
-		var err error
-		if err = ocg.TaskChain(context.Background(), t1, t2); err != nil {
-			slog.Error("task error", slog.Any("error", err))
-		}
-	})
-	cron.Start()
+	cron.AddJob("@every 15m", box.SeqJobs(t1, t2))
+	cron.Run()
 
 	return http.ListenAndServe(":10000", nil)
 }
