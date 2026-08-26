@@ -40,6 +40,7 @@ func run() error {
 
 	s := sender()
 
+	// 2025100021	F5-02
 	t1 := &box.ModbusTask{
 		Client:  mc,
 		Addr:    0x0,
@@ -55,7 +56,39 @@ func run() error {
 		Ctx: context.Background(),
 	}
 
-	l := box.NewLoop(30*time.Second, box.SeqJobs(3*time.Second, t1))
+	// 2024082045	F5-01
+	t2 := &box.ModbusTask{
+		Client:  mc,
+		Addr:    0x0,
+		RegType: modbus.INPUT_REGISTER,
+		UnitID:  0x45,
+		Sender:  s,
+
+		Code: "826_0-16",
+		Type: common.WATER,
+
+		Project: "1006",
+
+		Ctx: context.Background(),
+	}
+
+	// 2026050057	F5-02
+	t3 := &box.ModbusTask{
+		Client:  mc,
+		Addr:    0x0,
+		RegType: modbus.INPUT_REGISTER,
+		UnitID:  0x57,
+		Sender:  s,
+
+		Code: "826_0-16",
+		Type: common.WATER,
+
+		Project: "1006",
+
+		Ctx: context.Background(),
+	}
+
+	l := box.NewLoop(30*time.Second, box.SeqJobs(3*time.Second, t1, t2, t3))
 
 	l.Run()
 
