@@ -21,8 +21,7 @@ func SeqJobs(jobs ...Job) Job {
 }
 
 type Loop struct {
-	job       Job
-	isRunning bool
+	job Job
 }
 
 func NewLoop(j Job) Loop {
@@ -31,12 +30,11 @@ func NewLoop(j Job) Loop {
 
 func (l Loop) loop() {
 	for {
-		l.Run()
+		l.job.Run()
 		time.Sleep(1 * time.Second)
 	}
 }
 
 func (l Loop) Run() {
-	l.isRunning = true
 	go l.loop()
 }
