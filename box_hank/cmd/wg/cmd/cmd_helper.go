@@ -60,9 +60,17 @@ func sender() box.Sender {
 func modbusClient() *modbus.ModbusClient {
 	url := viper.GetString("wg.connect.modbus.rtu.url")
 	log.Println("ocg.connect.modbus.rtu.url:", url)
+
+	dataBits := viper.GetUint("wg.connect.modbus.rtu.data")
+	speed := viper.GetUint("wg.connect.modbus.rtu.speed")
+	stopBits := viper.GetUint("wg.connect.modbus.rtu.stop")
+
 	cfg := &modbus.ClientConfiguration{
-		URL:     url,
-		Timeout: 3 * time.Second,
+		URL:      url,
+		Speed:    speed,
+		DataBits: dataBits,
+		StopBits: stopBits,
+		Timeout:  3 * time.Second,
 	}
 	cli, err := box.NewModbusClient(cfg)
 	if err != nil {
