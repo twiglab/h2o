@@ -59,7 +59,7 @@ func sender() box.Sender {
 
 func modbusClient() *modbus.ModbusClient {
 	url := viper.GetString("wg.connect.modbus.rtu.url")
-	log.Println("ocg.connect.modbus.rtu.url:", url)
+	log.Println("wg.connect.modbus.rtu.url:", url)
 
 	dataBits := viper.GetUint("wg.connect.modbus.rtu.data")
 	speed := viper.GetUint("wg.connect.modbus.rtu.speed")
