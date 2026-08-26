@@ -11,6 +11,7 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+// runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "A brief description of your command",
@@ -40,36 +41,22 @@ func run() error {
 
 	t1 := &box.ModbusTask{
 		Client:  mc,
-		Addr:    2,
+		Addr:    0x0,
 		RegType: modbus.INPUT_REGISTER,
+		UnitID:  0x21,
 		Sender:  s,
 
-		Code: "PT-1-IN",
-		Type: common.ELECTRICITY,
+		Code: "826_0-16",
+		Type: common.WATER,
 
 		Project: "1006",
 
 		Ctx: context.Background(),
 	}
 
-	t2 := &box.ModbusTask{
-		Client:  mc,
-		Addr:    16,
-		RegType: modbus.INPUT_REGISTER,
-		Sender:  s,
+	l := box.NewLoop(box.SeqJobs(t1))
 
-		Code: "PT-2-IN",
-		Type: common.ELECTRICITY,
+	l.Run()
 
-		Project: "1006",
-
-		Ctx: context.Background(),
-	}
-
-	cron := box.NewCronExec()
-
-	cron.AddJob("@every 15m", box.SeqJobs(t1, t2))
-	cron.Run()
-
-	return http.ListenAndServe(":10000", nil)
+	return http.ListenAndServe(":10001", nil)
 }
