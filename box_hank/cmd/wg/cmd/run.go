@@ -48,7 +48,7 @@ func run() error {
 		UnitID:  0x21,
 		Sender:  s,
 
-		Code: "826_0-16",
+		Code: "826_0-21",
 		Type: common.WATER,
 
 		Project: "1006",
@@ -64,7 +64,7 @@ func run() error {
 		UnitID:  0x45,
 		Sender:  s,
 
-		Code: "826_0-16",
+		Code: "826_0-45",
 		Type: common.WATER,
 
 		Project: "1006",
@@ -80,7 +80,7 @@ func run() error {
 		UnitID:  0x57,
 		Sender:  s,
 
-		Code: "826_0-16",
+		Code: "826_0-57",
 		Type: common.WATER,
 
 		Project: "1006",
