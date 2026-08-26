@@ -5,33 +5,40 @@ import (
 )
 
 type seqJob struct {
-	jobs []Job
+	jobs     []Job
+	interval time.Duration
 }
 
 func (s seqJob) Run() {
 	for _, j := range s.jobs {
 		j.Run()
+		time.Sleep(s.interval)
 	}
 }
 
-func SeqJobs(jobs ...Job) Job {
+func SeqJobs(interval time.Duration, jobs ...Job) Job {
 	return seqJob{
-		jobs: jobs,
+		jobs:     jobs,
+		interval: interval,
 	}
 }
 
 type Loop struct {
-	job Job
+	job      Job
+	interval time.Duration
 }
 
-func NewLoop(j Job) Loop {
-	return Loop{job: j}
+func NewLoop(interval time.Duration, j Job) Loop {
+	return Loop{
+		job:      j,
+		interval: interval,
+	}
 }
 
 func (l Loop) loop() {
 	for {
 		l.job.Run()
-		time.Sleep(1 * time.Second)
+		time.Sleep(l.interval)
 	}
 }
 

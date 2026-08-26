@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	_ "net/http/pprof"
+	"time"
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/cobra"
@@ -54,7 +55,7 @@ func run() error {
 		Ctx: context.Background(),
 	}
 
-	l := box.NewLoop(box.SeqJobs(t1))
+	l := box.NewLoop(30*time.Second, box.SeqJobs(3*time.Second, t1))
 
 	l.Run()
 

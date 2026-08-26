@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	_ "net/http/pprof"
+	"time"
 
 	"github.com/simonvetter/modbus"
 	"github.com/spf13/cobra"
@@ -68,7 +69,7 @@ func run() error {
 
 	cron := box.NewCronExec()
 
-	cron.AddJob("@every 15m", box.SeqJobs(t1, t2))
+	cron.AddJob("@every 15m", box.SeqJobs(5*time.Second, t1, t2))
 	cron.Run()
 
 	return http.ListenAndServe(":10000", nil)
