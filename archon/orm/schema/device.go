@@ -2,6 +2,7 @@ package schema
 
 import (
 	"fmt"
+	"uuid"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -10,11 +11,10 @@ import (
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/index"
 	"entgo.io/ent/schema/mixin"
-	"github.com/google/uuid"
 )
 
 func id() string {
-	u, _ := uuid.NewV7()
+	u  := uuid.NewV7()
 	return u.String()
 }
 
