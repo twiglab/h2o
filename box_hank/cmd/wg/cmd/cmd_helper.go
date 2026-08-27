@@ -36,6 +36,7 @@ func serverLog() *slog.Logger {
 
 func mqtt() *box.MQTTAction {
 	broker := viper.GetString("wg.sender.mqtt.broker")
+	log.Println("broker", broker)
 	clientID := box.ClientID("wg")
 	log.Println("clientID", clientID)
 
