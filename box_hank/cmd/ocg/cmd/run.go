@@ -43,6 +43,7 @@ func run() error {
 		Client:  mc,
 		Addr:    2,
 		RegType: modbus.INPUT_REGISTER,
+		UnitID:  1,
 		Sender:  s,
 
 		Code: "PT-1-IN",
@@ -57,6 +58,7 @@ func run() error {
 		Client:  mc,
 		Addr:    16,
 		RegType: modbus.INPUT_REGISTER,
+		UnitID:  1,
 		Sender:  s,
 
 		Code: "PT-2-IN",
@@ -69,7 +71,7 @@ func run() error {
 
 	cron := box.NewCronExec()
 
-	cron.AddJob("@every 15m", box.SeqJobs(5*time.Second, t1, t2))
+	cron.AddJob("@every 15m", box.SeqJobs(3*time.Second, t1, t2))
 	cron.Run()
 
 	return http.ListenAndServe(":10000", nil)
