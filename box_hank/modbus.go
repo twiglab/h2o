@@ -49,15 +49,16 @@ func (t *ModbusTask) Run() {
 
 	now := time.Now()
 
-	var wm WaterMeter
-	wm.Data.DataValue = int64(val)
-	wm.DataCode = common.NewDataCode()
-	wm.DataTime = now
-	wm.DataTs = common.Ts(now)
-	wm.Code = t.Code
-	wm.Type = t.Type
+	var meter Meter
+	meter.Data.DataValue = int64(val)
+	meter.DataCode = common.NewDataCode()
+	meter.DataTime = now
+	meter.DataTs = common.Ts(now)
+	meter.Code = t.Code
+	meter.Type = t.Type
+	meter.Pos.Project = t.Project
 
-	if err := t.Sender.SendData(t.Ctx, wm); err != nil {
+	if err := t.Sender.SendData(t.Ctx, meter); err != nil {
 		return
 	}
 
