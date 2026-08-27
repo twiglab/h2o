@@ -2,12 +2,10 @@ package cmd
 
 import (
 	"cmp"
-	"context"
 	"log"
 	"log/slog"
 
 	"github.com/spf13/viper"
-	"github.com/twiglab/h2o/abm"
 	"github.com/twiglab/h2o/cache"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
@@ -79,29 +77,6 @@ func sender() hank.Sender {
 	return hank.LogAction{}
 }
 
-func ddb() (*abm.DuckABM[string, hank.MetaData], abm.Conf) {
-	load := viper.GetString("hank.meta.ddb.load")
-	get := viper.GetString("hank.meta.ddb.get")
-	list := viper.GetString("hank.meta.ddb.list")
-
-	c := abm.Conf{
-		LoadSQL: load,
-		GetSQL:  get,
-		ListSQL: list,
-		Period:  60,
-	}
-
-	db, err := abm.NewDuckABM[string, hank.MetaData](c)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := db.Loop(context.Background()); err != nil {
-		log.Fatal(err)
-	}
-	return db, c
-}
-
 func simple() hank.SimpleMD {
 	proj := viper.GetString("hank.meta.simple.project")
 	if proj == "" {
@@ -114,8 +89,6 @@ func backend() cache.Cache[string, hank.MetaData] {
 	var backend cache.Cache[string, hank.MetaData]
 	b := viper.GetString("hank.meta.backend")
 	switch b {
-	case "ddb":
-		backend, _ = ddb()
 	default:
 		backend = simple()
 	}

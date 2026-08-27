@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/99designs/gqlgen v0.17.94
 	github.com/eclipse/paho.mqtt.golang v1.5.1
-	github.com/go-chi/chi/v5 v5.3.1
+	github.com/go-chi/chi/v5 v5.3.2
 	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/jackc/pgx/v5 v5.10.0
 	github.com/montanaflynn/stats v0.12.4
