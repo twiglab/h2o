@@ -9,15 +9,13 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-func NewModbusClient(config *modbus.ClientConfiguration) (*modbus.ModbusClient, error) {
-	var client *modbus.ModbusClient
-	var err error
-
+func NewModbusClient(config *modbus.ClientConfiguration) (client *modbus.ModbusClient, err error) {
 	if client, err = modbus.NewClient(config); err != nil {
-		return client, err
+		return
 	}
 
-	return client, client.Open()
+	err = client.Open()
+	return
 }
 
 type ModbusTask struct {
@@ -61,6 +59,4 @@ func (t *ModbusTask) Run() {
 	if err := t.Sender.SendData(t.Ctx, meter); err != nil {
 		return
 	}
-
-	return
 }
