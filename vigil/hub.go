@@ -19,6 +19,11 @@ type Hub struct {
 }
 
 func (h *Hub) HandleWater(ctx context.Context, data WaterMeter) error {
+	h.WAL.WriteLogContext(ctx,
+		wal.String("type", data.Type),
+		wal.Any("data", data),
+	)
+
 	h.TSDB.TabbWater(ctx, data)
 
 	if err := h.DB.TabbWater(ctx, data); err != nil {
