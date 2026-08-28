@@ -33,6 +33,7 @@ func init() {
 func run() error {
 
 	_ = rootLog()
+	svrLog := serverLog()
 
 	mc := modbusClient()
 	defer mc.Close()
@@ -54,6 +55,8 @@ func run() error {
 		Project: "1006",
 
 		Ctx: context.Background(),
+
+		Logger: svrLog,
 	}
 
 	t2 := &box.ModbusTask{
@@ -71,6 +74,8 @@ func run() error {
 		Project: "1006",
 
 		Ctx: context.Background(),
+
+		Logger: svrLog,
 	}
 
 	cron := box.NewCronExec()
