@@ -19,11 +19,15 @@ func NewModbusClient(config *modbus.ClientConfiguration) (client *modbus.ModbusC
 }
 
 type ModbusTask struct {
-	Client  *modbus.ModbusClient
-	Addr    uint16
-	RegType modbus.RegType
-	UnitID  uint8
-	Sender  Sender
+	Client *modbus.ModbusClient
+
+	Addr      uint16
+	UnitID    uint8
+	RegType   modbus.RegType
+	Endian    modbus.Endianness
+	WordOrder modbus.WordOrder
+
+	Sender Sender
 
 	Code string
 	Type string
@@ -36,12 +40,21 @@ type ModbusTask struct {
 }
 
 func (t *ModbusTask) Run() {
+	if t.Endian != 0 && t.WordOrder != 0 {
+		if err := t.Client.SetEncoding(t.Endian, t.WordOrder); err != nil {
+			t.Logger.Error("SetEncoding error", slog.String("code", t.Code), slog.Any("error", err))
+			return
+		}
+	}
+
 	if err := t.Client.SetUnitId(t.UnitID); err != nil {
+		t.Logger.Error("SetUnitID error", slog.String("code", t.Code), slog.Any("error", err))
 		return
 	}
 
 	val, err := t.Client.ReadUint32(t.Addr, t.RegType)
 	if err != nil {
+		t.Logger.Error("Read error", slog.String("code", t.Code), slog.Any("error", err))
 		return
 	}
 
@@ -57,6 +70,6 @@ func (t *ModbusTask) Run() {
 	meter.Pos.Project = t.Project
 
 	if err := t.Sender.SendData(t.Ctx, meter); err != nil {
-		return
+		t.Logger.Error("SendData error", slog.String("code", t.Code), slog.Any("error", err))
 	}
 }

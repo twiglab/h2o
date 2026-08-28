@@ -40,11 +40,13 @@ func run() error {
 	s := sender()
 
 	t1 := &box.ModbusTask{
-		Client:  mc,
-		Addr:    2,
-		RegType: modbus.INPUT_REGISTER,
-		UnitID:  1,
-		Sender:  s,
+		Client:    mc,
+		Addr:      2,
+		RegType:   modbus.INPUT_REGISTER,
+		UnitID:    1,
+		Endian:    modbus.BIG_ENDIAN,
+		WordOrder: modbus.LOW_WORD_FIRST,
+		Sender:    s,
 
 		Code: "PT-1-IN",
 		Type: common.ELECTRICITY,
@@ -55,11 +57,13 @@ func run() error {
 	}
 
 	t2 := &box.ModbusTask{
-		Client:  mc,
-		Addr:    16,
-		RegType: modbus.INPUT_REGISTER,
-		UnitID:  1,
-		Sender:  s,
+		Client:    mc,
+		Addr:      16,
+		RegType:   modbus.INPUT_REGISTER,
+		UnitID:    1,
+		Endian:    modbus.BIG_ENDIAN,
+		WordOrder: modbus.LOW_WORD_FIRST,
+		Sender:    s,
 
 		Code: "PT-2-IN",
 		Type: common.ELECTRICITY,
