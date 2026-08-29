@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"net/http"
+	_ "net/http/pprof"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/twiglab/h2o/vigil"
 
 	"github.com/spf13/cobra"
@@ -44,9 +44,5 @@ func run() {
 	token := mcli.SubscribeMultiple(topics(), vigil.Handle(hub))
 	token.Wait()
 
-	//gqlc := gql.NewConf(cli)
-
-	mux := chi.NewMux()
-	//mux.Mount("/gql", gql.Handle(gqlc))
-	http.ListenAndServe(webaddr(), mux)
+	http.ListenAndServe(webaddr(), nil)
 }
