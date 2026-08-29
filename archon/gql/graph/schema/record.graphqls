@@ -1,0 +1,49 @@
+type ViewRecord {
+  id: ID!
+
+  deviceSn   : String!
+
+  deviceCode : String!
+  deviceType : String!
+
+  deviceName : String!
+
+  dataValue  : Int64!
+
+  dataTime   : Time!
+  dataTs     : String!
+
+  posCode    : String!
+  project    : String!
+}
+
+input ViewRecordPageIn {
+  posCode    : String!
+  project    : String!
+  deviceCode : String!
+
+  start      : String!
+  end        : String!
+
+  last       : String!
+  pageSize   : Int!
+}
+
+type ViewRecordBeforeOut {
+  result     : [ViewRecord!]!
+
+  deviceCode : String!
+  dataTs     : String!
+  pageSize   : Int!
+}
+
+input ViewRecordBeforeIn {
+  deviceCode : String!
+  dataTs     : String!
+  pageSize   : Int!
+}
+
+extend type Query {
+  ViewRecordBefore(input: ViewRecordBeforeIn!) : ViewRecordBeforeOut
+}
+

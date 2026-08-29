@@ -1,7 +1,3 @@
-scalar Int64
-scalar Time
-scalar UUID
-
 type Device {
   id : ID!
 
