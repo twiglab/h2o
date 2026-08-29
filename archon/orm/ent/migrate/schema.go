@@ -65,14 +65,40 @@ var (
 			},
 		},
 	}
+	// ViewRecordColumns holds the columns for the "view_record" table.
+	ViewRecordColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
+		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "data_value", Type: field.TypeInt64},
+		{Name: "data_time", Type: field.TypeTime},
+		{Name: "data_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
+		{Name: "device_sn", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "device_name", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "rate", Type: field.TypeInt},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "status", Type: field.TypeInt},
+		{Name: "memo", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
+	}
+	// ViewRecordTable holds the schema information for the "view_record" table.
+	ViewRecordTable = &schema.Table{
+		Name:       "view_record",
+		Columns:    ViewRecordColumns,
+		PrimaryKey: []*schema.Column{ViewRecordColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		DeviceTable,
+		ViewRecordTable,
 	}
 )
 
 func init() {
 	DeviceTable.Annotation = &entsql.Annotation{
 		Table: "device",
+	}
+	ViewRecordTable.Annotation = &entsql.Annotation{
+		Table: "view_record",
 	}
 }

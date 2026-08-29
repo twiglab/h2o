@@ -8,3 +8,6 @@ import (
 
 // Device is the predicate function for device builders.
 type Device func(*sql.Selector)
+
+// ViewRecord is the predicate function for viewrecord builders.
+type ViewRecord func(*sql.Selector)

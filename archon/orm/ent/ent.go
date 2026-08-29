@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/twiglab/h2o/archon/orm/ent/device"
+	"github.com/twiglab/h2o/archon/orm/ent/viewrecord"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -73,7 +74,8 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			device.Table: device.ValidColumn,
+			device.Table:     device.ValidColumn,
+			viewrecord.Table: viewrecord.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

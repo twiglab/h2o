@@ -9,22 +9,24 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/archon/orm/ent/device"
+	"github.com/twiglab/h2o/archon/orm/ent/viewrecord"
 )
 
-// Device is the model entity for the Device schema.
-type Device struct {
+// ViewRecord is the model entity for the ViewRecord schema.
+type ViewRecord struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
-	// CreateTime holds the value of the "create_time" field.
-	CreateTime time.Time `json:"create_time,omitempty"`
-	// UpdateTime holds the value of the "update_time" field.
-	UpdateTime time.Time `json:"update_time,omitempty"`
 	// 设备号
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
 	DeviceType string `json:"device_type,omitempty"`
+	// 当前表显
+	DataValue int64 `json:"data_value,omitempty"`
+	// 采集时间
+	DataTime time.Time `json:"data_time,omitempty"`
+	// 采集时间字符串
+	DataTs string `json:"data_ts,omitempty"`
 	// 设备序列号
 	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备名称
@@ -35,29 +37,23 @@ type Device struct {
 	Project string `json:"project,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
-	// 区域编号
-	AreaCode string `json:"area_code,omitempty"`
-	// 对外位置编号
-	Pcode string `json:"pcode,omitempty"`
 	// 状态
 	Status int `json:"status,omitempty"`
 	// 备注
-	Memo string `json:"memo,omitempty"`
-	// 软删除
-	IsDel        int `json:"is_del,omitempty"`
+	Memo         string `json:"memo,omitempty"`
 	selectValues sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*Device) scanValues(columns []string) ([]any, error) {
+func (*ViewRecord) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldRate, device.FieldStatus, device.FieldIsDel:
+		case viewrecord.FieldDataValue, viewrecord.FieldRate, viewrecord.FieldStatus:
 			values[i] = new(sql.NullInt64)
-		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
+		case viewrecord.FieldID, viewrecord.FieldDeviceCode, viewrecord.FieldDeviceType, viewrecord.FieldDataTs, viewrecord.FieldDeviceSn, viewrecord.FieldDeviceName, viewrecord.FieldProject, viewrecord.FieldPosCode, viewrecord.FieldMemo:
 			values[i] = new(sql.NullString)
-		case device.FieldCreateTime, device.FieldUpdateTime:
+		case viewrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -67,102 +63,90 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the Device fields.
-func (_m *Device) assignValues(columns []string, values []any) error {
+// to the ViewRecord fields.
+func (_m *ViewRecord) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldID:
+		case viewrecord.FieldID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				_m.ID = value.String
 			}
-		case device.FieldCreateTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field create_time", values[i])
-			} else if value.Valid {
-				_m.CreateTime = value.Time
-			}
-		case device.FieldUpdateTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field update_time", values[i])
-			} else if value.Valid {
-				_m.UpdateTime = value.Time
-			}
-		case device.FieldDeviceCode:
+		case viewrecord.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_code", values[i])
 			} else if value.Valid {
 				_m.DeviceCode = value.String
 			}
-		case device.FieldDeviceType:
+		case viewrecord.FieldDeviceType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
 			}
-		case device.FieldDeviceSn:
+		case viewrecord.FieldDataValue:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field data_value", values[i])
+			} else if value.Valid {
+				_m.DataValue = value.Int64
+			}
+		case viewrecord.FieldDataTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field data_time", values[i])
+			} else if value.Valid {
+				_m.DataTime = value.Time
+			}
+		case viewrecord.FieldDataTs:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field data_ts", values[i])
+			} else if value.Valid {
+				_m.DataTs = value.String
+			}
+		case viewrecord.FieldDeviceSn:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_sn", values[i])
 			} else if value.Valid {
 				_m.DeviceSn = value.String
 			}
-		case device.FieldDeviceName:
+		case viewrecord.FieldDeviceName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
 				_m.DeviceName = value.String
 			}
-		case device.FieldRate:
+		case viewrecord.FieldRate:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field rate", values[i])
 			} else if value.Valid {
 				_m.Rate = int(value.Int64)
 			}
-		case device.FieldProject:
+		case viewrecord.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field project", values[i])
 			} else if value.Valid {
 				_m.Project = value.String
 			}
-		case device.FieldPosCode:
+		case viewrecord.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
 			} else if value.Valid {
 				_m.PosCode = value.String
 			}
-		case device.FieldAreaCode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field area_code", values[i])
-			} else if value.Valid {
-				_m.AreaCode = value.String
-			}
-		case device.FieldPcode:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field pcode", values[i])
-			} else if value.Valid {
-				_m.Pcode = value.String
-			}
-		case device.FieldStatus:
+		case viewrecord.FieldStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				_m.Status = int(value.Int64)
 			}
-		case device.FieldMemo:
+		case viewrecord.FieldMemo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field memo", values[i])
 			} else if value.Valid {
 				_m.Memo = value.String
-			}
-		case device.FieldIsDel:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field is_del", values[i])
-			} else if value.Valid {
-				_m.IsDel = int(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -171,46 +155,49 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the Device.
+// Value returns the ent.Value that was dynamically selected and assigned to the ViewRecord.
 // This includes values selected through modifiers, order, etc.
-func (_m *Device) Value(name string) (ent.Value, error) {
+func (_m *ViewRecord) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this Device.
-// Note that you need to call Device.Unwrap() before calling this method if this Device
+// Update returns a builder for updating this ViewRecord.
+// Note that you need to call ViewRecord.Unwrap() before calling this method if this ViewRecord
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *Device) Update() *DeviceUpdateOne {
-	return NewDeviceClient(_m.config).UpdateOne(_m)
+func (_m *ViewRecord) Update() *ViewRecordUpdateOne {
+	return NewViewRecordClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the Device entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the ViewRecord entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *Device) Unwrap() *Device {
+func (_m *ViewRecord) Unwrap() *ViewRecord {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: Device is not a transactional entity")
+		panic("ent: ViewRecord is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *Device) String() string {
+func (_m *ViewRecord) String() string {
 	var builder strings.Builder
-	builder.WriteString("Device(")
+	builder.WriteString("ViewRecord(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("create_time=")
-	builder.WriteString(_m.CreateTime.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("update_time=")
-	builder.WriteString(_m.UpdateTime.Format(time.ANSIC))
-	builder.WriteString(", ")
 	builder.WriteString("device_code=")
 	builder.WriteString(_m.DeviceCode)
 	builder.WriteString(", ")
 	builder.WriteString("device_type=")
 	builder.WriteString(_m.DeviceType)
+	builder.WriteString(", ")
+	builder.WriteString("data_value=")
+	builder.WriteString(fmt.Sprintf("%v", _m.DataValue))
+	builder.WriteString(", ")
+	builder.WriteString("data_time=")
+	builder.WriteString(_m.DataTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("data_ts=")
+	builder.WriteString(_m.DataTs)
 	builder.WriteString(", ")
 	builder.WriteString("device_sn=")
 	builder.WriteString(_m.DeviceSn)
@@ -227,23 +214,14 @@ func (_m *Device) String() string {
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
 	builder.WriteString(", ")
-	builder.WriteString("area_code=")
-	builder.WriteString(_m.AreaCode)
-	builder.WriteString(", ")
-	builder.WriteString("pcode=")
-	builder.WriteString(_m.Pcode)
-	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
 	builder.WriteString("memo=")
 	builder.WriteString(_m.Memo)
-	builder.WriteString(", ")
-	builder.WriteString("is_del=")
-	builder.WriteString(fmt.Sprintf("%v", _m.IsDel))
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// Devices is a parsable slice of Device.
-type Devices []*Device
+// ViewRecords is a parsable slice of ViewRecord.
+type ViewRecords []*ViewRecord

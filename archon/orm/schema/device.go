@@ -24,7 +24,7 @@ func (Device) Fields() []ent.Field {
 		field.String("device_sn").Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_name").Optional().SchemaType(varchar(64)).Comment("设备名称"),
 
-		field.Int("rate").Default(1).Comment("当前倍率"),
+		field.Int("rate").Default(1).Comment("倍率"),
 
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("pos_code").Optional().SchemaType(varchar(64)).Comment("位置编号"),

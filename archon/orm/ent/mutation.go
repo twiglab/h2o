@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/twiglab/h2o/archon/orm/ent/device"
 	"github.com/twiglab/h2o/archon/orm/ent/predicate"
+	"github.com/twiglab/h2o/archon/orm/ent/viewrecord"
 )
 
 const (
@@ -24,7 +25,8 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeDevice = "Device"
+	TypeDevice     = "Device"
+	TypeViewRecord = "ViewRecord"
 )
 
 // DeviceMutation represents an operation that mutates the Device nodes in the graph.
@@ -1278,4 +1280,1032 @@ func (m *DeviceMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *DeviceMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown Device edge %s", name)
+}
+
+// ViewRecordMutation represents an operation that mutates the ViewRecord nodes in the graph.
+type ViewRecordMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *string
+	device_code   *string
+	device_type   *string
+	data_value    *int64
+	adddata_value *int64
+	data_time     *time.Time
+	data_ts       *string
+	device_sn     *string
+	device_name   *string
+	rate          *int
+	addrate       *int
+	project       *string
+	pos_code      *string
+	status        *int
+	addstatus     *int
+	memo          *string
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*ViewRecord, error)
+	predicates    []predicate.ViewRecord
+}
+
+var _ ent.Mutation = (*ViewRecordMutation)(nil)
+
+// viewrecordOption allows management of the mutation configuration using functional options.
+type viewrecordOption func(*ViewRecordMutation)
+
+// newViewRecordMutation creates new mutation for the ViewRecord entity.
+func newViewRecordMutation(c config, op Op, opts ...viewrecordOption) *ViewRecordMutation {
+	m := &ViewRecordMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeViewRecord,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withViewRecordID sets the ID field of the mutation.
+func withViewRecordID(id string) viewrecordOption {
+	return func(m *ViewRecordMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *ViewRecord
+		)
+		m.oldValue = func(ctx context.Context) (*ViewRecord, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().ViewRecord.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withViewRecord sets the old ViewRecord of the mutation.
+func withViewRecord(node *ViewRecord) viewrecordOption {
+	return func(m *ViewRecordMutation) {
+		m.oldValue = func(context.Context) (*ViewRecord, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m ViewRecordMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m ViewRecordMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of ViewRecord entities.
+func (m *ViewRecordMutation) SetID(id string) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *ViewRecordMutation) ID() (id string, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *ViewRecordMutation) IDs(ctx context.Context) ([]string, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []string{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().ViewRecord.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetDeviceCode sets the "device_code" field.
+func (m *ViewRecordMutation) SetDeviceCode(s string) {
+	m.device_code = &s
+}
+
+// DeviceCode returns the value of the "device_code" field in the mutation.
+func (m *ViewRecordMutation) DeviceCode() (r string, exists bool) {
+	v := m.device_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceCode returns the old "device_code" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceCode: %w", err)
+	}
+	return oldValue.DeviceCode, nil
+}
+
+// ResetDeviceCode resets all changes to the "device_code" field.
+func (m *ViewRecordMutation) ResetDeviceCode() {
+	m.device_code = nil
+}
+
+// SetDeviceType sets the "device_type" field.
+func (m *ViewRecordMutation) SetDeviceType(s string) {
+	m.device_type = &s
+}
+
+// DeviceType returns the value of the "device_type" field in the mutation.
+func (m *ViewRecordMutation) DeviceType() (r string, exists bool) {
+	v := m.device_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceType returns the old "device_type" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDeviceType(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceType: %w", err)
+	}
+	return oldValue.DeviceType, nil
+}
+
+// ResetDeviceType resets all changes to the "device_type" field.
+func (m *ViewRecordMutation) ResetDeviceType() {
+	m.device_type = nil
+}
+
+// SetDataValue sets the "data_value" field.
+func (m *ViewRecordMutation) SetDataValue(i int64) {
+	m.data_value = &i
+	m.adddata_value = nil
+}
+
+// DataValue returns the value of the "data_value" field in the mutation.
+func (m *ViewRecordMutation) DataValue() (r int64, exists bool) {
+	v := m.data_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataValue returns the old "data_value" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDataValue(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataValue is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataValue requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataValue: %w", err)
+	}
+	return oldValue.DataValue, nil
+}
+
+// AddDataValue adds i to the "data_value" field.
+func (m *ViewRecordMutation) AddDataValue(i int64) {
+	if m.adddata_value != nil {
+		*m.adddata_value += i
+	} else {
+		m.adddata_value = &i
+	}
+}
+
+// AddedDataValue returns the value that was added to the "data_value" field in this mutation.
+func (m *ViewRecordMutation) AddedDataValue() (r int64, exists bool) {
+	v := m.adddata_value
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDataValue resets all changes to the "data_value" field.
+func (m *ViewRecordMutation) ResetDataValue() {
+	m.data_value = nil
+	m.adddata_value = nil
+}
+
+// SetDataTime sets the "data_time" field.
+func (m *ViewRecordMutation) SetDataTime(t time.Time) {
+	m.data_time = &t
+}
+
+// DataTime returns the value of the "data_time" field in the mutation.
+func (m *ViewRecordMutation) DataTime() (r time.Time, exists bool) {
+	v := m.data_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataTime returns the old "data_time" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDataTime(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataTime: %w", err)
+	}
+	return oldValue.DataTime, nil
+}
+
+// ResetDataTime resets all changes to the "data_time" field.
+func (m *ViewRecordMutation) ResetDataTime() {
+	m.data_time = nil
+}
+
+// SetDataTs sets the "data_ts" field.
+func (m *ViewRecordMutation) SetDataTs(s string) {
+	m.data_ts = &s
+}
+
+// DataTs returns the value of the "data_ts" field in the mutation.
+func (m *ViewRecordMutation) DataTs() (r string, exists bool) {
+	v := m.data_ts
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDataTs returns the old "data_ts" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDataTs(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDataTs is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDataTs requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDataTs: %w", err)
+	}
+	return oldValue.DataTs, nil
+}
+
+// ResetDataTs resets all changes to the "data_ts" field.
+func (m *ViewRecordMutation) ResetDataTs() {
+	m.data_ts = nil
+}
+
+// SetDeviceSn sets the "device_sn" field.
+func (m *ViewRecordMutation) SetDeviceSn(s string) {
+	m.device_sn = &s
+}
+
+// DeviceSn returns the value of the "device_sn" field in the mutation.
+func (m *ViewRecordMutation) DeviceSn() (r string, exists bool) {
+	v := m.device_sn
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceSn returns the old "device_sn" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDeviceSn(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceSn is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceSn requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceSn: %w", err)
+	}
+	return oldValue.DeviceSn, nil
+}
+
+// ResetDeviceSn resets all changes to the "device_sn" field.
+func (m *ViewRecordMutation) ResetDeviceSn() {
+	m.device_sn = nil
+}
+
+// SetDeviceName sets the "device_name" field.
+func (m *ViewRecordMutation) SetDeviceName(s string) {
+	m.device_name = &s
+}
+
+// DeviceName returns the value of the "device_name" field in the mutation.
+func (m *ViewRecordMutation) DeviceName() (r string, exists bool) {
+	v := m.device_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeviceName returns the old "device_name" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldDeviceName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeviceName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeviceName: %w", err)
+	}
+	return oldValue.DeviceName, nil
+}
+
+// ResetDeviceName resets all changes to the "device_name" field.
+func (m *ViewRecordMutation) ResetDeviceName() {
+	m.device_name = nil
+}
+
+// SetRate sets the "rate" field.
+func (m *ViewRecordMutation) SetRate(i int) {
+	m.rate = &i
+	m.addrate = nil
+}
+
+// Rate returns the value of the "rate" field in the mutation.
+func (m *ViewRecordMutation) Rate() (r int, exists bool) {
+	v := m.rate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRate returns the old "rate" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldRate(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRate is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRate: %w", err)
+	}
+	return oldValue.Rate, nil
+}
+
+// AddRate adds i to the "rate" field.
+func (m *ViewRecordMutation) AddRate(i int) {
+	if m.addrate != nil {
+		*m.addrate += i
+	} else {
+		m.addrate = &i
+	}
+}
+
+// AddedRate returns the value that was added to the "rate" field in this mutation.
+func (m *ViewRecordMutation) AddedRate() (r int, exists bool) {
+	v := m.addrate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetRate resets all changes to the "rate" field.
+func (m *ViewRecordMutation) ResetRate() {
+	m.rate = nil
+	m.addrate = nil
+}
+
+// SetProject sets the "project" field.
+func (m *ViewRecordMutation) SetProject(s string) {
+	m.project = &s
+}
+
+// Project returns the value of the "project" field in the mutation.
+func (m *ViewRecordMutation) Project() (r string, exists bool) {
+	v := m.project
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProject returns the old "project" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldProject(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProject is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProject requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProject: %w", err)
+	}
+	return oldValue.Project, nil
+}
+
+// ResetProject resets all changes to the "project" field.
+func (m *ViewRecordMutation) ResetProject() {
+	m.project = nil
+}
+
+// SetPosCode sets the "pos_code" field.
+func (m *ViewRecordMutation) SetPosCode(s string) {
+	m.pos_code = &s
+}
+
+// PosCode returns the value of the "pos_code" field in the mutation.
+func (m *ViewRecordMutation) PosCode() (r string, exists bool) {
+	v := m.pos_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPosCode returns the old "pos_code" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldPosCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPosCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPosCode: %w", err)
+	}
+	return oldValue.PosCode, nil
+}
+
+// ResetPosCode resets all changes to the "pos_code" field.
+func (m *ViewRecordMutation) ResetPosCode() {
+	m.pos_code = nil
+}
+
+// SetStatus sets the "status" field.
+func (m *ViewRecordMutation) SetStatus(i int) {
+	m.status = &i
+	m.addstatus = nil
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *ViewRecordMutation) Status() (r int, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldStatus(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// AddStatus adds i to the "status" field.
+func (m *ViewRecordMutation) AddStatus(i int) {
+	if m.addstatus != nil {
+		*m.addstatus += i
+	} else {
+		m.addstatus = &i
+	}
+}
+
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *ViewRecordMutation) AddedStatus() (r int, exists bool) {
+	v := m.addstatus
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *ViewRecordMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
+}
+
+// SetMemo sets the "memo" field.
+func (m *ViewRecordMutation) SetMemo(s string) {
+	m.memo = &s
+}
+
+// Memo returns the value of the "memo" field in the mutation.
+func (m *ViewRecordMutation) Memo() (r string, exists bool) {
+	v := m.memo
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMemo returns the old "memo" field's value of the ViewRecord entity.
+// If the ViewRecord object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ViewRecordMutation) OldMemo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMemo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMemo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMemo: %w", err)
+	}
+	return oldValue.Memo, nil
+}
+
+// ResetMemo resets all changes to the "memo" field.
+func (m *ViewRecordMutation) ResetMemo() {
+	m.memo = nil
+}
+
+// Where appends a list predicates to the ViewRecordMutation builder.
+func (m *ViewRecordMutation) Where(ps ...predicate.ViewRecord) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the ViewRecordMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *ViewRecordMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.ViewRecord, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *ViewRecordMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *ViewRecordMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (ViewRecord).
+func (m *ViewRecordMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *ViewRecordMutation) Fields() []string {
+	fields := make([]string, 0, 12)
+	if m.device_code != nil {
+		fields = append(fields, viewrecord.FieldDeviceCode)
+	}
+	if m.device_type != nil {
+		fields = append(fields, viewrecord.FieldDeviceType)
+	}
+	if m.data_value != nil {
+		fields = append(fields, viewrecord.FieldDataValue)
+	}
+	if m.data_time != nil {
+		fields = append(fields, viewrecord.FieldDataTime)
+	}
+	if m.data_ts != nil {
+		fields = append(fields, viewrecord.FieldDataTs)
+	}
+	if m.device_sn != nil {
+		fields = append(fields, viewrecord.FieldDeviceSn)
+	}
+	if m.device_name != nil {
+		fields = append(fields, viewrecord.FieldDeviceName)
+	}
+	if m.rate != nil {
+		fields = append(fields, viewrecord.FieldRate)
+	}
+	if m.project != nil {
+		fields = append(fields, viewrecord.FieldProject)
+	}
+	if m.pos_code != nil {
+		fields = append(fields, viewrecord.FieldPosCode)
+	}
+	if m.status != nil {
+		fields = append(fields, viewrecord.FieldStatus)
+	}
+	if m.memo != nil {
+		fields = append(fields, viewrecord.FieldMemo)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *ViewRecordMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case viewrecord.FieldDeviceCode:
+		return m.DeviceCode()
+	case viewrecord.FieldDeviceType:
+		return m.DeviceType()
+	case viewrecord.FieldDataValue:
+		return m.DataValue()
+	case viewrecord.FieldDataTime:
+		return m.DataTime()
+	case viewrecord.FieldDataTs:
+		return m.DataTs()
+	case viewrecord.FieldDeviceSn:
+		return m.DeviceSn()
+	case viewrecord.FieldDeviceName:
+		return m.DeviceName()
+	case viewrecord.FieldRate:
+		return m.Rate()
+	case viewrecord.FieldProject:
+		return m.Project()
+	case viewrecord.FieldPosCode:
+		return m.PosCode()
+	case viewrecord.FieldStatus:
+		return m.Status()
+	case viewrecord.FieldMemo:
+		return m.Memo()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *ViewRecordMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case viewrecord.FieldDeviceCode:
+		return m.OldDeviceCode(ctx)
+	case viewrecord.FieldDeviceType:
+		return m.OldDeviceType(ctx)
+	case viewrecord.FieldDataValue:
+		return m.OldDataValue(ctx)
+	case viewrecord.FieldDataTime:
+		return m.OldDataTime(ctx)
+	case viewrecord.FieldDataTs:
+		return m.OldDataTs(ctx)
+	case viewrecord.FieldDeviceSn:
+		return m.OldDeviceSn(ctx)
+	case viewrecord.FieldDeviceName:
+		return m.OldDeviceName(ctx)
+	case viewrecord.FieldRate:
+		return m.OldRate(ctx)
+	case viewrecord.FieldProject:
+		return m.OldProject(ctx)
+	case viewrecord.FieldPosCode:
+		return m.OldPosCode(ctx)
+	case viewrecord.FieldStatus:
+		return m.OldStatus(ctx)
+	case viewrecord.FieldMemo:
+		return m.OldMemo(ctx)
+	}
+	return nil, fmt.Errorf("unknown ViewRecord field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ViewRecordMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case viewrecord.FieldDeviceCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceCode(v)
+		return nil
+	case viewrecord.FieldDeviceType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceType(v)
+		return nil
+	case viewrecord.FieldDataValue:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataValue(v)
+		return nil
+	case viewrecord.FieldDataTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataTime(v)
+		return nil
+	case viewrecord.FieldDataTs:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDataTs(v)
+		return nil
+	case viewrecord.FieldDeviceSn:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceSn(v)
+		return nil
+	case viewrecord.FieldDeviceName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeviceName(v)
+		return nil
+	case viewrecord.FieldRate:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRate(v)
+		return nil
+	case viewrecord.FieldProject:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProject(v)
+		return nil
+	case viewrecord.FieldPosCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPosCode(v)
+		return nil
+	case viewrecord.FieldStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
+		return nil
+	case viewrecord.FieldMemo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMemo(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ViewRecord field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *ViewRecordMutation) AddedFields() []string {
+	var fields []string
+	if m.adddata_value != nil {
+		fields = append(fields, viewrecord.FieldDataValue)
+	}
+	if m.addrate != nil {
+		fields = append(fields, viewrecord.FieldRate)
+	}
+	if m.addstatus != nil {
+		fields = append(fields, viewrecord.FieldStatus)
+	}
+	return fields
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *ViewRecordMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case viewrecord.FieldDataValue:
+		return m.AddedDataValue()
+	case viewrecord.FieldRate:
+		return m.AddedRate()
+	case viewrecord.FieldStatus:
+		return m.AddedStatus()
+	}
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *ViewRecordMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	case viewrecord.FieldDataValue:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDataValue(v)
+		return nil
+	case viewrecord.FieldRate:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRate(v)
+		return nil
+	case viewrecord.FieldStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddStatus(v)
+		return nil
+	}
+	return fmt.Errorf("unknown ViewRecord numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *ViewRecordMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *ViewRecordMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *ViewRecordMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown ViewRecord nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *ViewRecordMutation) ResetField(name string) error {
+	switch name {
+	case viewrecord.FieldDeviceCode:
+		m.ResetDeviceCode()
+		return nil
+	case viewrecord.FieldDeviceType:
+		m.ResetDeviceType()
+		return nil
+	case viewrecord.FieldDataValue:
+		m.ResetDataValue()
+		return nil
+	case viewrecord.FieldDataTime:
+		m.ResetDataTime()
+		return nil
+	case viewrecord.FieldDataTs:
+		m.ResetDataTs()
+		return nil
+	case viewrecord.FieldDeviceSn:
+		m.ResetDeviceSn()
+		return nil
+	case viewrecord.FieldDeviceName:
+		m.ResetDeviceName()
+		return nil
+	case viewrecord.FieldRate:
+		m.ResetRate()
+		return nil
+	case viewrecord.FieldProject:
+		m.ResetProject()
+		return nil
+	case viewrecord.FieldPosCode:
+		m.ResetPosCode()
+		return nil
+	case viewrecord.FieldStatus:
+		m.ResetStatus()
+		return nil
+	case viewrecord.FieldMemo:
+		m.ResetMemo()
+		return nil
+	}
+	return fmt.Errorf("unknown ViewRecord field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *ViewRecordMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *ViewRecordMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *ViewRecordMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *ViewRecordMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *ViewRecordMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *ViewRecordMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *ViewRecordMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown ViewRecord unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *ViewRecordMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown ViewRecord edge %s", name)
 }

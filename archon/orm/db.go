@@ -4,6 +4,7 @@ package orm
 
 import (
 	"context"
+	"database/sql"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -14,6 +15,15 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+func OpenPGx(dsn string) (*sql.DB, error) {
+	pool, err := pgxpool.New(context.Background(), dsn)
+	if err != nil {
+		return nil, err
+	}
+	db := stdlib.OpenDBFromPool(pool)
+	return db, nil
+}
+
 func OpenEntClient(name, dsn string, ops ...ent.Option) (*ent.Client, error) {
 	if name == "pgx" {
 		return pgx(dsn, ops...)
@@ -22,11 +32,10 @@ func OpenEntClient(name, dsn string, ops ...ent.Option) (*ent.Client, error) {
 }
 
 func pgx(dsn string, ops ...ent.Option) (*ent.Client, error) {
-	pool, err := pgxpool.New(context.Background(), dsn)
+	db, err := OpenPGx(dsn)
 	if err != nil {
 		return nil, err
 	}
-	db := stdlib.OpenDBFromPool(pool)
 	drv := entsql.OpenDB(dialect.Postgres, db)
 	ops = append(ops, ent.Driver(drv))
 	return ent.NewClient(ops...), nil

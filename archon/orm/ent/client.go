@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"github.com/twiglab/h2o/archon/orm/ent/device"
+	"github.com/twiglab/h2o/archon/orm/ent/viewrecord"
 
 	stdsql "database/sql"
 )
@@ -26,6 +27,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Device is the client for interacting with the Device builders.
 	Device *DeviceClient
+	// ViewRecord is the client for interacting with the ViewRecord builders.
+	ViewRecord *ViewRecordClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -38,6 +41,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Device = NewDeviceClient(c.config)
+	c.ViewRecord = NewViewRecordClient(c.config)
 }
 
 type (
@@ -128,9 +132,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Device: NewDeviceClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Device:     NewDeviceClient(cfg),
+		ViewRecord: NewViewRecordClient(cfg),
 	}, nil
 }
 
@@ -148,9 +153,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Device: NewDeviceClient(cfg),
+		ctx:        ctx,
+		config:     cfg,
+		Device:     NewDeviceClient(cfg),
+		ViewRecord: NewViewRecordClient(cfg),
 	}, nil
 }
 
@@ -180,12 +186,14 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Device.Use(hooks...)
+	c.ViewRecord.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Device.Intercept(interceptors...)
+	c.ViewRecord.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -193,6 +201,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *DeviceMutation:
 		return c.Device.mutate(ctx, m)
+	case *ViewRecordMutation:
+		return c.ViewRecord.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -331,13 +341,146 @@ func (c *DeviceClient) mutate(ctx context.Context, m *DeviceMutation) (Value, er
 	}
 }
 
+// ViewRecordClient is a client for the ViewRecord schema.
+type ViewRecordClient struct {
+	config
+}
+
+// NewViewRecordClient returns a client for the ViewRecord from the given config.
+func NewViewRecordClient(c config) *ViewRecordClient {
+	return &ViewRecordClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `viewrecord.Hooks(f(g(h())))`.
+func (c *ViewRecordClient) Use(hooks ...Hook) {
+	c.hooks.ViewRecord = append(c.hooks.ViewRecord, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `viewrecord.Intercept(f(g(h())))`.
+func (c *ViewRecordClient) Intercept(interceptors ...Interceptor) {
+	c.inters.ViewRecord = append(c.inters.ViewRecord, interceptors...)
+}
+
+// Create returns a builder for creating a ViewRecord entity.
+func (c *ViewRecordClient) Create() *ViewRecordCreate {
+	mutation := newViewRecordMutation(c.config, OpCreate)
+	return &ViewRecordCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of ViewRecord entities.
+func (c *ViewRecordClient) CreateBulk(builders ...*ViewRecordCreate) *ViewRecordCreateBulk {
+	return &ViewRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *ViewRecordClient) MapCreateBulk(slice any, setFunc func(*ViewRecordCreate, int)) *ViewRecordCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &ViewRecordCreateBulk{err: fmt.Errorf("calling to ViewRecordClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*ViewRecordCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &ViewRecordCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for ViewRecord.
+func (c *ViewRecordClient) Update() *ViewRecordUpdate {
+	mutation := newViewRecordMutation(c.config, OpUpdate)
+	return &ViewRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ViewRecordClient) UpdateOne(_m *ViewRecord) *ViewRecordUpdateOne {
+	mutation := newViewRecordMutation(c.config, OpUpdateOne, withViewRecord(_m))
+	return &ViewRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ViewRecordClient) UpdateOneID(id string) *ViewRecordUpdateOne {
+	mutation := newViewRecordMutation(c.config, OpUpdateOne, withViewRecordID(id))
+	return &ViewRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for ViewRecord.
+func (c *ViewRecordClient) Delete() *ViewRecordDelete {
+	mutation := newViewRecordMutation(c.config, OpDelete)
+	return &ViewRecordDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ViewRecordClient) DeleteOne(_m *ViewRecord) *ViewRecordDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ViewRecordClient) DeleteOneID(id string) *ViewRecordDeleteOne {
+	builder := c.Delete().Where(viewrecord.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ViewRecordDeleteOne{builder}
+}
+
+// Query returns a query builder for ViewRecord.
+func (c *ViewRecordClient) Query() *ViewRecordQuery {
+	return &ViewRecordQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeViewRecord},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a ViewRecord entity by its id.
+func (c *ViewRecordClient) Get(ctx context.Context, id string) (*ViewRecord, error) {
+	return c.Query().Where(viewrecord.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ViewRecordClient) GetX(ctx context.Context, id string) *ViewRecord {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ViewRecordClient) Hooks() []Hook {
+	return c.hooks.ViewRecord
+}
+
+// Interceptors returns the client interceptors.
+func (c *ViewRecordClient) Interceptors() []Interceptor {
+	return c.inters.ViewRecord
+}
+
+func (c *ViewRecordClient) mutate(ctx context.Context, m *ViewRecordMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&ViewRecordCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&ViewRecordUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&ViewRecordUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&ViewRecordDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown ViewRecord mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Device []ent.Hook
+		Device, ViewRecord []ent.Hook
 	}
 	inters struct {
-		Device []ent.Interceptor
+		Device, ViewRecord []ent.Interceptor
 	}
 )
 
