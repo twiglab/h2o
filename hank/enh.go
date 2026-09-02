@@ -57,28 +57,50 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 	t, ts := parseTime(dd.DataTime)
 
 	return ElectricityMeter{
-		Meter: Meter{
-			Device: common.Device{
-				SN:   meta.SN,
-				Code: dd.No,
-				Type: common.ELECTRICITY,
-				Name: meta.Name,
+		SN:   meta.SN,
+		Code: dd.No,
+		Type: common.ELECTRICITY,
+		Name: meta.Name,
 
-				DataTime: t,
-				DataTs:   ts,
+		DataTime: t,
+		DataTs:   ts,
 
-				DataCode: dd.DataCode,
+		DataCode: dd.DataCode,
 
-				Status: 0,
-			},
-			Pos: common.Pos{
-				Project: meta.Project,
-				PosCode: meta.PosCode,
-				Owner:   meta.Owner,
-			},
+		// Status: 0,
+		Pos: common.Pos{
+			Project: meta.Project,
+			PosCode: meta.PosCode,
+			Owner:   meta.Owner,
 		},
 		Data: data,
 	}, nil
+
+	/*
+		return ElectricityMeter{
+			Meter: Meter{
+				Device: common.Device{
+					SN:   meta.SN,
+					Code: dd.No,
+					Type: common.ELECTRICITY,
+					Name: meta.Name,
+
+					DataTime: t,
+					DataTs:   ts,
+
+					DataCode: dd.DataCode,
+
+					Status: 0,
+				},
+				Pos: common.Pos{
+					Project: meta.Project,
+					PosCode: meta.PosCode,
+					Owner:   meta.Owner,
+				},
+			},
+			Data: data,
+		}, nil
+	*/
 }
 
 func (e *Enh) ToGas(dd DeviceData) (gm GasMeter, err error) {
@@ -120,6 +142,10 @@ func ElectyData(dm DataMix) (cd common.Electricity, err error) {
 	}
 
 	if cd.Frequency, err = str2I64E(dm.Frequency, 1); err != nil {
+		return
+	}
+
+	if cd.OptStatus, err = str2I64E(dm.OptStatus, 1); err != nil {
 		return
 	}
 

@@ -55,6 +55,8 @@ type DataMix struct {
 
 	ActivePowerTotal string `json:"active-power-totalold,omitempty"` // 总有功功率  P
 	Frequency        string `json:"frequency,omitempty"`
+
+	OptStatus string `json:"opt-status",omitempty`
 }
 
 type DeviceData struct {
