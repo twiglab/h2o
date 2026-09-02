@@ -4290,10 +4290,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNDevice2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋormᚋentᚐDevice(ctx context.Context, sel ast.SelectionSet, v ent.Device) graphql.Marshaler {
-	return ec._Device(ctx, sel, &v)
-}
-
 func (ec *executionContext) marshalNDevice2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋormᚋentᚐDevice(ctx context.Context, sel ast.SelectionSet, v []*ent.Device) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
@@ -4312,10 +4308,6 @@ func (ec *executionContext) marshalNDevice2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarc
 		return graphql.Null
 	}
 	return ec._Device(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNDeviceCleanResult2githubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCleanResult(ctx context.Context, sel ast.SelectionSet, v model.DeviceCleanResult) graphql.Marshaler {
-	return ec._DeviceCleanResult(ctx, sel, &v)
 }
 
 func (ec *executionContext) marshalNDeviceCleanResult2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋarchonᚋgqlᚋgraphᚋmodelᚐDeviceCleanResult(ctx context.Context, sel ast.SelectionSet, v *model.DeviceCleanResult) graphql.Marshaler {
