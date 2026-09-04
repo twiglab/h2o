@@ -42,16 +42,15 @@ type Electricity struct {
 
 	Frequency int64 `json:"frequency,omitempty"` // 频率
 
-	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 type Water struct {
 	MeterValue
-	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 type MeterValue struct {
 	DataValue int64 `json:"data_value,omitempty"` // 表显读数
+	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 func NewDataCode() string {
