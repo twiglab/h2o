@@ -116,7 +116,9 @@ func serve(ctx context.Context, conn net.Conn, s *Server) error {
 		case TypeDeviceData:
 			doDeviceData(ctx, sd, s)
 		case TypeDeviceStatus:
-			doDeviceStatus(ctx, sd, s)
+			// 忽略status消息
+		case TypeTime:
+			// 忽略time消息
 		default:
 			s.Logger.InfoContext(ctx, "ignore type", slog.String("type", sd.Type))
 		}
@@ -156,19 +158,6 @@ func doDeviceData(ctx context.Context, sd SyncData, s *Server) {
 			}
 		default:
 			s.Logger.ErrorContext(ctx, "unknow device type", slog.String("type", dd.Type))
-		}
-	}
-}
-
-func doDeviceStatus(ctx context.Context, sd SyncData, s *Server) {
-	var dsl DeviceStatusList
-	if err := unmarshal(sd.Data, &dsl); err != nil {
-		s.Logger.ErrorContext(ctx, "unmarshal deviceStatusList error", slog.Any("error", err))
-		return
-	}
-	for _, ds := range dsl {
-		if err := s.Hub.HandleDeviceStatus(ctx, ds); err != nil {
-			s.Logger.ErrorContext(ctx, "handleDeviceStatus error", slog.Any("error", err))
 		}
 	}
 }

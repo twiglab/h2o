@@ -22,28 +22,9 @@ const (
 	TypeTime         = "time"
 )
 
-const (
-	offline = "offline"
-	online  = "online"
-)
-
-type DeviceStatus struct {
-	No     string `json:"deviceNo"`
-	Type   string `json:"deviceType"`
-	Status string `json:"status"`
-}
-
-func Online(s string) int {
-	if s == online {
-		return 0
-	}
-	return -1
-}
-
-type DeviceStatusList []DeviceStatus
-
 type DataMix struct {
 	DataValue string `json:"data-valueold,omitempty"`
+	OptStatus string `json:"opt-status,omitempty"`
 
 	VoltageA string `json:"voltage-aold,omitempty"`
 	VoltageB string `json:"voltage-bold,omitempty"`
@@ -55,8 +36,6 @@ type DataMix struct {
 
 	ActivePowerTotal string `json:"active-power-totalold,omitempty"` // 总有功功率  P
 	Frequency        string `json:"frequency,omitempty"`
-
-	OptStatus string `json:"opt-status",omitempty`
 }
 
 type DeviceData struct {
@@ -66,6 +45,8 @@ type DeviceData struct {
 	DataTime     string `json:"dataTime"`     // 数据记录时间
 	LastDataTime string `json:"lastDataTime"` // 上一次数据记录时间
 	DataCode     string `json:"dataCode"`     // 记录的唯一标识
+
+	GatewayNo string `json:"gatewayNo"`
 
 	DataJson DataMix `json:"dataJson,omitzero"`
 }

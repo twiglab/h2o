@@ -21,10 +21,6 @@ type Hub struct {
 	Sender Sender
 }
 
-func (h *Hub) HandleDeviceStatus(ctx context.Context, data DeviceStatus) error {
-	return nil
-}
-
 func (h *Hub) HandleElectricity(ctx context.Context, data ElectricityMeter) error {
 	h.WAL.WriteLogContext(ctx,
 		wal.String("type", data.Type),

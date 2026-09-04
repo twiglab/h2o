@@ -4,7 +4,8 @@ import "github.com/twiglab/h2o/pkg/common"
 
 type Meter struct {
 	common.Device
-	Pos common.Pos `json:"pos,omitzero"`
+	Pos     common.Pos     `json:"pos,omitzero"`
+	Gateway common.Gateway `jaon:"gateway,omitzero"`
 }
 
 func (m Meter) Topic() string {

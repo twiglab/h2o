@@ -23,26 +23,26 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 	t, ts := parseTime(dd.DataTime)
 
 	return WaterMeter{
-		Meter: Meter{
-			Device: common.Device{
-				SN:   meta.SN,
-				Code: dd.No,
-				Type: common.WATER,
-				Name: meta.Name,
+		SN:   meta.SN,
+		Code: dd.No,
+		Type: common.WATER,
+		Name: meta.Name,
 
-				DataTime: t,
-				DataTs:   ts,
+		DataTime: t,
+		DataTs:   ts,
 
-				DataCode: dd.DataCode,
+		DataCode: dd.DataCode,
 
-				Status: 0,
-			},
-			Pos: common.Pos{
-				Project: meta.Project,
-				PosCode: meta.PosCode,
-				Owner:   meta.Owner,
-			},
+		Gateway: common.Gateway{
+			Code: dd.GatewayNo,
 		},
+
+		Pos: common.Pos{
+			Project: meta.Project,
+			PosCode: meta.PosCode,
+			Owner:   meta.Owner,
+		},
+
 		Data: data,
 	}, nil
 }
@@ -67,40 +67,19 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 
 		DataCode: dd.DataCode,
 
-		// Status: 0,
+		Gateway: common.Gateway{
+			Code: dd.GatewayNo,
+		},
+
 		Pos: common.Pos{
 			Project: meta.Project,
 			PosCode: meta.PosCode,
 			Owner:   meta.Owner,
 		},
+
 		Data: data,
 	}, nil
 
-	/*
-		return ElectricityMeter{
-			Meter: Meter{
-				Device: common.Device{
-					SN:   meta.SN,
-					Code: dd.No,
-					Type: common.ELECTRICITY,
-					Name: meta.Name,
-
-					DataTime: t,
-					DataTs:   ts,
-
-					DataCode: dd.DataCode,
-
-					Status: 0,
-				},
-				Pos: common.Pos{
-					Project: meta.Project,
-					PosCode: meta.PosCode,
-					Owner:   meta.Owner,
-				},
-			},
-			Data: data,
-		}, nil
-	*/
 }
 
 func (e *Enh) ToGas(dd DeviceData) (gm GasMeter, err error) {
