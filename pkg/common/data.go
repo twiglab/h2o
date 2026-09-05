@@ -5,6 +5,13 @@ import (
 	"uuid"
 )
 
+const (
+	// 开合状态定义，未定义值一律为未知
+	OPT_STATUS_OFF    = 1
+	OPT_STATUS_ON     = 2
+	OPT_STATUS_UNKNOW = 0
+)
+
 type Device struct {
 	SN   string `json:"sn,omitempty"`   // 仪表的序列号,仪表上有个条形码,如果没有就是空,或者自定义
 	Code string `json:"code"`           // 设备code,业务全局唯一

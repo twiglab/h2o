@@ -88,10 +88,14 @@ func (e *Enh) ToGas(dd DeviceData) (gm GasMeter, err error) {
 
 func WaterData(dm DataMix) (cd common.Water, err error) {
 	cd.DataValue, err = str2I64E(dm.DataValue, 1)
+	cd.OptStatus = optstatus(dm.OptStatus)
 	return
 }
 
 func ElectyData(dm DataMix) (cd common.Electricity, err error) {
+
+	cd.OptStatus = optstatus(dm.OptStatus)
+
 	if cd.DataValue, err = str2I64E(dm.DataValue, 1); err != nil {
 		return
 	}
@@ -124,11 +128,18 @@ func ElectyData(dm DataMix) (cd common.Electricity, err error) {
 		return
 	}
 
-	if cd.OptStatus, err = str2I64E(dm.OptStatus, 1); err != nil {
-		return
-	}
-
 	return
+}
+
+func optstatus(v string) int64 {
+	switch v {
+	case "1":
+		return common.OPT_STATUS_OFF
+	case "2":
+		return common.OPT_STATUS_ON
+	default:
+		return common.OPT_STATUS_UNKNOW
+	}
 }
 
 func str2I64E(s string, i int64) (v int64, err error) {
