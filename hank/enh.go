@@ -35,6 +35,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 
 		Gateway: common.Gateway{
 			Code: dd.GatewayNo,
+			Type: common.GATEWAY_NH,
 		},
 
 		Pos: common.Pos{
@@ -69,6 +70,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 
 		Gateway: common.Gateway{
 			Code: dd.GatewayNo,
+			Type: common.GATEWAY_NH,
 		},
 
 		Pos: common.Pos{
