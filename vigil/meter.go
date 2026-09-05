@@ -9,7 +9,8 @@ import (
 
 type Meter struct {
 	common.Device
-	Pos common.Pos `json:"pos,omitzero"`
+	Pos     common.Pos     `json:"pos,omitzero"`
+	Gateway common.Gateway `json:"gateway,omitzero"`
 }
 
 type ElectricityMeter struct {

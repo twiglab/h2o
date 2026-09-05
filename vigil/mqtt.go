@@ -2,6 +2,7 @@ package vigil
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -69,4 +70,16 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	}
 
 	return client, nil
+}
+
+func RawHandle() mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		if msg.Duplicate() {
+			return
+		}
+		defer msg.Ack()
+
+		fmt.Println(string(msg.Payload()))
+		//slog.Info("raw", slog.Any("raw", md))
+	}
 }

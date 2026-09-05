@@ -49,7 +49,7 @@ func eye(cmd *cobra.Command, args []string) error {
 	rLog()
 
 	mcli := mcli()
-	token := mcli.Subscribe(common.ElectricityTopic, 0x0, eyeHandle)
+	token := mcli.Subscribe(common.ElectricityTopic, 0x0, vigil.RawHandle())
 	token.Wait()
 
 	return http.ListenAndServe(":10020", nil)
@@ -71,14 +71,4 @@ func rLog() *slog.Logger {
 	log := clog.NewLog("", slog.LevelDebug)
 	slog.SetDefault(log)
 	return log
-}
-
-func eyeHandle(cli mqtt.Client, msg mqtt.Message) {
-	if msg.Duplicate() {
-		return
-	}
-
-	defer msg.Ack()
-
-	fmt.Println(string(msg.Payload()))
 }

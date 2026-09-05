@@ -34,21 +34,6 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 	}
 }
 
-func RawHandle() mqtt.MessageHandler {
-	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			return
-		}
-
-		var md Meter
-		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
-			slog.Error("unmarshal error", slog.Any("error", err))
-			return
-		}
-		slog.Info("raw", slog.Any("raw", md))
-	}
-}
-
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)
