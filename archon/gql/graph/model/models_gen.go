@@ -15,16 +15,17 @@ type DeviceCleanResult struct {
 }
 
 type DeviceCreateInput struct {
-	DeviceCode string  `json:"deviceCode"`
-	DeviceType string  `json:"deviceType"`
-	Project    string  `json:"project"`
-	DeviceSn   *string `json:"deviceSN,omitempty"`
-	DeviceName *string `json:"deviceName,omitempty"`
-	Rate       *int    `json:"rate,omitempty"`
-	PosCode    *string `json:"posCode,omitempty"`
-	AreaCode   *string `json:"areaCode,omitempty"`
-	Pcode      *string `json:"pcode,omitempty"`
-	Memo       *string `json:"memo,omitempty"`
+	DeviceCode  string  `json:"deviceCode"`
+	DeviceType  string  `json:"deviceType"`
+	Project     string  `json:"project"`
+	DeviceSn    *string `json:"deviceSN,omitempty"`
+	DeviceName  *string `json:"deviceName,omitempty"`
+	GatewayCode *string `json:"gatewayCode,omitempty"`
+	Rate        *int    `json:"rate,omitempty"`
+	PosCode     *string `json:"posCode,omitempty"`
+	AreaCode    *string `json:"areaCode,omitempty"`
+	Pcode       *string `json:"pcode,omitempty"`
+	Memo        *string `json:"memo,omitempty"`
 }
 
 type DeviceListInput struct {
@@ -33,14 +34,15 @@ type DeviceListInput struct {
 }
 
 type DeviceModifyInput struct {
-	ID         string  `json:"id"`
-	DeviceSn   *string `json:"deviceSN,omitempty"`
-	DeviceName *string `json:"deviceName,omitempty"`
-	Rate       *int    `json:"rate,omitempty"`
-	PosCode    *string `json:"posCode,omitempty"`
-	AreaCode   *string `json:"areaCode,omitempty"`
-	Pcode      *string `json:"pcode,omitempty"`
-	Memo       *string `json:"memo,omitempty"`
+	ID          string  `json:"id"`
+	DeviceSn    *string `json:"deviceSN,omitempty"`
+	DeviceName  *string `json:"deviceName,omitempty"`
+	GatewayCode *string `json:"gatewayCode,omitempty"`
+	Rate        *int    `json:"rate,omitempty"`
+	PosCode     *string `json:"posCode,omitempty"`
+	AreaCode    *string `json:"areaCode,omitempty"`
+	Pcode       *string `json:"pcode,omitempty"`
+	Memo        *string `json:"memo,omitempty"`
 }
 
 type DeviceRemoveInput struct {

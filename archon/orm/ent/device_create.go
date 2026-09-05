@@ -91,6 +91,20 @@ func (_c *DeviceCreate) SetNillableDeviceName(v *string) *DeviceCreate {
 	return _c
 }
 
+// SetGatewayCode sets the "gateway_code" field.
+func (_c *DeviceCreate) SetGatewayCode(v string) *DeviceCreate {
+	_c.mutation.SetGatewayCode(v)
+	return _c
+}
+
+// SetNillableGatewayCode sets the "gateway_code" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableGatewayCode(v *string) *DeviceCreate {
+	if v != nil {
+		_c.SetGatewayCode(*v)
+	}
+	return _c
+}
+
 // SetRate sets the "rate" field.
 func (_c *DeviceCreate) SetRate(v int) *DeviceCreate {
 	_c.mutation.SetRate(v)
@@ -376,6 +390,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldDeviceName, field.TypeString, value)
 		_node.DeviceName = value
 	}
+	if value, ok := _c.mutation.GatewayCode(); ok {
+		_spec.SetField(device.FieldGatewayCode, field.TypeString, value)
+		_node.GatewayCode = value
+	}
 	if value, ok := _c.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt, value)
 		_node.Rate = value
@@ -529,6 +547,24 @@ func (u *DeviceUpsert) UpdateDeviceName() *DeviceUpsert {
 // ClearDeviceName clears the value of the "device_name" field.
 func (u *DeviceUpsert) ClearDeviceName() *DeviceUpsert {
 	u.SetNull(device.FieldDeviceName)
+	return u
+}
+
+// SetGatewayCode sets the "gateway_code" field.
+func (u *DeviceUpsert) SetGatewayCode(v string) *DeviceUpsert {
+	u.Set(device.FieldGatewayCode, v)
+	return u
+}
+
+// UpdateGatewayCode sets the "gateway_code" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateGatewayCode() *DeviceUpsert {
+	u.SetExcluded(device.FieldGatewayCode)
+	return u
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (u *DeviceUpsert) ClearGatewayCode() *DeviceUpsert {
+	u.SetNull(device.FieldGatewayCode)
 	return u
 }
 
@@ -793,6 +829,27 @@ func (u *DeviceUpsertOne) UpdateDeviceName() *DeviceUpsertOne {
 func (u *DeviceUpsertOne) ClearDeviceName() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearDeviceName()
+	})
+}
+
+// SetGatewayCode sets the "gateway_code" field.
+func (u *DeviceUpsertOne) SetGatewayCode(v string) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetGatewayCode(v)
+	})
+}
+
+// UpdateGatewayCode sets the "gateway_code" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateGatewayCode() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateGatewayCode()
+	})
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (u *DeviceUpsertOne) ClearGatewayCode() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearGatewayCode()
 	})
 }
 
@@ -1245,6 +1302,27 @@ func (u *DeviceUpsertBulk) UpdateDeviceName() *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) ClearDeviceName() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearDeviceName()
+	})
+}
+
+// SetGatewayCode sets the "gateway_code" field.
+func (u *DeviceUpsertBulk) SetGatewayCode(v string) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetGatewayCode(v)
+	})
+}
+
+// UpdateGatewayCode sets the "gateway_code" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateGatewayCode() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateGatewayCode()
+	})
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (u *DeviceUpsertBulk) ClearGatewayCode() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearGatewayCode()
 	})
 }
 

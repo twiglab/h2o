@@ -94,6 +94,11 @@ func DeviceName(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldDeviceName, v))
 }
 
+// GatewayCode applies equality check predicate on the "gateway_code" field. It's identical to GatewayCodeEQ.
+func GatewayCode(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldGatewayCode, v))
+}
+
 // Rate applies equality check predicate on the "rate" field. It's identical to RateEQ.
 func Rate(v int) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
@@ -492,6 +497,81 @@ func DeviceNameEqualFold(v string) predicate.Device {
 // DeviceNameContainsFold applies the ContainsFold predicate on the "device_name" field.
 func DeviceNameContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldDeviceName, v))
+}
+
+// GatewayCodeEQ applies the EQ predicate on the "gateway_code" field.
+func GatewayCodeEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldGatewayCode, v))
+}
+
+// GatewayCodeNEQ applies the NEQ predicate on the "gateway_code" field.
+func GatewayCodeNEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldGatewayCode, v))
+}
+
+// GatewayCodeIn applies the In predicate on the "gateway_code" field.
+func GatewayCodeIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldGatewayCode, vs...))
+}
+
+// GatewayCodeNotIn applies the NotIn predicate on the "gateway_code" field.
+func GatewayCodeNotIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldGatewayCode, vs...))
+}
+
+// GatewayCodeGT applies the GT predicate on the "gateway_code" field.
+func GatewayCodeGT(v string) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldGatewayCode, v))
+}
+
+// GatewayCodeGTE applies the GTE predicate on the "gateway_code" field.
+func GatewayCodeGTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldGatewayCode, v))
+}
+
+// GatewayCodeLT applies the LT predicate on the "gateway_code" field.
+func GatewayCodeLT(v string) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldGatewayCode, v))
+}
+
+// GatewayCodeLTE applies the LTE predicate on the "gateway_code" field.
+func GatewayCodeLTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldGatewayCode, v))
+}
+
+// GatewayCodeContains applies the Contains predicate on the "gateway_code" field.
+func GatewayCodeContains(v string) predicate.Device {
+	return predicate.Device(sql.FieldContains(FieldGatewayCode, v))
+}
+
+// GatewayCodeHasPrefix applies the HasPrefix predicate on the "gateway_code" field.
+func GatewayCodeHasPrefix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasPrefix(FieldGatewayCode, v))
+}
+
+// GatewayCodeHasSuffix applies the HasSuffix predicate on the "gateway_code" field.
+func GatewayCodeHasSuffix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasSuffix(FieldGatewayCode, v))
+}
+
+// GatewayCodeIsNil applies the IsNil predicate on the "gateway_code" field.
+func GatewayCodeIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldGatewayCode))
+}
+
+// GatewayCodeNotNil applies the NotNil predicate on the "gateway_code" field.
+func GatewayCodeNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldGatewayCode))
+}
+
+// GatewayCodeEqualFold applies the EqualFold predicate on the "gateway_code" field.
+func GatewayCodeEqualFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldEqualFold(FieldGatewayCode, v))
+}
+
+// GatewayCodeContainsFold applies the ContainsFold predicate on the "gateway_code" field.
+func GatewayCodeContainsFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldContainsFold(FieldGatewayCode, v))
 }
 
 // RateEQ applies the EQ predicate on the "rate" field.

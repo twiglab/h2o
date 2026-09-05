@@ -29,6 +29,8 @@ type Device struct {
 	DeviceSn string `json:"device_sn,omitempty"`
 	// 设备名称
 	DeviceName string `json:"device_name,omitempty"`
+	// 网关编号
+	GatewayCode string `json:"gateway_code,omitempty"`
 	// 倍率
 	Rate int `json:"rate,omitempty"`
 	// 项目编号
@@ -55,7 +57,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldRate, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
+		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldGatewayCode, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
 		case device.FieldCreateTime, device.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -115,6 +117,12 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field device_name", values[i])
 			} else if value.Valid {
 				_m.DeviceName = value.String
+			}
+		case device.FieldGatewayCode:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field gateway_code", values[i])
+			} else if value.Valid {
+				_m.GatewayCode = value.String
 			}
 		case device.FieldRate:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -217,6 +225,9 @@ func (_m *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("device_name=")
 	builder.WriteString(_m.DeviceName)
+	builder.WriteString(", ")
+	builder.WriteString("gateway_code=")
+	builder.WriteString(_m.GatewayCode)
 	builder.WriteString(", ")
 	builder.WriteString("rate=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Rate))

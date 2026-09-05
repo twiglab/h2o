@@ -41,18 +41,19 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Device struct {
-		AreaCode   func(childComplexity int) int
-		DeviceCode func(childComplexity int) int
-		DeviceName func(childComplexity int) int
-		DeviceSn   func(childComplexity int) int
-		DeviceType func(childComplexity int) int
-		ID         func(childComplexity int) int
-		Memo       func(childComplexity int) int
-		Pcode      func(childComplexity int) int
-		PosCode    func(childComplexity int) int
-		Project    func(childComplexity int) int
-		Rate       func(childComplexity int) int
-		Status     func(childComplexity int) int
+		AreaCode    func(childComplexity int) int
+		DeviceCode  func(childComplexity int) int
+		DeviceName  func(childComplexity int) int
+		DeviceSn    func(childComplexity int) int
+		DeviceType  func(childComplexity int) int
+		GatewayCode func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Memo        func(childComplexity int) int
+		Pcode       func(childComplexity int) int
+		PosCode     func(childComplexity int) int
+		Project     func(childComplexity int) int
+		Rate        func(childComplexity int) int
+		Status      func(childComplexity int) int
 	}
 
 	DeviceCleanResult struct {
@@ -160,6 +161,12 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Device.DeviceType(childComplexity), true
+	case "Device.gatewayCode":
+		if e.ComplexityRoot.Device.GatewayCode == nil {
+			break
+		}
+
+		return e.ComplexityRoot.Device.GatewayCode(childComplexity), true
 	case "Device.id":
 		if e.ComplexityRoot.Device.ID == nil {
 			break
@@ -562,6 +569,8 @@ func (ec *executionContext) childFields_Device(ctx context.Context, field graphq
 		return ec.fieldContext_Device_deviceSN(ctx, field)
 	case "deviceName":
 		return ec.fieldContext_Device_deviceName(ctx, field)
+	case "gatewayCode":
+		return ec.fieldContext_Device_gatewayCode(ctx, field)
 	case "rate":
 		return ec.fieldContext_Device_rate(ctx, field)
 	case "posCode":
@@ -1022,6 +1031,29 @@ func (ec *executionContext) _Device_deviceName(ctx context.Context, field graphq
 	)
 }
 func (ec *executionContext) fieldContext_Device_deviceName(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	return graphql.NewScalarFieldContext("Device", field, false, false, errors.New("field of type String does not have child fields"))
+}
+
+func (ec *executionContext) _Device_gatewayCode(ctx context.Context, field graphql.CollectedField, obj *ent.Device) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Device_gatewayCode(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			return obj.GatewayCode, nil
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v string) graphql.Marshaler {
+			return ec.marshalOString2string(ctx, selections, v)
+		},
+		true,
+		false,
+	)
+}
+func (ec *executionContext) fieldContext_Device_gatewayCode(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	return graphql.NewScalarFieldContext("Device", field, false, false, errors.New("field of type String does not have child fields"))
 }
 
@@ -3035,7 +3067,7 @@ func (ec *executionContext) unmarshalInputDeviceCreateInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"deviceCode", "deviceType", "project", "deviceSN", "deviceName", "rate", "posCode", "areaCode", "pcode", "memo"}
+	fieldsInOrder := [...]string{"deviceCode", "deviceType", "project", "deviceSN", "deviceName", "gatewayCode", "rate", "posCode", "areaCode", "pcode", "memo"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3077,6 +3109,13 @@ func (ec *executionContext) unmarshalInputDeviceCreateInput(ctx context.Context,
 				return it, err
 			}
 			it.DeviceName = data
+		case "gatewayCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gatewayCode"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.GatewayCode = data
 		case "rate":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rate"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
@@ -3165,7 +3204,7 @@ func (ec *executionContext) unmarshalInputDeviceModifyInput(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "deviceSN", "deviceName", "rate", "posCode", "areaCode", "pcode", "memo"}
+	fieldsInOrder := [...]string{"id", "deviceSN", "deviceName", "gatewayCode", "rate", "posCode", "areaCode", "pcode", "memo"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -3193,6 +3232,13 @@ func (ec *executionContext) unmarshalInputDeviceModifyInput(ctx context.Context,
 				return it, err
 			}
 			it.DeviceName = data
+		case "gatewayCode":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("gatewayCode"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.GatewayCode = data
 		case "rate":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rate"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
@@ -3422,6 +3468,11 @@ func (ec *executionContext) _Device(ctx context.Context, sel ast.SelectionSet, o
 		case "deviceName":
 			out.Values[i] = ec._Device_deviceName(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "gatewayCode":
+			out.Values[i] = ec._Device_gatewayCode(ctx, field, obj)
+			if out.Values[i] == graphql.RequiredNull {
 				out.Invalids++
 			}
 		case "rate":

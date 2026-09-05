@@ -102,6 +102,26 @@ func (_u *DeviceUpdate) ClearDeviceName() *DeviceUpdate {
 	return _u
 }
 
+// SetGatewayCode sets the "gateway_code" field.
+func (_u *DeviceUpdate) SetGatewayCode(v string) *DeviceUpdate {
+	_u.mutation.SetGatewayCode(v)
+	return _u
+}
+
+// SetNillableGatewayCode sets the "gateway_code" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableGatewayCode(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetGatewayCode(*v)
+	}
+	return _u
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (_u *DeviceUpdate) ClearGatewayCode() *DeviceUpdate {
+	_u.mutation.ClearGatewayCode()
+	return _u
+}
+
 // SetRate sets the "rate" field.
 func (_u *DeviceUpdate) SetRate(v int) *DeviceUpdate {
 	_u.mutation.ResetRate()
@@ -334,6 +354,12 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(device.FieldDeviceName, field.TypeString)
 	}
+	if value, ok := _u.mutation.GatewayCode(); ok {
+		_spec.SetField(device.FieldGatewayCode, field.TypeString, value)
+	}
+	if _u.mutation.GatewayCodeCleared() {
+		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
+	}
 	if value, ok := _u.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt, value)
 	}
@@ -467,6 +493,26 @@ func (_u *DeviceUpdateOne) SetNillableDeviceName(v *string) *DeviceUpdateOne {
 // ClearDeviceName clears the value of the "device_name" field.
 func (_u *DeviceUpdateOne) ClearDeviceName() *DeviceUpdateOne {
 	_u.mutation.ClearDeviceName()
+	return _u
+}
+
+// SetGatewayCode sets the "gateway_code" field.
+func (_u *DeviceUpdateOne) SetGatewayCode(v string) *DeviceUpdateOne {
+	_u.mutation.SetGatewayCode(v)
+	return _u
+}
+
+// SetNillableGatewayCode sets the "gateway_code" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableGatewayCode(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetGatewayCode(*v)
+	}
+	return _u
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (_u *DeviceUpdateOne) ClearGatewayCode() *DeviceUpdateOne {
+	_u.mutation.ClearGatewayCode()
 	return _u
 }
 
@@ -731,6 +777,12 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	}
 	if _u.mutation.DeviceNameCleared() {
 		_spec.ClearField(device.FieldDeviceName, field.TypeString)
+	}
+	if value, ok := _u.mutation.GatewayCode(); ok {
+		_spec.SetField(device.FieldGatewayCode, field.TypeString, value)
+	}
+	if _u.mutation.GatewayCodeCleared() {
+		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt, value)

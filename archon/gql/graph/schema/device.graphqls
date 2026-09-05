@@ -7,6 +7,8 @@ type Device {
   deviceSN   : String!
   deviceName : String!
 
+  gatewayCode: String
+
   rate       : Int!
 
   posCode    : String!
@@ -38,6 +40,8 @@ input DeviceCreateInput {
   deviceSN   : String
   deviceName : String
 
+  gatewayCode: String
+
   rate       : Int
 
   posCode    : String
@@ -52,6 +56,8 @@ input DeviceModifyInput {
 
   deviceSN   : String
   deviceName : String
+
+  gatewayCode: String
 
   rate       : Int
 

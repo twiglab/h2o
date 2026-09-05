@@ -37,19 +37,19 @@ func init() {
 	// device.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	device.DeviceTypeValidator = deviceDescDeviceType.Validators[0].(func(string) error)
 	// deviceDescRate is the schema descriptor for rate field.
-	deviceDescRate := deviceFields[5].Descriptor()
+	deviceDescRate := deviceFields[6].Descriptor()
 	// device.DefaultRate holds the default value on creation for the rate field.
 	device.DefaultRate = deviceDescRate.Default.(int)
 	// deviceDescProject is the schema descriptor for project field.
-	deviceDescProject := deviceFields[6].Descriptor()
+	deviceDescProject := deviceFields[7].Descriptor()
 	// device.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	device.ProjectValidator = deviceDescProject.Validators[0].(func(string) error)
 	// deviceDescStatus is the schema descriptor for status field.
-	deviceDescStatus := deviceFields[10].Descriptor()
+	deviceDescStatus := deviceFields[11].Descriptor()
 	// device.DefaultStatus holds the default value on creation for the status field.
 	device.DefaultStatus = deviceDescStatus.Default.(int)
 	// deviceDescIsDel is the schema descriptor for is_del field.
-	deviceDescIsDel := deviceFields[12].Descriptor()
+	deviceDescIsDel := deviceFields[13].Descriptor()
 	// device.DefaultIsDel holds the default value on creation for the is_del field.
 	device.DefaultIsDel = deviceDescIsDel.Default.(int)
 	// deviceDescID is the schema descriptor for id field.

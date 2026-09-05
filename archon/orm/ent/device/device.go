@@ -25,6 +25,8 @@ const (
 	FieldDeviceSn = "device_sn"
 	// FieldDeviceName holds the string denoting the device_name field in the database.
 	FieldDeviceName = "device_name"
+	// FieldGatewayCode holds the string denoting the gateway_code field in the database.
+	FieldGatewayCode = "gateway_code"
 	// FieldRate holds the string denoting the rate field in the database.
 	FieldRate = "rate"
 	// FieldProject holds the string denoting the project field in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldDeviceType,
 	FieldDeviceSn,
 	FieldDeviceName,
+	FieldGatewayCode,
 	FieldRate,
 	FieldProject,
 	FieldPosCode,
@@ -135,6 +138,11 @@ func ByDeviceSn(opts ...sql.OrderTermOption) OrderOption {
 // ByDeviceName orders the results by the device_name field.
 func ByDeviceName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeviceName, opts...).ToFunc()
+}
+
+// ByGatewayCode orders the results by the gateway_code field.
+func ByGatewayCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGatewayCode, opts...).ToFunc()
 }
 
 // ByRate orders the results by the rate field.

@@ -41,6 +41,7 @@ type DeviceMutation struct {
 	device_type   *string
 	device_sn     *string
 	device_name   *string
+	gateway_code  *string
 	rate          *int
 	addrate       *int
 	project       *string
@@ -402,6 +403,55 @@ func (m *DeviceMutation) DeviceNameCleared() bool {
 func (m *DeviceMutation) ResetDeviceName() {
 	m.device_name = nil
 	delete(m.clearedFields, device.FieldDeviceName)
+}
+
+// SetGatewayCode sets the "gateway_code" field.
+func (m *DeviceMutation) SetGatewayCode(s string) {
+	m.gateway_code = &s
+}
+
+// GatewayCode returns the value of the "gateway_code" field in the mutation.
+func (m *DeviceMutation) GatewayCode() (r string, exists bool) {
+	v := m.gateway_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGatewayCode returns the old "gateway_code" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldGatewayCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGatewayCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGatewayCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGatewayCode: %w", err)
+	}
+	return oldValue.GatewayCode, nil
+}
+
+// ClearGatewayCode clears the value of the "gateway_code" field.
+func (m *DeviceMutation) ClearGatewayCode() {
+	m.gateway_code = nil
+	m.clearedFields[device.FieldGatewayCode] = struct{}{}
+}
+
+// GatewayCodeCleared returns if the "gateway_code" field was cleared in this mutation.
+func (m *DeviceMutation) GatewayCodeCleared() bool {
+	_, ok := m.clearedFields[device.FieldGatewayCode]
+	return ok
+}
+
+// ResetGatewayCode resets all changes to the "gateway_code" field.
+func (m *DeviceMutation) ResetGatewayCode() {
+	m.gateway_code = nil
+	delete(m.clearedFields, device.FieldGatewayCode)
 }
 
 // SetRate sets the "rate" field.
@@ -838,7 +888,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 14)
+	fields := make([]string, 0, 15)
 	if m.create_time != nil {
 		fields = append(fields, device.FieldCreateTime)
 	}
@@ -856,6 +906,9 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.device_name != nil {
 		fields = append(fields, device.FieldDeviceName)
+	}
+	if m.gateway_code != nil {
+		fields = append(fields, device.FieldGatewayCode)
 	}
 	if m.rate != nil {
 		fields = append(fields, device.FieldRate)
@@ -901,6 +954,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceSn()
 	case device.FieldDeviceName:
 		return m.DeviceName()
+	case device.FieldGatewayCode:
+		return m.GatewayCode()
 	case device.FieldRate:
 		return m.Rate()
 	case device.FieldProject:
@@ -938,6 +993,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDeviceSn(ctx)
 	case device.FieldDeviceName:
 		return m.OldDeviceName(ctx)
+	case device.FieldGatewayCode:
+		return m.OldGatewayCode(ctx)
 	case device.FieldRate:
 		return m.OldRate(ctx)
 	case device.FieldProject:
@@ -1004,6 +1061,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceName(v)
+		return nil
+	case device.FieldGatewayCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGatewayCode(v)
 		return nil
 	case device.FieldRate:
 		v, ok := value.(int)
@@ -1136,6 +1200,9 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldDeviceName) {
 		fields = append(fields, device.FieldDeviceName)
 	}
+	if m.FieldCleared(device.FieldGatewayCode) {
+		fields = append(fields, device.FieldGatewayCode)
+	}
 	if m.FieldCleared(device.FieldPosCode) {
 		fields = append(fields, device.FieldPosCode)
 	}
@@ -1167,6 +1234,9 @@ func (m *DeviceMutation) ClearField(name string) error {
 		return nil
 	case device.FieldDeviceName:
 		m.ClearDeviceName()
+		return nil
+	case device.FieldGatewayCode:
+		m.ClearGatewayCode()
 		return nil
 	case device.FieldPosCode:
 		m.ClearPosCode()
@@ -1205,6 +1275,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldDeviceName:
 		m.ResetDeviceName()
+		return nil
+	case device.FieldGatewayCode:
+		m.ResetGatewayCode()
 		return nil
 	case device.FieldRate:
 		m.ResetRate()

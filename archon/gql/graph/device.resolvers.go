@@ -30,6 +30,10 @@ func (r *mutationResolver) DeviceCreate(ctx context.Context, input model.DeviceC
 		cr.SetDeviceName(*input.DeviceName)
 	}
 
+	if input.GatewayCode != nil {
+		cr.SetGatewayCode(*input.GatewayCode)
+	}
+
 	if input.Rate != nil {
 		cr.SetRate(*input.Rate)
 	}
@@ -62,6 +66,10 @@ func (r *mutationResolver) DeviceModify(ctx context.Context, input model.DeviceM
 
 	if input.DeviceName != nil {
 		update.SetDeviceName(*input.DeviceName)
+	}
+
+	if input.GatewayCode != nil {
+		update.SetGatewayCode(*input.GatewayCode)
 	}
 
 	if input.Rate != nil {
