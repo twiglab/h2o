@@ -20,17 +20,16 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 
 		switch common.TopicType(msg.Topic()) {
 		case common.WaterTopic:
-
+		case common.GasTopic:
 		case common.ElectricityTopic:
-			var em ElectyMeterData
+			var em Meter
 			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
 				s.Logger.Error("unmarshal error", slog.Any("error", err))
 				return
 			}
-			if _, err := s.Charge(context.Background(), em); err != nil {
+			if err := s.Charge(context.Background(), em); err != nil {
 				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
 			}
-		case common.GasTopic:
 		}
 	}
 }
@@ -41,7 +40,7 @@ func RawHandle() mqtt.MessageHandler {
 			return
 		}
 
-		var md ElectyMeterData
+		var md Meter
 		if err := md.UnmarshalBinary(msg.Payload()); err != nil {
 			slog.Error("unmarshal error", slog.Any("error", err))
 			return
@@ -65,4 +64,24 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	}
 
 	return client, nil
+}
+
+type MQTTAction struct {
+	client mqtt.Client
+}
+
+func NewMQTTAction(client mqtt.Client) *MQTTAction {
+	return &MQTTAction{client: client}
+}
+
+func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
+	bb, err := obj.MarshalBinary()
+	if err != nil {
+		return err
+	}
+
+	pubToken := c.client.Publish(obj.Topic(), 0x01, false, bb)
+	pubToken.Wait()
+
+	return pubToken.Error()
 }

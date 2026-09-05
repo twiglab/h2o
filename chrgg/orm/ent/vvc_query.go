@@ -12,69 +12,69 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
 	"github.com/twiglab/h2o/chrgg/orm/ent/predicate"
+	"github.com/twiglab/h2o/chrgg/orm/ent/vvc"
 )
 
-// CDRQuery is the builder for querying CDR entities.
-type CDRQuery struct {
+// VVCQuery is the builder for querying VVC entities.
+type VVCQuery struct {
 	config
 	ctx        *QueryContext
-	order      []cdr.OrderOption
+	order      []vvc.OrderOption
 	inters     []Interceptor
-	predicates []predicate.CDR
+	predicates []predicate.VVC
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the CDRQuery builder.
-func (_q *CDRQuery) Where(ps ...predicate.CDR) *CDRQuery {
+// Where adds a new predicate for the VVCQuery builder.
+func (_q *VVCQuery) Where(ps ...predicate.VVC) *VVCQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *CDRQuery) Limit(limit int) *CDRQuery {
+func (_q *VVCQuery) Limit(limit int) *VVCQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *CDRQuery) Offset(offset int) *CDRQuery {
+func (_q *VVCQuery) Offset(offset int) *VVCQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *CDRQuery) Unique(unique bool) *CDRQuery {
+func (_q *VVCQuery) Unique(unique bool) *VVCQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *CDRQuery) Order(o ...cdr.OrderOption) *CDRQuery {
+func (_q *VVCQuery) Order(o ...vvc.OrderOption) *VVCQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
-// First returns the first CDR entity from the query.
-// Returns a *NotFoundError when no CDR was found.
-func (_q *CDRQuery) First(ctx context.Context) (*CDR, error) {
+// First returns the first VVC entity from the query.
+// Returns a *NotFoundError when no VVC was found.
+func (_q *VVCQuery) First(ctx context.Context) (*VVC, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{cdr.Label}
+		return nil, &NotFoundError{vvc.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *CDRQuery) FirstX(ctx context.Context) *CDR {
+func (_q *VVCQuery) FirstX(ctx context.Context) *VVC {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -82,22 +82,22 @@ func (_q *CDRQuery) FirstX(ctx context.Context) *CDR {
 	return node
 }
 
-// FirstID returns the first CDR ID from the query.
-// Returns a *NotFoundError when no CDR ID was found.
-func (_q *CDRQuery) FirstID(ctx context.Context) (id string, err error) {
+// FirstID returns the first VVC ID from the query.
+// Returns a *NotFoundError when no VVC ID was found.
+func (_q *VVCQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{cdr.Label}
+		err = &NotFoundError{vvc.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *CDRQuery) FirstIDX(ctx context.Context) string {
+func (_q *VVCQuery) FirstIDX(ctx context.Context) string {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -105,10 +105,10 @@ func (_q *CDRQuery) FirstIDX(ctx context.Context) string {
 	return id
 }
 
-// Only returns a single CDR entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one CDR entity is found.
-// Returns a *NotFoundError when no CDR entities are found.
-func (_q *CDRQuery) Only(ctx context.Context) (*CDR, error) {
+// Only returns a single VVC entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one VVC entity is found.
+// Returns a *NotFoundError when no VVC entities are found.
+func (_q *VVCQuery) Only(ctx context.Context) (*VVC, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -117,14 +117,14 @@ func (_q *CDRQuery) Only(ctx context.Context) (*CDR, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{cdr.Label}
+		return nil, &NotFoundError{vvc.Label}
 	default:
-		return nil, &NotSingularError{cdr.Label}
+		return nil, &NotSingularError{vvc.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *CDRQuery) OnlyX(ctx context.Context) *CDR {
+func (_q *VVCQuery) OnlyX(ctx context.Context) *VVC {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -132,10 +132,10 @@ func (_q *CDRQuery) OnlyX(ctx context.Context) *CDR {
 	return node
 }
 
-// OnlyID is like Only, but returns the only CDR ID in the query.
-// Returns a *NotSingularError when more than one CDR ID is found.
+// OnlyID is like Only, but returns the only VVC ID in the query.
+// Returns a *NotSingularError when more than one VVC ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *CDRQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (_q *VVCQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -144,15 +144,15 @@ func (_q *CDRQuery) OnlyID(ctx context.Context) (id string, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{cdr.Label}
+		err = &NotFoundError{vvc.Label}
 	default:
-		err = &NotSingularError{cdr.Label}
+		err = &NotSingularError{vvc.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *CDRQuery) OnlyIDX(ctx context.Context) string {
+func (_q *VVCQuery) OnlyIDX(ctx context.Context) string {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -160,18 +160,18 @@ func (_q *CDRQuery) OnlyIDX(ctx context.Context) string {
 	return id
 }
 
-// All executes the query and returns a list of CDRs.
-func (_q *CDRQuery) All(ctx context.Context) ([]*CDR, error) {
+// All executes the query and returns a list of VVCs.
+func (_q *VVCQuery) All(ctx context.Context) ([]*VVC, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*CDR, *CDRQuery]()
-	return withInterceptors[[]*CDR](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*VVC, *VVCQuery]()
+	return withInterceptors[[]*VVC](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *CDRQuery) AllX(ctx context.Context) []*CDR {
+func (_q *VVCQuery) AllX(ctx context.Context) []*VVC {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -179,20 +179,20 @@ func (_q *CDRQuery) AllX(ctx context.Context) []*CDR {
 	return nodes
 }
 
-// IDs executes the query and returns a list of CDR IDs.
-func (_q *CDRQuery) IDs(ctx context.Context) (ids []string, err error) {
+// IDs executes the query and returns a list of VVC IDs.
+func (_q *VVCQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(cdr.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(vvc.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *CDRQuery) IDsX(ctx context.Context) []string {
+func (_q *VVCQuery) IDsX(ctx context.Context) []string {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -201,16 +201,16 @@ func (_q *CDRQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (_q *CDRQuery) Count(ctx context.Context) (int, error) {
+func (_q *VVCQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*CDRQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*VVCQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *CDRQuery) CountX(ctx context.Context) int {
+func (_q *VVCQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -219,7 +219,7 @@ func (_q *CDRQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *CDRQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *VVCQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -232,7 +232,7 @@ func (_q *CDRQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *CDRQuery) ExistX(ctx context.Context) bool {
+func (_q *VVCQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -240,18 +240,18 @@ func (_q *CDRQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the CDRQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the VVCQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *CDRQuery) Clone() *CDRQuery {
+func (_q *VVCQuery) Clone() *VVCQuery {
 	if _q == nil {
 		return nil
 	}
-	return &CDRQuery{
+	return &VVCQuery{
 		config:     _q.config,
 		ctx:        _q.ctx.Clone(),
-		order:      append([]cdr.OrderOption{}, _q.order...),
+		order:      append([]vvc.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.CDR{}, _q.predicates...),
+		predicates: append([]predicate.VVC{}, _q.predicates...),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -264,19 +264,19 @@ func (_q *CDRQuery) Clone() *CDRQuery {
 // Example:
 //
 //	var v []struct {
-//		CreateTime time.Time `json:"create_time,omitempty"`
+//		DeviceCode string `json:"device_code,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.CDR.Query().
-//		GroupBy(cdr.FieldCreateTime).
+//	client.VVC.Query().
+//		GroupBy(vvc.FieldDeviceCode).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *CDRQuery) GroupBy(field string, fields ...string) *CDRGroupBy {
+func (_q *VVCQuery) GroupBy(field string, fields ...string) *VVCGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &CDRGroupBy{build: _q}
+	grbuild := &VVCGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = cdr.Label
+	grbuild.label = vvc.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -287,26 +287,26 @@ func (_q *CDRQuery) GroupBy(field string, fields ...string) *CDRGroupBy {
 // Example:
 //
 //	var v []struct {
-//		CreateTime time.Time `json:"create_time,omitempty"`
+//		DeviceCode string `json:"device_code,omitempty"`
 //	}
 //
-//	client.CDR.Query().
-//		Select(cdr.FieldCreateTime).
+//	client.VVC.Query().
+//		Select(vvc.FieldDeviceCode).
 //		Scan(ctx, &v)
-func (_q *CDRQuery) Select(fields ...string) *CDRSelect {
+func (_q *VVCQuery) Select(fields ...string) *VVCSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &CDRSelect{CDRQuery: _q}
-	sbuild.label = cdr.Label
+	sbuild := &VVCSelect{VVCQuery: _q}
+	sbuild.label = vvc.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a CDRSelect configured with the given aggregations.
-func (_q *CDRQuery) Aggregate(fns ...AggregateFunc) *CDRSelect {
+// Aggregate returns a VVCSelect configured with the given aggregations.
+func (_q *VVCQuery) Aggregate(fns ...AggregateFunc) *VVCSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *CDRQuery) prepareQuery(ctx context.Context) error {
+func (_q *VVCQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -318,7 +318,7 @@ func (_q *CDRQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !cdr.ValidColumn(f) {
+		if !vvc.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -332,16 +332,16 @@ func (_q *CDRQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *CDRQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*CDR, error) {
+func (_q *VVCQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*VVC, error) {
 	var (
-		nodes = []*CDR{}
+		nodes = []*VVC{}
 		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*CDR).scanValues(nil, columns)
+		return (*VVC).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &CDR{config: _q.config}
+		node := &VVC{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -360,7 +360,7 @@ func (_q *CDRQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*CDR, err
 	return nodes, nil
 }
 
-func (_q *CDRQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *VVCQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	if len(_q.modifiers) > 0 {
 		_spec.Modifiers = _q.modifiers
@@ -372,8 +372,8 @@ func (_q *CDRQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *CDRQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(cdr.Table, cdr.Columns, sqlgraph.NewFieldSpec(cdr.FieldID, field.TypeString))
+func (_q *VVCQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(vvc.Table, vvc.Columns, sqlgraph.NewFieldSpec(vvc.FieldID, field.TypeString))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -382,9 +382,9 @@ func (_q *CDRQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, cdr.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, vvc.FieldID)
 		for i := range fields {
-			if fields[i] != cdr.FieldID {
+			if fields[i] != vvc.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -412,12 +412,12 @@ func (_q *CDRQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *CDRQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *VVCQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(cdr.Table)
+	t1 := builder.Table(vvc.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = cdr.Columns
+		columns = vvc.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -450,7 +450,7 @@ func (_q *CDRQuery) sqlQuery(ctx context.Context) *sql.Selector {
 // ForUpdate locks the selected rows against concurrent updates, and prevent them from being
 // updated, deleted or "selected ... for update" by other sessions, until the transaction is
 // either committed or rolled-back.
-func (_q *CDRQuery) ForUpdate(opts ...sql.LockOption) *CDRQuery {
+func (_q *VVCQuery) ForUpdate(opts ...sql.LockOption) *VVCQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -463,7 +463,7 @@ func (_q *CDRQuery) ForUpdate(opts ...sql.LockOption) *CDRQuery {
 // ForShare behaves similarly to ForUpdate, except that it acquires a shared mode lock
 // on any rows that are read. Other sessions can read the rows, but cannot modify them
 // until your transaction commits.
-func (_q *CDRQuery) ForShare(opts ...sql.LockOption) *CDRQuery {
+func (_q *VVCQuery) ForShare(opts ...sql.LockOption) *VVCQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -473,28 +473,28 @@ func (_q *CDRQuery) ForShare(opts ...sql.LockOption) *CDRQuery {
 	return _q
 }
 
-// CDRGroupBy is the group-by builder for CDR entities.
-type CDRGroupBy struct {
+// VVCGroupBy is the group-by builder for VVC entities.
+type VVCGroupBy struct {
 	selector
-	build *CDRQuery
+	build *VVCQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *CDRGroupBy) Aggregate(fns ...AggregateFunc) *CDRGroupBy {
+func (_g *VVCGroupBy) Aggregate(fns ...AggregateFunc) *VVCGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *CDRGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *VVCGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*CDRQuery, *CDRGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*VVCQuery, *VVCGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *CDRGroupBy) sqlScan(ctx context.Context, root *CDRQuery, v any) error {
+func (_g *VVCGroupBy) sqlScan(ctx context.Context, root *VVCQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -521,28 +521,28 @@ func (_g *CDRGroupBy) sqlScan(ctx context.Context, root *CDRQuery, v any) error 
 	return sql.ScanSlice(rows, v)
 }
 
-// CDRSelect is the builder for selecting fields of CDR entities.
-type CDRSelect struct {
-	*CDRQuery
+// VVCSelect is the builder for selecting fields of VVC entities.
+type VVCSelect struct {
+	*VVCQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *CDRSelect) Aggregate(fns ...AggregateFunc) *CDRSelect {
+func (_s *VVCSelect) Aggregate(fns ...AggregateFunc) *VVCSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *CDRSelect) Scan(ctx context.Context, v any) error {
+func (_s *VVCSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*CDRQuery, *CDRSelect](ctx, _s.CDRQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*VVCQuery, *VVCSelect](ctx, _s.VVCQuery, _s, _s.inters, v)
 }
 
-func (_s *CDRSelect) sqlScan(ctx context.Context, root *CDRQuery, v any) error {
+func (_s *VVCSelect) sqlScan(ctx context.Context, root *VVCQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

@@ -110,26 +110,26 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The CDRQueryRuleFunc type is an adapter to allow the use of ordinary
+// The VVCQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type CDRQueryRuleFunc func(context.Context, *ent.CDRQuery) error
+type VVCQueryRuleFunc func(context.Context, *ent.VVCQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f CDRQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.CDRQuery); ok {
+func (f VVCQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.VVCQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.CDRQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.VVCQuery", q)
 }
 
-// The CDRMutationRuleFunc type is an adapter to allow the use of ordinary
+// The VVCMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type CDRMutationRuleFunc func(context.Context, *ent.CDRMutation) error
+type VVCMutationRuleFunc func(context.Context, *ent.VVCMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f CDRMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.CDRMutation); ok {
+func (f VVCMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.VVCMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.CDRMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.VVCMutation", m)
 }

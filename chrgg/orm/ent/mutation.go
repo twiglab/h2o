@@ -7,12 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"sync"
-	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
 	"github.com/twiglab/h2o/chrgg/orm/ent/predicate"
+	"github.com/twiglab/h2o/chrgg/orm/ent/vvc"
 )
 
 const (
@@ -24,56 +23,38 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeCDR = "CDR"
+	TypeVVC = "VVC"
 )
 
-// CDRMutation represents an operation that mutates the CDR nodes in the graph.
-type CDRMutation struct {
+// VVCMutation represents an operation that mutates the VVC nodes in the graph.
+type VVCMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *string
-	create_time        *time.Time
-	update_time        *time.Time
-	device_code        *string
-	device_type        *string
-	last_data_value    *int64
-	addlast_data_value *int64
-	data_value         *int64
-	adddata_value      *int64
-	last_data_code     *string
-	data_code          *string
-	last_data_time     *time.Time
-	data_time          *time.Time
-	rule_id            *string
-	rule_type          *string
-	rule_ctg           *string
-	value              *int64
-	addvalue           *int64
-	unit_fee_fen       *int64
-	addunit_fee_fen    *int64
-	fee_fen            *int64
-	addfee_fen         *int64
-	pos_code           *string
-	project            *string
-	memo               *string
-	clearedFields      map[string]struct{}
-	done               bool
-	oldValue           func(context.Context) (*CDR, error)
-	predicates         []predicate.CDR
+	op            Op
+	typ           string
+	id            *string
+	device_code   *string
+	device_type   *string
+	quota         *int64
+	addquota      *int64
+	status        *int
+	addstatus     *int
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*VVC, error)
+	predicates    []predicate.VVC
 }
 
-var _ ent.Mutation = (*CDRMutation)(nil)
+var _ ent.Mutation = (*VVCMutation)(nil)
 
-// cdrOption allows management of the mutation configuration using functional options.
-type cdrOption func(*CDRMutation)
+// vvcOption allows management of the mutation configuration using functional options.
+type vvcOption func(*VVCMutation)
 
-// newCDRMutation creates new mutation for the CDR entity.
-func newCDRMutation(c config, op Op, opts ...cdrOption) *CDRMutation {
-	m := &CDRMutation{
+// newVVCMutation creates new mutation for the VVC entity.
+func newVVCMutation(c config, op Op, opts ...vvcOption) *VVCMutation {
+	m := &VVCMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeCDR,
+		typ:           TypeVVC,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -82,20 +63,20 @@ func newCDRMutation(c config, op Op, opts ...cdrOption) *CDRMutation {
 	return m
 }
 
-// withCDRID sets the ID field of the mutation.
-func withCDRID(id string) cdrOption {
-	return func(m *CDRMutation) {
+// withVVCID sets the ID field of the mutation.
+func withVVCID(id string) vvcOption {
+	return func(m *VVCMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *CDR
+			value *VVC
 		)
-		m.oldValue = func(ctx context.Context) (*CDR, error) {
+		m.oldValue = func(ctx context.Context) (*VVC, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().CDR.Get(ctx, id)
+					value, err = m.Client().VVC.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -104,10 +85,10 @@ func withCDRID(id string) cdrOption {
 	}
 }
 
-// withCDR sets the old CDR of the mutation.
-func withCDR(node *CDR) cdrOption {
-	return func(m *CDRMutation) {
-		m.oldValue = func(context.Context) (*CDR, error) {
+// withVVC sets the old VVC of the mutation.
+func withVVC(node *VVC) vvcOption {
+	return func(m *VVCMutation) {
+		m.oldValue = func(context.Context) (*VVC, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -116,7 +97,7 @@ func withCDR(node *CDR) cdrOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m CDRMutation) Client() *Client {
+func (m VVCMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -124,7 +105,7 @@ func (m CDRMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m CDRMutation) Tx() (*Tx, error) {
+func (m VVCMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -134,14 +115,14 @@ func (m CDRMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of CDR entities.
-func (m *CDRMutation) SetID(id string) {
+// operation is only accepted on creation of VVC entities.
+func (m *VVCMutation) SetID(id string) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *CDRMutation) ID() (id string, exists bool) {
+func (m *VVCMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -152,7 +133,7 @@ func (m *CDRMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *CDRMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *VVCMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -161,91 +142,19 @@ func (m *CDRMutation) IDs(ctx context.Context) ([]string, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().CDR.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().VVC.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
-// SetCreateTime sets the "create_time" field.
-func (m *CDRMutation) SetCreateTime(t time.Time) {
-	m.create_time = &t
-}
-
-// CreateTime returns the value of the "create_time" field in the mutation.
-func (m *CDRMutation) CreateTime() (r time.Time, exists bool) {
-	v := m.create_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldCreateTime returns the old "create_time" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldCreateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
-	}
-	return oldValue.CreateTime, nil
-}
-
-// ResetCreateTime resets all changes to the "create_time" field.
-func (m *CDRMutation) ResetCreateTime() {
-	m.create_time = nil
-}
-
-// SetUpdateTime sets the "update_time" field.
-func (m *CDRMutation) SetUpdateTime(t time.Time) {
-	m.update_time = &t
-}
-
-// UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *CDRMutation) UpdateTime() (r time.Time, exists bool) {
-	v := m.update_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUpdateTime returns the old "update_time" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUpdateTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
-	}
-	return oldValue.UpdateTime, nil
-}
-
-// ResetUpdateTime resets all changes to the "update_time" field.
-func (m *CDRMutation) ResetUpdateTime() {
-	m.update_time = nil
-}
-
 // SetDeviceCode sets the "device_code" field.
-func (m *CDRMutation) SetDeviceCode(s string) {
+func (m *VVCMutation) SetDeviceCode(s string) {
 	m.device_code = &s
 }
 
 // DeviceCode returns the value of the "device_code" field in the mutation.
-func (m *CDRMutation) DeviceCode() (r string, exists bool) {
+func (m *VVCMutation) DeviceCode() (r string, exists bool) {
 	v := m.device_code
 	if v == nil {
 		return
@@ -253,10 +162,10 @@ func (m *CDRMutation) DeviceCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceCode returns the old "device_code" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceCode returns the old "device_code" field's value of the VVC entity.
+// If the VVC object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
+func (m *VVCMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceCode is only allowed on UpdateOne operations")
 	}
@@ -271,17 +180,17 @@ func (m *CDRMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
 }
 
 // ResetDeviceCode resets all changes to the "device_code" field.
-func (m *CDRMutation) ResetDeviceCode() {
+func (m *VVCMutation) ResetDeviceCode() {
 	m.device_code = nil
 }
 
 // SetDeviceType sets the "device_type" field.
-func (m *CDRMutation) SetDeviceType(s string) {
+func (m *VVCMutation) SetDeviceType(s string) {
 	m.device_type = &s
 }
 
 // DeviceType returns the value of the "device_type" field in the mutation.
-func (m *CDRMutation) DeviceType() (r string, exists bool) {
+func (m *VVCMutation) DeviceType() (r string, exists bool) {
 	v := m.device_type
 	if v == nil {
 		return
@@ -289,10 +198,10 @@ func (m *CDRMutation) DeviceType() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceType returns the old "device_type" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceType returns the old "device_type" field's value of the VVC entity.
+// If the VVC object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldDeviceType(ctx context.Context) (v string, err error) {
+func (m *VVCMutation) OldDeviceType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceType is only allowed on UpdateOne operations")
 	}
@@ -307,672 +216,131 @@ func (m *CDRMutation) OldDeviceType(ctx context.Context) (v string, err error) {
 }
 
 // ResetDeviceType resets all changes to the "device_type" field.
-func (m *CDRMutation) ResetDeviceType() {
+func (m *VVCMutation) ResetDeviceType() {
 	m.device_type = nil
 }
 
-// SetLastDataValue sets the "last_data_value" field.
-func (m *CDRMutation) SetLastDataValue(i int64) {
-	m.last_data_value = &i
-	m.addlast_data_value = nil
+// SetQuota sets the "quota" field.
+func (m *VVCMutation) SetQuota(i int64) {
+	m.quota = &i
+	m.addquota = nil
 }
 
-// LastDataValue returns the value of the "last_data_value" field in the mutation.
-func (m *CDRMutation) LastDataValue() (r int64, exists bool) {
-	v := m.last_data_value
+// Quota returns the value of the "quota" field in the mutation.
+func (m *VVCMutation) Quota() (r int64, exists bool) {
+	v := m.quota
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldLastDataValue returns the old "last_data_value" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// OldQuota returns the old "quota" field's value of the VVC entity.
+// If the VVC object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldLastDataValue(ctx context.Context) (v int64, err error) {
+func (m *VVCMutation) OldQuota(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLastDataValue is only allowed on UpdateOne operations")
+		return v, errors.New("OldQuota is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLastDataValue requires an ID field in the mutation")
+		return v, errors.New("OldQuota requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLastDataValue: %w", err)
+		return v, fmt.Errorf("querying old value for OldQuota: %w", err)
 	}
-	return oldValue.LastDataValue, nil
+	return oldValue.Quota, nil
 }
 
-// AddLastDataValue adds i to the "last_data_value" field.
-func (m *CDRMutation) AddLastDataValue(i int64) {
-	if m.addlast_data_value != nil {
-		*m.addlast_data_value += i
+// AddQuota adds i to the "quota" field.
+func (m *VVCMutation) AddQuota(i int64) {
+	if m.addquota != nil {
+		*m.addquota += i
 	} else {
-		m.addlast_data_value = &i
+		m.addquota = &i
 	}
 }
 
-// AddedLastDataValue returns the value that was added to the "last_data_value" field in this mutation.
-func (m *CDRMutation) AddedLastDataValue() (r int64, exists bool) {
-	v := m.addlast_data_value
+// AddedQuota returns the value that was added to the "quota" field in this mutation.
+func (m *VVCMutation) AddedQuota() (r int64, exists bool) {
+	v := m.addquota
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetLastDataValue resets all changes to the "last_data_value" field.
-func (m *CDRMutation) ResetLastDataValue() {
-	m.last_data_value = nil
-	m.addlast_data_value = nil
+// ResetQuota resets all changes to the "quota" field.
+func (m *VVCMutation) ResetQuota() {
+	m.quota = nil
+	m.addquota = nil
 }
 
-// SetDataValue sets the "data_value" field.
-func (m *CDRMutation) SetDataValue(i int64) {
-	m.data_value = &i
-	m.adddata_value = nil
+// SetStatus sets the "status" field.
+func (m *VVCMutation) SetStatus(i int) {
+	m.status = &i
+	m.addstatus = nil
 }
 
-// DataValue returns the value of the "data_value" field in the mutation.
-func (m *CDRMutation) DataValue() (r int64, exists bool) {
-	v := m.data_value
+// Status returns the value of the "status" field in the mutation.
+func (m *VVCMutation) Status() (r int, exists bool) {
+	v := m.status
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldDataValue returns the old "data_value" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the VVC entity.
+// If the VVC object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldDataValue(ctx context.Context) (v int64, err error) {
+func (m *VVCMutation) OldStatus(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataValue is only allowed on UpdateOne operations")
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataValue requires an ID field in the mutation")
+		return v, errors.New("OldStatus requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataValue: %w", err)
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
 	}
-	return oldValue.DataValue, nil
+	return oldValue.Status, nil
 }
 
-// AddDataValue adds i to the "data_value" field.
-func (m *CDRMutation) AddDataValue(i int64) {
-	if m.adddata_value != nil {
-		*m.adddata_value += i
+// AddStatus adds i to the "status" field.
+func (m *VVCMutation) AddStatus(i int) {
+	if m.addstatus != nil {
+		*m.addstatus += i
 	} else {
-		m.adddata_value = &i
+		m.addstatus = &i
 	}
 }
 
-// AddedDataValue returns the value that was added to the "data_value" field in this mutation.
-func (m *CDRMutation) AddedDataValue() (r int64, exists bool) {
-	v := m.adddata_value
+// AddedStatus returns the value that was added to the "status" field in this mutation.
+func (m *VVCMutation) AddedStatus() (r int, exists bool) {
+	v := m.addstatus
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetDataValue resets all changes to the "data_value" field.
-func (m *CDRMutation) ResetDataValue() {
-	m.data_value = nil
-	m.adddata_value = nil
+// ResetStatus resets all changes to the "status" field.
+func (m *VVCMutation) ResetStatus() {
+	m.status = nil
+	m.addstatus = nil
 }
 
-// SetLastDataCode sets the "last_data_code" field.
-func (m *CDRMutation) SetLastDataCode(s string) {
-	m.last_data_code = &s
-}
-
-// LastDataCode returns the value of the "last_data_code" field in the mutation.
-func (m *CDRMutation) LastDataCode() (r string, exists bool) {
-	v := m.last_data_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLastDataCode returns the old "last_data_code" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldLastDataCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLastDataCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLastDataCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLastDataCode: %w", err)
-	}
-	return oldValue.LastDataCode, nil
-}
-
-// ResetLastDataCode resets all changes to the "last_data_code" field.
-func (m *CDRMutation) ResetLastDataCode() {
-	m.last_data_code = nil
-}
-
-// SetDataCode sets the "data_code" field.
-func (m *CDRMutation) SetDataCode(s string) {
-	m.data_code = &s
-}
-
-// DataCode returns the value of the "data_code" field in the mutation.
-func (m *CDRMutation) DataCode() (r string, exists bool) {
-	v := m.data_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataCode returns the old "data_code" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldDataCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataCode: %w", err)
-	}
-	return oldValue.DataCode, nil
-}
-
-// ResetDataCode resets all changes to the "data_code" field.
-func (m *CDRMutation) ResetDataCode() {
-	m.data_code = nil
-}
-
-// SetLastDataTime sets the "last_data_time" field.
-func (m *CDRMutation) SetLastDataTime(t time.Time) {
-	m.last_data_time = &t
-}
-
-// LastDataTime returns the value of the "last_data_time" field in the mutation.
-func (m *CDRMutation) LastDataTime() (r time.Time, exists bool) {
-	v := m.last_data_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldLastDataTime returns the old "last_data_time" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldLastDataTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldLastDataTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldLastDataTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldLastDataTime: %w", err)
-	}
-	return oldValue.LastDataTime, nil
-}
-
-// ResetLastDataTime resets all changes to the "last_data_time" field.
-func (m *CDRMutation) ResetLastDataTime() {
-	m.last_data_time = nil
-}
-
-// SetDataTime sets the "data_time" field.
-func (m *CDRMutation) SetDataTime(t time.Time) {
-	m.data_time = &t
-}
-
-// DataTime returns the value of the "data_time" field in the mutation.
-func (m *CDRMutation) DataTime() (r time.Time, exists bool) {
-	v := m.data_time
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataTime returns the old "data_time" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldDataTime(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataTime: %w", err)
-	}
-	return oldValue.DataTime, nil
-}
-
-// ResetDataTime resets all changes to the "data_time" field.
-func (m *CDRMutation) ResetDataTime() {
-	m.data_time = nil
-}
-
-// SetRuleID sets the "rule_id" field.
-func (m *CDRMutation) SetRuleID(s string) {
-	m.rule_id = &s
-}
-
-// RuleID returns the value of the "rule_id" field in the mutation.
-func (m *CDRMutation) RuleID() (r string, exists bool) {
-	v := m.rule_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRuleID returns the old "rule_id" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldRuleID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRuleID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRuleID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRuleID: %w", err)
-	}
-	return oldValue.RuleID, nil
-}
-
-// ResetRuleID resets all changes to the "rule_id" field.
-func (m *CDRMutation) ResetRuleID() {
-	m.rule_id = nil
-}
-
-// SetRuleType sets the "rule_type" field.
-func (m *CDRMutation) SetRuleType(s string) {
-	m.rule_type = &s
-}
-
-// RuleType returns the value of the "rule_type" field in the mutation.
-func (m *CDRMutation) RuleType() (r string, exists bool) {
-	v := m.rule_type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRuleType returns the old "rule_type" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldRuleType(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRuleType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRuleType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRuleType: %w", err)
-	}
-	return oldValue.RuleType, nil
-}
-
-// ResetRuleType resets all changes to the "rule_type" field.
-func (m *CDRMutation) ResetRuleType() {
-	m.rule_type = nil
-}
-
-// SetRuleCtg sets the "rule_ctg" field.
-func (m *CDRMutation) SetRuleCtg(s string) {
-	m.rule_ctg = &s
-}
-
-// RuleCtg returns the value of the "rule_ctg" field in the mutation.
-func (m *CDRMutation) RuleCtg() (r string, exists bool) {
-	v := m.rule_ctg
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldRuleCtg returns the old "rule_ctg" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldRuleCtg(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldRuleCtg is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldRuleCtg requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldRuleCtg: %w", err)
-	}
-	return oldValue.RuleCtg, nil
-}
-
-// ResetRuleCtg resets all changes to the "rule_ctg" field.
-func (m *CDRMutation) ResetRuleCtg() {
-	m.rule_ctg = nil
-}
-
-// SetValue sets the "value" field.
-func (m *CDRMutation) SetValue(i int64) {
-	m.value = &i
-	m.addvalue = nil
-}
-
-// Value returns the value of the "value" field in the mutation.
-func (m *CDRMutation) Value() (r int64, exists bool) {
-	v := m.value
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldValue returns the old "value" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldValue(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldValue is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldValue requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldValue: %w", err)
-	}
-	return oldValue.Value, nil
-}
-
-// AddValue adds i to the "value" field.
-func (m *CDRMutation) AddValue(i int64) {
-	if m.addvalue != nil {
-		*m.addvalue += i
-	} else {
-		m.addvalue = &i
-	}
-}
-
-// AddedValue returns the value that was added to the "value" field in this mutation.
-func (m *CDRMutation) AddedValue() (r int64, exists bool) {
-	v := m.addvalue
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetValue resets all changes to the "value" field.
-func (m *CDRMutation) ResetValue() {
-	m.value = nil
-	m.addvalue = nil
-}
-
-// SetUnitFeeFen sets the "unit_fee_fen" field.
-func (m *CDRMutation) SetUnitFeeFen(i int64) {
-	m.unit_fee_fen = &i
-	m.addunit_fee_fen = nil
-}
-
-// UnitFeeFen returns the value of the "unit_fee_fen" field in the mutation.
-func (m *CDRMutation) UnitFeeFen() (r int64, exists bool) {
-	v := m.unit_fee_fen
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldUnitFeeFen returns the old "unit_fee_fen" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldUnitFeeFen(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldUnitFeeFen is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldUnitFeeFen requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUnitFeeFen: %w", err)
-	}
-	return oldValue.UnitFeeFen, nil
-}
-
-// AddUnitFeeFen adds i to the "unit_fee_fen" field.
-func (m *CDRMutation) AddUnitFeeFen(i int64) {
-	if m.addunit_fee_fen != nil {
-		*m.addunit_fee_fen += i
-	} else {
-		m.addunit_fee_fen = &i
-	}
-}
-
-// AddedUnitFeeFen returns the value that was added to the "unit_fee_fen" field in this mutation.
-func (m *CDRMutation) AddedUnitFeeFen() (r int64, exists bool) {
-	v := m.addunit_fee_fen
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetUnitFeeFen resets all changes to the "unit_fee_fen" field.
-func (m *CDRMutation) ResetUnitFeeFen() {
-	m.unit_fee_fen = nil
-	m.addunit_fee_fen = nil
-}
-
-// SetFeeFen sets the "fee_fen" field.
-func (m *CDRMutation) SetFeeFen(i int64) {
-	m.fee_fen = &i
-	m.addfee_fen = nil
-}
-
-// FeeFen returns the value of the "fee_fen" field in the mutation.
-func (m *CDRMutation) FeeFen() (r int64, exists bool) {
-	v := m.fee_fen
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldFeeFen returns the old "fee_fen" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldFeeFen(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldFeeFen is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldFeeFen requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldFeeFen: %w", err)
-	}
-	return oldValue.FeeFen, nil
-}
-
-// AddFeeFen adds i to the "fee_fen" field.
-func (m *CDRMutation) AddFeeFen(i int64) {
-	if m.addfee_fen != nil {
-		*m.addfee_fen += i
-	} else {
-		m.addfee_fen = &i
-	}
-}
-
-// AddedFeeFen returns the value that was added to the "fee_fen" field in this mutation.
-func (m *CDRMutation) AddedFeeFen() (r int64, exists bool) {
-	v := m.addfee_fen
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetFeeFen resets all changes to the "fee_fen" field.
-func (m *CDRMutation) ResetFeeFen() {
-	m.fee_fen = nil
-	m.addfee_fen = nil
-}
-
-// SetPosCode sets the "pos_code" field.
-func (m *CDRMutation) SetPosCode(s string) {
-	m.pos_code = &s
-}
-
-// PosCode returns the value of the "pos_code" field in the mutation.
-func (m *CDRMutation) PosCode() (r string, exists bool) {
-	v := m.pos_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPosCode returns the old "pos_code" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldPosCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPosCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPosCode: %w", err)
-	}
-	return oldValue.PosCode, nil
-}
-
-// ResetPosCode resets all changes to the "pos_code" field.
-func (m *CDRMutation) ResetPosCode() {
-	m.pos_code = nil
-}
-
-// SetProject sets the "project" field.
-func (m *CDRMutation) SetProject(s string) {
-	m.project = &s
-}
-
-// Project returns the value of the "project" field in the mutation.
-func (m *CDRMutation) Project() (r string, exists bool) {
-	v := m.project
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldProject returns the old "project" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldProject(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldProject is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldProject requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldProject: %w", err)
-	}
-	return oldValue.Project, nil
-}
-
-// ResetProject resets all changes to the "project" field.
-func (m *CDRMutation) ResetProject() {
-	m.project = nil
-}
-
-// SetMemo sets the "memo" field.
-func (m *CDRMutation) SetMemo(s string) {
-	m.memo = &s
-}
-
-// Memo returns the value of the "memo" field in the mutation.
-func (m *CDRMutation) Memo() (r string, exists bool) {
-	v := m.memo
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMemo returns the old "memo" field's value of the CDR entity.
-// If the CDR object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *CDRMutation) OldMemo(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMemo is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMemo requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMemo: %w", err)
-	}
-	return oldValue.Memo, nil
-}
-
-// ClearMemo clears the value of the "memo" field.
-func (m *CDRMutation) ClearMemo() {
-	m.memo = nil
-	m.clearedFields[cdr.FieldMemo] = struct{}{}
-}
-
-// MemoCleared returns if the "memo" field was cleared in this mutation.
-func (m *CDRMutation) MemoCleared() bool {
-	_, ok := m.clearedFields[cdr.FieldMemo]
-	return ok
-}
-
-// ResetMemo resets all changes to the "memo" field.
-func (m *CDRMutation) ResetMemo() {
-	m.memo = nil
-	delete(m.clearedFields, cdr.FieldMemo)
-}
-
-// Where appends a list predicates to the CDRMutation builder.
-func (m *CDRMutation) Where(ps ...predicate.CDR) {
+// Where appends a list predicates to the VVCMutation builder.
+func (m *VVCMutation) Where(ps ...predicate.VVC) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the CDRMutation builder. Using this method,
+// WhereP appends storage-level predicates to the VVCMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *CDRMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.CDR, len(ps))
+func (m *VVCMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.VVC, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -980,81 +348,36 @@ func (m *CDRMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *CDRMutation) Op() Op {
+func (m *VVCMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *CDRMutation) SetOp(op Op) {
+func (m *VVCMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (CDR).
-func (m *CDRMutation) Type() string {
+// Type returns the node type of this mutation (VVC).
+func (m *VVCMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *CDRMutation) Fields() []string {
-	fields := make([]string, 0, 19)
-	if m.create_time != nil {
-		fields = append(fields, cdr.FieldCreateTime)
-	}
-	if m.update_time != nil {
-		fields = append(fields, cdr.FieldUpdateTime)
-	}
+func (m *VVCMutation) Fields() []string {
+	fields := make([]string, 0, 4)
 	if m.device_code != nil {
-		fields = append(fields, cdr.FieldDeviceCode)
+		fields = append(fields, vvc.FieldDeviceCode)
 	}
 	if m.device_type != nil {
-		fields = append(fields, cdr.FieldDeviceType)
+		fields = append(fields, vvc.FieldDeviceType)
 	}
-	if m.last_data_value != nil {
-		fields = append(fields, cdr.FieldLastDataValue)
+	if m.quota != nil {
+		fields = append(fields, vvc.FieldQuota)
 	}
-	if m.data_value != nil {
-		fields = append(fields, cdr.FieldDataValue)
-	}
-	if m.last_data_code != nil {
-		fields = append(fields, cdr.FieldLastDataCode)
-	}
-	if m.data_code != nil {
-		fields = append(fields, cdr.FieldDataCode)
-	}
-	if m.last_data_time != nil {
-		fields = append(fields, cdr.FieldLastDataTime)
-	}
-	if m.data_time != nil {
-		fields = append(fields, cdr.FieldDataTime)
-	}
-	if m.rule_id != nil {
-		fields = append(fields, cdr.FieldRuleID)
-	}
-	if m.rule_type != nil {
-		fields = append(fields, cdr.FieldRuleType)
-	}
-	if m.rule_ctg != nil {
-		fields = append(fields, cdr.FieldRuleCtg)
-	}
-	if m.value != nil {
-		fields = append(fields, cdr.FieldValue)
-	}
-	if m.unit_fee_fen != nil {
-		fields = append(fields, cdr.FieldUnitFeeFen)
-	}
-	if m.fee_fen != nil {
-		fields = append(fields, cdr.FieldFeeFen)
-	}
-	if m.pos_code != nil {
-		fields = append(fields, cdr.FieldPosCode)
-	}
-	if m.project != nil {
-		fields = append(fields, cdr.FieldProject)
-	}
-	if m.memo != nil {
-		fields = append(fields, cdr.FieldMemo)
+	if m.status != nil {
+		fields = append(fields, vvc.FieldStatus)
 	}
 	return fields
 }
@@ -1062,46 +385,16 @@ func (m *CDRMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *CDRMutation) Field(name string) (ent.Value, bool) {
+func (m *VVCMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case cdr.FieldCreateTime:
-		return m.CreateTime()
-	case cdr.FieldUpdateTime:
-		return m.UpdateTime()
-	case cdr.FieldDeviceCode:
+	case vvc.FieldDeviceCode:
 		return m.DeviceCode()
-	case cdr.FieldDeviceType:
+	case vvc.FieldDeviceType:
 		return m.DeviceType()
-	case cdr.FieldLastDataValue:
-		return m.LastDataValue()
-	case cdr.FieldDataValue:
-		return m.DataValue()
-	case cdr.FieldLastDataCode:
-		return m.LastDataCode()
-	case cdr.FieldDataCode:
-		return m.DataCode()
-	case cdr.FieldLastDataTime:
-		return m.LastDataTime()
-	case cdr.FieldDataTime:
-		return m.DataTime()
-	case cdr.FieldRuleID:
-		return m.RuleID()
-	case cdr.FieldRuleType:
-		return m.RuleType()
-	case cdr.FieldRuleCtg:
-		return m.RuleCtg()
-	case cdr.FieldValue:
-		return m.Value()
-	case cdr.FieldUnitFeeFen:
-		return m.UnitFeeFen()
-	case cdr.FieldFeeFen:
-		return m.FeeFen()
-	case cdr.FieldPosCode:
-		return m.PosCode()
-	case cdr.FieldProject:
-		return m.Project()
-	case cdr.FieldMemo:
-		return m.Memo()
+	case vvc.FieldQuota:
+		return m.Quota()
+	case vvc.FieldStatus:
+		return m.Status()
 	}
 	return nil, false
 }
@@ -1109,210 +402,66 @@ func (m *CDRMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *CDRMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *VVCMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case cdr.FieldCreateTime:
-		return m.OldCreateTime(ctx)
-	case cdr.FieldUpdateTime:
-		return m.OldUpdateTime(ctx)
-	case cdr.FieldDeviceCode:
+	case vvc.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
-	case cdr.FieldDeviceType:
+	case vvc.FieldDeviceType:
 		return m.OldDeviceType(ctx)
-	case cdr.FieldLastDataValue:
-		return m.OldLastDataValue(ctx)
-	case cdr.FieldDataValue:
-		return m.OldDataValue(ctx)
-	case cdr.FieldLastDataCode:
-		return m.OldLastDataCode(ctx)
-	case cdr.FieldDataCode:
-		return m.OldDataCode(ctx)
-	case cdr.FieldLastDataTime:
-		return m.OldLastDataTime(ctx)
-	case cdr.FieldDataTime:
-		return m.OldDataTime(ctx)
-	case cdr.FieldRuleID:
-		return m.OldRuleID(ctx)
-	case cdr.FieldRuleType:
-		return m.OldRuleType(ctx)
-	case cdr.FieldRuleCtg:
-		return m.OldRuleCtg(ctx)
-	case cdr.FieldValue:
-		return m.OldValue(ctx)
-	case cdr.FieldUnitFeeFen:
-		return m.OldUnitFeeFen(ctx)
-	case cdr.FieldFeeFen:
-		return m.OldFeeFen(ctx)
-	case cdr.FieldPosCode:
-		return m.OldPosCode(ctx)
-	case cdr.FieldProject:
-		return m.OldProject(ctx)
-	case cdr.FieldMemo:
-		return m.OldMemo(ctx)
+	case vvc.FieldQuota:
+		return m.OldQuota(ctx)
+	case vvc.FieldStatus:
+		return m.OldStatus(ctx)
 	}
-	return nil, fmt.Errorf("unknown CDR field %s", name)
+	return nil, fmt.Errorf("unknown VVC field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *CDRMutation) SetField(name string, value ent.Value) error {
+func (m *VVCMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case cdr.FieldCreateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetCreateTime(v)
-		return nil
-	case cdr.FieldUpdateTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUpdateTime(v)
-		return nil
-	case cdr.FieldDeviceCode:
+	case vvc.FieldDeviceCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceCode(v)
 		return nil
-	case cdr.FieldDeviceType:
+	case vvc.FieldDeviceType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
 		return nil
-	case cdr.FieldLastDataValue:
+	case vvc.FieldQuota:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetLastDataValue(v)
+		m.SetQuota(v)
 		return nil
-	case cdr.FieldDataValue:
-		v, ok := value.(int64)
+	case vvc.FieldStatus:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetDataValue(v)
-		return nil
-	case cdr.FieldLastDataCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLastDataCode(v)
-		return nil
-	case cdr.FieldDataCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataCode(v)
-		return nil
-	case cdr.FieldLastDataTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetLastDataTime(v)
-		return nil
-	case cdr.FieldDataTime:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataTime(v)
-		return nil
-	case cdr.FieldRuleID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRuleID(v)
-		return nil
-	case cdr.FieldRuleType:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRuleType(v)
-		return nil
-	case cdr.FieldRuleCtg:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetRuleCtg(v)
-		return nil
-	case cdr.FieldValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetValue(v)
-		return nil
-	case cdr.FieldUnitFeeFen:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetUnitFeeFen(v)
-		return nil
-	case cdr.FieldFeeFen:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetFeeFen(v)
-		return nil
-	case cdr.FieldPosCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPosCode(v)
-		return nil
-	case cdr.FieldProject:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetProject(v)
-		return nil
-	case cdr.FieldMemo:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMemo(v)
+		m.SetStatus(v)
 		return nil
 	}
-	return fmt.Errorf("unknown CDR field %s", name)
+	return fmt.Errorf("unknown VVC field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *CDRMutation) AddedFields() []string {
+func (m *VVCMutation) AddedFields() []string {
 	var fields []string
-	if m.addlast_data_value != nil {
-		fields = append(fields, cdr.FieldLastDataValue)
+	if m.addquota != nil {
+		fields = append(fields, vvc.FieldQuota)
 	}
-	if m.adddata_value != nil {
-		fields = append(fields, cdr.FieldDataValue)
-	}
-	if m.addvalue != nil {
-		fields = append(fields, cdr.FieldValue)
-	}
-	if m.addunit_fee_fen != nil {
-		fields = append(fields, cdr.FieldUnitFeeFen)
-	}
-	if m.addfee_fen != nil {
-		fields = append(fields, cdr.FieldFeeFen)
+	if m.addstatus != nil {
+		fields = append(fields, vvc.FieldStatus)
 	}
 	return fields
 }
@@ -1320,18 +469,12 @@ func (m *CDRMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *CDRMutation) AddedField(name string) (ent.Value, bool) {
+func (m *VVCMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case cdr.FieldLastDataValue:
-		return m.AddedLastDataValue()
-	case cdr.FieldDataValue:
-		return m.AddedDataValue()
-	case cdr.FieldValue:
-		return m.AddedValue()
-	case cdr.FieldUnitFeeFen:
-		return m.AddedUnitFeeFen()
-	case cdr.FieldFeeFen:
-		return m.AddedFeeFen()
+	case vvc.FieldQuota:
+		return m.AddedQuota()
+	case vvc.FieldStatus:
+		return m.AddedStatus()
 	}
 	return nil, false
 }
@@ -1339,184 +482,109 @@ func (m *CDRMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *CDRMutation) AddField(name string, value ent.Value) error {
+func (m *VVCMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case cdr.FieldLastDataValue:
+	case vvc.FieldQuota:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddLastDataValue(v)
+		m.AddQuota(v)
 		return nil
-	case cdr.FieldDataValue:
-		v, ok := value.(int64)
+	case vvc.FieldStatus:
+		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddDataValue(v)
-		return nil
-	case cdr.FieldValue:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddValue(v)
-		return nil
-	case cdr.FieldUnitFeeFen:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddUnitFeeFen(v)
-		return nil
-	case cdr.FieldFeeFen:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddFeeFen(v)
+		m.AddStatus(v)
 		return nil
 	}
-	return fmt.Errorf("unknown CDR numeric field %s", name)
+	return fmt.Errorf("unknown VVC numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *CDRMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(cdr.FieldMemo) {
-		fields = append(fields, cdr.FieldMemo)
-	}
-	return fields
+func (m *VVCMutation) ClearedFields() []string {
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *CDRMutation) FieldCleared(name string) bool {
+func (m *VVCMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *CDRMutation) ClearField(name string) error {
-	switch name {
-	case cdr.FieldMemo:
-		m.ClearMemo()
-		return nil
-	}
-	return fmt.Errorf("unknown CDR nullable field %s", name)
+func (m *VVCMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown VVC nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *CDRMutation) ResetField(name string) error {
+func (m *VVCMutation) ResetField(name string) error {
 	switch name {
-	case cdr.FieldCreateTime:
-		m.ResetCreateTime()
-		return nil
-	case cdr.FieldUpdateTime:
-		m.ResetUpdateTime()
-		return nil
-	case cdr.FieldDeviceCode:
+	case vvc.FieldDeviceCode:
 		m.ResetDeviceCode()
 		return nil
-	case cdr.FieldDeviceType:
+	case vvc.FieldDeviceType:
 		m.ResetDeviceType()
 		return nil
-	case cdr.FieldLastDataValue:
-		m.ResetLastDataValue()
+	case vvc.FieldQuota:
+		m.ResetQuota()
 		return nil
-	case cdr.FieldDataValue:
-		m.ResetDataValue()
-		return nil
-	case cdr.FieldLastDataCode:
-		m.ResetLastDataCode()
-		return nil
-	case cdr.FieldDataCode:
-		m.ResetDataCode()
-		return nil
-	case cdr.FieldLastDataTime:
-		m.ResetLastDataTime()
-		return nil
-	case cdr.FieldDataTime:
-		m.ResetDataTime()
-		return nil
-	case cdr.FieldRuleID:
-		m.ResetRuleID()
-		return nil
-	case cdr.FieldRuleType:
-		m.ResetRuleType()
-		return nil
-	case cdr.FieldRuleCtg:
-		m.ResetRuleCtg()
-		return nil
-	case cdr.FieldValue:
-		m.ResetValue()
-		return nil
-	case cdr.FieldUnitFeeFen:
-		m.ResetUnitFeeFen()
-		return nil
-	case cdr.FieldFeeFen:
-		m.ResetFeeFen()
-		return nil
-	case cdr.FieldPosCode:
-		m.ResetPosCode()
-		return nil
-	case cdr.FieldProject:
-		m.ResetProject()
-		return nil
-	case cdr.FieldMemo:
-		m.ResetMemo()
+	case vvc.FieldStatus:
+		m.ResetStatus()
 		return nil
 	}
-	return fmt.Errorf("unknown CDR field %s", name)
+	return fmt.Errorf("unknown VVC field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *CDRMutation) AddedEdges() []string {
+func (m *VVCMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *CDRMutation) AddedIDs(name string) []ent.Value {
+func (m *VVCMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *CDRMutation) RemovedEdges() []string {
+func (m *VVCMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *CDRMutation) RemovedIDs(name string) []ent.Value {
+func (m *VVCMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *CDRMutation) ClearedEdges() []string {
+func (m *VVCMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *CDRMutation) EdgeCleared(name string) bool {
+func (m *VVCMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *CDRMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown CDR unique edge %s", name)
+func (m *VVCMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown VVC unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *CDRMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown CDR edge %s", name)
+func (m *VVCMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown VVC edge %s", name)
 }

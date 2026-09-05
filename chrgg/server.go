@@ -4,78 +4,67 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/twiglab/h2o/clog/wal"
+	"github.com/twiglab/h2o/chrgg/orm"
+	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/pkg/common"
 )
 
 type ChargeServer struct {
-	DBx         *DBx
-	CdrWAL      *wal.WAL
-	ChargEngine ChargeEngine
-	CheckFunc   CheckFunc
-	SkipFunc    SkipFunc
+	DBx *orm.DBx
+
+	Sender Sender
 
 	Logger *slog.Logger
 }
 
-func (s *ChargeServer) pre(_ context.Context, md ElectyMeterData) (ChargeData, error) {
-	return ChargeData{ElectyMeterData: md}, nil
+func (s *ChargeServer) statusOff(ctx context.Context, md Meter, vcc *ent.VVC) error {
+	//  拉闸状态，断开
+	if md.Data.DataValue > vcc.Quota {
+		// 大于限额，未触发, 保持状态
+		return nil
+	}
+
+	// 小于限额，发送合闸消息，开
+	ot := OnOffMsg{
+		OP:      "ON",
+		Device:  md.Device,
+		Gateway: md.Gateway,
+	}
+
+	return s.Sender.SendData(ctx, ot)
 }
 
-func (s *ChargeServer) loadLast(ctx context.Context, cd ChargeData) (LastCDR, error) {
-	l, _, err := s.DBx.LoadLast(ctx, cd.Code, cd.Type)
-	return MakeLast(l), err
+func (s *ChargeServer) statusOn(ctx context.Context, md Meter, vcc *ent.VVC) error {
+	//  合闸状态, 连通
+	if md.Data.DataValue <= vcc.Quota {
+		// 小于限额，未触发, 保持状态
+		return nil
+	}
+	// 大于限额，发送拉闸消息，关
+	ot := OnOffMsg{
+		OP:      "OFF",
+		Device:  md.Device,
+		Gateway: md.Gateway,
+	}
+
+	return s.Sender.SendData(ctx, ot)
 }
 
-func (s *ChargeServer) Charge(ctx context.Context, md ElectyMeterData) (CDR, error) {
-	// setp 1 prepare
-	cd, err := s.pre(ctx, md)
-	if err != nil {
-		return nilCDR, err
+func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
+	c, notfount, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
+	if notfount {
+		return err
 	}
 
-	// step 2 load
-	last, err := s.loadLast(ctx, cd)
-	if err != nil {
-		s.Logger.ErrorContext(ctx, "loadLast error", slog.Any("chargeData", cd), slog.Any("error", err))
-		return nilCDR, err
+	switch md.Data.OptStatus {
+	case common.OPT_STATUS_OFF:
+		//  拉闸状态
+		return s.statusOff(ctx, md, c)
+	case common.OPT_STATUS_ON:
+		//  合闸状态
+		return s.statusOn(ctx, md, c)
 	}
 
-	// step 3 skip and check
-	if r := s.SkipFunc(ctx, last, cd); r.Skip {
-		s.Logger.DebugContext(ctx, "skip", slog.Any("last", last), slog.Any("cd", cd), slog.Any("result", r))
-		return nilCDR, nil
-	}
-
-	if err := s.CheckFunc(ctx, last, cd); err != nil {
-		s.Logger.ErrorContext(ctx, "check error", slog.Any("last", last), slog.Any("chargeData", cd), slog.Any("error", err))
-		return nilCDR, err
-	}
-
-	// setp 4 get Charge ruler
-	ru, err := s.ChargEngine.GetRuler(ctx, cd)
-	if err != nil {
-		s.Logger.ErrorContext(ctx, "GetRuler error", slog.Any("error", err), slog.Any("cd", cd))
-		return nilCDR, err
-	}
-
-	// setp 5 cale
-	nc := CalcCDR(last, cd, ru)
-
-	s.Logger.InfoContext(ctx, "charge ok", slog.Any("last", last), slog.Any("chargeData", cd), slog.Any("rule", ru), slog.Any("cdr", nc))
-
-	// step 6 write cdr
-	s.CdrWAL.WriteLogContext(ctx, wal.Any("cdr", nc), wal.Any("last", last), wal.Any("chargeData", cd), wal.Any("chargeRuler", ru))
-
-	// step 7 save
-	_, err = s.DBx.SaveCurrent(ctx, nc)
-	if err != nil {
-		s.Logger.ErrorContext(ctx, "save error", slog.Any("ncdr", nc), slog.Any("error", err))
-	}
-
-	// step 8 return
-	return nc, err
-}
-
-func (s *ChargeServer) ChargeWater(ctx context.Context, wd WaterMeterData) (CDR, error) {
-	return nilCDR, nil
+	// 状态未知，无法处理
+	return nil
 }

@@ -14,7 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
+	"github.com/twiglab/h2o/chrgg/orm/ent/vvc"
 
 	stdsql "database/sql"
 )
@@ -24,8 +24,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// CDR is the client for interacting with the CDR builders.
-	CDR *CDRClient
+	// VVC is the client for interacting with the VVC builders.
+	VVC *VVCClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -37,7 +37,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.CDR = NewCDRClient(c.config)
+	c.VVC = NewVVCClient(c.config)
 }
 
 type (
@@ -130,7 +130,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		CDR:    NewCDRClient(cfg),
+		VVC:    NewVVCClient(cfg),
 	}, nil
 }
 
@@ -150,14 +150,14 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:    ctx,
 		config: cfg,
-		CDR:    NewCDRClient(cfg),
+		VVC:    NewVVCClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		CDR.
+//		VVC.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -179,126 +179,126 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.CDR.Use(hooks...)
+	c.VVC.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.CDR.Intercept(interceptors...)
+	c.VVC.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *CDRMutation:
-		return c.CDR.mutate(ctx, m)
+	case *VVCMutation:
+		return c.VVC.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// CDRClient is a client for the CDR schema.
-type CDRClient struct {
+// VVCClient is a client for the VVC schema.
+type VVCClient struct {
 	config
 }
 
-// NewCDRClient returns a client for the CDR from the given config.
-func NewCDRClient(c config) *CDRClient {
-	return &CDRClient{config: c}
+// NewVVCClient returns a client for the VVC from the given config.
+func NewVVCClient(c config) *VVCClient {
+	return &VVCClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `cdr.Hooks(f(g(h())))`.
-func (c *CDRClient) Use(hooks ...Hook) {
-	c.hooks.CDR = append(c.hooks.CDR, hooks...)
+// A call to `Use(f, g, h)` equals to `vvc.Hooks(f(g(h())))`.
+func (c *VVCClient) Use(hooks ...Hook) {
+	c.hooks.VVC = append(c.hooks.VVC, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `cdr.Intercept(f(g(h())))`.
-func (c *CDRClient) Intercept(interceptors ...Interceptor) {
-	c.inters.CDR = append(c.inters.CDR, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `vvc.Intercept(f(g(h())))`.
+func (c *VVCClient) Intercept(interceptors ...Interceptor) {
+	c.inters.VVC = append(c.inters.VVC, interceptors...)
 }
 
-// Create returns a builder for creating a CDR entity.
-func (c *CDRClient) Create() *CDRCreate {
-	mutation := newCDRMutation(c.config, OpCreate)
-	return &CDRCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a VVC entity.
+func (c *VVCClient) Create() *VVCCreate {
+	mutation := newVVCMutation(c.config, OpCreate)
+	return &VVCCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of CDR entities.
-func (c *CDRClient) CreateBulk(builders ...*CDRCreate) *CDRCreateBulk {
-	return &CDRCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of VVC entities.
+func (c *VVCClient) CreateBulk(builders ...*VVCCreate) *VVCCreateBulk {
+	return &VVCCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *CDRClient) MapCreateBulk(slice any, setFunc func(*CDRCreate, int)) *CDRCreateBulk {
+func (c *VVCClient) MapCreateBulk(slice any, setFunc func(*VVCCreate, int)) *VVCCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &CDRCreateBulk{err: fmt.Errorf("calling to CDRClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &VVCCreateBulk{err: fmt.Errorf("calling to VVCClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*CDRCreate, rv.Len())
+	builders := make([]*VVCCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &CDRCreateBulk{config: c.config, builders: builders}
+	return &VVCCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for CDR.
-func (c *CDRClient) Update() *CDRUpdate {
-	mutation := newCDRMutation(c.config, OpUpdate)
-	return &CDRUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for VVC.
+func (c *VVCClient) Update() *VVCUpdate {
+	mutation := newVVCMutation(c.config, OpUpdate)
+	return &VVCUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *CDRClient) UpdateOne(_m *CDR) *CDRUpdateOne {
-	mutation := newCDRMutation(c.config, OpUpdateOne, withCDR(_m))
-	return &CDRUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *VVCClient) UpdateOne(_m *VVC) *VVCUpdateOne {
+	mutation := newVVCMutation(c.config, OpUpdateOne, withVVC(_m))
+	return &VVCUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *CDRClient) UpdateOneID(id string) *CDRUpdateOne {
-	mutation := newCDRMutation(c.config, OpUpdateOne, withCDRID(id))
-	return &CDRUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *VVCClient) UpdateOneID(id string) *VVCUpdateOne {
+	mutation := newVVCMutation(c.config, OpUpdateOne, withVVCID(id))
+	return &VVCUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for CDR.
-func (c *CDRClient) Delete() *CDRDelete {
-	mutation := newCDRMutation(c.config, OpDelete)
-	return &CDRDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for VVC.
+func (c *VVCClient) Delete() *VVCDelete {
+	mutation := newVVCMutation(c.config, OpDelete)
+	return &VVCDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *CDRClient) DeleteOne(_m *CDR) *CDRDeleteOne {
+func (c *VVCClient) DeleteOne(_m *VVC) *VVCDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *CDRClient) DeleteOneID(id string) *CDRDeleteOne {
-	builder := c.Delete().Where(cdr.ID(id))
+func (c *VVCClient) DeleteOneID(id string) *VVCDeleteOne {
+	builder := c.Delete().Where(vvc.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &CDRDeleteOne{builder}
+	return &VVCDeleteOne{builder}
 }
 
-// Query returns a query builder for CDR.
-func (c *CDRClient) Query() *CDRQuery {
-	return &CDRQuery{
+// Query returns a query builder for VVC.
+func (c *VVCClient) Query() *VVCQuery {
+	return &VVCQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeCDR},
+		ctx:    &QueryContext{Type: TypeVVC},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a CDR entity by its id.
-func (c *CDRClient) Get(ctx context.Context, id string) (*CDR, error) {
-	return c.Query().Where(cdr.ID(id)).Only(ctx)
+// Get returns a VVC entity by its id.
+func (c *VVCClient) Get(ctx context.Context, id string) (*VVC, error) {
+	return c.Query().Where(vvc.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *CDRClient) GetX(ctx context.Context, id string) *CDR {
+func (c *VVCClient) GetX(ctx context.Context, id string) *VVC {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -307,37 +307,37 @@ func (c *CDRClient) GetX(ctx context.Context, id string) *CDR {
 }
 
 // Hooks returns the client hooks.
-func (c *CDRClient) Hooks() []Hook {
-	return c.hooks.CDR
+func (c *VVCClient) Hooks() []Hook {
+	return c.hooks.VVC
 }
 
 // Interceptors returns the client interceptors.
-func (c *CDRClient) Interceptors() []Interceptor {
-	return c.inters.CDR
+func (c *VVCClient) Interceptors() []Interceptor {
+	return c.inters.VVC
 }
 
-func (c *CDRClient) mutate(ctx context.Context, m *CDRMutation) (Value, error) {
+func (c *VVCClient) mutate(ctx context.Context, m *VVCMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&CDRCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&VVCCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&CDRUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&VVCUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&CDRUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&VVCUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&CDRDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&VVCDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown CDR mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown VVC mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		CDR []ent.Hook
+		VVC []ent.Hook
 	}
 	inters struct {
-		CDR []ent.Interceptor
+		VVC []ent.Interceptor
 	}
 )
 

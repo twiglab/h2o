@@ -1,7 +1,6 @@
 package schema
 
 import (
-
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -23,6 +22,8 @@ func (Device) Fields() []ent.Field {
 
 		field.String("device_sn").Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_name").Optional().SchemaType(varchar(64)).Comment("设备名称"),
+
+		// field.String("gateway_code").Optional().SchemaType(varchar(64)).Comment("网关编号"),
 
 		field.Int("rate").Default(1).Comment("倍率"),
 

@@ -9,16 +9,16 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-// The CDRFunc type is an adapter to allow the use of ordinary
-// function as CDR mutator.
-type CDRFunc func(context.Context, *ent.CDRMutation) (ent.Value, error)
+// The VVCFunc type is an adapter to allow the use of ordinary
+// function as VVC mutator.
+type VVCFunc func(context.Context, *ent.VVCMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f CDRFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.CDRMutation); ok {
+func (f VVCFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.VVCMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CDRMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.VVCMutation", m)
 }
 
 // Condition is a hook condition function.

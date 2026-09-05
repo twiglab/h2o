@@ -2,80 +2,8 @@
 
 package ent
 
-import (
-	"time"
-
-	"github.com/twiglab/h2o/chrgg/orm/ent/cdr"
-	"github.com/twiglab/h2o/chrgg/orm/schema"
-)
-
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	cdrMixin := schema.CDR{}.Mixin()
-	cdrMixinFields0 := cdrMixin[0].Fields()
-	_ = cdrMixinFields0
-	cdrFields := schema.CDR{}.Fields()
-	_ = cdrFields
-	// cdrDescCreateTime is the schema descriptor for create_time field.
-	cdrDescCreateTime := cdrMixinFields0[0].Descriptor()
-	// cdr.DefaultCreateTime holds the default value on creation for the create_time field.
-	cdr.DefaultCreateTime = cdrDescCreateTime.Default.(func() time.Time)
-	// cdrDescUpdateTime is the schema descriptor for update_time field.
-	cdrDescUpdateTime := cdrMixinFields0[1].Descriptor()
-	// cdr.DefaultUpdateTime holds the default value on creation for the update_time field.
-	cdr.DefaultUpdateTime = cdrDescUpdateTime.Default.(func() time.Time)
-	// cdr.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	cdr.UpdateDefaultUpdateTime = cdrDescUpdateTime.UpdateDefault.(func() time.Time)
-	// cdrDescDeviceCode is the schema descriptor for device_code field.
-	cdrDescDeviceCode := cdrFields[1].Descriptor()
-	// cdr.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
-	cdr.DeviceCodeValidator = cdrDescDeviceCode.Validators[0].(func(string) error)
-	// cdrDescDeviceType is the schema descriptor for device_type field.
-	cdrDescDeviceType := cdrFields[2].Descriptor()
-	// cdr.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
-	cdr.DeviceTypeValidator = cdrDescDeviceType.Validators[0].(func(string) error)
-	// cdrDescLastDataValue is the schema descriptor for last_data_value field.
-	cdrDescLastDataValue := cdrFields[3].Descriptor()
-	// cdr.DefaultLastDataValue holds the default value on creation for the last_data_value field.
-	cdr.DefaultLastDataValue = cdrDescLastDataValue.Default.(int64)
-	// cdrDescDataValue is the schema descriptor for data_value field.
-	cdrDescDataValue := cdrFields[4].Descriptor()
-	// cdr.DefaultDataValue holds the default value on creation for the data_value field.
-	cdr.DefaultDataValue = cdrDescDataValue.Default.(int64)
-	// cdrDescDataCode is the schema descriptor for data_code field.
-	cdrDescDataCode := cdrFields[6].Descriptor()
-	// cdr.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
-	cdr.DataCodeValidator = cdrDescDataCode.Validators[0].(func(string) error)
-	// cdrDescRuleID is the schema descriptor for rule_id field.
-	cdrDescRuleID := cdrFields[9].Descriptor()
-	// cdr.RuleIDValidator is a validator for the "rule_id" field. It is called by the builders before save.
-	cdr.RuleIDValidator = cdrDescRuleID.Validators[0].(func(string) error)
-	// cdrDescRuleType is the schema descriptor for rule_type field.
-	cdrDescRuleType := cdrFields[10].Descriptor()
-	// cdr.RuleTypeValidator is a validator for the "rule_type" field. It is called by the builders before save.
-	cdr.RuleTypeValidator = cdrDescRuleType.Validators[0].(func(string) error)
-	// cdrDescRuleCtg is the schema descriptor for rule_ctg field.
-	cdrDescRuleCtg := cdrFields[11].Descriptor()
-	// cdr.RuleCtgValidator is a validator for the "rule_ctg" field. It is called by the builders before save.
-	cdr.RuleCtgValidator = cdrDescRuleCtg.Validators[0].(func(string) error)
-	// cdrDescValue is the schema descriptor for value field.
-	cdrDescValue := cdrFields[12].Descriptor()
-	// cdr.DefaultValue holds the default value on creation for the value field.
-	cdr.DefaultValue = cdrDescValue.Default.(int64)
-	// cdrDescUnitFeeFen is the schema descriptor for unit_fee_fen field.
-	cdrDescUnitFeeFen := cdrFields[13].Descriptor()
-	// cdr.DefaultUnitFeeFen holds the default value on creation for the unit_fee_fen field.
-	cdr.DefaultUnitFeeFen = cdrDescUnitFeeFen.Default.(int64)
-	// cdrDescFeeFen is the schema descriptor for fee_fen field.
-	cdrDescFeeFen := cdrFields[14].Descriptor()
-	// cdr.DefaultFeeFen holds the default value on creation for the fee_fen field.
-	cdr.DefaultFeeFen = cdrDescFeeFen.Default.(int64)
-	// cdrDescID is the schema descriptor for id field.
-	cdrDescID := cdrFields[0].Descriptor()
-	// cdr.DefaultID holds the default value on creation for the id field.
-	cdr.DefaultID = cdrDescID.Default.(func() string)
-	// cdr.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	cdr.IDValidator = cdrDescID.Validators[0].(func(string) error)
 }

@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// CDR is the predicate function for cdr builders.
-type CDR func(*sql.Selector)
+// VVC is the predicate function for vvc builders.
+type VVC func(*sql.Selector)
