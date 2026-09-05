@@ -96,13 +96,13 @@ func entcli() *ent.Client {
 	return cli
 }
 
-func dbx() *chrgg.DBx {
-	return &chrgg.DBx{Cli: entcli()}
+func dbx() *orm.DBx {
+	return &orm.DBx{Cli: entcli()}
 }
 
 func cs() *chrgg.ChargeServer {
 	return &chrgg.ChargeServer{
-		DBx:         dbx(),
+		DBx: dbx(),
 
 		Logger: serverLog(),
 	}
