@@ -12,7 +12,7 @@ import (
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/twiglab/h2o/archon/orm/ent"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 func OpenPGx(dsn string) (*sql.DB, error) {
