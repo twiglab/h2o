@@ -80,3 +80,8 @@ type Gateway struct {
 	Name string `json:"name,omitempty"` // 网关名称,可以为空
 	Type string `json:"type,omitempty"` // 网关类型
 }
+
+type Modbus struct {
+	Gateway
+	UnitID uint `json:"unit_id"`
+}
