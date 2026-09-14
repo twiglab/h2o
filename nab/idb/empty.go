@@ -4,6 +4,10 @@ import (
 	"modernc.org/sqlite/vtab"
 )
 
+type record struct {
+	RID int64 `csv:"rid"`
+}
+
 type emptyVirtualTable struct{}
 
 func (emptyVirtualTable) Columns() []string                                               { return nil }
