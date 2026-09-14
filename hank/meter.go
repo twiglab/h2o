@@ -9,7 +9,7 @@ type Meter struct {
 }
 
 func (m Meter) Topic() string {
-	return common.Topic(m.Device)
+	return common.DataTopic(m.Device)
 }
 
 type ElectricityMeter struct {

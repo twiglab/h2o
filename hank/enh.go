@@ -25,7 +25,7 @@ func (e *Enh) ToWater(dd DeviceData) (WaterMeter, error) {
 	return WaterMeter{
 		SN:   meta.SN,
 		Code: dd.No,
-		Type: common.WATER,
+		Type: common.TYPE_WATER,
 		Name: meta.Name,
 
 		DataTime: t,
@@ -60,7 +60,7 @@ func (e *Enh) ToElecty(dd DeviceData) (ElectricityMeter, error) {
 	return ElectricityMeter{
 		SN:   meta.SN,
 		Code: dd.No,
-		Type: common.ELECTRICITY,
+		Type: common.TYPE_ELECTRICITY,
 		Name: meta.Name,
 
 		DataTime: t,

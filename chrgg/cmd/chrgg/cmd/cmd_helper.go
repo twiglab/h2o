@@ -78,10 +78,13 @@ func webaddr() string {
 
 func topics() map[string]byte {
 	return map[string]byte{
-		common.WaterTopic:       0x01,
-		common.ElectricityTopic: 0x01,
-		common.GasTopic:         0x01,
+		common.WaterDataTopic:       0x01,
+		common.ElectricityDataTopic: 0x01,
+		common.GasDataTopic:         0x01,
 	}
+}
+func topic() string {
+	return "h2o/data/+/+"
 }
 
 func entcli() *ent.Client {

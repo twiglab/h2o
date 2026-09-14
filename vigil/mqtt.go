@@ -24,8 +24,8 @@ func Handle(s *Hub) mqtt.MessageHandler {
 
 		defer msg.Ack()
 
-		switch common.TopicType(msg.Topic()) {
-		case common.WaterTopic:
+		switch common.DataTopicType(msg.Topic()) {
+		case common.WaterDataTopic:
 			var wm WaterMeter
 			if err := wm.UnmarshalBinary(msg.Payload()); err != nil {
 				s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
@@ -37,7 +37,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				return
 			}
 
-		case common.ElectricityTopic:
+		case common.ElectricityDataTopic:
 			var em ElectricityMeter
 			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
 				s.Logger.ErrorContext(ctx, "unmarshal electy error", slog.Any("err", err))
@@ -49,7 +49,7 @@ func Handle(s *Hub) mqtt.MessageHandler {
 				return
 			}
 
-		case common.GasTopic:
+		case common.GasDataTopic:
 		}
 	}
 }

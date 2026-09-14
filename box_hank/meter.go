@@ -8,8 +8,8 @@ import (
 
 type Meter struct {
 	common.Device
-	Pos  common.Pos `json:"pos,omitzero"`
-	Data common.MeterValue  `json:"data,omitzero"`
+	Pos  common.Pos        `json:"pos,omitzero"`
+	Data common.MeterValue `json:"data,omitzero"`
 }
 
 func (m Meter) MarshalBinary() (data []byte, err error) {
@@ -17,5 +17,5 @@ func (m Meter) MarshalBinary() (data []byte, err error) {
 }
 
 func (m Meter) Topic() string {
-	return common.Topic(m.Device)
+	return common.DataTopic(m.Device)
 }

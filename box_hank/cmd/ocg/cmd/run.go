@@ -50,7 +50,7 @@ func run() error {
 		Sender:    s,
 
 		Code: "PT-1-IN",
-		Type: common.ELECTRICITY,
+		Type: common.TYPE_ELECTRICITY,
 
 		Project: "1006",
 
@@ -69,7 +69,7 @@ func run() error {
 		Sender:    s,
 
 		Code: "PT-2-IN",
-		Type: common.ELECTRICITY,
+		Type: common.TYPE_ELECTRICITY,
 
 		Project: "1006",
 

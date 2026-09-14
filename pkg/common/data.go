@@ -83,5 +83,5 @@ type Gateway struct {
 
 type Modbus struct {
 	Gateway
-	UnitID uint `json:"unit_id"`
+	UnitID uint8 `json:"unit_id"`
 }

@@ -49,7 +49,7 @@ func run() error {
 		Sender:  s,
 
 		Code: "836_0-21",
-		Type: common.WATER,
+		Type: common.TYPE_WATER,
 
 		Project: "1006",
 
@@ -65,7 +65,7 @@ func run() error {
 		Sender:  s,
 
 		Code: "836_0-45",
-		Type: common.WATER,
+		Type: common.TYPE_WATER,
 
 		Project: "1006",
 
@@ -81,7 +81,7 @@ func run() error {
 		Sender:  s,
 
 		Code: "836_0-57",
-		Type: common.WATER,
+		Type: common.TYPE_WATER,
 
 		Project: "1006",
 

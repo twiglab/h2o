@@ -55,8 +55,6 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	return client, nil
 }
 
-const f = "20060102150405"
-
 func ClientID(code string) string {
 	now := time.Now()
 	ts := common.Ts(now)
