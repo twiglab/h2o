@@ -14,6 +14,8 @@ const (
 	WaterDataTopic       = "h2o/data/+/W"
 	ElectricityDataTopic = "h2o/data/+/E"
 	GasDataTopic         = "h2o/data/+/G"
+
+	GeneralDataTopic = "h2o/data/#"
 )
 
 func DataTopic(d Device) string {

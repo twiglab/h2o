@@ -77,7 +77,6 @@ const (
 
 type Gateway struct {
 	Code string `json:"code"`           // 网关code,业务全局唯一
-	Name string `json:"name,omitempty"` // 网关名称,可以为空
 	Type string `json:"type,omitempty"` // 网关类型
 }
 
