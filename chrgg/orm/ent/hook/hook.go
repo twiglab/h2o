@@ -9,16 +9,16 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-// The VVCFunc type is an adapter to allow the use of ordinary
-// function as VVC mutator.
-type VVCFunc func(context.Context, *ent.VVCMutation) (ent.Value, error)
+// The ValueChargeFunc type is an adapter to allow the use of ordinary
+// function as ValueCharge mutator.
+type ValueChargeFunc func(context.Context, *ent.ValueChargeMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f VVCFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.VVCMutation); ok {
+func (f ValueChargeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.ValueChargeMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.VVCMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ValueChargeMutation", m)
 }
 
 // Condition is a hook condition function.

@@ -12,7 +12,6 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
-	"github.com/twiglab/h2o/pkg/common"
 )
 
 func logLevel(s string) slog.Level {
@@ -74,17 +73,6 @@ func mqttcli() mqtt.Client {
 func webaddr() string {
 	addr := viper.GetString("chrgg.web.addr")
 	return cmp.Or(addr, ":10007")
-}
-
-func topics() map[string]byte {
-	return map[string]byte{
-		common.WaterDataTopic:       0x01,
-		common.ElectricityDataTopic: 0x01,
-		common.GasDataTopic:         0x01,
-	}
-}
-func topic() string {
-	return "h2o/data/+/+"
 }
 
 func entcli() *ent.Client {

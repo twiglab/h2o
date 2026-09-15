@@ -9,29 +9,29 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/twiglab/h2o/chrgg/orm/ent/predicate"
-	"github.com/twiglab/h2o/chrgg/orm/ent/vvc"
+	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
 )
 
-// VVCDelete is the builder for deleting a VVC entity.
-type VVCDelete struct {
+// ValueChargeDelete is the builder for deleting a ValueCharge entity.
+type ValueChargeDelete struct {
 	config
 	hooks    []Hook
-	mutation *VVCMutation
+	mutation *ValueChargeMutation
 }
 
-// Where appends a list predicates to the VVCDelete builder.
-func (_d *VVCDelete) Where(ps ...predicate.VVC) *VVCDelete {
+// Where appends a list predicates to the ValueChargeDelete builder.
+func (_d *ValueChargeDelete) Where(ps ...predicate.ValueCharge) *ValueChargeDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *VVCDelete) Exec(ctx context.Context) (int, error) {
+func (_d *ValueChargeDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *VVCDelete) ExecX(ctx context.Context) int {
+func (_d *ValueChargeDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *VVCDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *VVCDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(vvc.Table, sqlgraph.NewFieldSpec(vvc.FieldID, field.TypeString))
+func (_d *ValueChargeDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(valuecharge.Table, sqlgraph.NewFieldSpec(valuecharge.FieldID, field.TypeString))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *VVCDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// VVCDeleteOne is the builder for deleting a single VVC entity.
-type VVCDeleteOne struct {
-	_d *VVCDelete
+// ValueChargeDeleteOne is the builder for deleting a single ValueCharge entity.
+type ValueChargeDeleteOne struct {
+	_d *ValueChargeDelete
 }
 
-// Where appends a list predicates to the VVCDelete builder.
-func (_d *VVCDeleteOne) Where(ps ...predicate.VVC) *VVCDeleteOne {
+// Where appends a list predicates to the ValueChargeDelete builder.
+func (_d *ValueChargeDeleteOne) Where(ps ...predicate.ValueCharge) *ValueChargeDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *VVCDeleteOne) Exec(ctx context.Context) error {
+func (_d *ValueChargeDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{vvc.Label}
+		return &NotFoundError{valuecharge.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *VVCDeleteOne) ExecX(ctx context.Context) {
+func (_d *ValueChargeDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}

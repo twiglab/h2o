@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
+	"github.com/twiglab/h2o/pkg/common"
 )
 
 // runCmd represents the run command
@@ -35,8 +36,7 @@ func run() error {
 	c := mqttcli()
 
 	svr := cs()
-	//t := c.SubscribeMultiple(topics(), chrgg.HandleChange(svr))
-	t := c.Subscribe(topic(), 0x01, chrgg.HandleChange(svr))
+	t := c.Subscribe(common.GeneralDataTopic, 0x01, chrgg.HandleChange(svr))
 	t.Wait()
 
 	if err := t.Error(); err != nil {

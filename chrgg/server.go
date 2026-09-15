@@ -17,9 +17,9 @@ type ChargeServer struct {
 	Logger *slog.Logger
 }
 
-func (s *ChargeServer) statusOff(ctx context.Context, md Meter, vcc *ent.VVC) error {
+func (s *ChargeServer) OptOff(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
 	//  拉闸状态，断开
-	if md.Data.DataValue > vcc.Quota {
+	if md.Data.DataValue > vc.Top {
 		// 大于限额，未触发, 保持状态
 		return nil
 	}
@@ -34,12 +34,13 @@ func (s *ChargeServer) statusOff(ctx context.Context, md Meter, vcc *ent.VVC) er
 	return s.Sender.SendData(ctx, ot)
 }
 
-func (s *ChargeServer) statusOn(ctx context.Context, md Meter, vcc *ent.VVC) error {
+func (s *ChargeServer) OptOn(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
 	//  合闸状态, 连通
-	if md.Data.DataValue <= vcc.Quota {
+	if md.Data.DataValue <= vc.Top {
 		// 小于限额，未触发, 保持状态
 		return nil
 	}
+
 	// 大于限额，发送拉闸消息，关
 	ot := OnOffMsg{
 		OP:      "OFF",
@@ -56,13 +57,28 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return err
 	}
 
+	// 其他错误
+	if err != nil {
+		return err
+	}
+
+	if c.Top <= 0 {
+		return nil
+	}
+
+	/*
+		if c.Status < 0 {
+			return nil
+		}
+	*/
+
 	switch md.Data.OptStatus {
 	case common.OPT_STATUS_OFF:
-		//  拉闸状态
-		return s.statusOff(ctx, md, c)
+		//  拉闸(关闭)状态
+		return s.OptOff(ctx, md, c)
 	case common.OPT_STATUS_ON:
-		//  合闸状态
-		return s.statusOn(ctx, md, c)
+		//  合闸(打开)状态
+		return s.OptOn(ctx, md, c)
 	}
 
 	// 状态未知，无法处理

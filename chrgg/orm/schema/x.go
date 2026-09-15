@@ -2,9 +2,15 @@ package schema
 
 import (
 	"fmt"
+	"uuid"
 
 	"entgo.io/ent/dialect"
 )
+
+func id() string {
+	u := uuid.NewV7()
+	return u.String()
+}
 
 func char(size int) map[string]string {
 	return map[string]string{

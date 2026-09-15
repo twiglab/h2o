@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// VVC is the predicate function for vvc builders.
-type VVC func(*sql.Selector)
+// ValueCharge is the predicate function for valuecharge builders.
+type ValueCharge func(*sql.Selector)

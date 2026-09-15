@@ -110,26 +110,26 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The VVCQueryRuleFunc type is an adapter to allow the use of ordinary
+// The ValueChargeQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type VVCQueryRuleFunc func(context.Context, *ent.VVCQuery) error
+type ValueChargeQueryRuleFunc func(context.Context, *ent.ValueChargeQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f VVCQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.VVCQuery); ok {
+func (f ValueChargeQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.ValueChargeQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.VVCQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ValueChargeQuery", q)
 }
 
-// The VVCMutationRuleFunc type is an adapter to allow the use of ordinary
+// The ValueChargeMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type VVCMutationRuleFunc func(context.Context, *ent.VVCMutation) error
+type ValueChargeMutationRuleFunc func(context.Context, *ent.ValueChargeMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f VVCMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.VVCMutation); ok {
+func (f ValueChargeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.ValueChargeMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.VVCMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ValueChargeMutation", m)
 }

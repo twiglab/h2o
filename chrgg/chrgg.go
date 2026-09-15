@@ -21,7 +21,7 @@ type Meter struct {
 	common.Device
 	Pos     common.Pos        `json:"pos,omitzero"`
 	Data    common.MeterValue `json:"data,omitzero"`
-	Gateway common.Gateway    `jaon:"gateway,omitzero"`
+	Gateway common.Modbus     `jaon:"gateway,omitzero"`
 }
 
 func (d *Meter) UnmarshalBinary(data []byte) error {
@@ -30,7 +30,7 @@ func (d *Meter) UnmarshalBinary(data []byte) error {
 
 type OnOffMsg struct {
 	common.Device
-	Gateway common.Gateway `jaon:"gateway,omitzero"`
+	Gateway common.Modbus `jaon:"gateway,omitzero"`
 	OP      string
 }
 

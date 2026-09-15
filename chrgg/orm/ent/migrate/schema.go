@@ -9,28 +9,77 @@ import (
 )
 
 var (
-	// VVcColumns holds the columns for the "v_vc" table.
-	VVcColumns = []*schema.Column{
+	// ValueChargeColumns holds the columns for the "value_charge" table.
+	ValueChargeColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "quota", Type: field.TypeInt64},
-		{Name: "status", Type: field.TypeInt},
+		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "top", Type: field.TypeInt64, Default: 0},
+		{Name: "stock", Type: field.TypeInt64, Default: 0},
+		{Name: "incr", Type: field.TypeInt64, Default: 0},
+		{Name: "amount", Type: field.TypeInt64, Default: 0},
+		{Name: "unit_price", Type: field.TypeInt64, Default: 0},
+		{Name: "charge_time", Type: field.TypeTime},
+		{Name: "charge_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
+		{Name: "alarm1", Type: field.TypeInt, Default: 0},
+		{Name: "alarm2", Type: field.TypeInt, Default: 0},
+		{Name: "alarm3", Type: field.TypeInt, Default: 0},
+		{Name: "status", Type: field.TypeInt, Default: 0},
+		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
+		{Name: "is_del", Type: field.TypeInt, Default: 0},
 	}
-	// VVcTable holds the schema information for the "v_vc" table.
-	VVcTable = &schema.Table{
-		Name:       "v_vc",
-		Columns:    VVcColumns,
-		PrimaryKey: []*schema.Column{VVcColumns[0]},
+	// ValueChargeTable holds the schema information for the "value_charge" table.
+	ValueChargeTable = &schema.Table{
+		Name:       "value_charge",
+		Columns:    ValueChargeColumns,
+		PrimaryKey: []*schema.Column{ValueChargeColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "valuecharge_device_code",
+				Unique:  false,
+				Columns: []*schema.Column{ValueChargeColumns[4]},
+			},
+			{
+				Name:    "valuecharge_device_type",
+				Unique:  false,
+				Columns: []*schema.Column{ValueChargeColumns[5]},
+			},
+			{
+				Name:    "valuecharge_code",
+				Unique:  true,
+				Columns: []*schema.Column{ValueChargeColumns[3]},
+			},
+			{
+				Name:    "valuecharge_charge_time",
+				Unique:  false,
+				Columns: []*schema.Column{ValueChargeColumns[14]},
+			},
+			{
+				Name:    "valuecharge_charge_ts",
+				Unique:  false,
+				Columns: []*schema.Column{ValueChargeColumns[15]},
+			},
+			{
+				Name:    "valuecharge_is_del",
+				Unique:  false,
+				Columns: []*schema.Column{ValueChargeColumns[21]},
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		VVcTable,
+		ValueChargeTable,
 	}
 )
 
 func init() {
-	VVcTable.Annotation = &entsql.Annotation{
-		Table: "v_vc",
+	ValueChargeTable.Annotation = &entsql.Annotation{
+		Table: "value_charge",
 	}
 }
