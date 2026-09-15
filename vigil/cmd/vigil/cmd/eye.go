@@ -49,7 +49,7 @@ func eye(cmd *cobra.Command, args []string) error {
 	rLog()
 
 	mcli := mcli()
-	token := mcli.Subscribe(common.ElectricityTopic, 0x0, vigil.RawHandle())
+	token := mcli.Subscribe(common.ElectricityDataTopic, 0x0, vigil.RawHandle())
 	token.Wait()
 
 	return http.ListenAndServe(":10020", nil)

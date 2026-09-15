@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
-	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
 	"github.com/twiglab/h2o/vigil/orm/ent"
@@ -32,14 +31,6 @@ func mqttcli() mqtt.Client {
 func webaddr() string {
 	addr := viper.GetString("vigil.web.addr")
 	return cmp.Or(addr, ":10003")
-}
-
-func topics() map[string]byte {
-	return map[string]byte{
-		common.WaterTopic:       0x01,
-		common.ElectricityTopic: 0x01,
-		common.GasTopic:         0x01,
-	}
 }
 
 func entcli() *ent.Client {
