@@ -6,6 +6,11 @@ import (
 )
 
 const (
+	ON  = "ON"
+	OFF = "OFF"
+)
+
+const (
 	// 开合状态定义，未定义值一律为未知
 	OPT_STATUS_OFF    = 1
 	OPT_STATUS_ON     = 2
