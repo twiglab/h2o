@@ -18,16 +18,22 @@ const (
 )
 
 type Device struct {
-	SN   string `json:"sn,omitempty"`   // 仪表的序列号,仪表上有个条形码,如果没有就是空,或者自定义
-	Code string `json:"code"`           // 设备code,业务全局唯一
-	Type string `json:"type"`           // 设备类型
-	Name string `json:"name,omitempty"` // 设备名称,可以为空
+	Code string `json:"code"` // 设备code,业务全局唯一
+	Type string `json:"type"` // 设备类型
+
+	SN string `json:"sn,omitempty"` // 仪表的序列号,仪表上有个条形码,如果没有就是空,或者自定义
 
 	DataTime time.Time `json:"data_time"` // 采集时间
 	DataTs   string    `json:"data_ts"`   // 采集时间，字符串，到秒, 20060102150405
 	DataCode string    `json:"data_code"` // 采集的唯一标识,全局唯一单调递增
 
 	Status int `json:"status"` // 设备状态, 网关,采集程序或设备自定义, 0表示正常
+}
+
+type MeterValue struct {
+	DataValue int64            `json:"data_value,omitempty"` // 表显读数
+	OptStatus int64            `json:"opt_status,omitempty"` // 开合状态
+	Other     map[string]int64 `json:",embed"`
 }
 
 // 点位信息
@@ -58,11 +64,6 @@ type Electricity struct {
 
 type Water struct {
 	MeterValue
-}
-
-type MeterValue struct {
-	DataValue int64 `json:"data_value,omitempty"` // 表显读数
-	OptStatus int64 `json:"opt_status,omitempty"` // 开合状态
 }
 
 func NewDataCode() string {
