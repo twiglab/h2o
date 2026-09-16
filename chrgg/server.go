@@ -26,9 +26,19 @@ func (s *ChargeServer) OptOff(ctx context.Context, md Meter, vc *ent.ValueCharge
 
 	// 小于限额，发送合闸消息，开
 	ot := OnOffMsg{
-		OP:      "ON",
+		OP:      common.ON,
 		Device:  md.Device,
 		Gateway: md.Gateway,
+		Charge: Charge{
+			Code:       vc.Code,
+			Top:        vc.Top,
+			Current:    md.Data.DataValue,
+			Stock:      vc.Stock,
+			Incr:       vc.Incr,
+			Amount:     vc.Amount,
+			UnitPrice:  vc.UnitPrice,
+			ChargeTime: vc.ChargeTime,
+		},
 	}
 
 	return s.Sender.SendData(ctx, ot)
@@ -43,9 +53,19 @@ func (s *ChargeServer) OptOn(ctx context.Context, md Meter, vc *ent.ValueCharge)
 
 	// 大于限额，发送拉闸消息，关
 	ot := OnOffMsg{
-		OP:      "OFF",
+		OP:      common.OFF,
 		Device:  md.Device,
 		Gateway: md.Gateway,
+		Charge: Charge{
+			Code:       vc.Code,
+			Top:        vc.Top,
+			Current:    md.Data.DataValue,
+			Stock:      vc.Stock,
+			Incr:       vc.Incr,
+			Amount:     vc.Amount,
+			UnitPrice:  vc.UnitPrice,
+			ChargeTime: vc.ChargeTime,
+		},
 	}
 
 	return s.Sender.SendData(ctx, ot)
@@ -62,11 +82,12 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return err
 	}
 
-	if c.Top <= 0 {
+	if c.Top < 0 {
 		return nil
 	}
 
 	/*
+		// 不使用status
 		if c.Status < 0 {
 			return nil
 		}
