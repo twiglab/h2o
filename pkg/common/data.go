@@ -33,7 +33,7 @@ type Device struct {
 type MeterValue struct {
 	DataValue int64            `json:"data_value,omitempty"` // 表显读数
 	OptStatus int64            `json:"opt_status,omitempty"` // 开合状态
-	Other     map[string]int64 `json:",embed"`
+	Others    map[string]int64 `json:",embed"`
 }
 
 // 点位信息
@@ -84,6 +84,7 @@ const (
 type Gateway struct {
 	Code string `json:"code"`           // 网关code,业务全局唯一
 	Type string `json:"type,omitempty"` // 网关类型
+	Pos  string `json:"pos,omitempty"`  // 网关所在位置
 }
 
 type Modbus struct {
