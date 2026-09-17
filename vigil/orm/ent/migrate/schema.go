@@ -17,7 +17,6 @@ var (
 		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "data_value", Type: field.TypeInt64, Default: 0},
 		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "data_time", Type: field.TypeTime},
@@ -45,32 +44,32 @@ var (
 			{
 				Name:    "nhrecord_data_code",
 				Unique:  true,
-				Columns: []*schema.Column{NhRecordColumns[8]},
+				Columns: []*schema.Column{NhRecordColumns[7]},
 			},
 			{
 				Name:    "nhrecord_data_time",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[9]},
+				Columns: []*schema.Column{NhRecordColumns[8]},
 			},
 			{
 				Name:    "nhrecord_data_ts",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[10]},
+				Columns: []*schema.Column{NhRecordColumns[9]},
 			},
 			{
 				Name:    "nhrecord_project",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[11]},
+				Columns: []*schema.Column{NhRecordColumns[10]},
 			},
 			{
 				Name:    "nhrecord_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[12]},
+				Columns: []*schema.Column{NhRecordColumns[11]},
 			},
 			{
 				Name:    "nhrecord_owner",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[13]},
+				Columns: []*schema.Column{NhRecordColumns[12]},
 			},
 		},
 	}

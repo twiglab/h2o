@@ -38,7 +38,6 @@ type NhRecordMutation struct {
 	device_sn     *string
 	device_code   *string
 	device_type   *string
-	device_name   *string
 	data_value    *int64
 	adddata_value *int64
 	data_code     *string
@@ -348,55 +347,6 @@ func (m *NhRecordMutation) OldDeviceType(ctx context.Context) (v string, err err
 // ResetDeviceType resets all changes to the "device_type" field.
 func (m *NhRecordMutation) ResetDeviceType() {
 	m.device_type = nil
-}
-
-// SetDeviceName sets the "device_name" field.
-func (m *NhRecordMutation) SetDeviceName(s string) {
-	m.device_name = &s
-}
-
-// DeviceName returns the value of the "device_name" field in the mutation.
-func (m *NhRecordMutation) DeviceName() (r string, exists bool) {
-	v := m.device_name
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDeviceName returns the old "device_name" field's value of the NhRecord entity.
-// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NhRecordMutation) OldDeviceName(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDeviceName is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDeviceName requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDeviceName: %w", err)
-	}
-	return oldValue.DeviceName, nil
-}
-
-// ClearDeviceName clears the value of the "device_name" field.
-func (m *NhRecordMutation) ClearDeviceName() {
-	m.device_name = nil
-	m.clearedFields[nhrecord.FieldDeviceName] = struct{}{}
-}
-
-// DeviceNameCleared returns if the "device_name" field was cleared in this mutation.
-func (m *NhRecordMutation) DeviceNameCleared() bool {
-	_, ok := m.clearedFields[nhrecord.FieldDeviceName]
-	return ok
-}
-
-// ResetDeviceName resets all changes to the "device_name" field.
-func (m *NhRecordMutation) ResetDeviceName() {
-	m.device_name = nil
-	delete(m.clearedFields, nhrecord.FieldDeviceName)
 }
 
 // SetDataValue sets the "data_value" field.
@@ -731,7 +681,7 @@ func (m *NhRecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NhRecordMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 12)
 	if m.create_time != nil {
 		fields = append(fields, nhrecord.FieldCreateTime)
 	}
@@ -746,9 +696,6 @@ func (m *NhRecordMutation) Fields() []string {
 	}
 	if m.device_type != nil {
 		fields = append(fields, nhrecord.FieldDeviceType)
-	}
-	if m.device_name != nil {
-		fields = append(fields, nhrecord.FieldDeviceName)
 	}
 	if m.data_value != nil {
 		fields = append(fields, nhrecord.FieldDataValue)
@@ -789,8 +736,6 @@ func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceCode()
 	case nhrecord.FieldDeviceType:
 		return m.DeviceType()
-	case nhrecord.FieldDeviceName:
-		return m.DeviceName()
 	case nhrecord.FieldDataValue:
 		return m.DataValue()
 	case nhrecord.FieldDataCode:
@@ -824,8 +769,6 @@ func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDeviceCode(ctx)
 	case nhrecord.FieldDeviceType:
 		return m.OldDeviceType(ctx)
-	case nhrecord.FieldDeviceName:
-		return m.OldDeviceName(ctx)
 	case nhrecord.FieldDataValue:
 		return m.OldDataValue(ctx)
 	case nhrecord.FieldDataCode:
@@ -883,13 +826,6 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
-		return nil
-	case nhrecord.FieldDeviceName:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDeviceName(v)
 		return nil
 	case nhrecord.FieldDataValue:
 		v, ok := value.(int64)
@@ -988,9 +924,6 @@ func (m *NhRecordMutation) ClearedFields() []string {
 	if m.FieldCleared(nhrecord.FieldDeviceSn) {
 		fields = append(fields, nhrecord.FieldDeviceSn)
 	}
-	if m.FieldCleared(nhrecord.FieldDeviceName) {
-		fields = append(fields, nhrecord.FieldDeviceName)
-	}
 	if m.FieldCleared(nhrecord.FieldPosCode) {
 		fields = append(fields, nhrecord.FieldPosCode)
 	}
@@ -1013,9 +946,6 @@ func (m *NhRecordMutation) ClearField(name string) error {
 	switch name {
 	case nhrecord.FieldDeviceSn:
 		m.ClearDeviceSn()
-		return nil
-	case nhrecord.FieldDeviceName:
-		m.ClearDeviceName()
 		return nil
 	case nhrecord.FieldPosCode:
 		m.ClearPosCode()
@@ -1045,9 +975,6 @@ func (m *NhRecordMutation) ResetField(name string) error {
 		return nil
 	case nhrecord.FieldDeviceType:
 		m.ResetDeviceType()
-		return nil
-	case nhrecord.FieldDeviceName:
-		m.ResetDeviceName()
 		return nil
 	case nhrecord.FieldDataValue:
 		m.ResetDataValue()

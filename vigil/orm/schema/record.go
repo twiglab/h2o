@@ -20,7 +20,6 @@ func (NhRecord) Fields() []ent.Field {
 		field.String("device_sn").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 		field.String("device_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("device_type").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
-		field.String("device_name").Immutable().Optional().SchemaType(varchar(64)).Comment("设备名称"),
 
 		field.Int64("data_value").Immutable().Default(0).Comment("当前表显"),
 		field.String("data_code").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("当前记录code"),

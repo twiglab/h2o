@@ -77,20 +77,6 @@ func (_c *NhRecordCreate) SetDeviceType(v string) *NhRecordCreate {
 	return _c
 }
 
-// SetDeviceName sets the "device_name" field.
-func (_c *NhRecordCreate) SetDeviceName(v string) *NhRecordCreate {
-	_c.mutation.SetDeviceName(v)
-	return _c
-}
-
-// SetNillableDeviceName sets the "device_name" field if the given value is not nil.
-func (_c *NhRecordCreate) SetNillableDeviceName(v *string) *NhRecordCreate {
-	if v != nil {
-		_c.SetDeviceName(*v)
-	}
-	return _c
-}
-
 // SetDataValue sets the "data_value" field.
 func (_c *NhRecordCreate) SetDataValue(v int64) *NhRecordCreate {
 	_c.mutation.SetDataValue(v)
@@ -339,10 +325,6 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(nhrecord.FieldDeviceType, field.TypeString, value)
 		_node.DeviceType = value
 	}
-	if value, ok := _c.mutation.DeviceName(); ok {
-		_spec.SetField(nhrecord.FieldDeviceName, field.TypeString, value)
-		_node.DeviceName = value
-	}
 	if value, ok := _c.mutation.DataValue(); ok {
 		_spec.SetField(nhrecord.FieldDataValue, field.TypeInt64, value)
 		_node.DataValue = value
@@ -463,9 +445,6 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		}
 		if _, exists := u.create.mutation.DeviceType(); exists {
 			s.SetIgnore(nhrecord.FieldDeviceType)
-		}
-		if _, exists := u.create.mutation.DeviceName(); exists {
-			s.SetIgnore(nhrecord.FieldDeviceName)
 		}
 		if _, exists := u.create.mutation.DataValue(); exists {
 			s.SetIgnore(nhrecord.FieldDataValue)
@@ -727,9 +706,6 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			}
 			if _, exists := b.mutation.DeviceType(); exists {
 				s.SetIgnore(nhrecord.FieldDeviceType)
-			}
-			if _, exists := b.mutation.DeviceName(); exists {
-				s.SetIgnore(nhrecord.FieldDeviceName)
 			}
 			if _, exists := b.mutation.DataValue(); exists {
 				s.SetIgnore(nhrecord.FieldDataValue)

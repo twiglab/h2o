@@ -27,8 +27,6 @@ type NhRecord struct {
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
 	DeviceType string `json:"device_type,omitempty"`
-	// 设备名称
-	DeviceName string `json:"device_name,omitempty"`
 	// 当前表显
 	DataValue int64 `json:"data_value,omitempty"`
 	// 当前记录code
@@ -53,7 +51,7 @@ func (*NhRecord) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case nhrecord.FieldDataValue:
 			values[i] = new(sql.NullInt64)
-		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDeviceName, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldProject, nhrecord.FieldPosCode, nhrecord.FieldOwner:
+		case nhrecord.FieldID, nhrecord.FieldDeviceSn, nhrecord.FieldDeviceCode, nhrecord.FieldDeviceType, nhrecord.FieldDataCode, nhrecord.FieldDataTs, nhrecord.FieldProject, nhrecord.FieldPosCode, nhrecord.FieldOwner:
 			values[i] = new(sql.NullString)
 		case nhrecord.FieldCreateTime, nhrecord.FieldUpdateTime, nhrecord.FieldDataTime:
 			values[i] = new(sql.NullTime)
@@ -107,12 +105,6 @@ func (_m *NhRecord) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
-			}
-		case nhrecord.FieldDeviceName:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field device_name", values[i])
-			} else if value.Valid {
-				_m.DeviceName = value.String
 			}
 		case nhrecord.FieldDataValue:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -206,9 +198,6 @@ func (_m *NhRecord) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("device_type=")
 	builder.WriteString(_m.DeviceType)
-	builder.WriteString(", ")
-	builder.WriteString("device_name=")
-	builder.WriteString(_m.DeviceName)
 	builder.WriteString(", ")
 	builder.WriteString("data_value=")
 	builder.WriteString(fmt.Sprintf("%v", _m.DataValue))
