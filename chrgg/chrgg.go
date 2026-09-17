@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding"
 	"encoding/json/v2"
-	"fmt"
 	"time"
 
 	"github.com/twiglab/h2o/pkg/common"
@@ -49,9 +48,9 @@ type OnOffMsg struct {
 }
 
 func (o OnOffMsg) Topic() string {
-	t := fmt.Sprintf("h2o/onoff/%s/%s/%d/%s", o.Gateway.Code, o.Code, o.Gateway.UnitID, o.OP)
-	// fmt.Println("topic: ", t)
-	return t
+	return common.H2O + "/onoff/" + o.Gateway.Code + "/" + o.Code + "/" + o.OP
+	// t := fmt.Sprintf("h2o/onoff/%s/%s/%s", o.Gateway.Code, o.Code, o.OP)
+	// return t
 }
 
 func (d OnOffMsg) MarshalBinary() ([]byte, error) {
