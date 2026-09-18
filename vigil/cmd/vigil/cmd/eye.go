@@ -42,14 +42,20 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// eyeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	eyeCmd.Flags().StringVarP(&topic, "topic", "t", common.GeneralDataTopic, "Help message for toggle")
 }
 
+var topic string
+
 func eye(cmd *cobra.Command, args []string) error {
+	fmt.Println("topic ", topic)
 
 	rLog()
 
 	mcli := mcli()
-	token := mcli.Subscribe(common.ElectricityDataTopic, 0x0, vigil.RawHandle())
+	token := mcli.Subscribe(topic, 0x0, vigil.RawHandle())
+	// token := mcli.Subscribe("h2o/data/909_36/E", 0x0, vigil.RawHandle())
+	//ElectricityDataTopic = "h2o/data/+/E"
 	token.Wait()
 
 	return http.ListenAndServe(":10020", nil)
