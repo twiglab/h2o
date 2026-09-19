@@ -63,3 +63,23 @@ func DevToStrings(v *ent.Dev) []string {
 		v.Memo,
 	}
 }
+
+func CliToStrings(v *ent.Cli) []string {
+	return []string{
+		strconv.FormatInt(v.ID, 10),
+		v.Code,
+		v.Typ,
+		v.URL,
+
+		strconv.FormatInt(int64(v.Speed), 10),
+		strconv.FormatInt(int64(v.DataBits), 10),
+		strconv.FormatInt(int64(v.Parity), 10),
+		strconv.FormatInt(int64(v.StopBits), 10),
+		strconv.FormatInt(int64(v.Timeout), 10),
+
+		strconv.FormatInt(int64(v.Endian), 10),
+		strconv.FormatInt(int64(v.WordOrder), 10),
+
+		v.Memo,
+	}
+}
