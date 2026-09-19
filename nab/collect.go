@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm/ent"
@@ -28,8 +29,8 @@ func (t CollectTask) Run() {
 		})
 
 		if err != nil {
-			// TODO
-			// logger
+			t.Logger.Error("collect error", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
 		}
+		time.Sleep(300 * time.Millisecond)
 	}
 }
