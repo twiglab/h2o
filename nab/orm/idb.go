@@ -3,6 +3,7 @@ package orm
 //go:generate go tool ent generate ./schema --target ./ent --feature sql/execquery,sql/upsert,privacy,sql/lock
 
 import (
+	"cmp"
 	"database/sql"
 	"fmt"
 
@@ -19,7 +20,7 @@ import (
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
-func Sqlite(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
+func NewIDB(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
 	db, err := sql.Open("sqlite", ":memory:")
 	if err != nil {
 		return nil, err
@@ -29,12 +30,12 @@ func Sqlite(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
 		return nil, err
 	}
 
-	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE dev USING csv(filename=%q)`, dev))
+	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE dev USING csv(filename=%q)`, cmp.Or(dev, "dev.csv")))
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE cli USING csv(filename=%q)`, cli))
+	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE cli USING csv(filename=%q)`, cmp.Or(cli, "cli.csv")))
 	if err != nil {
 		return nil, err
 	}

@@ -39,9 +39,9 @@ func (r DeviceRec) Column(i int) (vtab.Value, error) {
 	case 2:
 		return r.Type, nil
 	case 3:
-		return r.Clazz, nil
-	case 4:
 		return r.SN, nil
+	case 4:
+		return r.Clazz, nil
 	case 5:
 		return r.Cli, nil
 	case 6:
