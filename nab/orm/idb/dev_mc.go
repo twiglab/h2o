@@ -6,7 +6,7 @@ import (
 	"modernc.org/sqlite/vtab"
 )
 
-var device_table_columns = []string{
+var DEVICE_TABLE_COLUMNS = []string{
 	"id",
 	"code",
 	"typ",

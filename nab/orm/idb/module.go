@@ -32,7 +32,7 @@ func (m *IDBModule) CreateDev(ctx vtab.Context, file string) (vtab.Table, error)
 	if err != nil {
 		return nil, err
 	}
-	if err := ctx.Declare(fmt.Sprintf("CREATE TABLE %s(%s)", "dev", strings.Join(device_table_columns, ","))); err != nil {
+	if err := ctx.Declare(fmt.Sprintf("CREATE TABLE %s(%s)", "dev", strings.Join(DEVICE_TABLE_COLUMNS, ","))); err != nil {
 		return nil, err
 	}
 	return t, nil
@@ -43,7 +43,7 @@ func (m *IDBModule) CreateCli(ctx vtab.Context, file string) (vtab.Table, error)
 	if err != nil {
 		return nil, err
 	}
-	if err := ctx.Declare(fmt.Sprintf("CREATE TABLE %s(%s)", "cli", strings.Join(client_table_columns, ","))); err != nil {
+	if err := ctx.Declare(fmt.Sprintf("CREATE TABLE %s(%s)", "cli", strings.Join(CLIENT_TABLE_COLUMNS, ","))); err != nil {
 		return nil, err
 	}
 	return t, nil

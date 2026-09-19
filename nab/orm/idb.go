@@ -6,6 +6,7 @@ import (
 	"cmp"
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	_ "modernc.org/sqlite"
 	"modernc.org/sqlite/vtab"
@@ -43,4 +44,22 @@ func NewIDB(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
 	drv := entsql.OpenDB(dialect.SQLite, db)
 	ops = append(ops, ent.Driver(drv))
 	return ent.NewClient(ops...), nil
+}
+
+func DevToStrings(v *ent.Dev) []string {
+	return []string{
+		strconv.FormatInt(v.ID, 10),
+		v.Code,
+		v.Typ,
+		v.Sn,
+		v.Clazz,
+		v.Cli,
+
+		strconv.FormatInt(int64(v.UnitID), 10),
+		strconv.FormatInt(int64(v.Addr), 10),
+		strconv.FormatInt(int64(v.Endian), 10),
+		strconv.FormatInt(int64(v.WordOrder), 10),
+
+		v.Memo,
+	}
 }

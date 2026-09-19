@@ -6,7 +6,7 @@ import (
 	"modernc.org/sqlite/vtab"
 )
 
-var client_table_columns = []string{
+var CLIENT_TABLE_COLUMNS = []string{
 	"id",
 	"code",
 	"typ",
