@@ -1,0 +1,16 @@
+type OnOff {
+  code    : String!
+  op      : String!
+}
+
+input DeviceOnOffInput {
+  code    : String!
+  op      : String!
+}
+
+
+type Mutation {
+  deviceOnOff(input: DeviceOnOffInput!): OnOff!
+  deviceOff(input: DeviceOnOffInput!): OnOff!
+  deviceOn(input: DeviceOnOffInput!): OnOff!
+}
