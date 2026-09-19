@@ -8,6 +8,17 @@ type Loops struct {
 	jobs []Job
 }
 
+func NewLoops() Loops {
+	return Loops{
+		jobs: make([]Job, 0),
+	}
+}
+
+func (l *Loops) AddJob(j Job) *Loops {
+	l.jobs = append(l.jobs, j)
+	return l
+}
+
 func (l Loops) Run() {
 	for _, j := range l.jobs {
 		j.Run()
