@@ -3,7 +3,6 @@ package nab
 import (
 	"context"
 	"log/slog"
-	"strings"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/nab/equlib"
@@ -16,13 +15,14 @@ type HandleData struct {
 	Logger *slog.Logger
 }
 
-func topic(t string) (string, string, string) {
-	ss := strings.Split(t, "/")
+func SubscriptTopic(boxCode string) string {
+	return common.H2O + "/onoff/" + boxCode + "/#"
+}
+
+func topicPart(t string) (string, string, string) {
+	ss := common.TopicPart(t)
 	_ = ss[4]
 
-	if ss[0] != common.H2O {
-		panic("not h2o topic")
-	}
 	if ss[1] != "onoff" {
 		panic("not h2o onoff")
 	}
@@ -37,9 +37,17 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 		}
 		defer msg.Ack()
 
-		_, code, op := topic(msg.Topic())
+		boxCode, devCode, op := topicPart(msg.Topic())
+		if boxCode != data.Global.BoxCode {
+			data.Logger.Error("onoff box code error",
+				slog.String("boxCode", boxCode),
+				slog.String("devCode", devCode),
+				slog.String("globalBoxCode", data.Global.BoxCode),
+				slog.String("op", op),
+			)
+		}
 
-		dev := data.Global.MustGetDev(context.Background(), code)
+		dev := data.Global.MustGetDev(context.Background(), devCode)
 
 		mcli := data.Global.MustGetClient(dev.Cli)
 
@@ -55,7 +63,9 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 			}); err != nil {
 				data.Logger.Error("onoff error", slog.String("code", dev.Code),
 					slog.String("op", op),
-					slog.Any("error", err), slog.Any("record", dev))
+					slog.Any("record", dev),
+					slog.Any("error", err),
+				)
 				return
 			}
 		case common.OFF:
@@ -67,7 +77,9 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 			}); err != nil {
 				data.Logger.Error("onoff error", slog.String("code", dev.Code),
 					slog.String("op", op),
-					slog.Any("error", err), slog.Any("record", dev))
+					slog.Any("record", dev),
+					slog.Any("error", err),
+				)
 				return
 			}
 		}
