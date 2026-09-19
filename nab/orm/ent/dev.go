@@ -22,16 +22,20 @@ type Dev struct {
 	Typ string `json:"typ,omitempty"`
 	// 设备序列号
 	Sn string `json:"sn,omitempty"`
-	// 当前记录code
+	// 设备类别
 	Clazz string `json:"clazz,omitempty"`
-	// 采集时间字符串
+	// 终端号
 	Cli string `json:"cli,omitempty"`
-	// 当前表显
+	// 设备号
 	UnitID uint8 `json:"unit_id,omitempty"`
-	// 当前表显
+	// 地址
+	Addr uint16 `json:"addr,omitempty"`
+	// 大小端
 	Endian uint `json:"endian,omitempty"`
-	// 当前表显
-	WordOrder    uint `json:"word_order,omitempty"`
+	// 字节顺序
+	WordOrder uint `json:"word_order,omitempty"`
+	// 备注
+	Memo         string `json:"memo,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -40,9 +44,9 @@ func (*Dev) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case dev.FieldID, dev.FieldUnitID, dev.FieldEndian, dev.FieldWordOrder:
+		case dev.FieldID, dev.FieldUnitID, dev.FieldAddr, dev.FieldEndian, dev.FieldWordOrder:
 			values[i] = new(sql.NullInt64)
-		case dev.FieldCode, dev.FieldTyp, dev.FieldSn, dev.FieldClazz, dev.FieldCli:
+		case dev.FieldCode, dev.FieldTyp, dev.FieldSn, dev.FieldClazz, dev.FieldCli, dev.FieldMemo:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -101,6 +105,12 @@ func (_m *Dev) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.UnitID = uint8(value.Int64)
 			}
+		case dev.FieldAddr:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field addr", values[i])
+			} else if value.Valid {
+				_m.Addr = uint16(value.Int64)
+			}
 		case dev.FieldEndian:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field endian", values[i])
@@ -112,6 +122,12 @@ func (_m *Dev) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field word_order", values[i])
 			} else if value.Valid {
 				_m.WordOrder = uint(value.Int64)
+			}
+		case dev.FieldMemo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field memo", values[i])
+			} else if value.Valid {
+				_m.Memo = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -167,11 +183,17 @@ func (_m *Dev) String() string {
 	builder.WriteString("unit_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UnitID))
 	builder.WriteString(", ")
+	builder.WriteString("addr=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Addr))
+	builder.WriteString(", ")
 	builder.WriteString("endian=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Endian))
 	builder.WriteString(", ")
 	builder.WriteString("word_order=")
 	builder.WriteString(fmt.Sprintf("%v", _m.WordOrder))
+	builder.WriteString(", ")
+	builder.WriteString("memo=")
+	builder.WriteString(_m.Memo)
 	builder.WriteByte(')')
 	return builder.String()
 }

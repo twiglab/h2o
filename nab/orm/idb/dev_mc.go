@@ -1,6 +1,8 @@
 package idb
 
 import (
+	"fmt"
+
 	"modernc.org/sqlite/vtab"
 )
 
@@ -12,32 +14,37 @@ var device_table_columns = []string{
 	"clazz",
 	"cli",
 	"unit_id",
+	"addr",
 	"endian",
 	"word_order",
+	"memo",
 }
 
-type DeviceRec struct {
+type DevRec struct {
 	ID   int64  `csv:"id" db:"id"`
 	Code string `csv:"code" db:"code"`
-	Type string `csv:"typ" db:"typ"`
+	Typ  string `csv:"typ" db:"typ"`
 	SN   string `csv:"sn" db:"sn"`
 
 	Clazz string `csv:"clazz" db:"clazz"`
 
 	Cli       string `csv:"cli" db:"cli"`
 	UnitID    int64  `csv:"unit_id" db:"unit_id"`
+	Addr      int64  `csv:"addr" db:"addr"`
 	Endian    int64  `csv:"endian" db:"endian"`
 	WordOrder int64  `csv:"word_order" db:"word_order"`
+
+	Memo string `csv:"memo" db:"memo"`
 }
 
-func (r DeviceRec) Column(i int) (vtab.Value, error) {
+func (r DevRec) Column(i int) (vtab.Value, error) {
 	switch i {
 	case 0:
 		return r.ID, nil
 	case 1:
 		return r.Code, nil
 	case 2:
-		return r.Type, nil
+		return r.Typ, nil
 	case 3:
 		return r.SN, nil
 	case 4:
@@ -47,13 +54,17 @@ func (r DeviceRec) Column(i int) (vtab.Value, error) {
 	case 6:
 		return r.UnitID, nil
 	case 7:
-		return r.Endian, nil
+		return r.Addr, nil
 	case 8:
+		return r.Endian, nil
+	case 9:
 		return r.WordOrder, nil
+	case 10:
+		return r.Memo, nil
 	}
-	panic("no filed")
+	panic(fmt.Errorf("no field %d", i))
 }
 
-func (r DeviceRec) RowID() int64 {
+func (r DevRec) RowID() int64 {
 	return r.ID
 }

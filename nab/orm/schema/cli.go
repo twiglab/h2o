@@ -18,19 +18,19 @@ func (Cli) Fields() []ent.Field {
 		field.String("code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("typ").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
 
-		field.String("url").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
+		field.String("url").Immutable().Optional().SchemaType(varchar(64)).Comment("端口URL"),
 
-		field.Uint("speed").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("data_bits").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("parity").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("stop_bits").Immutable().Default(0).Comment("当前表显"),
+		field.Uint("speed").Immutable().Default(0).Comment("速率BPS"),
+		field.Uint("data_bits").Immutable().Default(0).Comment("数据位"),
+		field.Uint("parity").Immutable().Default(0).Comment("校验"),
+		field.Uint("stop_bits").Immutable().Default(0).Comment("停止位"),
 
-		field.Int64("timeout").Immutable().Default(0).Comment("当前表显"),
+		field.Int64("timeout").Immutable().Default(0).Comment("超时"),
 
-		field.Uint("endian").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("word_order").Immutable().Default(0).Comment("当前表显"),
+		field.Uint("endian").Immutable().Default(0).Comment("大小端"),
+		field.Uint("word_order").Immutable().Default(0).Comment("字节顺序"),
 
-		field.String("memo").Immutable().SchemaType(varchar(64)).Comment("设备序列号"),
+		field.String("memo").Immutable().SchemaType(varchar(64)).Comment("备注"),
 	}
 }
 

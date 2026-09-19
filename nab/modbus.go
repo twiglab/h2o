@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"log/slog"
+	"sync"
 
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab/orm/ent"
@@ -20,12 +21,35 @@ type DeviceOff interface {
 	Off(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error
 }
 
+/*
+	mc.unitId     = 1
+	mc.endianness = BIG_ENDIAN
+	mc.wordOrder  = HIGH_WORD_FIRST
+*/
+
 type ModbusCli struct {
 	Record *ent.Cli
 	cli    *modbus.ModbusClient
-	// glock  sync.Mutex
+	glock  sync.Mutex
 
 	Code string
+
+	endina    modbus.Endianness
+	wordorder modbus.WordOrder
+}
+
+func endian(v uint) modbus.Endianness {
+	if v == 2 {
+		return modbus.LITTLE_ENDIAN
+	}
+	return modbus.BIG_ENDIAN
+}
+
+func wordorder(v uint) modbus.WordOrder {
+	if v == 2 {
+		return modbus.LOW_WORD_FIRST
+	}
+	return modbus.HIGH_WORD_FIRST
 }
 
 func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
@@ -43,16 +67,23 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 		return nil, err
 	}
 
-	err = cli.Open()
+	if err = cli.Open(); err != nil {
+		return nil, err
+	}
 
 	return &ModbusCli{
 		Record: record,
 		cli:    cli,
 		Code:   record.Code,
-	}, err
+
+		endina:    endian(record.Endian),
+		wordorder: wordorder(record.WordOrder),
+	}, nil
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
+	c.glock.Lock()
+
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
 		if err := c.cli.SetEncoding(modbus.Endianness(data.Record.Endian), modbus.WordOrder(data.Record.WordOrder)); err != nil {
 			return err
@@ -64,12 +95,8 @@ func (c *ModbusCli) setup(data DeviceData) error {
 	return nil
 }
 func (c *ModbusCli) reset() error {
-	/*
-		mc.unitId     = 1
-		mc.endianness = BIG_ENDIAN
-		mc.wordOrder  = HIGH_WORD_FIRST
-	*/
-	_ = c.cli.SetEncoding(modbus.BIG_ENDIAN, modbus.HIGH_WORD_FIRST)
+	defer c.glock.Unlock()
+	_ = c.cli.SetEncoding(c.endina, c.wordorder)
 	_ = c.cli.SetUnitId(1)
 	return nil
 }

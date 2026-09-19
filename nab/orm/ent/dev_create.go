@@ -73,6 +73,20 @@ func (_c *DevCreate) SetNillableUnitID(v *uint8) *DevCreate {
 	return _c
 }
 
+// SetAddr sets the "addr" field.
+func (_c *DevCreate) SetAddr(v uint16) *DevCreate {
+	_c.mutation.SetAddr(v)
+	return _c
+}
+
+// SetNillableAddr sets the "addr" field if the given value is not nil.
+func (_c *DevCreate) SetNillableAddr(v *uint16) *DevCreate {
+	if v != nil {
+		_c.SetAddr(*v)
+	}
+	return _c
+}
+
 // SetEndian sets the "endian" field.
 func (_c *DevCreate) SetEndian(v uint) *DevCreate {
 	_c.mutation.SetEndian(v)
@@ -98,6 +112,12 @@ func (_c *DevCreate) SetNillableWordOrder(v *uint) *DevCreate {
 	if v != nil {
 		_c.SetWordOrder(*v)
 	}
+	return _c
+}
+
+// SetMemo sets the "memo" field.
+func (_c *DevCreate) SetMemo(v string) *DevCreate {
+	_c.mutation.SetMemo(v)
 	return _c
 }
 
@@ -146,6 +166,10 @@ func (_c *DevCreate) defaults() {
 		v := dev.DefaultUnitID
 		_c.mutation.SetUnitID(v)
 	}
+	if _, ok := _c.mutation.Addr(); !ok {
+		v := dev.DefaultAddr
+		_c.mutation.SetAddr(v)
+	}
 	if _, ok := _c.mutation.Endian(); !ok {
 		v := dev.DefaultEndian
 		_c.mutation.SetEndian(v)
@@ -193,11 +217,17 @@ func (_c *DevCreate) check() error {
 	if _, ok := _c.mutation.UnitID(); !ok {
 		return &ValidationError{Name: "unit_id", err: errors.New(`ent: missing required field "Dev.unit_id"`)}
 	}
+	if _, ok := _c.mutation.Addr(); !ok {
+		return &ValidationError{Name: "addr", err: errors.New(`ent: missing required field "Dev.addr"`)}
+	}
 	if _, ok := _c.mutation.Endian(); !ok {
 		return &ValidationError{Name: "endian", err: errors.New(`ent: missing required field "Dev.endian"`)}
 	}
 	if _, ok := _c.mutation.WordOrder(); !ok {
 		return &ValidationError{Name: "word_order", err: errors.New(`ent: missing required field "Dev.word_order"`)}
+	}
+	if _, ok := _c.mutation.Memo(); !ok {
+		return &ValidationError{Name: "memo", err: errors.New(`ent: missing required field "Dev.memo"`)}
 	}
 	return nil
 }
@@ -256,6 +286,10 @@ func (_c *DevCreate) createSpec() (*Dev, *sqlgraph.CreateSpec) {
 		_spec.SetField(dev.FieldUnitID, field.TypeUint8, value)
 		_node.UnitID = value
 	}
+	if value, ok := _c.mutation.Addr(); ok {
+		_spec.SetField(dev.FieldAddr, field.TypeUint16, value)
+		_node.Addr = value
+	}
 	if value, ok := _c.mutation.Endian(); ok {
 		_spec.SetField(dev.FieldEndian, field.TypeUint, value)
 		_node.Endian = value
@@ -263,6 +297,10 @@ func (_c *DevCreate) createSpec() (*Dev, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.WordOrder(); ok {
 		_spec.SetField(dev.FieldWordOrder, field.TypeUint, value)
 		_node.WordOrder = value
+	}
+	if value, ok := _c.mutation.Memo(); ok {
+		_spec.SetField(dev.FieldMemo, field.TypeString, value)
+		_node.Memo = value
 	}
 	return _node, _spec
 }
@@ -351,11 +389,17 @@ func (u *DevUpsertOne) UpdateNewValues() *DevUpsertOne {
 		if _, exists := u.create.mutation.UnitID(); exists {
 			s.SetIgnore(dev.FieldUnitID)
 		}
+		if _, exists := u.create.mutation.Addr(); exists {
+			s.SetIgnore(dev.FieldAddr)
+		}
 		if _, exists := u.create.mutation.Endian(); exists {
 			s.SetIgnore(dev.FieldEndian)
 		}
 		if _, exists := u.create.mutation.WordOrder(); exists {
 			s.SetIgnore(dev.FieldWordOrder)
+		}
+		if _, exists := u.create.mutation.Memo(); exists {
+			s.SetIgnore(dev.FieldMemo)
 		}
 	}))
 	return u
@@ -588,11 +632,17 @@ func (u *DevUpsertBulk) UpdateNewValues() *DevUpsertBulk {
 			if _, exists := b.mutation.UnitID(); exists {
 				s.SetIgnore(dev.FieldUnitID)
 			}
+			if _, exists := b.mutation.Addr(); exists {
+				s.SetIgnore(dev.FieldAddr)
+			}
 			if _, exists := b.mutation.Endian(); exists {
 				s.SetIgnore(dev.FieldEndian)
 			}
 			if _, exists := b.mutation.WordOrder(); exists {
 				s.SetIgnore(dev.FieldWordOrder)
+			}
+			if _, exists := b.mutation.Memo(); exists {
+				s.SetIgnore(dev.FieldMemo)
 			}
 		}
 	}))

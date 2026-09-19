@@ -20,23 +20,23 @@ type Cli struct {
 	Code string `json:"code,omitempty"`
 	// 设备类型
 	Typ string `json:"typ,omitempty"`
-	// 设备序列号
+	// 端口URL
 	URL string `json:"url,omitempty"`
-	// 当前表显
+	// 速率BPS
 	Speed uint `json:"speed,omitempty"`
-	// 当前表显
+	// 数据位
 	DataBits uint `json:"data_bits,omitempty"`
-	// 当前表显
+	// 校验
 	Parity uint `json:"parity,omitempty"`
-	// 当前表显
+	// 停止位
 	StopBits uint `json:"stop_bits,omitempty"`
-	// 当前表显
+	// 超时
 	Timeout int64 `json:"timeout,omitempty"`
-	// 当前表显
+	// 大小端
 	Endian uint `json:"endian,omitempty"`
-	// 当前表显
+	// 字节顺序
 	WordOrder uint `json:"word_order,omitempty"`
-	// 设备序列号
+	// 备注
 	Memo         string `json:"memo,omitempty"`
 	selectValues sql.SelectValues
 }

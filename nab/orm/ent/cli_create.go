@@ -151,14 +151,6 @@ func (_c *CliCreate) SetMemo(v string) *CliCreate {
 	return _c
 }
 
-// SetNillableMemo sets the "memo" field if the given value is not nil.
-func (_c *CliCreate) SetNillableMemo(v *string) *CliCreate {
-	if v != nil {
-		_c.SetMemo(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *CliCreate) SetID(v int64) *CliCreate {
 	_c.mutation.SetID(v)
@@ -268,6 +260,9 @@ func (_c *CliCreate) check() error {
 	}
 	if _, ok := _c.mutation.WordOrder(); !ok {
 		return &ValidationError{Name: "word_order", err: errors.New(`ent: missing required field "Cli.word_order"`)}
+	}
+	if _, ok := _c.mutation.Memo(); !ok {
+		return &ValidationError{Name: "memo", err: errors.New(`ent: missing required field "Cli.memo"`)}
 	}
 	return nil
 }

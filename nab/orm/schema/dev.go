@@ -19,13 +19,16 @@ func (Dev) Fields() []ent.Field {
 		field.String("typ").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
 		field.String("sn").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 
-		field.String("clazz").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("当前记录code"),
+		field.String("clazz").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("设备类别"),
 
-		field.String("cli").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("采集时间字符串"),
+		field.String("cli").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("终端号"),
 
-		field.Uint8("unit_id").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("endian").Immutable().Default(0).Comment("当前表显"),
-		field.Uint("word_order").Immutable().Default(0).Comment("当前表显"),
+		field.Uint8("unit_id").Immutable().Default(0).Comment("设备号"),
+		field.Uint16("addr").Immutable().Default(0).Comment("地址"),
+		field.Uint("endian").Immutable().Default(0).Comment("大小端"),
+		field.Uint("word_order").Immutable().Default(0).Comment("字节顺序"),
+
+		field.String("memo").Immutable().SchemaType(varchar(64)).Comment("备注"),
 	}
 }
 

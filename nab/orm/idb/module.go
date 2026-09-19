@@ -28,7 +28,7 @@ func (m *IDBModule) Create(ctx vtab.Context, args []string) (vtab.Table, error) 
 }
 
 func (m *IDBModule) CreateDev(ctx vtab.Context, file string) (vtab.Table, error) {
-	t, err := loadTable[DeviceRec](file)
+	t, err := loadTable[DevRec](file)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func (m *IDBModule) CreateDev(ctx vtab.Context, file string) (vtab.Table, error)
 }
 
 func (m *IDBModule) CreateCli(ctx vtab.Context, file string) (vtab.Table, error) {
-	t, err := loadTable[ClientRec](file)
+	t, err := loadTable[CliRec](file)
 	if err != nil {
 		return nil, err
 	}

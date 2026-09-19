@@ -29,7 +29,9 @@ func (g Global) MustGetClient(code string) *ModbusCli {
 	return cli
 }
 
-func (g Global) BuildClient(ctx context.Context) error {
+func (g *Global) BuildClient(ctx context.Context) error {
+	g.clientMap = make(map[string]*ModbusCli)
+
 	q := g.Client.Cli.Query()
 
 	clients, err := q.All(ctx)

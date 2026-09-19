@@ -647,16 +647,6 @@ func MemoHasSuffix(v string) predicate.Cli {
 	return predicate.Cli(sql.FieldHasSuffix(FieldMemo, v))
 }
 
-// MemoIsNil applies the IsNil predicate on the "memo" field.
-func MemoIsNil() predicate.Cli {
-	return predicate.Cli(sql.FieldIsNull(FieldMemo))
-}
-
-// MemoNotNil applies the NotNil predicate on the "memo" field.
-func MemoNotNil() predicate.Cli {
-	return predicate.Cli(sql.FieldNotNull(FieldMemo))
-}
-
 // MemoEqualFold applies the EqualFold predicate on the "memo" field.
 func MemoEqualFold(v string) predicate.Cli {
 	return predicate.Cli(sql.FieldEqualFold(FieldMemo, v))

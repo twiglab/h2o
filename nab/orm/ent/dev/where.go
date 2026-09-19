@@ -82,6 +82,11 @@ func UnitID(v uint8) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldUnitID, v))
 }
 
+// Addr applies equality check predicate on the "addr" field. It's identical to AddrEQ.
+func Addr(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldEQ(FieldAddr, v))
+}
+
 // Endian applies equality check predicate on the "endian" field. It's identical to EndianEQ.
 func Endian(v uint) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldEndian, v))
@@ -90,6 +95,11 @@ func Endian(v uint) predicate.Dev {
 // WordOrder applies equality check predicate on the "word_order" field. It's identical to WordOrderEQ.
 func WordOrder(v uint) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldWordOrder, v))
+}
+
+// Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
+func Memo(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldEQ(FieldMemo, v))
 }
 
 // CodeEQ applies the EQ predicate on the "code" field.
@@ -467,6 +477,46 @@ func UnitIDLTE(v uint8) predicate.Dev {
 	return predicate.Dev(sql.FieldLTE(FieldUnitID, v))
 }
 
+// AddrEQ applies the EQ predicate on the "addr" field.
+func AddrEQ(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldEQ(FieldAddr, v))
+}
+
+// AddrNEQ applies the NEQ predicate on the "addr" field.
+func AddrNEQ(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldNEQ(FieldAddr, v))
+}
+
+// AddrIn applies the In predicate on the "addr" field.
+func AddrIn(vs ...uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldIn(FieldAddr, vs...))
+}
+
+// AddrNotIn applies the NotIn predicate on the "addr" field.
+func AddrNotIn(vs ...uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldNotIn(FieldAddr, vs...))
+}
+
+// AddrGT applies the GT predicate on the "addr" field.
+func AddrGT(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldGT(FieldAddr, v))
+}
+
+// AddrGTE applies the GTE predicate on the "addr" field.
+func AddrGTE(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldGTE(FieldAddr, v))
+}
+
+// AddrLT applies the LT predicate on the "addr" field.
+func AddrLT(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldLT(FieldAddr, v))
+}
+
+// AddrLTE applies the LTE predicate on the "addr" field.
+func AddrLTE(v uint16) predicate.Dev {
+	return predicate.Dev(sql.FieldLTE(FieldAddr, v))
+}
+
 // EndianEQ applies the EQ predicate on the "endian" field.
 func EndianEQ(v uint) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldEndian, v))
@@ -545,6 +595,71 @@ func WordOrderLT(v uint) predicate.Dev {
 // WordOrderLTE applies the LTE predicate on the "word_order" field.
 func WordOrderLTE(v uint) predicate.Dev {
 	return predicate.Dev(sql.FieldLTE(FieldWordOrder, v))
+}
+
+// MemoEQ applies the EQ predicate on the "memo" field.
+func MemoEQ(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldEQ(FieldMemo, v))
+}
+
+// MemoNEQ applies the NEQ predicate on the "memo" field.
+func MemoNEQ(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldNEQ(FieldMemo, v))
+}
+
+// MemoIn applies the In predicate on the "memo" field.
+func MemoIn(vs ...string) predicate.Dev {
+	return predicate.Dev(sql.FieldIn(FieldMemo, vs...))
+}
+
+// MemoNotIn applies the NotIn predicate on the "memo" field.
+func MemoNotIn(vs ...string) predicate.Dev {
+	return predicate.Dev(sql.FieldNotIn(FieldMemo, vs...))
+}
+
+// MemoGT applies the GT predicate on the "memo" field.
+func MemoGT(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldGT(FieldMemo, v))
+}
+
+// MemoGTE applies the GTE predicate on the "memo" field.
+func MemoGTE(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldGTE(FieldMemo, v))
+}
+
+// MemoLT applies the LT predicate on the "memo" field.
+func MemoLT(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldLT(FieldMemo, v))
+}
+
+// MemoLTE applies the LTE predicate on the "memo" field.
+func MemoLTE(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldLTE(FieldMemo, v))
+}
+
+// MemoContains applies the Contains predicate on the "memo" field.
+func MemoContains(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldContains(FieldMemo, v))
+}
+
+// MemoHasPrefix applies the HasPrefix predicate on the "memo" field.
+func MemoHasPrefix(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldHasPrefix(FieldMemo, v))
+}
+
+// MemoHasSuffix applies the HasSuffix predicate on the "memo" field.
+func MemoHasSuffix(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldHasSuffix(FieldMemo, v))
+}
+
+// MemoEqualFold applies the EqualFold predicate on the "memo" field.
+func MemoEqualFold(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldEqualFold(FieldMemo, v))
+}
+
+// MemoContainsFold applies the ContainsFold predicate on the "memo" field.
+func MemoContainsFold(v string) predicate.Dev {
+	return predicate.Dev(sql.FieldContainsFold(FieldMemo, v))
 }
 
 // And groups predicates with the AND operator between them.

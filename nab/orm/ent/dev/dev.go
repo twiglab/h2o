@@ -23,10 +23,14 @@ const (
 	FieldCli = "cli"
 	// FieldUnitID holds the string denoting the unit_id field in the database.
 	FieldUnitID = "unit_id"
+	// FieldAddr holds the string denoting the addr field in the database.
+	FieldAddr = "addr"
 	// FieldEndian holds the string denoting the endian field in the database.
 	FieldEndian = "endian"
 	// FieldWordOrder holds the string denoting the word_order field in the database.
 	FieldWordOrder = "word_order"
+	// FieldMemo holds the string denoting the memo field in the database.
+	FieldMemo = "memo"
 	// Table holds the table name of the dev in the database.
 	Table = "dev"
 )
@@ -40,8 +44,10 @@ var Columns = []string{
 	FieldClazz,
 	FieldCli,
 	FieldUnitID,
+	FieldAddr,
 	FieldEndian,
 	FieldWordOrder,
+	FieldMemo,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -65,6 +71,8 @@ var (
 	CliValidator func(string) error
 	// DefaultUnitID holds the default value on creation for the "unit_id" field.
 	DefaultUnitID uint8
+	// DefaultAddr holds the default value on creation for the "addr" field.
+	DefaultAddr uint16
 	// DefaultEndian holds the default value on creation for the "endian" field.
 	DefaultEndian uint
 	// DefaultWordOrder holds the default value on creation for the "word_order" field.
@@ -109,6 +117,11 @@ func ByUnitID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUnitID, opts...).ToFunc()
 }
 
+// ByAddr orders the results by the addr field.
+func ByAddr(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAddr, opts...).ToFunc()
+}
+
 // ByEndian orders the results by the endian field.
 func ByEndian(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndian, opts...).ToFunc()
@@ -117,4 +130,9 @@ func ByEndian(opts ...sql.OrderTermOption) OrderOption {
 // ByWordOrder orders the results by the word_order field.
 func ByWordOrder(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldWordOrder, opts...).ToFunc()
+}
+
+// ByMemo orders the results by the memo field.
+func ByMemo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMemo, opts...).ToFunc()
 }

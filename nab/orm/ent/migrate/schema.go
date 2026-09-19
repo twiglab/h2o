@@ -22,7 +22,7 @@ var (
 		{Name: "timeout", Type: field.TypeInt64, Default: 0},
 		{Name: "endian", Type: field.TypeUint, Default: 0},
 		{Name: "word_order", Type: field.TypeUint, Default: 0},
-		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "memo", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// CliTable holds the schema information for the "cli" table.
 	CliTable = &schema.Table{
@@ -39,8 +39,10 @@ var (
 		{Name: "clazz", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "cli", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "unit_id", Type: field.TypeUint8, Default: 0},
+		{Name: "addr", Type: field.TypeUint16, Default: 0},
 		{Name: "endian", Type: field.TypeUint, Default: 0},
 		{Name: "word_order", Type: field.TypeUint, Default: 0},
+		{Name: "memo", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// DevTable holds the schema information for the "dev" table.
 	DevTable = &schema.Table{

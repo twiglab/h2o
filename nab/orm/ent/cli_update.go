@@ -71,9 +71,6 @@ func (_u *CliUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.URLCleared() {
 		_spec.ClearField(cli.FieldURL, field.TypeString)
 	}
-	if _u.mutation.MemoCleared() {
-		_spec.ClearField(cli.FieldMemo, field.TypeString)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{cli.Label}
@@ -167,9 +164,6 @@ func (_u *CliUpdateOne) sqlSave(ctx context.Context) (_node *Cli, err error) {
 	}
 	if _u.mutation.URLCleared() {
 		_spec.ClearField(cli.FieldURL, field.TypeString)
-	}
-	if _u.mutation.MemoCleared() {
-		_spec.ClearField(cli.FieldMemo, field.TypeString)
 	}
 	_node = &Cli{config: _u.config}
 	_spec.Assign = _node.assignValues

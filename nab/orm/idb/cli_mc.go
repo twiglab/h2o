@@ -1,6 +1,10 @@
 package idb
 
-import "modernc.org/sqlite/vtab"
+import (
+	"fmt"
+
+	"modernc.org/sqlite/vtab"
+)
 
 var client_table_columns = []string{
 	"id",
@@ -17,10 +21,10 @@ var client_table_columns = []string{
 	"memo",
 }
 
-type ClientRec struct {
+type CliRec struct {
 	ID   int64  `csv:"id" db:"id"`
 	Code string `csv:"code" db:"code"`
-	Type string `csv:"type" db:"typ"`
+	Typ  string `csv:"typ" db:"typ"`
 
 	URL string `csv:"url" db:"url"`
 
@@ -37,14 +41,14 @@ type ClientRec struct {
 	Memo string `csv:"memo" db:"memo"`
 }
 
-func (r ClientRec) Column(i int) (vtab.Value, error) {
+func (r CliRec) Column(i int) (vtab.Value, error) {
 	switch i {
 	case 0:
 		return r.ID, nil
 	case 1:
 		return r.Code, nil
 	case 2:
-		return r.Type, nil
+		return r.Typ, nil
 	case 3:
 		return r.URL, nil
 	case 4:
@@ -64,9 +68,9 @@ func (r ClientRec) Column(i int) (vtab.Value, error) {
 	case 11:
 		return r.Memo, nil
 	}
-	panic(i)
+	panic(fmt.Errorf("no field %d", i))
 }
 
-func (c ClientRec) RowID() int64 {
+func (c CliRec) RowID() int64 {
 	return c.ID
 }
