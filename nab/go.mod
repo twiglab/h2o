@@ -7,7 +7,6 @@ require (
 	github.com/avast/retry-go/v3 v3.1.1
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/gocarina/gocsv v0.0.0-20260908110832-9ab82d65b1cc
-	github.com/jmoiron/sqlx v1.4.0
 	github.com/simonvetter/modbus v1.6.4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
