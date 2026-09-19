@@ -36,7 +36,7 @@ func OnOffHandle(global Global) mqtt.MessageHandler {
 
 		mcli := global.MustGetClient(dev.Cli)
 
-		onoff := equlib.From[xx](dev.Clazz)
+		onoff := equlib.From[OnOffer](dev.Clazz)
 
 		switch op {
 		case common.ON:
@@ -55,7 +55,7 @@ func OnOffHandle(global Global) mqtt.MessageHandler {
 	}
 }
 
-type xx interface {
+type OnOffer interface {
 	DeviceOn
 	DeviceOff
 }

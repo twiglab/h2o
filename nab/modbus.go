@@ -4,12 +4,13 @@ import (
 	"context"
 	"log/slog"
 	"sync"
+	"time"
 
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
-type Collector interface {
+type DeviceCollector interface {
 	Collect(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error
 }
 
@@ -59,7 +60,7 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 		DataBits: record.DataBits,
 		Parity:   record.Parity,
 		StopBits: record.StopBits,
-		// Timeout:  time.Millisecond * 300,
+		Timeout:  time.Second,
 	}
 
 	cli, err := modbus.NewClient(cfg)
@@ -101,7 +102,7 @@ func (c *ModbusCli) reset() error {
 	return nil
 }
 
-func (c *ModbusCli) DoCollect(ctx context.Context, coll Collector, data DeviceData) error {
+func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) error {
 	if err := c.setup(data); err != nil {
 		return err
 	}
