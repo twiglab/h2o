@@ -47,6 +47,13 @@ func NewLog(logFile string, level slog.Level) *slog.Logger {
 	return slog.New(h)
 }
 
+func ConsoleLog(level slog.Level) *slog.Logger {
+	h := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level})
+	l := slog.New(h)
+	slog.SetDefault(l)
+	return l
+}
+
 func NewLogWriter(logf string) io.Writer {
 	return &lumberjack.Logger{
 		Filename:  logf,
