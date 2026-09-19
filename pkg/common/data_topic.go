@@ -24,6 +24,11 @@ func DataTopic(d Device) string {
 
 func TopicPart(topic string) []string {
 	parts := strings.Split(topic, "/")
+	_ = parts[1]
+
+	if parts[0] != H2O {
+		panic("not h2o topic")
+	}
 	return parts
 
 }
