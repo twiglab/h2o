@@ -68,6 +68,13 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 		return nil, err
 	}
 
+	e := endian(record.Endian)
+	wo := wordorder(record.WordOrder)
+
+	if err = cli.SetEncoding(e, wo); err != nil {
+		return nil, err
+	}
+
 	if err = cli.Open(); err != nil {
 		return nil, err
 	}
@@ -77,8 +84,8 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 		cli:    cli,
 		Code:   record.Code,
 
-		endina:    endian(record.Endian),
-		wordorder: wordorder(record.WordOrder),
+		endina:    e,
+		wordorder: wo,
 	}, nil
 }
 
