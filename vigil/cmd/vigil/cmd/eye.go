@@ -50,7 +50,7 @@ var topic string
 func eye(cmd *cobra.Command, args []string) error {
 	fmt.Println("topic ", topic)
 
-	rLog()
+	clog.ConsoleLog(slog.LevelDebug)
 
 	mcli := mcli()
 	token := mcli.Subscribe(topic, 0x0, vigil.RawHandle())
@@ -71,10 +71,4 @@ func mcli() mqtt.Client {
 		log.Fatal(fmt.Errorf("mc err: %w", err))
 	}
 	return cli
-}
-
-func rLog() *slog.Logger {
-	log := clog.NewLog("", slog.LevelDebug)
-	slog.SetDefault(log)
-	return log
 }
