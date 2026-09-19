@@ -23,7 +23,7 @@ func (t CollectTask) Run() {
 
 		err := client.DoCollect(context.Background(), collect, DeviceData{
 			Record: dev,
-			Config: t.Global,
+			Global: t.Global,
 			Sender: t.Sender,
 			Logger: t.Logger,
 		})

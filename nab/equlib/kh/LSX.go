@@ -33,9 +33,9 @@ func (e LXS) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.Dev
 	meter.DataTime = now
 	meter.DataTs = common.Ts(now)
 
-	meter.Pos.Project = data.Config.Project
+	meter.Pos.Project = data.Global.Project
 
-	meter.Gateway.Code = data.Config.BoxCode
+	meter.Gateway.Code = data.Global.BoxCode
 	meter.Gateway.Type = common.GATEWAY_NH
 	meter.Gateway.UnitID = data.Record.UnitID
 

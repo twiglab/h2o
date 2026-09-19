@@ -143,6 +143,6 @@ func (c *ModbusCli) DoFunc(ctx context.Context, data DeviceData, f func(ctx cont
 type DeviceData struct {
 	Record *ent.Dev
 	Sender Sender
-	Config Global
+	Global Global
 	Logger *slog.Logger
 }
