@@ -2,21 +2,11 @@ package nab
 
 import (
 	"context"
-	"encoding"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/pkg/common"
 )
-
-type SendObject interface {
-	encoding.BinaryMarshaler
-	Topic() string
-}
-
-type Sender interface {
-	SendData(ctx context.Context, obj SendObject) error
-}
 
 type MQTTAction struct {
 	client mqtt.Client

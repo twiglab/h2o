@@ -65,7 +65,7 @@ func showCli() error {
 		}),
 	)
 
-	rs, err := cli.Cli.Query().All(ctx)
+	rs, err := cli.AllCli(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

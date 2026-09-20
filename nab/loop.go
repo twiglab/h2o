@@ -19,6 +19,10 @@ func (l *Loops) AddJob(j Job) *Loops {
 	return l
 }
 
+func (l *Loops) AddNewLoop(delay time.Duration, job Job) *Loops {
+	return l.AddJob(NewLoop(delay, job))
+}
+
 func (l Loops) Run() {
 	for _, j := range l.jobs {
 		j.Run()

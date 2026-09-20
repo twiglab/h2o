@@ -14,6 +14,8 @@ type CollectTask struct {
 	Data   []*ent.Dev
 	Sender Sender
 	Logger *slog.Logger
+
+	Delay time.Duration
 }
 
 func (t CollectTask) Run() {
@@ -31,6 +33,6 @@ func (t CollectTask) Run() {
 		if err != nil {
 			t.Logger.Error("collect error", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
 		}
-		time.Sleep(300 * time.Millisecond)
+		time.Sleep(t.Delay)
 	}
 }

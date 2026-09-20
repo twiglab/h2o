@@ -65,7 +65,7 @@ func showDev() error {
 		}),
 	)
 
-	rs, err := cli.Dev.Query().All(ctx)
+	rs, err := cli.AllDev(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

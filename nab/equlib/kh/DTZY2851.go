@@ -10,7 +10,6 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-// const KH_DTZY2851 = "KH-DTZY2851"
 const KH_DTZY2851_CD7_1 = "KH-DTZY2851-CD7-1"
 
 type DTZY struct {
@@ -21,6 +20,8 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 	if err != nil {
 		return err
 	}
+
+	time.Sleep(300 * time.Millisecond)
 
 	dataVal, err := cli.ReadUint32(0x60, modbus.INPUT_REGISTER)
 	if err != nil {
