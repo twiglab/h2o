@@ -65,6 +65,9 @@ func run() error {
 		lps.AddToNewLoop(1*time.Second, t)
 	}
 
+	log.Println("sleep 5s")
+	time.Sleep(5 * time.Second)
+
 	lps.Run()
 
 	hd := nab.HandleData{
