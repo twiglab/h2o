@@ -15,15 +15,19 @@ type Global struct {
 	clientMap map[string]*ModbusCli
 }
 
-func (g Global) ClientByCode(code string) *ModbusCli {
-	cli := g.clientMap[code]
-	return cli
+func (g Global) ClientByCode(code string) (cli *ModbusCli, ok bool) {
+	cli, ok = g.clientMap[code]
+	return
 }
 
 func (g *Global) InitClients(ctx context.Context) error {
 	g.clientMap = make(map[string]*ModbusCli)
 
-	clients := g.IDB.MustAllCli(ctx)
+	clients, err := g.IDB.AllCli(ctx)
+	if err != nil {
+		return err
+	}
+
 	for _, cr := range clients {
 		cli, err := NewModbusCli(cr)
 		if err != nil {

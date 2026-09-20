@@ -58,17 +58,35 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 		if cmp.Compare(boxCode, data.Global.Box) != 0 {
 			data.Logger.Error("onoff box code error",
 				slog.String("box", boxCode),
-				slog.String("devCode", devCode),
+				slog.String("code", devCode),
 				slog.String("global.Box", data.Global.Box),
 				slog.String("op", op),
 			)
 		}
 
-		dev := data.Global.IDB.MustGetDev(context.Background(), devCode)
+		dev, err := data.Global.IDB.GetDev(context.Background(), devCode)
+		if err != nil {
+			data.Logger.Error("OnOff.GetDev.Error",
+				slog.String("box", boxCode),
+				slog.String("code", devCode),
+				slog.String("global.Box", data.Global.Box),
+				slog.String("op", op),
+			)
+			return
+		}
 
-		mcli := data.Global.ClientByCode(dev.Cli)
+		mcli, ok := data.Global.ClientByCode(dev.Cli)
+		if !ok {
+			data.Logger.Error("OnOff.ClientByCode.Error",
+				slog.String("box", boxCode),
+				slog.String("code", devCode),
+				slog.String("global.Box", data.Global.Box),
+				slog.String("op", op),
+			)
+			return
+		}
 
-		onoff := equlib.From[OnOffer](dev.Clazz)
+		onoff, ok := equlib.From[OnOffer](dev.Clazz)
 
 		switch op {
 		case common.ON:

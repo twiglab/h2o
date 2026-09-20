@@ -20,10 +20,22 @@ type CollectTask struct {
 
 func (t CollectTask) Run() {
 	for _, dev := range t.Data {
-		collect := equlib.From[DeviceCollector](dev.Clazz)
-		client := t.Global.ClientByCode(dev.Cli)
+		coltor, ok := equlib.From[DeviceCollector](dev.Clazz)
+		if !ok {
+			t.Logger.Error("CollectTask.NotFoundClazz", slog.String("code", dev.Code),
+				slog.String("clazz", dev.Clazz),
+				slog.String("box", t.Global.Box),
+				slog.Any("record", dev))
+		}
+		client, ok := t.Global.ClientByCode(dev.Cli)
+		if !ok {
+			t.Logger.Error("CollectTask.NotFoundClient", slog.String("code", dev.Code),
+				slog.String("cli", dev.Clazz),
+				slog.String("box", t.Global.Box),
+				slog.Any("record", dev))
+		}
 
-		err := client.DoCollect(context.Background(), collect, DeviceData{
+		err := client.DoCollect(context.Background(), coltor, DeviceData{
 			Record: dev,
 			Global: t.Global,
 			Sender: t.Sender,
@@ -31,7 +43,7 @@ func (t CollectTask) Run() {
 		})
 
 		if err != nil {
-			t.Logger.Error("collect error", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
+			t.Logger.Error("CollectTask.CollectError", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
 		}
 		time.Sleep(t.Delay)
 	}

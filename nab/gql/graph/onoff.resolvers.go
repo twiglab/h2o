@@ -7,6 +7,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 
 	"github.com/twiglab/h2o/nab"
@@ -17,11 +18,20 @@ import (
 
 // DeviceOnOffImmediately is the resolver for the deviceOnOffImmediately field.
 func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
-	dev := r.Global.IDB.MustGetDev(ctx, input.Code)
+	dev, err := r.Global.IDB.GetDev(ctx, input.Code)
+	if err != nil {
+		return nil, err
+	}
 
-	mcli := r.Global.ClientByCode(dev.Cli)
+	mcli, ok := r.Global.ClientByCode(dev.Cli)
+	if !ok {
+		return nil, fmt.Errorf("not found cli id %s", dev.Cli)
+	}
 
-	onoff := equlib.From[nab.OnOffer](dev.Clazz)
+	onoff, ok := equlib.From[nab.OnOffer](dev.Clazz)
+	if !ok {
+		return nil, fmt.Errorf("not found clazz id %s", dev.Clazz)
+	}
 
 	switch input.Op {
 	case common.ON:

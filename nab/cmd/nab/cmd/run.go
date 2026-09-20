@@ -52,7 +52,10 @@ func run() error {
 
 	lps := nab.NewLoops()
 
-	devs := idb.MustAllDev(ctx)
+	devs, err := idb.AllDev(ctx)
+	if err != nil {
+		return err
+	}
 
 	for s := range slices.Chunk(devs, 10) {
 		t := nab.CollectTask{
@@ -65,7 +68,7 @@ func run() error {
 		lps.AddToNewLoop(1*time.Second, t)
 	}
 
-	log.Println("sleep 5s")
+	log.Println("run after 5s")
 	time.Sleep(5 * time.Second)
 
 	lps.Run()
@@ -80,7 +83,7 @@ func run() error {
 	t.Wait()
 
 	if err := t.Error(); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	mux := chi.NewMux()

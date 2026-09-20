@@ -34,38 +34,14 @@ func (g IDB) GetDev(ctx context.Context, code string) (*ent.Dev, error) {
 	return d, err
 }
 
-func (g IDB) MustGetDev(ctx context.Context, code string) *ent.Dev {
-	dev, err := g.GetDev(ctx, code)
-	if err != nil {
-		panic(err)
-	}
-	return dev
-}
-
 func (g IDB) AllDev(ctx context.Context) ([]*ent.Dev, error) {
 	q := g.cli.Dev.Query()
 	return q.All(ctx)
 }
 
-func (g IDB) MustAllDev(ctx context.Context) []*ent.Dev {
-	a, err := g.AllDev(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return a
-}
-
 func (g IDB) AllCli(ctx context.Context) ([]*ent.Cli, error) {
 	q := g.cli.Cli.Query()
 	return q.All(ctx)
-}
-
-func (g IDB) MustAllCli(ctx context.Context) []*ent.Cli {
-	a, err := g.AllCli(ctx)
-	if err != nil {
-		panic(err)
-	}
-	return a
 }
 
 func (g IDB) Close() error {
