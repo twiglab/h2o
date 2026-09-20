@@ -19,7 +19,7 @@ type CollectTask struct {
 func (t CollectTask) Run() {
 	for _, dev := range t.Data {
 		collect := equlib.From[DeviceCollector](dev.Clazz)
-		client := t.Global.MustGetClient(dev.Cli)
+		client := t.Global.ClientByCode(dev.Cli)
 
 		err := client.DoCollect(context.Background(), collect, DeviceData{
 			Record: dev,

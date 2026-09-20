@@ -4,6 +4,7 @@ package orm
 
 import (
 	"cmp"
+	"context"
 	"database/sql"
 	"fmt"
 	"strconv"
@@ -11,6 +12,7 @@ import (
 	_ "modernc.org/sqlite"
 	"modernc.org/sqlite/vtab"
 
+	"github.com/twiglab/h2o/nab/orm/ent/dev"
 	_ "github.com/twiglab/h2o/nab/orm/ent/runtime"
 
 	"github.com/twiglab/h2o/nab/orm/idb"
@@ -21,7 +23,56 @@ import (
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
-func NewIDB(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
+type IDB struct {
+	cli *ent.Client
+}
+
+func (g IDB) GetDev(ctx context.Context, code string) (*ent.Dev, error) {
+	q := g.cli.Dev.Query()
+	q.Where(dev.CodeEQ(code))
+	d, err := q.Only(ctx)
+	return d, err
+}
+
+func (g IDB) MustGetDev(ctx context.Context, code string) *ent.Dev {
+	dev, err := g.GetDev(ctx, code)
+	if err != nil {
+		panic(err)
+	}
+	return dev
+}
+
+func (g IDB) AllDev(ctx context.Context) ([]*ent.Dev, error) {
+	q := g.cli.Dev.Query()
+	return q.All(ctx)
+}
+
+func (g IDB) MustAllDev(ctx context.Context) []*ent.Dev {
+	a, err := g.AllDev(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return a
+}
+
+func (g IDB) AllCli(ctx context.Context) ([]*ent.Cli, error) {
+	q := g.cli.Cli.Query()
+	return q.All(ctx)
+}
+
+func (g IDB) MustAllCli(ctx context.Context) []*ent.Cli {
+	a, err := g.AllCli(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return a
+}
+
+func (g IDB) Close() error {
+	return g.cli.Close()
+}
+
+func NewIDB(dev, cli string, ops ...ent.Option) (*IDB, error) {
 	db, err := sql.Open("sqlite", ":memory:")
 	if err != nil {
 		return nil, err
@@ -43,7 +94,10 @@ func NewIDB(dev, cli string, ops ...ent.Option) (*ent.Client, error) {
 
 	drv := entsql.OpenDB(dialect.SQLite, db)
 	ops = append(ops, ent.Driver(drv))
-	return ent.NewClient(ops...), nil
+
+	return &IDB{
+		cli: ent.NewClient(ops...),
+	}, nil
 }
 
 func DevToStrings(v *ent.Dev) []string {

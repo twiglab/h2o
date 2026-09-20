@@ -17,9 +17,9 @@ import (
 
 // DeviceOnOffImmediately is the resolver for the deviceOnOffImmediately field.
 func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
-	dev := r.Global.MustGetDev(ctx, input.Code)
+	dev := r.Global.IDB.MustGetDev(ctx, input.Code)
 
-	mcli := r.Global.MustGetClient(dev.Cli)
+	mcli := r.Global.ClientByCode(dev.Cli)
 
 	onoff := equlib.From[nab.OnOffer](dev.Clazz)
 

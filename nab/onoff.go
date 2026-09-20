@@ -64,9 +64,9 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 			)
 		}
 
-		dev := data.Global.MustGetDev(context.Background(), devCode)
+		dev := data.Global.IDB.MustGetDev(context.Background(), devCode)
 
-		mcli := data.Global.MustGetClient(dev.Cli)
+		mcli := data.Global.ClientByCode(dev.Cli)
 
 		onoff := equlib.From[OnOffer](dev.Clazz)
 
