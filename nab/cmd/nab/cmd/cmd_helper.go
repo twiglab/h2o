@@ -26,7 +26,7 @@ func sender(cli mqtt.Client) nab.Sender {
 }
 
 func mqttcli() mqtt.Client {
-	broker := viper.GetString("nab.mqtt.broker")
+	broker := viper.GetString("nab.sender.mqtt.broker")
 
 	if broker == "" {
 		log.Fatalf("no broker")
