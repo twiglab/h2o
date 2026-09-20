@@ -36,7 +36,7 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 
 	meter.Pos.Project = data.Global.Project
 
-	meter.Gateway.Code = data.Global.BoxCode
+	meter.Gateway.Code = data.Global.Box
 	meter.Gateway.Type = common.GATEWAY_NH
 	meter.Gateway.UnitID = data.Record.UnitID
 
@@ -44,11 +44,11 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 }
 
 func (e CLFOC) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	data.Logger.DebugContext(ctx, "CLFOC ON", slog.String("boxCode", data.Global.BoxCode), slog.Any("Record", data.Record))
+	data.Logger.DebugContext(ctx, "CLFOC ON", slog.String("boxCode", data.Global.Box), slog.Any("Record", data.Record))
 	return nil
 }
 
 func (e CLFOC) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	data.Logger.DebugContext(ctx, "CLFOC OFF", slog.String("boxCode", data.Global.BoxCode), slog.Any("Record", data.Record))
+	data.Logger.DebugContext(ctx, "CLFOC OFF", slog.String("boxCode", data.Global.Box), slog.Any("Record", data.Record))
 	return nil
 }

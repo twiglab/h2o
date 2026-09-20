@@ -55,11 +55,11 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 
 		boxCode, devCode, op := topicPart(msg.Topic())
 
-		if cmp.Compare(boxCode, data.Global.BoxCode) != 0 {
+		if cmp.Compare(boxCode, data.Global.Box) != 0 {
 			data.Logger.Error("onoff box code error",
-				slog.String("boxCode", boxCode),
+				slog.String("box", boxCode),
 				slog.String("devCode", devCode),
-				slog.String("globalBoxCode", data.Global.BoxCode),
+				slog.String("global.Box", data.Global.Box),
 				slog.String("op", op),
 			)
 		}

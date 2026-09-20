@@ -1,10 +1,19 @@
 package cmd
 
 import (
+	"log"
 	"net/http"
 	_ "net/http/pprof"
 
+	"context"
+	"slices"
+	"time"
+
 	"github.com/spf13/cobra"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/twiglab/h2o/nab"
+	"github.com/twiglab/h2o/nab/gql"
 )
 
 // runCmd represents the run command
@@ -27,5 +36,52 @@ func init() {
 }
 
 func run() error {
-	return http.ListenAndServe(":10001", nil)
+
+	_ = rootLog()
+
+	logger := serverLog()
+
+	idb := db()
+	defer idb.Close()
+
+	ctx := context.Background()
+
+	g := global(idb)
+	mcli := mqttcli()
+	act := sender(mcli)
+
+	lps := nab.NewLoops()
+
+	devs := idb.MustAllDev(ctx)
+
+	for s := range slices.Chunk(devs, 10) {
+		t := nab.CollectTask{
+			Global: g,
+			Data:   s,
+			Sender: act,
+			Logger: logger,
+			Delay:  1 * time.Second,
+		}
+		lps.AddToNewLoop(1*time.Second, t)
+	}
+
+	lps.Run()
+
+	hd := nab.HandleData{
+		Global: g,
+		Sender: act,
+		Logger: logger,
+	}
+
+	t := mcli.Subscribe(nab.SubscriptTopic(g.Box), 0x01, nab.OnOffHandle(hd))
+	t.Wait()
+
+	if err := t.Error(); err != nil {
+		log.Fatal(err)
+	}
+
+	mux := chi.NewMux()
+	mux.Mount("/gql", gql.Handle(hd, gql.WithPath("/gql")))
+
+	return http.ListenAndServe(webaddr(), mux)
 }

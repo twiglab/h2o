@@ -8,7 +8,7 @@ import (
 
 type Global struct {
 	Project string
-	BoxCode string
+	Box     string
 
 	IDB *orm.IDB
 

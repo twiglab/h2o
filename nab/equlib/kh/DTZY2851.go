@@ -42,7 +42,7 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 
 	meter.Pos.Project = data.Global.Project
 
-	meter.Gateway.Code = data.Global.BoxCode
+	meter.Gateway.Code = data.Global.Box
 	meter.Gateway.Type = common.GATEWAY_NH
 	meter.Gateway.UnitID = data.Record.UnitID
 
