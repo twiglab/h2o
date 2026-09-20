@@ -7,7 +7,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 
 	"github.com/twiglab/h2o/nab"
@@ -16,8 +15,8 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-// DeviceOnOff is the resolver for the deviceOnOff field.
-func (r *mutationResolver) DeviceOnOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
+// DeviceOnOffImmediately is the resolver for the deviceOnOffImmediately field.
+func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
 	dev := r.Global.MustGetDev(ctx, input.Code)
 
 	mcli := r.Global.MustGetClient(dev.Cli)
@@ -58,14 +57,17 @@ func (r *mutationResolver) DeviceOnOff(ctx context.Context, input model.DeviceOn
 	return &model.OnOff{Code: input.Code, Op: input.Op}, nil
 }
 
-// DeviceOff is the resolver for the deviceOff field.
-func (r *mutationResolver) DeviceOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
-	panic(fmt.Errorf("not implemented: DeviceOff - deviceOff"))
-}
+// DeviceOnOff is the resolver for the deviceOnOff field.
+func (r *mutationResolver) DeviceOnOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
+	o := nab.OnOffLite{
+		BoxCode: r.Global.BoxCode,
+		Code:    input.Code,
+		Op:      input.Op,
+	}
 
-// DeviceOn is the resolver for the deviceOn field.
-func (r *mutationResolver) DeviceOn(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
-	panic(fmt.Errorf("not implemented: DeviceOn - deviceOn"))
+	err := r.Sender.SendData(ctx, o)
+
+	return &model.OnOff{Code: input.Code, Op: input.Op}, err
 }
 
 // Mutation returns MutationResolver implementation.

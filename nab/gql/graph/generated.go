@@ -38,9 +38,8 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Mutation struct {
-		DeviceOff   func(childComplexity int, input model.DeviceOnOffInput) int
-		DeviceOn    func(childComplexity int, input model.DeviceOnOffInput) int
-		DeviceOnOff func(childComplexity int, input model.DeviceOnOffInput) int
+		DeviceOnOff            func(childComplexity int, input model.DeviceOnOffInput) int
+		DeviceOnOffImmediately func(childComplexity int, input model.DeviceOnOffInput) int
 	}
 
 	OnOff struct {
@@ -62,9 +61,8 @@ type ComplexityRoot struct {
 // region    ************************** generated!.gotpl **************************
 
 type MutationResolver interface {
+	DeviceOnOffImmediately(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error)
 	DeviceOnOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error)
-	DeviceOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error)
-	DeviceOn(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -85,28 +83,6 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Mutation.deviceOff":
-		if e.ComplexityRoot.Mutation.DeviceOff == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deviceOff_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.ComplexityRoot.Mutation.DeviceOff(childComplexity, args["input"].(model.DeviceOnOffInput)), true
-	case "Mutation.deviceOn":
-		if e.ComplexityRoot.Mutation.DeviceOn == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deviceOn_args(ctx, rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.ComplexityRoot.Mutation.DeviceOn(childComplexity, args["input"].(model.DeviceOnOffInput)), true
 	case "Mutation.deviceOnOff":
 		if e.ComplexityRoot.Mutation.DeviceOnOff == nil {
 			break
@@ -118,6 +94,17 @@ func (e *executableSchema) Complexity(ctx context.Context, typeName, field strin
 		}
 
 		return e.ComplexityRoot.Mutation.DeviceOnOff(childComplexity, args["input"].(model.DeviceOnOffInput)), true
+	case "Mutation.deviceOnOffImmediately":
+		if e.ComplexityRoot.Mutation.DeviceOnOffImmediately == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deviceOnOffImmediately_args(ctx, rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.ComplexityRoot.Mutation.DeviceOnOffImmediately(childComplexity, args["input"].(model.DeviceOnOffInput)), true
 
 	case "OnOff.code":
 		if e.ComplexityRoot.OnOff.Code == nil {
@@ -445,7 +432,7 @@ func (ec *executionContext) childFields___Type(ctx context.Context, field graphq
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_deviceOff_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
+func (ec *executionContext) field_Mutation_deviceOnOffImmediately_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
@@ -460,20 +447,6 @@ func (ec *executionContext) field_Mutation_deviceOff_args(ctx context.Context, r
 }
 
 func (ec *executionContext) field_Mutation_deviceOnOff_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
-	var err error
-	args := map[string]any{}
-	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
-		func(ctx context.Context, v any) (model.DeviceOnOffInput, error) {
-			return ec.unmarshalNDeviceOnOffInput2githubᚗcomᚋtwiglabᚋh2oᚋnabᚋgqlᚋgraphᚋmodelᚐDeviceOnOffInput(ctx, v)
-		})
-	if err != nil {
-		return nil, err
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_deviceOn_args(ctx context.Context, rawArgs map[string]any) (map[string]any, error) {
 	var err error
 	args := map[string]any{}
 	arg0, err := graphql.ProcessArgField(ctx, rawArgs, "input",
@@ -561,6 +534,50 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _Mutation_deviceOnOffImmediately(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	return graphql.ResolveField(
+		ctx,
+		ec.OperationContext,
+		field,
+		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.fieldContext_Mutation_deviceOnOffImmediately(ctx, field)
+		},
+		func(ctx context.Context) (any, error) {
+			fc := graphql.GetFieldContext(ctx)
+			return ec.Resolvers.Mutation().DeviceOnOffImmediately(ctx, fc.Args["input"].(model.DeviceOnOffInput))
+		},
+		nil,
+		func(ctx context.Context, selections ast.SelectionSet, v *model.OnOff) graphql.Marshaler {
+			return ec.marshalNOnOff2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋnabᚋgqlᚋgraphᚋmodelᚐOnOff(ctx, selections, v)
+		},
+		true,
+		true,
+	)
+}
+func (ec *executionContext) fieldContext_Mutation_deviceOnOffImmediately(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return ec.childFields_OnOff(ctx, field)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deviceOnOffImmediately_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_deviceOnOff(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	return graphql.ResolveField(
 		ctx,
@@ -599,94 +616,6 @@ func (ec *executionContext) fieldContext_Mutation_deviceOnOff(ctx context.Contex
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deviceOnOff_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_deviceOff(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Mutation_deviceOff(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().DeviceOff(ctx, fc.Args["input"].(model.DeviceOnOffInput))
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v *model.OnOff) graphql.Marshaler {
-			return ec.marshalNOnOff2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋnabᚋgqlᚋgraphᚋmodelᚐOnOff(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Mutation_deviceOff(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.childFields_OnOff(ctx, field)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deviceOff_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_deviceOn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	return graphql.ResolveField(
-		ctx,
-		ec.OperationContext,
-		field,
-		func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.fieldContext_Mutation_deviceOn(ctx, field)
-		},
-		func(ctx context.Context) (any, error) {
-			fc := graphql.GetFieldContext(ctx)
-			return ec.Resolvers.Mutation().DeviceOn(ctx, fc.Args["input"].(model.DeviceOnOffInput))
-		},
-		nil,
-		func(ctx context.Context, selections ast.SelectionSet, v *model.OnOff) graphql.Marshaler {
-			return ec.marshalNOnOff2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋnabᚋgqlᚋgraphᚋmodelᚐOnOff(ctx, selections, v)
-		},
-		true,
-		true,
-	)
-}
-func (ec *executionContext) fieldContext_Mutation_deviceOn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return ec.childFields_OnOff(ctx, field)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deviceOn_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1994,23 +1923,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "deviceOnOffImmediately":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deviceOnOffImmediately(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "deviceOnOff":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deviceOnOff(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "deviceOff":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deviceOff(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "deviceOn":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deviceOn(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

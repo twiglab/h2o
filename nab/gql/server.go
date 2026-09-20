@@ -50,10 +50,12 @@ func Handle(hd nab.HandleData, ops ...Ops) http.Handler {
 		Cache: lru.New[string](100),
 	})
 
+	p := path.Join(c.path, "/query")
+
 	mux := chi.NewMux()
 
-	mux.Handle("/", playground.ApolloSandboxHandler("GraphQL playground", path.Join(c.path, "/query")))
+	mux.Handle("/", playground.ApolloSandboxHandler("GraphQL playground", p))
 	mux.Handle("/query", srv)
 
-	return srv
+	return mux
 }

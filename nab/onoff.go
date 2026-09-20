@@ -1,13 +1,29 @@
 package nab
 
 import (
+	"cmp"
 	"context"
+	"encoding/json/v2"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/pkg/common"
 )
+
+type OnOffLite struct {
+	BoxCode string
+	Code    string
+	Op      string
+}
+
+func (m OnOffLite) MarshalBinary() (data []byte, err error) {
+	return json.Marshal(m)
+}
+
+func (o OnOffLite) Topic() string {
+	return common.H2O + "/onoff/" + o.BoxCode + "/" + o.Code + "/" + o.Op
+}
 
 type HandleData struct {
 	Sender Sender
@@ -38,7 +54,8 @@ func OnOffHandle(data HandleData) mqtt.MessageHandler {
 		defer msg.Ack()
 
 		boxCode, devCode, op := topicPart(msg.Topic())
-		if boxCode != data.Global.BoxCode {
+
+		if cmp.Compare(boxCode, data.Global.BoxCode) != 0 {
 			data.Logger.Error("onoff box code error",
 				slog.String("boxCode", boxCode),
 				slog.String("devCode", devCode),

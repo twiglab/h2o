@@ -2,6 +2,7 @@ package clfoc
 
 import (
 	"context"
+	"log/slog"
 	"time"
 
 	"github.com/simonvetter/modbus"
@@ -43,9 +44,11 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 }
 
 func (e CLFOC) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
+	data.Logger.DebugContext(ctx, "CLFOC ON", slog.String("boxCode", data.Global.BoxCode), slog.Any("Record", data.Record))
 	return nil
 }
 
 func (e CLFOC) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
+	data.Logger.DebugContext(ctx, "CLFOC OFF", slog.String("boxCode", data.Global.BoxCode), slog.Any("Record", data.Record))
 	return nil
 }

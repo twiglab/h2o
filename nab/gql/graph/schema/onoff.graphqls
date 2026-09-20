@@ -10,7 +10,6 @@ input DeviceOnOffInput {
 
 
 type Mutation {
+  deviceOnOffImmediately(input: DeviceOnOffInput!): OnOff!
   deviceOnOff(input: DeviceOnOffInput!): OnOff!
-  deviceOff(input: DeviceOnOffInput!): OnOff!
-  deviceOn(input: DeviceOnOffInput!): OnOff!
 }
