@@ -18,10 +18,10 @@ func sender(cli mqtt.Client) nab.Sender {
 	use := viper.GetString("nab.sender.use")
 	switch use {
 	case "mqtt":
-		log.Println("using mqtt")
+		log.Println("sender - using mqtt")
 		return nab.NewMQTTAction(cli)
 	}
-	log.Println("using logAction")
+	log.Println("sender - using logAction")
 	return nab.LogAction{}
 }
 
@@ -38,7 +38,7 @@ func mqttcli() mqtt.Client {
 	if err != nil {
 		log.Fatal(fmt.Errorf("mqttcli err: %w", err))
 	}
-	log.Printf("nab.box: %s, broker: %s, clientID: %s\n", box, broker, clientID)
+	log.Printf("mqtt - nab.box: %s, broker: %s, clientID: %s\n", box, broker, clientID)
 	return cli
 }
 
@@ -55,7 +55,7 @@ func global(db *orm.IDB) nab.Global {
 		log.Fatal(err)
 	}
 
-	log.Printf("nab.box: %s, nab.project: %s\n", box, project)
+	log.Printf("global - nab.box: %s, nab.project: %s\n", box, project)
 	return g
 }
 
@@ -72,6 +72,7 @@ func db() *orm.IDB {
 	if err != nil {
 		log.Fatal(fmt.Errorf("idb err: %w", err))
 	}
+	log.Printf("idb - nab.idb.dev: %s, nab.idb.cli: %s\n", dev, cli)
 	return db
 }
 
