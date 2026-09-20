@@ -11,7 +11,6 @@ import (
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
-	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/idb"
 )
 
@@ -45,10 +44,7 @@ func init() {
 }
 
 func showCli() error {
-	cli, err := orm.NewIDB("idb/dev.csv", "idb/cli.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
+	cli := db()
 	defer cli.Close()
 
 	ctx := context.Background()
