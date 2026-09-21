@@ -8,6 +8,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/cobra"
@@ -66,7 +67,8 @@ func mcli() mqtt.Client {
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
-	cli, err := vigil.NewMQTTClient("eye", broker)
+	ts := common.Ts(time.Now())
+	cli, err := vigil.NewMQTTClient("eye@"+ts, broker)
 	if err != nil {
 		log.Fatal(fmt.Errorf("mc err: %w", err))
 	}
