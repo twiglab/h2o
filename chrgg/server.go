@@ -5,6 +5,7 @@ import (
 	"context"
 	"log/slog"
 
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/pkg/common"
@@ -17,16 +18,39 @@ func isAlarm3(vc *ent.ValueCharge) bool {
 }
 
 type ChargeServer struct {
-	DBx *orm.DBx
-
+	DBx    *orm.DBx
 	Sender Sender
-
 	Logger *slog.Logger
 
 	AlarmQuota int64
+
+	Client mqtt.Client
 }
 
-func (s *ChargeServer) OptOff(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
+func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		if msg.Duplicate() {
+			return
+		}
+
+		defer msg.Ack()
+
+		switch common.DataTopicType(msg.Topic()) {
+		case common.GasDataTopic:
+		case common.ElectricityDataTopic, common.WaterDataTopic: // 目前只支持水表和电表
+			var em Meter
+			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+				s.Logger.Error("unmarshal error", slog.Any("error", err))
+				return
+			}
+			if err := s.Charge(context.Background(), em); err != nil {
+				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
+			}
+		}
+	}
+}
+
+func (s *ChargeServer) optOff(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
 	//  拉闸状态，断开
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
@@ -36,7 +60,7 @@ func (s *ChargeServer) OptOff(ctx context.Context, md Meter, vc *ent.ValueCharge
 	return nil
 }
 
-func (s *ChargeServer) OptOn(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
+func (s *ChargeServer) optOn(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
 
 	//  合闸状态, 连通
 	if cmp.Less(vc.Top, md.Data.DataValue) {
@@ -60,6 +84,10 @@ func (s *ChargeServer) OptOn(ctx context.Context, md Meter, vc *ent.ValueCharge)
 }
 
 func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
+	if md.Data.OptStatus == common.OPT_STATUS_UNKNOW {
+		return nil
+	}
+
 	c, notfount, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
 	if notfount {
 		return nil // 没找到限额，无法计费，默认不计费
@@ -89,13 +117,12 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 	switch md.Data.OptStatus {
 	case common.OPT_STATUS_OFF:
 		//  拉闸(关闭)状态
-		return s.OptOff(ctx, md, c)
+		return s.optOff(ctx, md, c)
 	case common.OPT_STATUS_ON:
 		//  合闸(打开)状态
-		return s.OptOn(ctx, md, c)
+		return s.optOn(ctx, md, c)
 	}
 
-	// 状态未知，无法处理
-	// log
+	// 程序应该走不到这里
 	return nil
 }

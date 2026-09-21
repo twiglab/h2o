@@ -2,36 +2,11 @@ package chrgg
 
 import (
 	"context"
-	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/common"
 )
 
 const CLIENT_ID = "chrgg"
-
-func HandleChange(s *ChargeServer) mqtt.MessageHandler {
-	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			return
-		}
-
-		defer msg.Ack()
-
-		switch common.DataTopicType(msg.Topic()) {
-		case common.GasDataTopic:
-		case common.ElectricityDataTopic, common.WaterDataTopic: // 目前只支持水表和电表
-			var em Meter
-			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
-				s.Logger.Error("unmarshal error", slog.Any("error", err))
-				return
-			}
-			if err := s.Charge(context.Background(), em); err != nil {
-				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
-			}
-		}
-	}
-}
 
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()

@@ -13,7 +13,7 @@ import (
 id , uuidv7
 code 充值的代码（device_code + 时间到秒）
 deive_code
-devN;NaNMice_type
+device_type
 pos_code , 商铺号
 project， 1006
 充值归属（充值人）
