@@ -12,6 +12,11 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+type OnOffer interface {
+	DeviceOn
+	DeviceOff
+}
+
 type Agent struct {
 	Sender Sender
 	Global Global

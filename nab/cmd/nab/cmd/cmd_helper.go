@@ -2,15 +2,19 @@ package cmd
 
 import (
 	"cmp"
+	"context"
 	"fmt"
 	"log"
 	"log/slog"
+	"slices"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/orm"
+	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
 func sender(cli mqtt.Client) nab.Sender {
@@ -76,6 +80,21 @@ func db() *orm.IDB {
 	}
 	log.Printf("idb - nab.idb.dev: %s, nab.idb.cli: %s\n", dev, cli)
 	return db
+}
+
+func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
+	lps := nab.NewLoops()
+
+	devs, err := db.AllDev(context.Background())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for s := range slices.Chunk(devs, 10) {
+		lps.AddToNewLoop(1*time.Second, f(s))
+	}
+
+	return lps
 }
 
 func rootLog() *slog.Logger {

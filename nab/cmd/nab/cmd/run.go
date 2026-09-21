@@ -5,8 +5,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"context"
-	"slices"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -15,6 +13,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/gql"
+	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
 // runCmd represents the run command
@@ -45,32 +44,22 @@ func run() error {
 	db := db()
 	defer db.Close()
 
-	ctx := context.Background()
-
 	g := global()
 	mcli := mqttcli()
 	act := sender(mcli)
 	cliMgr := clientMgr(db)
 
-	lps := nab.NewLoops()
-
-	devs, err := db.AllDev(ctx)
-	if err != nil {
-		return err
-	}
-
-	for s := range slices.Chunk(devs, 10) {
-		t := nab.CollectTask{
+	lps := loops(db, func(data []*ent.Dev) nab.Job {
+		return nab.CollectTask{
 			Global:    g,
-			Data:      s,
+			Data:      data,
 			Sender:    act,
 			IDB:       db,
 			ClientMgr: cliMgr,
 			Logger:    logger,
 			Delay:     1 * time.Second,
 		}
-		lps.AddToNewLoop(1*time.Second, t)
-	}
+	})
 
 	agent := &nab.Agent{
 		Global: g,
