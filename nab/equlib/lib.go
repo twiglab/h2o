@@ -1,5 +1,7 @@
 package equlib
 
+import "errors"
+
 var libmap = make(map[string]any)
 
 func MustHas() {
@@ -12,10 +14,15 @@ func Register(s string, a any) {
 	libmap[s] = a
 }
 
-func From[T any](key string) (v T, ok bool) {
-	var a any
+func From[T any](key string) (v T, err error) {
+	var (
+		a  any
+		ok bool
+	)
+
 	a, ok = libmap[key]
 	if !ok {
+		err = errors.New("key no found: " + key)
 		return
 	}
 

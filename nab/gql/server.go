@@ -28,7 +28,7 @@ func WithPath(p string) Ops {
 	}
 }
 
-func Handle(hd nab.HandleData, ops ...Ops) http.Handler {
+func Handle(a* nab.Agent, ops ...Ops) http.Handler {
 	c := &conf{path: "gql"}
 
 	for _, o := range ops {
@@ -36,7 +36,7 @@ func Handle(hd nab.HandleData, ops ...Ops) http.Handler {
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		HandleData: hd,
+		Agent: a,
 	}}))
 
 	srv.AddTransport(transport.Options{})

@@ -2,6 +2,7 @@ package nab
 
 import (
 	"context"
+	"errors"
 
 	"github.com/twiglab/h2o/nab/orm"
 )
@@ -9,32 +10,40 @@ import (
 type Global struct {
 	Project string
 	Box     string
+}
 
-	IDB *orm.IDB
-
+type ClientMgr struct {
 	clientMap map[string]*ModbusCli
+	IDB       *orm.IDB
 }
 
-func (g Global) ClientByCode(code string) (cli *ModbusCli, ok bool) {
-	cli, ok = g.clientMap[code]
-	return
-}
+func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
+	ctx := context.Background()
+	clientMap := make(map[string]*ModbusCli)
 
-func (g *Global) InitClients(ctx context.Context) error {
-	g.clientMap = make(map[string]*ModbusCli)
-
-	clients, err := g.IDB.AllCli(ctx)
+	clients, err := db.AllCli(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	for _, cr := range clients {
-		cli, err := NewModbusCli(cr)
+	for _, cli := range clients {
+		cli, err := NewModbusCli(cli)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		g.clientMap[cli.Code] = cli
+		clientMap[cli.Code] = cli
 	}
 
-	return nil
+	return &ClientMgr{
+		IDB:       db,
+		clientMap: clientMap,
+	}, nil
+}
+
+func (g ClientMgr) ClientByCode(code string) (*ModbusCli, error) {
+	cli, ok := g.clientMap[code]
+	if !ok {
+		return nil, errors.New("not found code " + code)
+	}
+	return cli, nil
 }

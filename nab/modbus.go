@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/simonvetter/modbus"
+	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
@@ -141,8 +142,9 @@ func (c *ModbusCli) DoFunc(ctx context.Context, data DeviceData, f func(ctx cont
 }
 
 type DeviceData struct {
+	Global Global
 	Record *ent.Dev
 	Sender Sender
-	Global Global
+	IDB    *orm.IDB
 	Logger *slog.Logger
 }

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"cmp"
-	"context"
 	"fmt"
 	"log"
 	"log/slog"
@@ -42,21 +41,24 @@ func mqttcli() mqtt.Client {
 	return cli
 }
 
-func global(db *orm.IDB) nab.Global {
+func global() nab.Global {
 	box := viper.GetString("nab.box")
 	project := viper.GetString("nab.project")
 	g := nab.Global{
-		IDB:     db,
 		Box:     box,
 		Project: project,
 	}
 
-	if err := g.InitClients(context.Background()); err != nil {
-		log.Fatal(err)
-	}
-
 	log.Printf("global - nab.box: %s, nab.project: %s\n", box, project)
 	return g
+}
+
+func clientMgr(db *orm.IDB) *nab.ClientMgr {
+	m, err := nab.NewClientMgr(db)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return m
 }
 
 func webaddr() string {

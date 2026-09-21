@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/gql"
 )
@@ -41,53 +42,56 @@ func run() error {
 
 	logger := serverLog()
 
-	idb := db()
-	defer idb.Close()
+	db := db()
+	defer db.Close()
 
 	ctx := context.Background()
 
-	g := global(idb)
+	g := global()
 	mcli := mqttcli()
 	act := sender(mcli)
+	cliMgr := clientMgr(db)
 
 	lps := nab.NewLoops()
 
-	devs, err := idb.AllDev(ctx)
+	devs, err := db.AllDev(ctx)
 	if err != nil {
 		return err
 	}
 
 	for s := range slices.Chunk(devs, 10) {
 		t := nab.CollectTask{
-			Global: g,
-			Data:   s,
-			Sender: act,
-			Logger: logger,
-			Delay:  1 * time.Second,
+			Global:    g,
+			Data:      s,
+			Sender:    act,
+			IDB:       db,
+			ClientMgr: cliMgr,
+			Logger:    logger,
+			Delay:     1 * time.Second,
 		}
 		lps.AddToNewLoop(1*time.Second, t)
+	}
+
+	agent := &nab.Agent{
+		Global: g,
+		Sender: act,
+		IDB:    db,
+		CliMgr: cliMgr,
+		MCli:   mcli,
+		Logger: logger,
 	}
 
 	log.Println("run after 5s")
 	time.Sleep(5 * time.Second)
 
 	lps.Run()
-
-	hd := nab.HandleData{
-		Global: g,
-		Sender: act,
-		Logger: logger,
+	if err := agent.Start(); err != nil {
+		log.Fatal(err)
 	}
 
-	t := mcli.Subscribe(nab.SubscriptTopic(g.Box), 0x01, nab.OnOffHandle(hd))
-	t.Wait()
+	root := chi.NewMux()
+	root.Use(middleware.Recoverer, middleware.RequestID)
+	root.Mount("/gql", gql.Handle(agent, gql.WithPath("/gql")))
 
-	if err := t.Error(); err != nil {
-		return err
-	}
-
-	mux := chi.NewMux()
-	mux.Mount("/gql", gql.Handle(hd, gql.WithPath("/gql")))
-
-	return http.ListenAndServe(webaddr(), mux)
+	return http.ListenAndServe(webaddr(), root)
 }

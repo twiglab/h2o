@@ -10,5 +10,5 @@ import (
 // here.
 
 type Resolver struct {
-	nab.HandleData
+	Agent *nab.Agent
 }

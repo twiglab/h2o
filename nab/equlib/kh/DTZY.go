@@ -52,7 +52,7 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 func (e DTZY) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
 	err := retry.New(retry.Attempts(3)).Do(
 		func() error {
-			return cli.WriteRegisters(0x22, []uint16{0x2})
+			return cli.WriteRegisters(0x22, []uint16{0x02})
 		},
 	)
 	return err
@@ -61,7 +61,7 @@ func (e DTZY) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceD
 func (e DTZY) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
 	err := retry.New(retry.Attempts(3)).Do(
 		func() error {
-			return cli.WriteRegisters(0x22, []uint16{0x1})
+			return cli.WriteRegisters(0x22, []uint16{0x01})
 		},
 	)
 	return err

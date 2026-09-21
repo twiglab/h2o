@@ -7,75 +7,35 @@ package graph
 
 import (
 	"context"
-	"fmt"
-	"log/slog"
 
 	"github.com/twiglab/h2o/nab"
-	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/gql/graph/model"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
 // DeviceOnOffImmediately is the resolver for the deviceOnOffImmediately field.
 func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
-	dev, err := r.Global.IDB.GetDev(ctx, input.Code)
-	if err != nil {
-		return nil, err
-	}
-
-	mcli, ok := r.Global.ClientByCode(dev.Cli)
-	if !ok {
-		return nil, fmt.Errorf("not found cli id %s", dev.Cli)
-	}
-
-	onoff, ok := equlib.From[nab.OnOffer](dev.Clazz)
-	if !ok {
-		return nil, fmt.Errorf("not found clazz id %s", dev.Clazz)
-	}
+	var err error
 
 	switch input.Op {
 	case common.ON:
-		if err := mcli.DoOn(context.Background(), onoff, nab.DeviceData{
-			Record: dev,
-			Sender: r.Sender,
-			Global: r.Global,
-			Logger: r.Logger,
-		}); err != nil {
-			r.Logger.Error("onoff error", slog.String("code", dev.Code),
-				slog.String("op", input.Op),
-				slog.Any("record", dev),
-				slog.Any("error", err),
-			)
-			return nil, err
-		}
+		err = r.Agent.On(ctx, input.Code)
 	case common.OFF:
-		if err := mcli.DoOff(context.Background(), onoff, nab.DeviceData{
-			Record: dev,
-			Sender: r.Sender,
-			Global: r.Global,
-			Logger: r.Logger,
-		}); err != nil {
-			r.Logger.Error("onoff error", slog.String("code", dev.Code),
-				slog.String("op", input.Op),
-				slog.Any("record", dev),
-				slog.Any("error", err),
-			)
-			return nil, err
-		}
+		err = r.Agent.Off(ctx, input.Code)
 	}
 
-	return &model.OnOff{Code: input.Code, Op: input.Op}, nil
+	return &model.OnOff{Code: input.Code, Op: input.Op}, err
 }
 
 // DeviceOnOff is the resolver for the deviceOnOff field.
 func (r *mutationResolver) DeviceOnOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
 	o := nab.OnOffLite{
-		BoxCode: r.Global.Box,
+		BoxCode: r.Agent.Global.Box,
 		Code:    input.Code,
 		Op:      input.Op,
 	}
 
-	err := r.Sender.SendData(ctx, o)
+	err := r.Agent.Sender.SendData(ctx, o)
 
 	return &model.OnOff{Code: input.Code, Op: input.Op}, err
 }
