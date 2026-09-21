@@ -12,7 +12,7 @@ import (
 )
 
 func init() {
-	equlib.Register(FAKE_DEVIVE, &Fake{})
+	equlib.Register(FAKE_DEVIVE, &Fake{}) // fake 设备的状态默认为未定义
 }
 
 const FAKE_DEVIVE = "fake-device"
