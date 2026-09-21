@@ -8,6 +8,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
@@ -20,11 +21,19 @@ func isAlarm3(vc *ent.ValueCharge) bool {
 type ChargeServer struct {
 	DBx    *orm.DBx
 	Sender Sender
+
 	Logger *slog.Logger
+	WAL    *wal.WAL
 
 	AlarmQuota int64
 
-	Client mqtt.Client
+	MCli mqtt.Client
+}
+
+func (s *ChargeServer) Run() error {
+	t := s.MCli.Subscribe(common.GeneralDataTopic, 0x01, s.MsgHandle())
+	t.Wait()
+	return t.Error()
 }
 
 func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
@@ -54,7 +63,7 @@ func (s *ChargeServer) optOff(ctx context.Context, md Meter, vc *ent.ValueCharge
 	//  拉闸状态，断开
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
-		ot := NewOnOffMessage(md, vc, common.ON)
+		ot := newOnOffMessage(md, vc, common.ON)
 		return s.Sender.SendData(ctx, ot)
 	}
 	return nil
@@ -65,7 +74,7 @@ func (s *ChargeServer) optOn(ctx context.Context, md Meter, vc *ent.ValueCharge)
 	//  合闸状态, 连通
 	if cmp.Less(vc.Top, md.Data.DataValue) {
 		// 超额, 拉闸断开
-		ot := NewOnOffMessage(md, vc, common.OFF)
+		ot := newOnOffMessage(md, vc, common.OFF)
 		return s.Sender.SendData(ctx, ot)
 	}
 
@@ -74,7 +83,7 @@ func (s *ChargeServer) optOn(ctx context.Context, md Meter, vc *ent.ValueCharge)
 			if !isAlarm3(vc) { // 没拉闸报警过
 				// 拉闸报警一次
 				_ = vc.Update().SetAlarm3(1).Exec(ctx) // 设置报警状态
-				ot := NewOnOffMessage(md, vc, common.OFF)
+				ot := newOnOffMessage(md, vc, common.OFF)
 				return s.Sender.SendData(ctx, ot)
 			}
 		}
@@ -85,23 +94,26 @@ func (s *ChargeServer) optOn(ctx context.Context, md Meter, vc *ent.ValueCharge)
 
 func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 	if md.Data.OptStatus == common.OPT_STATUS_UNKNOW {
+		s.Logger.DebugContext(ctx, "status unknow", slog.Any("meter", md))
 		return nil
 	}
 
 	c, notfount, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
 	if notfount {
-		return nil // 没找到限额，无法计费，默认不计费
+		// 没找到限额，无法计费，默认不计费
+		s.Logger.DebugContext(ctx, "record not found", slog.Any("meter", md))
+		return nil
 	}
 
 	// 其他错误
 	if err != nil {
-		// log
+		s.Logger.ErrorContext(ctx, "loadLast error", slog.Any("meter", md), slog.Any("error", err))
 		return err
 	}
 
 	if c.Top < 0 {
-		// log
-		return nil // 强制不计费, 人为指定
+		s.Logger.DebugContext(ctx, "人为指定 Top < 0 强制不计费", slog.Any("meter", md), slog.Int64("top", c.Top))
+		return nil
 	}
 
 	// 当前限额的业务状态
@@ -109,8 +121,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 	// 这里有个问题要注意，找个状态是记录在当前限额记录上的，记录必须有效
 	// 后续这个状态会移除，仅限当前版本使用
 	if c.Status < 0 {
-		// 小于零，人为指定不计费
-		// log
+		s.Logger.DebugContext(ctx, "人为指定 status < 0 强制不计费", slog.Any("meter", md), slog.Int("status", c.Status))
 		return nil
 	}
 
@@ -123,6 +134,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return s.optOn(ctx, md, c)
 	}
 
-	// 程序应该走不到这里
+	// 程序不应该运行到这里
+	s.Logger.ErrorContext(ctx, "unknow status", slog.Any("meter", md))
 	return nil
 }

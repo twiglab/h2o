@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
-	"github.com/twiglab/h2o/pkg/common"
 )
 
 // runCmd represents the run command
@@ -45,11 +44,11 @@ func run() error {
 		Sender: act,
 		DBx:    &orm.DBx{Cli: entc},
 		Logger: sl,
+		WAL:    cwal(),
+		MCli:   mcli,
 	}
-	t := mcli.Subscribe(common.GeneralDataTopic, 0x01, chrgg.HandleChange(svr))
-	t.Wait()
 
-	if err := t.Error(); err != nil {
+	if err := svr.Run(); err != nil {
 		log.Fatal(err)
 	}
 

@@ -48,7 +48,7 @@ type OnOffMessage struct {
 	Charge  Charge        `json:"charge,omitzero"`
 }
 
-func NewOnOffMessage(md Meter, vc *ent.ValueCharge, op string) OnOffMessage {
+func newOnOffMessage(md Meter, vc *ent.ValueCharge, op string) OnOffMessage {
 	return OnOffMessage{
 		Op:      op,
 		Device:  md.Device,

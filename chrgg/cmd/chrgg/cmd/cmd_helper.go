@@ -35,7 +35,7 @@ func serverLog() *slog.Logger {
 	return l
 }
 
-func Wal() *wal.WAL {
+func cwal() *wal.WAL {
 	logF := viper.GetString("chrgg.wal.file")
 	if logF == "" {
 		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
