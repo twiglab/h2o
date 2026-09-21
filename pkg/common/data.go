@@ -11,11 +11,10 @@ const (
 )
 
 const (
-	// 开合状态定义
-	OPT_STATUS_OFF = 1
-	OPT_STATUS_ON  = 2
-	// 未定义值一律为未知
-	// OPT_STATUS_UNKNOW = 0
+	// 开合状态定义, unknow 必须是保证为0
+	OPT_STATUS_OFF    = 1
+	OPT_STATUS_ON     = 2
+	OPT_STATUS_UNKNOW = 0
 )
 
 type Device struct {
