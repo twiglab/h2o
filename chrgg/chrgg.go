@@ -6,6 +6,7 @@ import (
 	"encoding/json/v2"
 	"time"
 
+	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
@@ -22,7 +23,7 @@ type Meter struct {
 	common.Device
 	Pos     common.Pos        `json:"pos,omitzero"`
 	Data    common.MeterValue `json:"data,omitzero"`
-	Gateway common.Modbus     `jaon:"gateway,omitzero"`
+	Gateway common.Modbus     `json:"gateway,omitzero"`
 }
 
 func (d *Meter) UnmarshalBinary(data []byte) error {
@@ -40,19 +41,35 @@ type Charge struct {
 	ChargeTime time.Time `json:"charge_time"`
 }
 
-type OnOffMsg struct {
+type OnOffMessage struct {
 	common.Device
 	Gateway common.Modbus `json:"gateway,omitzero"`
-	OP      string        `json:"op"`
+	Op      string        `json:"op"`
 	Charge  Charge        `json:"charge,omitzero"`
 }
 
-func (o OnOffMsg) Topic() string {
-	return common.H2O + "/onoff/" + o.Gateway.Code + "/" + o.Code + "/" + o.OP
-	// t := fmt.Sprintf("h2o/onoff/%s/%s/%s", o.Gateway.Code, o.Code, o.OP)
-	// return t
+func NewOnOffMessage(md Meter, vc *ent.ValueCharge, op string) OnOffMessage {
+	return OnOffMessage{
+		Op:      op,
+		Device:  md.Device,
+		Gateway: md.Gateway,
+		Charge: Charge{
+			Code:       vc.Code,
+			Top:        vc.Top,
+			Current:    md.Data.DataValue,
+			Stock:      vc.Stock,
+			Incr:       vc.Incr,
+			Amount:     vc.Amount,
+			UnitPrice:  vc.UnitPrice,
+			ChargeTime: vc.ChargeTime,
+		},
+	}
 }
 
-func (d OnOffMsg) MarshalBinary() ([]byte, error) {
+func (o OnOffMessage) Topic() string {
+	return common.H2O + "/onoff/" + o.Gateway.Code + "/" + o.Code + "/" + o.Op
+}
+
+func (d OnOffMessage) MarshalBinary() ([]byte, error) {
 	return json.Marshal(d)
 }

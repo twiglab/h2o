@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
+	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
@@ -33,10 +34,19 @@ func run() error {
 
 	_ = rootLog()
 
-	c := mqttcli()
+	sl := serverLog()
 
-	svr := cs()
-	t := c.Subscribe(common.GeneralDataTopic, 0x01, chrgg.HandleChange(svr))
+	mcli := mqttcli()
+	entc := entcli()
+
+	act := chrgg.NewMQTTAction(mcli)
+
+	svr := &chrgg.ChargeServer{
+		Sender: act,
+		DBx:    &orm.DBx{Cli: entc},
+		Logger: sl,
+	}
+	t := mcli.Subscribe(common.GeneralDataTopic, 0x01, chrgg.HandleChange(svr))
 	t.Wait()
 
 	if err := t.Error(); err != nil {

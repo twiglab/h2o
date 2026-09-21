@@ -19,9 +19,8 @@ func HandleChange(s *ChargeServer) mqtt.MessageHandler {
 		defer msg.Ack()
 
 		switch common.DataTopicType(msg.Topic()) {
-		case common.WaterDataTopic:
 		case common.GasDataTopic:
-		case common.ElectricityDataTopic:
+		case common.ElectricityDataTopic, common.WaterDataTopic: // 目前只支持水表和电表
 			var em Meter
 			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
 				s.Logger.Error("unmarshal error", slog.Any("error", err))

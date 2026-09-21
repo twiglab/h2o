@@ -14,42 +14,28 @@ import (
 	"github.com/twiglab/h2o/clog/wal"
 )
 
-func logLevel(s string) slog.Level {
-	switch s {
-	case "debug", "DEBUG":
-		return slog.LevelDebug
-	case "info", "INFO":
-		return slog.LevelInfo
-	case "error", "ERROR":
-		return slog.LevelError
-	case "warn", "WARN":
-		return slog.LevelWarn
-	}
-	return slog.LevelInfo
-}
-
 func rootLog() *slog.Logger {
-	rlogF := viper.GetString("log.root.file")
-	rlogL := viper.GetString("log.root.level")
-	logL := viper.GetString("log.level")
+	rlogF := viper.GetString("chrgg.log.root.file")
+	rlogL := viper.GetString("chrgg.log.root.level")
+	logL := viper.GetString("chrgg.log.level")
 
-	level := logLevel(cmp.Or(rlogL, logL))
+	level := clog.Level(cmp.Or(rlogL, logL))
 	log := clog.NewLog(rlogF, level)
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	sLogF := viper.GetString("log.server.file")
-	sLogL := viper.GetString("log.server.level")
-	logL := viper.GetString("log.level")
+	sLogF := viper.GetString("chrgg.log.server.file")
+	sLogL := viper.GetString("chrgg.log.server.level")
+	logL := viper.GetString("chrgg.log.level")
 
-	level := logLevel(cmp.Or(sLogL, logL))
+	level := clog.Level(cmp.Or(sLogL, logL))
 	l := clog.NewLog(sLogF, level)
 	return l
 }
 
-func cdrWal() *wal.WAL {
+func Wal() *wal.WAL {
 	logF := viper.GetString("chrgg.wal.file")
 	if logF == "" {
 		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
@@ -72,7 +58,7 @@ func mqttcli() mqtt.Client {
 
 func webaddr() string {
 	addr := viper.GetString("chrgg.web.addr")
-	return cmp.Or(addr, ":10007")
+	return cmp.Or(addr, ":10003")
 }
 
 func entcli() *ent.Client {
@@ -85,16 +71,4 @@ func entcli() *ent.Client {
 		log.Fatal(err)
 	}
 	return cli
-}
-
-func dbx() *orm.DBx {
-	return &orm.DBx{Cli: entcli()}
-}
-
-func cs() *chrgg.ChargeServer {
-	return &chrgg.ChargeServer{
-		DBx: dbx(),
-
-		Logger: serverLog(),
-	}
 }
