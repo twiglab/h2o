@@ -64,6 +64,13 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 	//  拉闸状态，断开
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
+		s.WAL.WriteLogContext(ctx,
+			wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
+			wal.String("code", md.Code), wal.String("type", md.Type),
+			wal.String("onoffType", "on"), // 超出限额，正常合闸操作
+			wal.String("msg", "正常合闸"),
+		)
+
 		ot := newOnOffMessage(md, vc, common.ON)
 		return s.Sender.SendData(ctx, ot)
 	}
@@ -76,6 +83,13 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		// 超额, 拉闸断开
 		if vc.Status == STATUS_BEGIN {
 			// 限额记录正常，执行拉闸操作
+			s.WAL.WriteLogContext(ctx,
+				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
+				wal.String("code", md.Code), wal.String("type", md.Type),
+				wal.String("onoffType", "off"), // 超出限额，正常拉闸操作
+				wal.String("msg", "超出限额"),
+			)
+
 			_ = vc.Update().
 				SetStatus(STATUS_END).
 				SetEndTime(time.Now()).         // 计费结束时间
@@ -99,6 +113,12 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		if (vc.Top - md.Data.DataValue) < s.Alarm {
 			if !isAlarm3(vc) { // 没拉闸报警过
 				// 拉闸报警一次
+				s.WAL.WriteLogContext(ctx,
+					wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
+					wal.String("code", md.Code), wal.String("type", md.Type),
+					wal.String("onoffType", "alarm"), // 超出限额，正常拉闸操作
+					wal.String("msg", "报警拉闸"),
+				)
 				_ = vc.Update().
 					SetAlarm(1).
 					SetAlarmStock(md.Data.DataValue).
@@ -134,9 +154,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 	}
 
 	// 当前限额的业务状态
-	// 增加这个字段的意义就是在不改变top的情况下，不计费
 	// 这里有个问题要注意，找个状态是记录在当前限额记录上的，记录必须有效
-	// 后续这个状态会移除，仅限当前版本使用
 	if c.Status < STATUS_BEGIN {
 		s.Logger.DebugContext(ctx, "人为指定 status < 0 强制不计费", slog.Any("meter", md), slog.Int("status", c.Status))
 		return nil

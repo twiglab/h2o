@@ -76,6 +76,6 @@ func entcli() *ent.Client {
 
 func alarm() int64 {
 	a := viper.GetInt64("chrgg.alarm")
-	log.Println("alarm: ", a)
+	log.Println("alarm:", a)
 	return a
 }
