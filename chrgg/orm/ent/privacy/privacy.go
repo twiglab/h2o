@@ -110,26 +110,26 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The ValueChargeQueryRuleFunc type is an adapter to allow the use of ordinary
+// The TopQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
-type ValueChargeQueryRuleFunc func(context.Context, *ent.ValueChargeQuery) error
+type TopQueryRuleFunc func(context.Context, *ent.TopQuery) error
 
 // EvalQuery return f(ctx, q).
-func (f ValueChargeQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.ValueChargeQuery); ok {
+func (f TopQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TopQuery); ok {
 		return f(ctx, q)
 	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.ValueChargeQuery", q)
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.TopQuery", q)
 }
 
-// The ValueChargeMutationRuleFunc type is an adapter to allow the use of ordinary
+// The TopMutationRuleFunc type is an adapter to allow the use of ordinary
 // functions as a mutation rule.
-type ValueChargeMutationRuleFunc func(context.Context, *ent.ValueChargeMutation) error
+type TopMutationRuleFunc func(context.Context, *ent.TopMutation) error
 
 // EvalMutation calls f(ctx, m).
-func (f ValueChargeMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.ValueChargeMutation); ok {
+func (f TopMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
+	if m, ok := m.(*ent.TopMutation); ok {
 		return f(ctx, m)
 	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.ValueChargeMutation", m)
+	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.TopMutation", m)
 }

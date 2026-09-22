@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// ValueChargeColumns holds the columns for the "value_charge" table.
-	ValueChargeColumns = []*schema.Column{
+	// DeviceTopColumns holds the columns for the "device_top" table.
+	DeviceTopColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
@@ -26,60 +26,49 @@ var (
 		{Name: "amount", Type: field.TypeInt64, Default: 0},
 		{Name: "unit_price", Type: field.TypeInt64, Default: 0},
 		{Name: "charge_time", Type: field.TypeTime},
-		{Name: "charge_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
-		{Name: "alarm1", Type: field.TypeInt, Default: 0},
-		{Name: "alarm2", Type: field.TypeInt, Default: 0},
-		{Name: "alarm3", Type: field.TypeInt, Default: 0},
+		{Name: "alarm", Type: field.TypeInt, Default: 0},
+		{Name: "alarm_time", Type: field.TypeTime, Nullable: true},
 		{Name: "status", Type: field.TypeInt, Default: 0},
+		{Name: "end_time", Type: field.TypeTime, Nullable: true},
 		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
 		{Name: "is_del", Type: field.TypeInt, Default: 0},
 	}
-	// ValueChargeTable holds the schema information for the "value_charge" table.
-	ValueChargeTable = &schema.Table{
-		Name:       "value_charge",
-		Columns:    ValueChargeColumns,
-		PrimaryKey: []*schema.Column{ValueChargeColumns[0]},
+	// DeviceTopTable holds the schema information for the "device_top" table.
+	DeviceTopTable = &schema.Table{
+		Name:       "device_top",
+		Columns:    DeviceTopColumns,
+		PrimaryKey: []*schema.Column{DeviceTopColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "valuecharge_device_code",
+				Name:    "top_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{ValueChargeColumns[4]},
+				Columns: []*schema.Column{DeviceTopColumns[4]},
 			},
 			{
-				Name:    "valuecharge_device_type",
+				Name:    "top_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{ValueChargeColumns[5]},
+				Columns: []*schema.Column{DeviceTopColumns[5]},
 			},
 			{
-				Name:    "valuecharge_code",
-				Unique:  true,
-				Columns: []*schema.Column{ValueChargeColumns[3]},
+				Name:    "top_charge_time",
+				Unique:  false,
+				Columns: []*schema.Column{DeviceTopColumns[14]},
 			},
 			{
-				Name:    "valuecharge_charge_time",
+				Name:    "top_is_del",
 				Unique:  false,
-				Columns: []*schema.Column{ValueChargeColumns[14]},
-			},
-			{
-				Name:    "valuecharge_charge_ts",
-				Unique:  false,
-				Columns: []*schema.Column{ValueChargeColumns[15]},
-			},
-			{
-				Name:    "valuecharge_is_del",
-				Unique:  false,
-				Columns: []*schema.Column{ValueChargeColumns[21]},
+				Columns: []*schema.Column{DeviceTopColumns[20]},
 			},
 		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		ValueChargeTable,
+		DeviceTopTable,
 	}
 )
 
 func init() {
-	ValueChargeTable.Annotation = &entsql.Annotation{
-		Table: "value_charge",
+	DeviceTopTable.Annotation = &entsql.Annotation{
+		Table: "device_top",
 	}
 }

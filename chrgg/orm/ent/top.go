@@ -9,11 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
+	"github.com/twiglab/h2o/chrgg/orm/ent/top"
 )
 
-// ValueCharge is the model entity for the ValueCharge schema.
-type ValueCharge struct {
+// Top is the model entity for the Top schema.
+type Top struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID string `json:"id,omitempty"`
@@ -45,16 +45,14 @@ type ValueCharge struct {
 	UnitPrice int64 `json:"unit_price,omitempty"`
 	// 充值时间
 	ChargeTime time.Time `json:"charge_time,omitempty"`
-	// 充值时间字符串
-	ChargeTs string `json:"charge_ts,omitempty"`
-	// 报警1
-	Alarm1 int `json:"alarm1,omitempty"`
-	// 报警2
-	Alarm2 int `json:"alarm2,omitempty"`
-	// 报警3
-	Alarm3 int `json:"alarm3,omitempty"`
-	// 状态
+	// 报警
+	Alarm int `json:"alarm,omitempty"`
+	// 报警时间
+	AlarmTime *time.Time `json:"alarm_time,omitempty"`
+	// 当前限额状态
 	Status int `json:"status,omitempty"`
+	// 充值时间
+	EndTime *time.Time `json:"end_time,omitempty"`
 	// 备注
 	Memo string `json:"memo,omitempty"`
 	// 软删除
@@ -63,15 +61,15 @@ type ValueCharge struct {
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
-func (*ValueCharge) scanValues(columns []string) ([]any, error) {
+func (*Top) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case valuecharge.FieldTop, valuecharge.FieldStock, valuecharge.FieldIncr, valuecharge.FieldAmount, valuecharge.FieldUnitPrice, valuecharge.FieldAlarm1, valuecharge.FieldAlarm2, valuecharge.FieldAlarm3, valuecharge.FieldStatus, valuecharge.FieldIsDel:
+		case top.FieldTop, top.FieldStock, top.FieldIncr, top.FieldAmount, top.FieldUnitPrice, top.FieldAlarm, top.FieldStatus, top.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case valuecharge.FieldID, valuecharge.FieldCode, valuecharge.FieldDeviceCode, valuecharge.FieldDeviceType, valuecharge.FieldPosCode, valuecharge.FieldProject, valuecharge.FieldOwner, valuecharge.FieldChargeTs, valuecharge.FieldMemo:
+		case top.FieldID, top.FieldCode, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOwner, top.FieldMemo:
 			values[i] = new(sql.NullString)
-		case valuecharge.FieldCreateTime, valuecharge.FieldUpdateTime, valuecharge.FieldChargeTime:
+		case top.FieldCreateTime, top.FieldUpdateTime, top.FieldChargeTime, top.FieldAlarmTime, top.FieldEndTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -81,140 +79,136 @@ func (*ValueCharge) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the ValueCharge fields.
-func (_m *ValueCharge) assignValues(columns []string, values []any) error {
+// to the Top fields.
+func (_m *Top) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case valuecharge.FieldID:
+		case top.FieldID:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value.Valid {
 				_m.ID = value.String
 			}
-		case valuecharge.FieldCreateTime:
+		case top.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
 				_m.CreateTime = value.Time
 			}
-		case valuecharge.FieldUpdateTime:
+		case top.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				_m.UpdateTime = value.Time
 			}
-		case valuecharge.FieldCode:
+		case top.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
 				_m.Code = value.String
 			}
-		case valuecharge.FieldDeviceCode:
+		case top.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_code", values[i])
 			} else if value.Valid {
 				_m.DeviceCode = value.String
 			}
-		case valuecharge.FieldDeviceType:
+		case top.FieldDeviceType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field device_type", values[i])
 			} else if value.Valid {
 				_m.DeviceType = value.String
 			}
-		case valuecharge.FieldPosCode:
+		case top.FieldPosCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
 			} else if value.Valid {
 				_m.PosCode = value.String
 			}
-		case valuecharge.FieldProject:
+		case top.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field project", values[i])
 			} else if value.Valid {
 				_m.Project = value.String
 			}
-		case valuecharge.FieldOwner:
+		case top.FieldOwner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field owner", values[i])
 			} else if value.Valid {
 				_m.Owner = value.String
 			}
-		case valuecharge.FieldTop:
+		case top.FieldTop:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field top", values[i])
 			} else if value.Valid {
 				_m.Top = value.Int64
 			}
-		case valuecharge.FieldStock:
+		case top.FieldStock:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field stock", values[i])
 			} else if value.Valid {
 				_m.Stock = value.Int64
 			}
-		case valuecharge.FieldIncr:
+		case top.FieldIncr:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field incr", values[i])
 			} else if value.Valid {
 				_m.Incr = value.Int64
 			}
-		case valuecharge.FieldAmount:
+		case top.FieldAmount:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field amount", values[i])
 			} else if value.Valid {
 				_m.Amount = value.Int64
 			}
-		case valuecharge.FieldUnitPrice:
+		case top.FieldUnitPrice:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field unit_price", values[i])
 			} else if value.Valid {
 				_m.UnitPrice = value.Int64
 			}
-		case valuecharge.FieldChargeTime:
+		case top.FieldChargeTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field charge_time", values[i])
 			} else if value.Valid {
 				_m.ChargeTime = value.Time
 			}
-		case valuecharge.FieldChargeTs:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field charge_ts", values[i])
-			} else if value.Valid {
-				_m.ChargeTs = value.String
-			}
-		case valuecharge.FieldAlarm1:
+		case top.FieldAlarm:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field alarm1", values[i])
+				return fmt.Errorf("unexpected type %T for field alarm", values[i])
 			} else if value.Valid {
-				_m.Alarm1 = int(value.Int64)
+				_m.Alarm = int(value.Int64)
 			}
-		case valuecharge.FieldAlarm2:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field alarm2", values[i])
+		case top.FieldAlarmTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field alarm_time", values[i])
 			} else if value.Valid {
-				_m.Alarm2 = int(value.Int64)
+				_m.AlarmTime = new(time.Time)
+				*_m.AlarmTime = value.Time
 			}
-		case valuecharge.FieldAlarm3:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field alarm3", values[i])
-			} else if value.Valid {
-				_m.Alarm3 = int(value.Int64)
-			}
-		case valuecharge.FieldStatus:
+		case top.FieldStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
 				_m.Status = int(value.Int64)
 			}
-		case valuecharge.FieldMemo:
+		case top.FieldEndTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field end_time", values[i])
+			} else if value.Valid {
+				_m.EndTime = new(time.Time)
+				*_m.EndTime = value.Time
+			}
+		case top.FieldMemo:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field memo", values[i])
 			} else if value.Valid {
 				_m.Memo = value.String
 			}
-		case valuecharge.FieldIsDel:
+		case top.FieldIsDel:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field is_del", values[i])
 			} else if value.Valid {
@@ -227,34 +221,34 @@ func (_m *ValueCharge) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// Value returns the ent.Value that was dynamically selected and assigned to the ValueCharge.
+// Value returns the ent.Value that was dynamically selected and assigned to the Top.
 // This includes values selected through modifiers, order, etc.
-func (_m *ValueCharge) Value(name string) (ent.Value, error) {
+func (_m *Top) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this ValueCharge.
-// Note that you need to call ValueCharge.Unwrap() before calling this method if this ValueCharge
+// Update returns a builder for updating this Top.
+// Note that you need to call Top.Unwrap() before calling this method if this Top
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *ValueCharge) Update() *ValueChargeUpdateOne {
-	return NewValueChargeClient(_m.config).UpdateOne(_m)
+func (_m *Top) Update() *TopUpdateOne {
+	return NewTopClient(_m.config).UpdateOne(_m)
 }
 
-// Unwrap unwraps the ValueCharge entity that was returned from a transaction after it was closed,
+// Unwrap unwraps the Top entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *ValueCharge) Unwrap() *ValueCharge {
+func (_m *Top) Unwrap() *Top {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: ValueCharge is not a transactional entity")
+		panic("ent: Top is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *ValueCharge) String() string {
+func (_m *Top) String() string {
 	var builder strings.Builder
-	builder.WriteString("ValueCharge(")
+	builder.WriteString("Top(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("create_time=")
 	builder.WriteString(_m.CreateTime.Format(time.ANSIC))
@@ -298,20 +292,21 @@ func (_m *ValueCharge) String() string {
 	builder.WriteString("charge_time=")
 	builder.WriteString(_m.ChargeTime.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("charge_ts=")
-	builder.WriteString(_m.ChargeTs)
+	builder.WriteString("alarm=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Alarm))
 	builder.WriteString(", ")
-	builder.WriteString("alarm1=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Alarm1))
-	builder.WriteString(", ")
-	builder.WriteString("alarm2=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Alarm2))
-	builder.WriteString(", ")
-	builder.WriteString("alarm3=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Alarm3))
+	if v := _m.AlarmTime; v != nil {
+		builder.WriteString("alarm_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	if v := _m.EndTime; v != nil {
+		builder.WriteString("end_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	builder.WriteString("memo=")
 	builder.WriteString(_m.Memo)
@@ -322,5 +317,5 @@ func (_m *ValueCharge) String() string {
 	return builder.String()
 }
 
-// ValueCharges is a parsable slice of ValueCharge.
-type ValueCharges []*ValueCharge
+// Tops is a parsable slice of Top.
+type Tops []*Top

@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"context"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/chrgg/orm"
@@ -14,8 +15,8 @@ import (
 
 const no_alarm = 0
 
-func isAlarm3(vc *ent.ValueCharge) bool {
-	return vc.Alarm3 != no_alarm
+func isAlarm3(vc *ent.Top) bool {
+	return vc.Alarm != no_alarm
 }
 
 type ChargeServer struct {
@@ -59,7 +60,7 @@ func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 	}
 }
 
-func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
+func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) error {
 	//  拉闸状态，断开
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
@@ -69,12 +70,17 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.ValueC
 	return nil
 }
 
-func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.ValueCharge) error {
+func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) error {
 	//  合闸状态, 连通
 	if cmp.Less(vc.Top, md.Data.DataValue) {
 		if vc.Status == STATUS_BEGIN {
 			// 超额, 拉闸断开
-			_ = vc.Update().SetStatus(STATUS_END).Exec(ctx) // 计费结束
+
+			_ = vc.Update().
+				SetStatus(STATUS_END).
+				SetEndTime(time.Now()).
+				Exec(ctx) // 计费结束
+
 			ot := newOnOffMessage(md, vc, common.OFF)
 			return s.Sender.SendData(ctx, ot)
 		}
@@ -84,7 +90,11 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.ValueCh
 		if (vc.Top - md.Data.DataValue) < s.AlarmQuota {
 			if !isAlarm3(vc) { // 没拉闸报警过
 				// 拉闸报警一次
-				_ = vc.Update().SetAlarm3(1).Exec(ctx) // 设置报警状态
+				_ = vc.Update().
+					SetAlarm(1).
+					SetAlarmTime(time.Now()).
+					Exec(ctx) // 设置报警状态
+
 				ot := newOnOffMessage(md, vc, common.OFF)
 				return s.Sender.SendData(ctx, ot)
 			}

@@ -5,7 +5,7 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
+	"github.com/twiglab/h2o/chrgg/orm/ent/top"
 	"github.com/twiglab/h2o/chrgg/orm/schema"
 )
 
@@ -13,89 +13,83 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	valuechargeMixin := schema.ValueCharge{}.Mixin()
-	valuechargeMixinFields0 := valuechargeMixin[0].Fields()
-	_ = valuechargeMixinFields0
-	valuechargeFields := schema.ValueCharge{}.Fields()
-	_ = valuechargeFields
-	// valuechargeDescCreateTime is the schema descriptor for create_time field.
-	valuechargeDescCreateTime := valuechargeMixinFields0[0].Descriptor()
-	// valuecharge.DefaultCreateTime holds the default value on creation for the create_time field.
-	valuecharge.DefaultCreateTime = valuechargeDescCreateTime.Default.(func() time.Time)
-	// valuechargeDescUpdateTime is the schema descriptor for update_time field.
-	valuechargeDescUpdateTime := valuechargeMixinFields0[1].Descriptor()
-	// valuecharge.DefaultUpdateTime holds the default value on creation for the update_time field.
-	valuecharge.DefaultUpdateTime = valuechargeDescUpdateTime.Default.(func() time.Time)
-	// valuecharge.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	valuecharge.UpdateDefaultUpdateTime = valuechargeDescUpdateTime.UpdateDefault.(func() time.Time)
-	// valuechargeDescCode is the schema descriptor for code field.
-	valuechargeDescCode := valuechargeFields[1].Descriptor()
-	// valuecharge.CodeValidator is a validator for the "code" field. It is called by the builders before save.
-	valuecharge.CodeValidator = valuechargeDescCode.Validators[0].(func(string) error)
-	// valuechargeDescDeviceCode is the schema descriptor for device_code field.
-	valuechargeDescDeviceCode := valuechargeFields[2].Descriptor()
-	// valuecharge.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
-	valuecharge.DeviceCodeValidator = valuechargeDescDeviceCode.Validators[0].(func(string) error)
-	// valuechargeDescDeviceType is the schema descriptor for device_type field.
-	valuechargeDescDeviceType := valuechargeFields[3].Descriptor()
-	// valuecharge.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
-	valuecharge.DeviceTypeValidator = valuechargeDescDeviceType.Validators[0].(func(string) error)
-	// valuechargeDescPosCode is the schema descriptor for pos_code field.
-	valuechargeDescPosCode := valuechargeFields[4].Descriptor()
-	// valuecharge.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
-	valuecharge.PosCodeValidator = valuechargeDescPosCode.Validators[0].(func(string) error)
-	// valuechargeDescProject is the schema descriptor for project field.
-	valuechargeDescProject := valuechargeFields[5].Descriptor()
-	// valuecharge.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
-	valuecharge.ProjectValidator = valuechargeDescProject.Validators[0].(func(string) error)
-	// valuechargeDescTop is the schema descriptor for top field.
-	valuechargeDescTop := valuechargeFields[7].Descriptor()
-	// valuecharge.DefaultTop holds the default value on creation for the top field.
-	valuecharge.DefaultTop = valuechargeDescTop.Default.(int64)
-	// valuechargeDescStock is the schema descriptor for stock field.
-	valuechargeDescStock := valuechargeFields[8].Descriptor()
-	// valuecharge.DefaultStock holds the default value on creation for the stock field.
-	valuecharge.DefaultStock = valuechargeDescStock.Default.(int64)
-	// valuechargeDescIncr is the schema descriptor for incr field.
-	valuechargeDescIncr := valuechargeFields[9].Descriptor()
-	// valuecharge.DefaultIncr holds the default value on creation for the incr field.
-	valuecharge.DefaultIncr = valuechargeDescIncr.Default.(int64)
-	// valuechargeDescAmount is the schema descriptor for amount field.
-	valuechargeDescAmount := valuechargeFields[10].Descriptor()
-	// valuecharge.DefaultAmount holds the default value on creation for the amount field.
-	valuecharge.DefaultAmount = valuechargeDescAmount.Default.(int64)
-	// valuechargeDescUnitPrice is the schema descriptor for unit_price field.
-	valuechargeDescUnitPrice := valuechargeFields[11].Descriptor()
-	// valuecharge.DefaultUnitPrice holds the default value on creation for the unit_price field.
-	valuecharge.DefaultUnitPrice = valuechargeDescUnitPrice.Default.(int64)
-	// valuechargeDescChargeTs is the schema descriptor for charge_ts field.
-	valuechargeDescChargeTs := valuechargeFields[13].Descriptor()
-	// valuecharge.ChargeTsValidator is a validator for the "charge_ts" field. It is called by the builders before save.
-	valuecharge.ChargeTsValidator = valuechargeDescChargeTs.Validators[0].(func(string) error)
-	// valuechargeDescAlarm1 is the schema descriptor for alarm1 field.
-	valuechargeDescAlarm1 := valuechargeFields[14].Descriptor()
-	// valuecharge.DefaultAlarm1 holds the default value on creation for the alarm1 field.
-	valuecharge.DefaultAlarm1 = valuechargeDescAlarm1.Default.(int)
-	// valuechargeDescAlarm2 is the schema descriptor for alarm2 field.
-	valuechargeDescAlarm2 := valuechargeFields[15].Descriptor()
-	// valuecharge.DefaultAlarm2 holds the default value on creation for the alarm2 field.
-	valuecharge.DefaultAlarm2 = valuechargeDescAlarm2.Default.(int)
-	// valuechargeDescAlarm3 is the schema descriptor for alarm3 field.
-	valuechargeDescAlarm3 := valuechargeFields[16].Descriptor()
-	// valuecharge.DefaultAlarm3 holds the default value on creation for the alarm3 field.
-	valuecharge.DefaultAlarm3 = valuechargeDescAlarm3.Default.(int)
-	// valuechargeDescStatus is the schema descriptor for status field.
-	valuechargeDescStatus := valuechargeFields[17].Descriptor()
-	// valuecharge.DefaultStatus holds the default value on creation for the status field.
-	valuecharge.DefaultStatus = valuechargeDescStatus.Default.(int)
-	// valuechargeDescIsDel is the schema descriptor for is_del field.
-	valuechargeDescIsDel := valuechargeFields[19].Descriptor()
-	// valuecharge.DefaultIsDel holds the default value on creation for the is_del field.
-	valuecharge.DefaultIsDel = valuechargeDescIsDel.Default.(int)
-	// valuechargeDescID is the schema descriptor for id field.
-	valuechargeDescID := valuechargeFields[0].Descriptor()
-	// valuecharge.DefaultID holds the default value on creation for the id field.
-	valuecharge.DefaultID = valuechargeDescID.Default.(func() string)
-	// valuecharge.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	valuecharge.IDValidator = valuechargeDescID.Validators[0].(func(string) error)
+	topMixin := schema.Top{}.Mixin()
+	topMixinFields0 := topMixin[0].Fields()
+	_ = topMixinFields0
+	topFields := schema.Top{}.Fields()
+	_ = topFields
+	// topDescCreateTime is the schema descriptor for create_time field.
+	topDescCreateTime := topMixinFields0[0].Descriptor()
+	// top.DefaultCreateTime holds the default value on creation for the create_time field.
+	top.DefaultCreateTime = topDescCreateTime.Default.(func() time.Time)
+	// topDescUpdateTime is the schema descriptor for update_time field.
+	topDescUpdateTime := topMixinFields0[1].Descriptor()
+	// top.DefaultUpdateTime holds the default value on creation for the update_time field.
+	top.DefaultUpdateTime = topDescUpdateTime.Default.(func() time.Time)
+	// top.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	top.UpdateDefaultUpdateTime = topDescUpdateTime.UpdateDefault.(func() time.Time)
+	// topDescCode is the schema descriptor for code field.
+	topDescCode := topFields[1].Descriptor()
+	// top.DefaultCode holds the default value on creation for the code field.
+	top.DefaultCode = topDescCode.Default.(func() string)
+	// top.CodeValidator is a validator for the "code" field. It is called by the builders before save.
+	top.CodeValidator = topDescCode.Validators[0].(func(string) error)
+	// topDescDeviceCode is the schema descriptor for device_code field.
+	topDescDeviceCode := topFields[2].Descriptor()
+	// top.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
+	top.DeviceCodeValidator = topDescDeviceCode.Validators[0].(func(string) error)
+	// topDescDeviceType is the schema descriptor for device_type field.
+	topDescDeviceType := topFields[3].Descriptor()
+	// top.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
+	top.DeviceTypeValidator = topDescDeviceType.Validators[0].(func(string) error)
+	// topDescPosCode is the schema descriptor for pos_code field.
+	topDescPosCode := topFields[4].Descriptor()
+	// top.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
+	top.PosCodeValidator = topDescPosCode.Validators[0].(func(string) error)
+	// topDescProject is the schema descriptor for project field.
+	topDescProject := topFields[5].Descriptor()
+	// top.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
+	top.ProjectValidator = topDescProject.Validators[0].(func(string) error)
+	// topDescTop is the schema descriptor for top field.
+	topDescTop := topFields[7].Descriptor()
+	// top.DefaultTop holds the default value on creation for the top field.
+	top.DefaultTop = topDescTop.Default.(int64)
+	// topDescStock is the schema descriptor for stock field.
+	topDescStock := topFields[8].Descriptor()
+	// top.DefaultStock holds the default value on creation for the stock field.
+	top.DefaultStock = topDescStock.Default.(int64)
+	// topDescIncr is the schema descriptor for incr field.
+	topDescIncr := topFields[9].Descriptor()
+	// top.DefaultIncr holds the default value on creation for the incr field.
+	top.DefaultIncr = topDescIncr.Default.(int64)
+	// topDescAmount is the schema descriptor for amount field.
+	topDescAmount := topFields[10].Descriptor()
+	// top.DefaultAmount holds the default value on creation for the amount field.
+	top.DefaultAmount = topDescAmount.Default.(int64)
+	// topDescUnitPrice is the schema descriptor for unit_price field.
+	topDescUnitPrice := topFields[11].Descriptor()
+	// top.DefaultUnitPrice holds the default value on creation for the unit_price field.
+	top.DefaultUnitPrice = topDescUnitPrice.Default.(int64)
+	// topDescChargeTime is the schema descriptor for charge_time field.
+	topDescChargeTime := topFields[12].Descriptor()
+	// top.DefaultChargeTime holds the default value on creation for the charge_time field.
+	top.DefaultChargeTime = topDescChargeTime.Default.(func() time.Time)
+	// topDescAlarm is the schema descriptor for alarm field.
+	topDescAlarm := topFields[13].Descriptor()
+	// top.DefaultAlarm holds the default value on creation for the alarm field.
+	top.DefaultAlarm = topDescAlarm.Default.(int)
+	// topDescStatus is the schema descriptor for status field.
+	topDescStatus := topFields[15].Descriptor()
+	// top.DefaultStatus holds the default value on creation for the status field.
+	top.DefaultStatus = topDescStatus.Default.(int)
+	// topDescIsDel is the schema descriptor for is_del field.
+	topDescIsDel := topFields[18].Descriptor()
+	// top.DefaultIsDel holds the default value on creation for the is_del field.
+	top.DefaultIsDel = topDescIsDel.Default.(int)
+	// topDescID is the schema descriptor for id field.
+	topDescID := topFields[0].Descriptor()
+	// top.DefaultID holds the default value on creation for the id field.
+	top.DefaultID = topDescID.Default.(func() string)
+	// top.IDValidator is a validator for the "id" field. It is called by the builders before save.
+	top.IDValidator = topDescID.Validators[0].(func(string) error)
 }

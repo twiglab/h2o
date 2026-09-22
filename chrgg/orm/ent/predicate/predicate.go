@@ -6,5 +6,5 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// ValueCharge is the predicate function for valuecharge builders.
-type ValueCharge func(*sql.Selector)
+// Top is the predicate function for top builders.
+type Top func(*sql.Selector)

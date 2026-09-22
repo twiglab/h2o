@@ -14,7 +14,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
+	"github.com/twiglab/h2o/chrgg/orm/ent/top"
 
 	stdsql "database/sql"
 )
@@ -24,8 +24,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// ValueCharge is the client for interacting with the ValueCharge builders.
-	ValueCharge *ValueChargeClient
+	// Top is the client for interacting with the Top builders.
+	Top *TopClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -37,7 +37,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.ValueCharge = NewValueChargeClient(c.config)
+	c.Top = NewTopClient(c.config)
 }
 
 type (
@@ -128,9 +128,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		ValueCharge: NewValueChargeClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Top:    NewTopClient(cfg),
 	}, nil
 }
 
@@ -148,16 +148,16 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		ValueCharge: NewValueChargeClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Top:    NewTopClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		ValueCharge.
+//		Top.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -179,126 +179,126 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.ValueCharge.Use(hooks...)
+	c.Top.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.ValueCharge.Intercept(interceptors...)
+	c.Top.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *ValueChargeMutation:
-		return c.ValueCharge.mutate(ctx, m)
+	case *TopMutation:
+		return c.Top.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
 }
 
-// ValueChargeClient is a client for the ValueCharge schema.
-type ValueChargeClient struct {
+// TopClient is a client for the Top schema.
+type TopClient struct {
 	config
 }
 
-// NewValueChargeClient returns a client for the ValueCharge from the given config.
-func NewValueChargeClient(c config) *ValueChargeClient {
-	return &ValueChargeClient{config: c}
+// NewTopClient returns a client for the Top from the given config.
+func NewTopClient(c config) *TopClient {
+	return &TopClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `valuecharge.Hooks(f(g(h())))`.
-func (c *ValueChargeClient) Use(hooks ...Hook) {
-	c.hooks.ValueCharge = append(c.hooks.ValueCharge, hooks...)
+// A call to `Use(f, g, h)` equals to `top.Hooks(f(g(h())))`.
+func (c *TopClient) Use(hooks ...Hook) {
+	c.hooks.Top = append(c.hooks.Top, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `valuecharge.Intercept(f(g(h())))`.
-func (c *ValueChargeClient) Intercept(interceptors ...Interceptor) {
-	c.inters.ValueCharge = append(c.inters.ValueCharge, interceptors...)
+// A call to `Intercept(f, g, h)` equals to `top.Intercept(f(g(h())))`.
+func (c *TopClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Top = append(c.inters.Top, interceptors...)
 }
 
-// Create returns a builder for creating a ValueCharge entity.
-func (c *ValueChargeClient) Create() *ValueChargeCreate {
-	mutation := newValueChargeMutation(c.config, OpCreate)
-	return &ValueChargeCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Top entity.
+func (c *TopClient) Create() *TopCreate {
+	mutation := newTopMutation(c.config, OpCreate)
+	return &TopCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of ValueCharge entities.
-func (c *ValueChargeClient) CreateBulk(builders ...*ValueChargeCreate) *ValueChargeCreateBulk {
-	return &ValueChargeCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Top entities.
+func (c *TopClient) CreateBulk(builders ...*TopCreate) *TopCreateBulk {
+	return &TopCreateBulk{config: c.config, builders: builders}
 }
 
 // MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
 // a builder and applies setFunc on it.
-func (c *ValueChargeClient) MapCreateBulk(slice any, setFunc func(*ValueChargeCreate, int)) *ValueChargeCreateBulk {
+func (c *TopClient) MapCreateBulk(slice any, setFunc func(*TopCreate, int)) *TopCreateBulk {
 	rv := reflect.ValueOf(slice)
 	if rv.Kind() != reflect.Slice {
-		return &ValueChargeCreateBulk{err: fmt.Errorf("calling to ValueChargeClient.MapCreateBulk with wrong type %T, need slice", slice)}
+		return &TopCreateBulk{err: fmt.Errorf("calling to TopClient.MapCreateBulk with wrong type %T, need slice", slice)}
 	}
-	builders := make([]*ValueChargeCreate, rv.Len())
+	builders := make([]*TopCreate, rv.Len())
 	for i := 0; i < rv.Len(); i++ {
 		builders[i] = c.Create()
 		setFunc(builders[i], i)
 	}
-	return &ValueChargeCreateBulk{config: c.config, builders: builders}
+	return &TopCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for ValueCharge.
-func (c *ValueChargeClient) Update() *ValueChargeUpdate {
-	mutation := newValueChargeMutation(c.config, OpUpdate)
-	return &ValueChargeUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Top.
+func (c *TopClient) Update() *TopUpdate {
+	mutation := newTopMutation(c.config, OpUpdate)
+	return &TopUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *ValueChargeClient) UpdateOne(_m *ValueCharge) *ValueChargeUpdateOne {
-	mutation := newValueChargeMutation(c.config, OpUpdateOne, withValueCharge(_m))
-	return &ValueChargeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TopClient) UpdateOne(_m *Top) *TopUpdateOne {
+	mutation := newTopMutation(c.config, OpUpdateOne, withTop(_m))
+	return &TopUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *ValueChargeClient) UpdateOneID(id string) *ValueChargeUpdateOne {
-	mutation := newValueChargeMutation(c.config, OpUpdateOne, withValueChargeID(id))
-	return &ValueChargeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *TopClient) UpdateOneID(id string) *TopUpdateOne {
+	mutation := newTopMutation(c.config, OpUpdateOne, withTopID(id))
+	return &TopUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for ValueCharge.
-func (c *ValueChargeClient) Delete() *ValueChargeDelete {
-	mutation := newValueChargeMutation(c.config, OpDelete)
-	return &ValueChargeDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Top.
+func (c *TopClient) Delete() *TopDelete {
+	mutation := newTopMutation(c.config, OpDelete)
+	return &TopDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *ValueChargeClient) DeleteOne(_m *ValueCharge) *ValueChargeDeleteOne {
+func (c *TopClient) DeleteOne(_m *Top) *TopDeleteOne {
 	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *ValueChargeClient) DeleteOneID(id string) *ValueChargeDeleteOne {
-	builder := c.Delete().Where(valuecharge.ID(id))
+func (c *TopClient) DeleteOneID(id string) *TopDeleteOne {
+	builder := c.Delete().Where(top.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &ValueChargeDeleteOne{builder}
+	return &TopDeleteOne{builder}
 }
 
-// Query returns a query builder for ValueCharge.
-func (c *ValueChargeClient) Query() *ValueChargeQuery {
-	return &ValueChargeQuery{
+// Query returns a query builder for Top.
+func (c *TopClient) Query() *TopQuery {
+	return &TopQuery{
 		config: c.config,
-		ctx:    &QueryContext{Type: TypeValueCharge},
+		ctx:    &QueryContext{Type: TypeTop},
 		inters: c.Interceptors(),
 	}
 }
 
-// Get returns a ValueCharge entity by its id.
-func (c *ValueChargeClient) Get(ctx context.Context, id string) (*ValueCharge, error) {
-	return c.Query().Where(valuecharge.ID(id)).Only(ctx)
+// Get returns a Top entity by its id.
+func (c *TopClient) Get(ctx context.Context, id string) (*Top, error) {
+	return c.Query().Where(top.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *ValueChargeClient) GetX(ctx context.Context, id string) *ValueCharge {
+func (c *TopClient) GetX(ctx context.Context, id string) *Top {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -307,37 +307,37 @@ func (c *ValueChargeClient) GetX(ctx context.Context, id string) *ValueCharge {
 }
 
 // Hooks returns the client hooks.
-func (c *ValueChargeClient) Hooks() []Hook {
-	return c.hooks.ValueCharge
+func (c *TopClient) Hooks() []Hook {
+	return c.hooks.Top
 }
 
 // Interceptors returns the client interceptors.
-func (c *ValueChargeClient) Interceptors() []Interceptor {
-	return c.inters.ValueCharge
+func (c *TopClient) Interceptors() []Interceptor {
+	return c.inters.Top
 }
 
-func (c *ValueChargeClient) mutate(ctx context.Context, m *ValueChargeMutation) (Value, error) {
+func (c *TopClient) mutate(ctx context.Context, m *TopMutation) (Value, error) {
 	switch m.Op() {
 	case OpCreate:
-		return (&ValueChargeCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TopCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdate:
-		return (&ValueChargeUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TopUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpUpdateOne:
-		return (&ValueChargeUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+		return (&TopUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
 	case OpDelete, OpDeleteOne:
-		return (&ValueChargeDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+		return (&TopDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
-		return nil, fmt.Errorf("ent: unknown ValueCharge mutation op: %q", m.Op())
+		return nil, fmt.Errorf("ent: unknown Top mutation op: %q", m.Op())
 	}
 }
 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		ValueCharge []ent.Hook
+		Top []ent.Hook
 	}
 	inters struct {
-		ValueCharge []ent.Interceptor
+		Top []ent.Interceptor
 	}
 )
 

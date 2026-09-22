@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/twiglab/h2o/chrgg/orm/ent/predicate"
-	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
+	"github.com/twiglab/h2o/chrgg/orm/ent/top"
 )
 
 const (
@@ -24,11 +24,11 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeValueCharge = "ValueCharge"
+	TypeTop = "Top"
 )
 
-// ValueChargeMutation represents an operation that mutates the ValueCharge nodes in the graph.
-type ValueChargeMutation struct {
+// TopMutation represents an operation that mutates the Top nodes in the graph.
+type TopMutation struct {
 	config
 	op            Op
 	typ           string
@@ -52,35 +52,32 @@ type ValueChargeMutation struct {
 	unit_price    *int64
 	addunit_price *int64
 	charge_time   *time.Time
-	charge_ts     *string
-	alarm1        *int
-	addalarm1     *int
-	alarm2        *int
-	addalarm2     *int
-	alarm3        *int
-	addalarm3     *int
+	alarm         *int
+	addalarm      *int
+	alarm_time    *time.Time
 	status        *int
 	addstatus     *int
+	end_time      *time.Time
 	memo          *string
 	is_del        *int
 	addis_del     *int
 	clearedFields map[string]struct{}
 	done          bool
-	oldValue      func(context.Context) (*ValueCharge, error)
-	predicates    []predicate.ValueCharge
+	oldValue      func(context.Context) (*Top, error)
+	predicates    []predicate.Top
 }
 
-var _ ent.Mutation = (*ValueChargeMutation)(nil)
+var _ ent.Mutation = (*TopMutation)(nil)
 
-// valuechargeOption allows management of the mutation configuration using functional options.
-type valuechargeOption func(*ValueChargeMutation)
+// topOption allows management of the mutation configuration using functional options.
+type topOption func(*TopMutation)
 
-// newValueChargeMutation creates new mutation for the ValueCharge entity.
-func newValueChargeMutation(c config, op Op, opts ...valuechargeOption) *ValueChargeMutation {
-	m := &ValueChargeMutation{
+// newTopMutation creates new mutation for the Top entity.
+func newTopMutation(c config, op Op, opts ...topOption) *TopMutation {
+	m := &TopMutation{
 		config:        c,
 		op:            op,
-		typ:           TypeValueCharge,
+		typ:           TypeTop,
 		clearedFields: make(map[string]struct{}),
 	}
 	for _, opt := range opts {
@@ -89,20 +86,20 @@ func newValueChargeMutation(c config, op Op, opts ...valuechargeOption) *ValueCh
 	return m
 }
 
-// withValueChargeID sets the ID field of the mutation.
-func withValueChargeID(id string) valuechargeOption {
-	return func(m *ValueChargeMutation) {
+// withTopID sets the ID field of the mutation.
+func withTopID(id string) topOption {
+	return func(m *TopMutation) {
 		var (
 			err   error
 			once  sync.Once
-			value *ValueCharge
+			value *Top
 		)
-		m.oldValue = func(ctx context.Context) (*ValueCharge, error) {
+		m.oldValue = func(ctx context.Context) (*Top, error) {
 			once.Do(func() {
 				if m.done {
 					err = errors.New("querying old values post mutation is not allowed")
 				} else {
-					value, err = m.Client().ValueCharge.Get(ctx, id)
+					value, err = m.Client().Top.Get(ctx, id)
 				}
 			})
 			return value, err
@@ -111,10 +108,10 @@ func withValueChargeID(id string) valuechargeOption {
 	}
 }
 
-// withValueCharge sets the old ValueCharge of the mutation.
-func withValueCharge(node *ValueCharge) valuechargeOption {
-	return func(m *ValueChargeMutation) {
-		m.oldValue = func(context.Context) (*ValueCharge, error) {
+// withTop sets the old Top of the mutation.
+func withTop(node *Top) topOption {
+	return func(m *TopMutation) {
+		m.oldValue = func(context.Context) (*Top, error) {
 			return node, nil
 		}
 		m.id = &node.ID
@@ -123,7 +120,7 @@ func withValueCharge(node *ValueCharge) valuechargeOption {
 
 // Client returns a new `ent.Client` from the mutation. If the mutation was
 // executed in a transaction (ent.Tx), a transactional client is returned.
-func (m ValueChargeMutation) Client() *Client {
+func (m TopMutation) Client() *Client {
 	client := &Client{config: m.config}
 	client.init()
 	return client
@@ -131,7 +128,7 @@ func (m ValueChargeMutation) Client() *Client {
 
 // Tx returns an `ent.Tx` for mutations that were executed in transactions;
 // it returns an error otherwise.
-func (m ValueChargeMutation) Tx() (*Tx, error) {
+func (m TopMutation) Tx() (*Tx, error) {
 	if _, ok := m.driver.(*txDriver); !ok {
 		return nil, errors.New("ent: mutation is not running in a transaction")
 	}
@@ -141,14 +138,14 @@ func (m ValueChargeMutation) Tx() (*Tx, error) {
 }
 
 // SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of ValueCharge entities.
-func (m *ValueChargeMutation) SetID(id string) {
+// operation is only accepted on creation of Top entities.
+func (m *TopMutation) SetID(id string) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *ValueChargeMutation) ID() (id string, exists bool) {
+func (m *TopMutation) ID() (id string, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -159,7 +156,7 @@ func (m *ValueChargeMutation) ID() (id string, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *ValueChargeMutation) IDs(ctx context.Context) ([]string, error) {
+func (m *TopMutation) IDs(ctx context.Context) ([]string, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
@@ -168,19 +165,19 @@ func (m *ValueChargeMutation) IDs(ctx context.Context) ([]string, error) {
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().ValueCharge.Query().Where(m.predicates...).IDs(ctx)
+		return m.Client().Top.Query().Where(m.predicates...).IDs(ctx)
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
 }
 
 // SetCreateTime sets the "create_time" field.
-func (m *ValueChargeMutation) SetCreateTime(t time.Time) {
+func (m *TopMutation) SetCreateTime(t time.Time) {
 	m.create_time = &t
 }
 
 // CreateTime returns the value of the "create_time" field in the mutation.
-func (m *ValueChargeMutation) CreateTime() (r time.Time, exists bool) {
+func (m *TopMutation) CreateTime() (r time.Time, exists bool) {
 	v := m.create_time
 	if v == nil {
 		return
@@ -188,10 +185,10 @@ func (m *ValueChargeMutation) CreateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldCreateTime returns the old "create_time" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldCreateTime returns the old "create_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
+func (m *TopMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCreateTime is only allowed on UpdateOne operations")
 	}
@@ -206,17 +203,17 @@ func (m *ValueChargeMutation) OldCreateTime(ctx context.Context) (v time.Time, e
 }
 
 // ResetCreateTime resets all changes to the "create_time" field.
-func (m *ValueChargeMutation) ResetCreateTime() {
+func (m *TopMutation) ResetCreateTime() {
 	m.create_time = nil
 }
 
 // SetUpdateTime sets the "update_time" field.
-func (m *ValueChargeMutation) SetUpdateTime(t time.Time) {
+func (m *TopMutation) SetUpdateTime(t time.Time) {
 	m.update_time = &t
 }
 
 // UpdateTime returns the value of the "update_time" field in the mutation.
-func (m *ValueChargeMutation) UpdateTime() (r time.Time, exists bool) {
+func (m *TopMutation) UpdateTime() (r time.Time, exists bool) {
 	v := m.update_time
 	if v == nil {
 		return
@@ -224,10 +221,10 @@ func (m *ValueChargeMutation) UpdateTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldUpdateTime returns the old "update_time" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldUpdateTime returns the old "update_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
+func (m *TopMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUpdateTime is only allowed on UpdateOne operations")
 	}
@@ -242,17 +239,17 @@ func (m *ValueChargeMutation) OldUpdateTime(ctx context.Context) (v time.Time, e
 }
 
 // ResetUpdateTime resets all changes to the "update_time" field.
-func (m *ValueChargeMutation) ResetUpdateTime() {
+func (m *TopMutation) ResetUpdateTime() {
 	m.update_time = nil
 }
 
 // SetCode sets the "code" field.
-func (m *ValueChargeMutation) SetCode(s string) {
+func (m *TopMutation) SetCode(s string) {
 	m.code = &s
 }
 
 // Code returns the value of the "code" field in the mutation.
-func (m *ValueChargeMutation) Code() (r string, exists bool) {
+func (m *TopMutation) Code() (r string, exists bool) {
 	v := m.code
 	if v == nil {
 		return
@@ -260,10 +257,10 @@ func (m *ValueChargeMutation) Code() (r string, exists bool) {
 	return *v, true
 }
 
-// OldCode returns the old "code" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldCode returns the old "code" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldCode(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldCode is only allowed on UpdateOne operations")
 	}
@@ -278,17 +275,17 @@ func (m *ValueChargeMutation) OldCode(ctx context.Context) (v string, err error)
 }
 
 // ResetCode resets all changes to the "code" field.
-func (m *ValueChargeMutation) ResetCode() {
+func (m *TopMutation) ResetCode() {
 	m.code = nil
 }
 
 // SetDeviceCode sets the "device_code" field.
-func (m *ValueChargeMutation) SetDeviceCode(s string) {
+func (m *TopMutation) SetDeviceCode(s string) {
 	m.device_code = &s
 }
 
 // DeviceCode returns the value of the "device_code" field in the mutation.
-func (m *ValueChargeMutation) DeviceCode() (r string, exists bool) {
+func (m *TopMutation) DeviceCode() (r string, exists bool) {
 	v := m.device_code
 	if v == nil {
 		return
@@ -296,10 +293,10 @@ func (m *ValueChargeMutation) DeviceCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceCode returns the old "device_code" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceCode returns the old "device_code" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldDeviceCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceCode is only allowed on UpdateOne operations")
 	}
@@ -314,17 +311,17 @@ func (m *ValueChargeMutation) OldDeviceCode(ctx context.Context) (v string, err 
 }
 
 // ResetDeviceCode resets all changes to the "device_code" field.
-func (m *ValueChargeMutation) ResetDeviceCode() {
+func (m *TopMutation) ResetDeviceCode() {
 	m.device_code = nil
 }
 
 // SetDeviceType sets the "device_type" field.
-func (m *ValueChargeMutation) SetDeviceType(s string) {
+func (m *TopMutation) SetDeviceType(s string) {
 	m.device_type = &s
 }
 
 // DeviceType returns the value of the "device_type" field in the mutation.
-func (m *ValueChargeMutation) DeviceType() (r string, exists bool) {
+func (m *TopMutation) DeviceType() (r string, exists bool) {
 	v := m.device_type
 	if v == nil {
 		return
@@ -332,10 +329,10 @@ func (m *ValueChargeMutation) DeviceType() (r string, exists bool) {
 	return *v, true
 }
 
-// OldDeviceType returns the old "device_type" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldDeviceType returns the old "device_type" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldDeviceType(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldDeviceType(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldDeviceType is only allowed on UpdateOne operations")
 	}
@@ -350,17 +347,17 @@ func (m *ValueChargeMutation) OldDeviceType(ctx context.Context) (v string, err 
 }
 
 // ResetDeviceType resets all changes to the "device_type" field.
-func (m *ValueChargeMutation) ResetDeviceType() {
+func (m *TopMutation) ResetDeviceType() {
 	m.device_type = nil
 }
 
 // SetPosCode sets the "pos_code" field.
-func (m *ValueChargeMutation) SetPosCode(s string) {
+func (m *TopMutation) SetPosCode(s string) {
 	m.pos_code = &s
 }
 
 // PosCode returns the value of the "pos_code" field in the mutation.
-func (m *ValueChargeMutation) PosCode() (r string, exists bool) {
+func (m *TopMutation) PosCode() (r string, exists bool) {
 	v := m.pos_code
 	if v == nil {
 		return
@@ -368,10 +365,10 @@ func (m *ValueChargeMutation) PosCode() (r string, exists bool) {
 	return *v, true
 }
 
-// OldPosCode returns the old "pos_code" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldPosCode returns the old "pos_code" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldPosCode(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldPosCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldPosCode is only allowed on UpdateOne operations")
 	}
@@ -386,17 +383,17 @@ func (m *ValueChargeMutation) OldPosCode(ctx context.Context) (v string, err err
 }
 
 // ResetPosCode resets all changes to the "pos_code" field.
-func (m *ValueChargeMutation) ResetPosCode() {
+func (m *TopMutation) ResetPosCode() {
 	m.pos_code = nil
 }
 
 // SetProject sets the "project" field.
-func (m *ValueChargeMutation) SetProject(s string) {
+func (m *TopMutation) SetProject(s string) {
 	m.project = &s
 }
 
 // Project returns the value of the "project" field in the mutation.
-func (m *ValueChargeMutation) Project() (r string, exists bool) {
+func (m *TopMutation) Project() (r string, exists bool) {
 	v := m.project
 	if v == nil {
 		return
@@ -404,10 +401,10 @@ func (m *ValueChargeMutation) Project() (r string, exists bool) {
 	return *v, true
 }
 
-// OldProject returns the old "project" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldProject returns the old "project" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldProject(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldProject(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldProject is only allowed on UpdateOne operations")
 	}
@@ -422,17 +419,17 @@ func (m *ValueChargeMutation) OldProject(ctx context.Context) (v string, err err
 }
 
 // ResetProject resets all changes to the "project" field.
-func (m *ValueChargeMutation) ResetProject() {
+func (m *TopMutation) ResetProject() {
 	m.project = nil
 }
 
 // SetOwner sets the "owner" field.
-func (m *ValueChargeMutation) SetOwner(s string) {
+func (m *TopMutation) SetOwner(s string) {
 	m.owner = &s
 }
 
 // Owner returns the value of the "owner" field in the mutation.
-func (m *ValueChargeMutation) Owner() (r string, exists bool) {
+func (m *TopMutation) Owner() (r string, exists bool) {
 	v := m.owner
 	if v == nil {
 		return
@@ -440,10 +437,10 @@ func (m *ValueChargeMutation) Owner() (r string, exists bool) {
 	return *v, true
 }
 
-// OldOwner returns the old "owner" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldOwner returns the old "owner" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldOwner(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldOwner(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
 	}
@@ -458,31 +455,31 @@ func (m *ValueChargeMutation) OldOwner(ctx context.Context) (v string, err error
 }
 
 // ClearOwner clears the value of the "owner" field.
-func (m *ValueChargeMutation) ClearOwner() {
+func (m *TopMutation) ClearOwner() {
 	m.owner = nil
-	m.clearedFields[valuecharge.FieldOwner] = struct{}{}
+	m.clearedFields[top.FieldOwner] = struct{}{}
 }
 
 // OwnerCleared returns if the "owner" field was cleared in this mutation.
-func (m *ValueChargeMutation) OwnerCleared() bool {
-	_, ok := m.clearedFields[valuecharge.FieldOwner]
+func (m *TopMutation) OwnerCleared() bool {
+	_, ok := m.clearedFields[top.FieldOwner]
 	return ok
 }
 
 // ResetOwner resets all changes to the "owner" field.
-func (m *ValueChargeMutation) ResetOwner() {
+func (m *TopMutation) ResetOwner() {
 	m.owner = nil
-	delete(m.clearedFields, valuecharge.FieldOwner)
+	delete(m.clearedFields, top.FieldOwner)
 }
 
 // SetTop sets the "top" field.
-func (m *ValueChargeMutation) SetTop(i int64) {
+func (m *TopMutation) SetTop(i int64) {
 	m.top = &i
 	m.addtop = nil
 }
 
 // Top returns the value of the "top" field in the mutation.
-func (m *ValueChargeMutation) Top() (r int64, exists bool) {
+func (m *TopMutation) Top() (r int64, exists bool) {
 	v := m.top
 	if v == nil {
 		return
@@ -490,10 +487,10 @@ func (m *ValueChargeMutation) Top() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldTop returns the old "top" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldTop returns the old "top" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldTop(ctx context.Context) (v int64, err error) {
+func (m *TopMutation) OldTop(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldTop is only allowed on UpdateOne operations")
 	}
@@ -508,7 +505,7 @@ func (m *ValueChargeMutation) OldTop(ctx context.Context) (v int64, err error) {
 }
 
 // AddTop adds i to the "top" field.
-func (m *ValueChargeMutation) AddTop(i int64) {
+func (m *TopMutation) AddTop(i int64) {
 	if m.addtop != nil {
 		*m.addtop += i
 	} else {
@@ -517,7 +514,7 @@ func (m *ValueChargeMutation) AddTop(i int64) {
 }
 
 // AddedTop returns the value that was added to the "top" field in this mutation.
-func (m *ValueChargeMutation) AddedTop() (r int64, exists bool) {
+func (m *TopMutation) AddedTop() (r int64, exists bool) {
 	v := m.addtop
 	if v == nil {
 		return
@@ -526,19 +523,19 @@ func (m *ValueChargeMutation) AddedTop() (r int64, exists bool) {
 }
 
 // ResetTop resets all changes to the "top" field.
-func (m *ValueChargeMutation) ResetTop() {
+func (m *TopMutation) ResetTop() {
 	m.top = nil
 	m.addtop = nil
 }
 
 // SetStock sets the "stock" field.
-func (m *ValueChargeMutation) SetStock(i int64) {
+func (m *TopMutation) SetStock(i int64) {
 	m.stock = &i
 	m.addstock = nil
 }
 
 // Stock returns the value of the "stock" field in the mutation.
-func (m *ValueChargeMutation) Stock() (r int64, exists bool) {
+func (m *TopMutation) Stock() (r int64, exists bool) {
 	v := m.stock
 	if v == nil {
 		return
@@ -546,10 +543,10 @@ func (m *ValueChargeMutation) Stock() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldStock returns the old "stock" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldStock returns the old "stock" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldStock(ctx context.Context) (v int64, err error) {
+func (m *TopMutation) OldStock(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStock is only allowed on UpdateOne operations")
 	}
@@ -564,7 +561,7 @@ func (m *ValueChargeMutation) OldStock(ctx context.Context) (v int64, err error)
 }
 
 // AddStock adds i to the "stock" field.
-func (m *ValueChargeMutation) AddStock(i int64) {
+func (m *TopMutation) AddStock(i int64) {
 	if m.addstock != nil {
 		*m.addstock += i
 	} else {
@@ -573,7 +570,7 @@ func (m *ValueChargeMutation) AddStock(i int64) {
 }
 
 // AddedStock returns the value that was added to the "stock" field in this mutation.
-func (m *ValueChargeMutation) AddedStock() (r int64, exists bool) {
+func (m *TopMutation) AddedStock() (r int64, exists bool) {
 	v := m.addstock
 	if v == nil {
 		return
@@ -582,19 +579,19 @@ func (m *ValueChargeMutation) AddedStock() (r int64, exists bool) {
 }
 
 // ResetStock resets all changes to the "stock" field.
-func (m *ValueChargeMutation) ResetStock() {
+func (m *TopMutation) ResetStock() {
 	m.stock = nil
 	m.addstock = nil
 }
 
 // SetIncr sets the "incr" field.
-func (m *ValueChargeMutation) SetIncr(i int64) {
+func (m *TopMutation) SetIncr(i int64) {
 	m.incr = &i
 	m.addincr = nil
 }
 
 // Incr returns the value of the "incr" field in the mutation.
-func (m *ValueChargeMutation) Incr() (r int64, exists bool) {
+func (m *TopMutation) Incr() (r int64, exists bool) {
 	v := m.incr
 	if v == nil {
 		return
@@ -602,10 +599,10 @@ func (m *ValueChargeMutation) Incr() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldIncr returns the old "incr" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldIncr returns the old "incr" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldIncr(ctx context.Context) (v int64, err error) {
+func (m *TopMutation) OldIncr(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIncr is only allowed on UpdateOne operations")
 	}
@@ -620,7 +617,7 @@ func (m *ValueChargeMutation) OldIncr(ctx context.Context) (v int64, err error) 
 }
 
 // AddIncr adds i to the "incr" field.
-func (m *ValueChargeMutation) AddIncr(i int64) {
+func (m *TopMutation) AddIncr(i int64) {
 	if m.addincr != nil {
 		*m.addincr += i
 	} else {
@@ -629,7 +626,7 @@ func (m *ValueChargeMutation) AddIncr(i int64) {
 }
 
 // AddedIncr returns the value that was added to the "incr" field in this mutation.
-func (m *ValueChargeMutation) AddedIncr() (r int64, exists bool) {
+func (m *TopMutation) AddedIncr() (r int64, exists bool) {
 	v := m.addincr
 	if v == nil {
 		return
@@ -638,19 +635,19 @@ func (m *ValueChargeMutation) AddedIncr() (r int64, exists bool) {
 }
 
 // ResetIncr resets all changes to the "incr" field.
-func (m *ValueChargeMutation) ResetIncr() {
+func (m *TopMutation) ResetIncr() {
 	m.incr = nil
 	m.addincr = nil
 }
 
 // SetAmount sets the "amount" field.
-func (m *ValueChargeMutation) SetAmount(i int64) {
+func (m *TopMutation) SetAmount(i int64) {
 	m.amount = &i
 	m.addamount = nil
 }
 
 // Amount returns the value of the "amount" field in the mutation.
-func (m *ValueChargeMutation) Amount() (r int64, exists bool) {
+func (m *TopMutation) Amount() (r int64, exists bool) {
 	v := m.amount
 	if v == nil {
 		return
@@ -658,10 +655,10 @@ func (m *ValueChargeMutation) Amount() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldAmount returns the old "amount" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldAmount returns the old "amount" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldAmount(ctx context.Context) (v int64, err error) {
+func (m *TopMutation) OldAmount(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldAmount is only allowed on UpdateOne operations")
 	}
@@ -676,7 +673,7 @@ func (m *ValueChargeMutation) OldAmount(ctx context.Context) (v int64, err error
 }
 
 // AddAmount adds i to the "amount" field.
-func (m *ValueChargeMutation) AddAmount(i int64) {
+func (m *TopMutation) AddAmount(i int64) {
 	if m.addamount != nil {
 		*m.addamount += i
 	} else {
@@ -685,7 +682,7 @@ func (m *ValueChargeMutation) AddAmount(i int64) {
 }
 
 // AddedAmount returns the value that was added to the "amount" field in this mutation.
-func (m *ValueChargeMutation) AddedAmount() (r int64, exists bool) {
+func (m *TopMutation) AddedAmount() (r int64, exists bool) {
 	v := m.addamount
 	if v == nil {
 		return
@@ -694,19 +691,19 @@ func (m *ValueChargeMutation) AddedAmount() (r int64, exists bool) {
 }
 
 // ResetAmount resets all changes to the "amount" field.
-func (m *ValueChargeMutation) ResetAmount() {
+func (m *TopMutation) ResetAmount() {
 	m.amount = nil
 	m.addamount = nil
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (m *ValueChargeMutation) SetUnitPrice(i int64) {
+func (m *TopMutation) SetUnitPrice(i int64) {
 	m.unit_price = &i
 	m.addunit_price = nil
 }
 
 // UnitPrice returns the value of the "unit_price" field in the mutation.
-func (m *ValueChargeMutation) UnitPrice() (r int64, exists bool) {
+func (m *TopMutation) UnitPrice() (r int64, exists bool) {
 	v := m.unit_price
 	if v == nil {
 		return
@@ -714,10 +711,10 @@ func (m *ValueChargeMutation) UnitPrice() (r int64, exists bool) {
 	return *v, true
 }
 
-// OldUnitPrice returns the old "unit_price" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldUnitPrice returns the old "unit_price" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldUnitPrice(ctx context.Context) (v int64, err error) {
+func (m *TopMutation) OldUnitPrice(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUnitPrice is only allowed on UpdateOne operations")
 	}
@@ -732,7 +729,7 @@ func (m *ValueChargeMutation) OldUnitPrice(ctx context.Context) (v int64, err er
 }
 
 // AddUnitPrice adds i to the "unit_price" field.
-func (m *ValueChargeMutation) AddUnitPrice(i int64) {
+func (m *TopMutation) AddUnitPrice(i int64) {
 	if m.addunit_price != nil {
 		*m.addunit_price += i
 	} else {
@@ -741,7 +738,7 @@ func (m *ValueChargeMutation) AddUnitPrice(i int64) {
 }
 
 // AddedUnitPrice returns the value that was added to the "unit_price" field in this mutation.
-func (m *ValueChargeMutation) AddedUnitPrice() (r int64, exists bool) {
+func (m *TopMutation) AddedUnitPrice() (r int64, exists bool) {
 	v := m.addunit_price
 	if v == nil {
 		return
@@ -750,18 +747,18 @@ func (m *ValueChargeMutation) AddedUnitPrice() (r int64, exists bool) {
 }
 
 // ResetUnitPrice resets all changes to the "unit_price" field.
-func (m *ValueChargeMutation) ResetUnitPrice() {
+func (m *TopMutation) ResetUnitPrice() {
 	m.unit_price = nil
 	m.addunit_price = nil
 }
 
 // SetChargeTime sets the "charge_time" field.
-func (m *ValueChargeMutation) SetChargeTime(t time.Time) {
+func (m *TopMutation) SetChargeTime(t time.Time) {
 	m.charge_time = &t
 }
 
 // ChargeTime returns the value of the "charge_time" field in the mutation.
-func (m *ValueChargeMutation) ChargeTime() (r time.Time, exists bool) {
+func (m *TopMutation) ChargeTime() (r time.Time, exists bool) {
 	v := m.charge_time
 	if v == nil {
 		return
@@ -769,10 +766,10 @@ func (m *ValueChargeMutation) ChargeTime() (r time.Time, exists bool) {
 	return *v, true
 }
 
-// OldChargeTime returns the old "charge_time" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldChargeTime returns the old "charge_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldChargeTime(ctx context.Context) (v time.Time, err error) {
+func (m *TopMutation) OldChargeTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldChargeTime is only allowed on UpdateOne operations")
 	}
@@ -787,222 +784,123 @@ func (m *ValueChargeMutation) OldChargeTime(ctx context.Context) (v time.Time, e
 }
 
 // ResetChargeTime resets all changes to the "charge_time" field.
-func (m *ValueChargeMutation) ResetChargeTime() {
+func (m *TopMutation) ResetChargeTime() {
 	m.charge_time = nil
 }
 
-// SetChargeTs sets the "charge_ts" field.
-func (m *ValueChargeMutation) SetChargeTs(s string) {
-	m.charge_ts = &s
+// SetAlarm sets the "alarm" field.
+func (m *TopMutation) SetAlarm(i int) {
+	m.alarm = &i
+	m.addalarm = nil
 }
 
-// ChargeTs returns the value of the "charge_ts" field in the mutation.
-func (m *ValueChargeMutation) ChargeTs() (r string, exists bool) {
-	v := m.charge_ts
+// Alarm returns the value of the "alarm" field in the mutation.
+func (m *TopMutation) Alarm() (r int, exists bool) {
+	v := m.alarm
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldChargeTs returns the old "charge_ts" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldAlarm returns the old "alarm" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldChargeTs(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldAlarm(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldChargeTs is only allowed on UpdateOne operations")
+		return v, errors.New("OldAlarm is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldChargeTs requires an ID field in the mutation")
+		return v, errors.New("OldAlarm requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldChargeTs: %w", err)
+		return v, fmt.Errorf("querying old value for OldAlarm: %w", err)
 	}
-	return oldValue.ChargeTs, nil
+	return oldValue.Alarm, nil
 }
 
-// ResetChargeTs resets all changes to the "charge_ts" field.
-func (m *ValueChargeMutation) ResetChargeTs() {
-	m.charge_ts = nil
-}
-
-// SetAlarm1 sets the "alarm1" field.
-func (m *ValueChargeMutation) SetAlarm1(i int) {
-	m.alarm1 = &i
-	m.addalarm1 = nil
-}
-
-// Alarm1 returns the value of the "alarm1" field in the mutation.
-func (m *ValueChargeMutation) Alarm1() (r int, exists bool) {
-	v := m.alarm1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarm1 returns the old "alarm1" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldAlarm1(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm1 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm1 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm1: %w", err)
-	}
-	return oldValue.Alarm1, nil
-}
-
-// AddAlarm1 adds i to the "alarm1" field.
-func (m *ValueChargeMutation) AddAlarm1(i int) {
-	if m.addalarm1 != nil {
-		*m.addalarm1 += i
+// AddAlarm adds i to the "alarm" field.
+func (m *TopMutation) AddAlarm(i int) {
+	if m.addalarm != nil {
+		*m.addalarm += i
 	} else {
-		m.addalarm1 = &i
+		m.addalarm = &i
 	}
 }
 
-// AddedAlarm1 returns the value that was added to the "alarm1" field in this mutation.
-func (m *ValueChargeMutation) AddedAlarm1() (r int, exists bool) {
-	v := m.addalarm1
+// AddedAlarm returns the value that was added to the "alarm" field in this mutation.
+func (m *TopMutation) AddedAlarm() (r int, exists bool) {
+	v := m.addalarm
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// ResetAlarm1 resets all changes to the "alarm1" field.
-func (m *ValueChargeMutation) ResetAlarm1() {
-	m.alarm1 = nil
-	m.addalarm1 = nil
+// ResetAlarm resets all changes to the "alarm" field.
+func (m *TopMutation) ResetAlarm() {
+	m.alarm = nil
+	m.addalarm = nil
 }
 
-// SetAlarm2 sets the "alarm2" field.
-func (m *ValueChargeMutation) SetAlarm2(i int) {
-	m.alarm2 = &i
-	m.addalarm2 = nil
+// SetAlarmTime sets the "alarm_time" field.
+func (m *TopMutation) SetAlarmTime(t time.Time) {
+	m.alarm_time = &t
 }
 
-// Alarm2 returns the value of the "alarm2" field in the mutation.
-func (m *ValueChargeMutation) Alarm2() (r int, exists bool) {
-	v := m.alarm2
+// AlarmTime returns the value of the "alarm_time" field in the mutation.
+func (m *TopMutation) AlarmTime() (r time.Time, exists bool) {
+	v := m.alarm_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldAlarm2 returns the old "alarm2" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldAlarmTime returns the old "alarm_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldAlarm2(ctx context.Context) (v int, err error) {
+func (m *TopMutation) OldAlarmTime(ctx context.Context) (v *time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm2 is only allowed on UpdateOne operations")
+		return v, errors.New("OldAlarmTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm2 requires an ID field in the mutation")
+		return v, errors.New("OldAlarmTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm2: %w", err)
+		return v, fmt.Errorf("querying old value for OldAlarmTime: %w", err)
 	}
-	return oldValue.Alarm2, nil
+	return oldValue.AlarmTime, nil
 }
 
-// AddAlarm2 adds i to the "alarm2" field.
-func (m *ValueChargeMutation) AddAlarm2(i int) {
-	if m.addalarm2 != nil {
-		*m.addalarm2 += i
-	} else {
-		m.addalarm2 = &i
-	}
+// ClearAlarmTime clears the value of the "alarm_time" field.
+func (m *TopMutation) ClearAlarmTime() {
+	m.alarm_time = nil
+	m.clearedFields[top.FieldAlarmTime] = struct{}{}
 }
 
-// AddedAlarm2 returns the value that was added to the "alarm2" field in this mutation.
-func (m *ValueChargeMutation) AddedAlarm2() (r int, exists bool) {
-	v := m.addalarm2
-	if v == nil {
-		return
-	}
-	return *v, true
+// AlarmTimeCleared returns if the "alarm_time" field was cleared in this mutation.
+func (m *TopMutation) AlarmTimeCleared() bool {
+	_, ok := m.clearedFields[top.FieldAlarmTime]
+	return ok
 }
 
-// ResetAlarm2 resets all changes to the "alarm2" field.
-func (m *ValueChargeMutation) ResetAlarm2() {
-	m.alarm2 = nil
-	m.addalarm2 = nil
-}
-
-// SetAlarm3 sets the "alarm3" field.
-func (m *ValueChargeMutation) SetAlarm3(i int) {
-	m.alarm3 = &i
-	m.addalarm3 = nil
-}
-
-// Alarm3 returns the value of the "alarm3" field in the mutation.
-func (m *ValueChargeMutation) Alarm3() (r int, exists bool) {
-	v := m.alarm3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarm3 returns the old "alarm3" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldAlarm3(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm3 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm3 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm3: %w", err)
-	}
-	return oldValue.Alarm3, nil
-}
-
-// AddAlarm3 adds i to the "alarm3" field.
-func (m *ValueChargeMutation) AddAlarm3(i int) {
-	if m.addalarm3 != nil {
-		*m.addalarm3 += i
-	} else {
-		m.addalarm3 = &i
-	}
-}
-
-// AddedAlarm3 returns the value that was added to the "alarm3" field in this mutation.
-func (m *ValueChargeMutation) AddedAlarm3() (r int, exists bool) {
-	v := m.addalarm3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarm3 resets all changes to the "alarm3" field.
-func (m *ValueChargeMutation) ResetAlarm3() {
-	m.alarm3 = nil
-	m.addalarm3 = nil
+// ResetAlarmTime resets all changes to the "alarm_time" field.
+func (m *TopMutation) ResetAlarmTime() {
+	m.alarm_time = nil
+	delete(m.clearedFields, top.FieldAlarmTime)
 }
 
 // SetStatus sets the "status" field.
-func (m *ValueChargeMutation) SetStatus(i int) {
+func (m *TopMutation) SetStatus(i int) {
 	m.status = &i
 	m.addstatus = nil
 }
 
 // Status returns the value of the "status" field in the mutation.
-func (m *ValueChargeMutation) Status() (r int, exists bool) {
+func (m *TopMutation) Status() (r int, exists bool) {
 	v := m.status
 	if v == nil {
 		return
@@ -1010,10 +908,10 @@ func (m *ValueChargeMutation) Status() (r int, exists bool) {
 	return *v, true
 }
 
-// OldStatus returns the old "status" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldStatus returns the old "status" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldStatus(ctx context.Context) (v int, err error) {
+func (m *TopMutation) OldStatus(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
 	}
@@ -1028,7 +926,7 @@ func (m *ValueChargeMutation) OldStatus(ctx context.Context) (v int, err error) 
 }
 
 // AddStatus adds i to the "status" field.
-func (m *ValueChargeMutation) AddStatus(i int) {
+func (m *TopMutation) AddStatus(i int) {
 	if m.addstatus != nil {
 		*m.addstatus += i
 	} else {
@@ -1037,7 +935,7 @@ func (m *ValueChargeMutation) AddStatus(i int) {
 }
 
 // AddedStatus returns the value that was added to the "status" field in this mutation.
-func (m *ValueChargeMutation) AddedStatus() (r int, exists bool) {
+func (m *TopMutation) AddedStatus() (r int, exists bool) {
 	v := m.addstatus
 	if v == nil {
 		return
@@ -1046,18 +944,67 @@ func (m *ValueChargeMutation) AddedStatus() (r int, exists bool) {
 }
 
 // ResetStatus resets all changes to the "status" field.
-func (m *ValueChargeMutation) ResetStatus() {
+func (m *TopMutation) ResetStatus() {
 	m.status = nil
 	m.addstatus = nil
 }
 
+// SetEndTime sets the "end_time" field.
+func (m *TopMutation) SetEndTime(t time.Time) {
+	m.end_time = &t
+}
+
+// EndTime returns the value of the "end_time" field in the mutation.
+func (m *TopMutation) EndTime() (r time.Time, exists bool) {
+	v := m.end_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndTime returns the old "end_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TopMutation) OldEndTime(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEndTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEndTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndTime: %w", err)
+	}
+	return oldValue.EndTime, nil
+}
+
+// ClearEndTime clears the value of the "end_time" field.
+func (m *TopMutation) ClearEndTime() {
+	m.end_time = nil
+	m.clearedFields[top.FieldEndTime] = struct{}{}
+}
+
+// EndTimeCleared returns if the "end_time" field was cleared in this mutation.
+func (m *TopMutation) EndTimeCleared() bool {
+	_, ok := m.clearedFields[top.FieldEndTime]
+	return ok
+}
+
+// ResetEndTime resets all changes to the "end_time" field.
+func (m *TopMutation) ResetEndTime() {
+	m.end_time = nil
+	delete(m.clearedFields, top.FieldEndTime)
+}
+
 // SetMemo sets the "memo" field.
-func (m *ValueChargeMutation) SetMemo(s string) {
+func (m *TopMutation) SetMemo(s string) {
 	m.memo = &s
 }
 
 // Memo returns the value of the "memo" field in the mutation.
-func (m *ValueChargeMutation) Memo() (r string, exists bool) {
+func (m *TopMutation) Memo() (r string, exists bool) {
 	v := m.memo
 	if v == nil {
 		return
@@ -1065,10 +1012,10 @@ func (m *ValueChargeMutation) Memo() (r string, exists bool) {
 	return *v, true
 }
 
-// OldMemo returns the old "memo" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldMemo returns the old "memo" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldMemo(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldMemo(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldMemo is only allowed on UpdateOne operations")
 	}
@@ -1083,31 +1030,31 @@ func (m *ValueChargeMutation) OldMemo(ctx context.Context) (v string, err error)
 }
 
 // ClearMemo clears the value of the "memo" field.
-func (m *ValueChargeMutation) ClearMemo() {
+func (m *TopMutation) ClearMemo() {
 	m.memo = nil
-	m.clearedFields[valuecharge.FieldMemo] = struct{}{}
+	m.clearedFields[top.FieldMemo] = struct{}{}
 }
 
 // MemoCleared returns if the "memo" field was cleared in this mutation.
-func (m *ValueChargeMutation) MemoCleared() bool {
-	_, ok := m.clearedFields[valuecharge.FieldMemo]
+func (m *TopMutation) MemoCleared() bool {
+	_, ok := m.clearedFields[top.FieldMemo]
 	return ok
 }
 
 // ResetMemo resets all changes to the "memo" field.
-func (m *ValueChargeMutation) ResetMemo() {
+func (m *TopMutation) ResetMemo() {
 	m.memo = nil
-	delete(m.clearedFields, valuecharge.FieldMemo)
+	delete(m.clearedFields, top.FieldMemo)
 }
 
 // SetIsDel sets the "is_del" field.
-func (m *ValueChargeMutation) SetIsDel(i int) {
+func (m *TopMutation) SetIsDel(i int) {
 	m.is_del = &i
 	m.addis_del = nil
 }
 
 // IsDel returns the value of the "is_del" field in the mutation.
-func (m *ValueChargeMutation) IsDel() (r int, exists bool) {
+func (m *TopMutation) IsDel() (r int, exists bool) {
 	v := m.is_del
 	if v == nil {
 		return
@@ -1115,10 +1062,10 @@ func (m *ValueChargeMutation) IsDel() (r int, exists bool) {
 	return *v, true
 }
 
-// OldIsDel returns the old "is_del" field's value of the ValueCharge entity.
-// If the ValueCharge object wasn't provided to the builder, the object is fetched from the database.
+// OldIsDel returns the old "is_del" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *ValueChargeMutation) OldIsDel(ctx context.Context) (v int, err error) {
+func (m *TopMutation) OldIsDel(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldIsDel is only allowed on UpdateOne operations")
 	}
@@ -1133,7 +1080,7 @@ func (m *ValueChargeMutation) OldIsDel(ctx context.Context) (v int, err error) {
 }
 
 // AddIsDel adds i to the "is_del" field.
-func (m *ValueChargeMutation) AddIsDel(i int) {
+func (m *TopMutation) AddIsDel(i int) {
 	if m.addis_del != nil {
 		*m.addis_del += i
 	} else {
@@ -1142,7 +1089,7 @@ func (m *ValueChargeMutation) AddIsDel(i int) {
 }
 
 // AddedIsDel returns the value that was added to the "is_del" field in this mutation.
-func (m *ValueChargeMutation) AddedIsDel() (r int, exists bool) {
+func (m *TopMutation) AddedIsDel() (r int, exists bool) {
 	v := m.addis_del
 	if v == nil {
 		return
@@ -1151,20 +1098,20 @@ func (m *ValueChargeMutation) AddedIsDel() (r int, exists bool) {
 }
 
 // ResetIsDel resets all changes to the "is_del" field.
-func (m *ValueChargeMutation) ResetIsDel() {
+func (m *TopMutation) ResetIsDel() {
 	m.is_del = nil
 	m.addis_del = nil
 }
 
-// Where appends a list predicates to the ValueChargeMutation builder.
-func (m *ValueChargeMutation) Where(ps ...predicate.ValueCharge) {
+// Where appends a list predicates to the TopMutation builder.
+func (m *TopMutation) Where(ps ...predicate.Top) {
 	m.predicates = append(m.predicates, ps...)
 }
 
-// WhereP appends storage-level predicates to the ValueChargeMutation builder. Using this method,
+// WhereP appends storage-level predicates to the TopMutation builder. Using this method,
 // users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *ValueChargeMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.ValueCharge, len(ps))
+func (m *TopMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Top, len(ps))
 	for i := range ps {
 		p[i] = ps[i]
 	}
@@ -1172,87 +1119,84 @@ func (m *ValueChargeMutation) WhereP(ps ...func(*sql.Selector)) {
 }
 
 // Op returns the operation name.
-func (m *ValueChargeMutation) Op() Op {
+func (m *TopMutation) Op() Op {
 	return m.op
 }
 
 // SetOp allows setting the mutation operation.
-func (m *ValueChargeMutation) SetOp(op Op) {
+func (m *TopMutation) SetOp(op Op) {
 	m.op = op
 }
 
-// Type returns the node type of this mutation (ValueCharge).
-func (m *ValueChargeMutation) Type() string {
+// Type returns the node type of this mutation (Top).
+func (m *TopMutation) Type() string {
 	return m.typ
 }
 
 // Fields returns all fields that were changed during this mutation. Note that in
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
-func (m *ValueChargeMutation) Fields() []string {
-	fields := make([]string, 0, 21)
+func (m *TopMutation) Fields() []string {
+	fields := make([]string, 0, 20)
 	if m.create_time != nil {
-		fields = append(fields, valuecharge.FieldCreateTime)
+		fields = append(fields, top.FieldCreateTime)
 	}
 	if m.update_time != nil {
-		fields = append(fields, valuecharge.FieldUpdateTime)
+		fields = append(fields, top.FieldUpdateTime)
 	}
 	if m.code != nil {
-		fields = append(fields, valuecharge.FieldCode)
+		fields = append(fields, top.FieldCode)
 	}
 	if m.device_code != nil {
-		fields = append(fields, valuecharge.FieldDeviceCode)
+		fields = append(fields, top.FieldDeviceCode)
 	}
 	if m.device_type != nil {
-		fields = append(fields, valuecharge.FieldDeviceType)
+		fields = append(fields, top.FieldDeviceType)
 	}
 	if m.pos_code != nil {
-		fields = append(fields, valuecharge.FieldPosCode)
+		fields = append(fields, top.FieldPosCode)
 	}
 	if m.project != nil {
-		fields = append(fields, valuecharge.FieldProject)
+		fields = append(fields, top.FieldProject)
 	}
 	if m.owner != nil {
-		fields = append(fields, valuecharge.FieldOwner)
+		fields = append(fields, top.FieldOwner)
 	}
 	if m.top != nil {
-		fields = append(fields, valuecharge.FieldTop)
+		fields = append(fields, top.FieldTop)
 	}
 	if m.stock != nil {
-		fields = append(fields, valuecharge.FieldStock)
+		fields = append(fields, top.FieldStock)
 	}
 	if m.incr != nil {
-		fields = append(fields, valuecharge.FieldIncr)
+		fields = append(fields, top.FieldIncr)
 	}
 	if m.amount != nil {
-		fields = append(fields, valuecharge.FieldAmount)
+		fields = append(fields, top.FieldAmount)
 	}
 	if m.unit_price != nil {
-		fields = append(fields, valuecharge.FieldUnitPrice)
+		fields = append(fields, top.FieldUnitPrice)
 	}
 	if m.charge_time != nil {
-		fields = append(fields, valuecharge.FieldChargeTime)
+		fields = append(fields, top.FieldChargeTime)
 	}
-	if m.charge_ts != nil {
-		fields = append(fields, valuecharge.FieldChargeTs)
+	if m.alarm != nil {
+		fields = append(fields, top.FieldAlarm)
 	}
-	if m.alarm1 != nil {
-		fields = append(fields, valuecharge.FieldAlarm1)
-	}
-	if m.alarm2 != nil {
-		fields = append(fields, valuecharge.FieldAlarm2)
-	}
-	if m.alarm3 != nil {
-		fields = append(fields, valuecharge.FieldAlarm3)
+	if m.alarm_time != nil {
+		fields = append(fields, top.FieldAlarmTime)
 	}
 	if m.status != nil {
-		fields = append(fields, valuecharge.FieldStatus)
+		fields = append(fields, top.FieldStatus)
+	}
+	if m.end_time != nil {
+		fields = append(fields, top.FieldEndTime)
 	}
 	if m.memo != nil {
-		fields = append(fields, valuecharge.FieldMemo)
+		fields = append(fields, top.FieldMemo)
 	}
 	if m.is_del != nil {
-		fields = append(fields, valuecharge.FieldIsDel)
+		fields = append(fields, top.FieldIsDel)
 	}
 	return fields
 }
@@ -1260,49 +1204,47 @@ func (m *ValueChargeMutation) Fields() []string {
 // Field returns the value of a field with the given name. The second boolean
 // return value indicates that this field was not set, or was not defined in the
 // schema.
-func (m *ValueChargeMutation) Field(name string) (ent.Value, bool) {
+func (m *TopMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case valuecharge.FieldCreateTime:
+	case top.FieldCreateTime:
 		return m.CreateTime()
-	case valuecharge.FieldUpdateTime:
+	case top.FieldUpdateTime:
 		return m.UpdateTime()
-	case valuecharge.FieldCode:
+	case top.FieldCode:
 		return m.Code()
-	case valuecharge.FieldDeviceCode:
+	case top.FieldDeviceCode:
 		return m.DeviceCode()
-	case valuecharge.FieldDeviceType:
+	case top.FieldDeviceType:
 		return m.DeviceType()
-	case valuecharge.FieldPosCode:
+	case top.FieldPosCode:
 		return m.PosCode()
-	case valuecharge.FieldProject:
+	case top.FieldProject:
 		return m.Project()
-	case valuecharge.FieldOwner:
+	case top.FieldOwner:
 		return m.Owner()
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		return m.Top()
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		return m.Stock()
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		return m.Incr()
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		return m.Amount()
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		return m.UnitPrice()
-	case valuecharge.FieldChargeTime:
+	case top.FieldChargeTime:
 		return m.ChargeTime()
-	case valuecharge.FieldChargeTs:
-		return m.ChargeTs()
-	case valuecharge.FieldAlarm1:
-		return m.Alarm1()
-	case valuecharge.FieldAlarm2:
-		return m.Alarm2()
-	case valuecharge.FieldAlarm3:
-		return m.Alarm3()
-	case valuecharge.FieldStatus:
+	case top.FieldAlarm:
+		return m.Alarm()
+	case top.FieldAlarmTime:
+		return m.AlarmTime()
+	case top.FieldStatus:
 		return m.Status()
-	case valuecharge.FieldMemo:
+	case top.FieldEndTime:
+		return m.EndTime()
+	case top.FieldMemo:
 		return m.Memo()
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		return m.IsDel()
 	}
 	return nil, false
@@ -1311,200 +1253,191 @@ func (m *ValueChargeMutation) Field(name string) (ent.Value, bool) {
 // OldField returns the old value of the field from the database. An error is
 // returned if the mutation operation is not UpdateOne, or the query to the
 // database failed.
-func (m *ValueChargeMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+func (m *TopMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case valuecharge.FieldCreateTime:
+	case top.FieldCreateTime:
 		return m.OldCreateTime(ctx)
-	case valuecharge.FieldUpdateTime:
+	case top.FieldUpdateTime:
 		return m.OldUpdateTime(ctx)
-	case valuecharge.FieldCode:
+	case top.FieldCode:
 		return m.OldCode(ctx)
-	case valuecharge.FieldDeviceCode:
+	case top.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
-	case valuecharge.FieldDeviceType:
+	case top.FieldDeviceType:
 		return m.OldDeviceType(ctx)
-	case valuecharge.FieldPosCode:
+	case top.FieldPosCode:
 		return m.OldPosCode(ctx)
-	case valuecharge.FieldProject:
+	case top.FieldProject:
 		return m.OldProject(ctx)
-	case valuecharge.FieldOwner:
+	case top.FieldOwner:
 		return m.OldOwner(ctx)
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		return m.OldTop(ctx)
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		return m.OldStock(ctx)
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		return m.OldIncr(ctx)
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		return m.OldAmount(ctx)
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		return m.OldUnitPrice(ctx)
-	case valuecharge.FieldChargeTime:
+	case top.FieldChargeTime:
 		return m.OldChargeTime(ctx)
-	case valuecharge.FieldChargeTs:
-		return m.OldChargeTs(ctx)
-	case valuecharge.FieldAlarm1:
-		return m.OldAlarm1(ctx)
-	case valuecharge.FieldAlarm2:
-		return m.OldAlarm2(ctx)
-	case valuecharge.FieldAlarm3:
-		return m.OldAlarm3(ctx)
-	case valuecharge.FieldStatus:
+	case top.FieldAlarm:
+		return m.OldAlarm(ctx)
+	case top.FieldAlarmTime:
+		return m.OldAlarmTime(ctx)
+	case top.FieldStatus:
 		return m.OldStatus(ctx)
-	case valuecharge.FieldMemo:
+	case top.FieldEndTime:
+		return m.OldEndTime(ctx)
+	case top.FieldMemo:
 		return m.OldMemo(ctx)
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		return m.OldIsDel(ctx)
 	}
-	return nil, fmt.Errorf("unknown ValueCharge field %s", name)
+	return nil, fmt.Errorf("unknown Top field %s", name)
 }
 
 // SetField sets the value of a field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ValueChargeMutation) SetField(name string, value ent.Value) error {
+func (m *TopMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case valuecharge.FieldCreateTime:
+	case top.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreateTime(v)
 		return nil
-	case valuecharge.FieldUpdateTime:
+	case top.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUpdateTime(v)
 		return nil
-	case valuecharge.FieldCode:
+	case top.FieldCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
 		return nil
-	case valuecharge.FieldDeviceCode:
+	case top.FieldDeviceCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceCode(v)
 		return nil
-	case valuecharge.FieldDeviceType:
+	case top.FieldDeviceType:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetDeviceType(v)
 		return nil
-	case valuecharge.FieldPosCode:
+	case top.FieldPosCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPosCode(v)
 		return nil
-	case valuecharge.FieldProject:
+	case top.FieldProject:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProject(v)
 		return nil
-	case valuecharge.FieldOwner:
+	case top.FieldOwner:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetOwner(v)
 		return nil
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTop(v)
 		return nil
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStock(v)
 		return nil
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetIncr(v)
 		return nil
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAmount(v)
 		return nil
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUnitPrice(v)
 		return nil
-	case valuecharge.FieldChargeTime:
+	case top.FieldChargeTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetChargeTime(v)
 		return nil
-	case valuecharge.FieldChargeTs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetChargeTs(v)
-		return nil
-	case valuecharge.FieldAlarm1:
+	case top.FieldAlarm:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAlarm1(v)
+		m.SetAlarm(v)
 		return nil
-	case valuecharge.FieldAlarm2:
-		v, ok := value.(int)
+	case top.FieldAlarmTime:
+		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetAlarm2(v)
+		m.SetAlarmTime(v)
 		return nil
-	case valuecharge.FieldAlarm3:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarm3(v)
-		return nil
-	case valuecharge.FieldStatus:
+	case top.FieldStatus:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
 		return nil
-	case valuecharge.FieldMemo:
+	case top.FieldEndTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndTime(v)
+		return nil
+	case top.FieldMemo:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetMemo(v)
 		return nil
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1512,42 +1445,36 @@ func (m *ValueChargeMutation) SetField(name string, value ent.Value) error {
 		m.SetIsDel(v)
 		return nil
 	}
-	return fmt.Errorf("unknown ValueCharge field %s", name)
+	return fmt.Errorf("unknown Top field %s", name)
 }
 
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
-func (m *ValueChargeMutation) AddedFields() []string {
+func (m *TopMutation) AddedFields() []string {
 	var fields []string
 	if m.addtop != nil {
-		fields = append(fields, valuecharge.FieldTop)
+		fields = append(fields, top.FieldTop)
 	}
 	if m.addstock != nil {
-		fields = append(fields, valuecharge.FieldStock)
+		fields = append(fields, top.FieldStock)
 	}
 	if m.addincr != nil {
-		fields = append(fields, valuecharge.FieldIncr)
+		fields = append(fields, top.FieldIncr)
 	}
 	if m.addamount != nil {
-		fields = append(fields, valuecharge.FieldAmount)
+		fields = append(fields, top.FieldAmount)
 	}
 	if m.addunit_price != nil {
-		fields = append(fields, valuecharge.FieldUnitPrice)
+		fields = append(fields, top.FieldUnitPrice)
 	}
-	if m.addalarm1 != nil {
-		fields = append(fields, valuecharge.FieldAlarm1)
-	}
-	if m.addalarm2 != nil {
-		fields = append(fields, valuecharge.FieldAlarm2)
-	}
-	if m.addalarm3 != nil {
-		fields = append(fields, valuecharge.FieldAlarm3)
+	if m.addalarm != nil {
+		fields = append(fields, top.FieldAlarm)
 	}
 	if m.addstatus != nil {
-		fields = append(fields, valuecharge.FieldStatus)
+		fields = append(fields, top.FieldStatus)
 	}
 	if m.addis_del != nil {
-		fields = append(fields, valuecharge.FieldIsDel)
+		fields = append(fields, top.FieldIsDel)
 	}
 	return fields
 }
@@ -1555,27 +1482,23 @@ func (m *ValueChargeMutation) AddedFields() []string {
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
-func (m *ValueChargeMutation) AddedField(name string) (ent.Value, bool) {
+func (m *TopMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		return m.AddedTop()
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		return m.AddedStock()
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		return m.AddedIncr()
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		return m.AddedAmount()
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		return m.AddedUnitPrice()
-	case valuecharge.FieldAlarm1:
-		return m.AddedAlarm1()
-	case valuecharge.FieldAlarm2:
-		return m.AddedAlarm2()
-	case valuecharge.FieldAlarm3:
-		return m.AddedAlarm3()
-	case valuecharge.FieldStatus:
+	case top.FieldAlarm:
+		return m.AddedAlarm()
+	case top.FieldStatus:
 		return m.AddedStatus()
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		return m.AddedIsDel()
 	}
 	return nil, false
@@ -1584,72 +1507,58 @@ func (m *ValueChargeMutation) AddedField(name string) (ent.Value, bool) {
 // AddField adds the value to the field with the given name. It returns an error if
 // the field is not defined in the schema, or if the type mismatched the field
 // type.
-func (m *ValueChargeMutation) AddField(name string, value ent.Value) error {
+func (m *TopMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddTop(v)
 		return nil
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddStock(v)
 		return nil
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddIncr(v)
 		return nil
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddAmount(v)
 		return nil
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUnitPrice(v)
 		return nil
-	case valuecharge.FieldAlarm1:
+	case top.FieldAlarm:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.AddAlarm1(v)
+		m.AddAlarm(v)
 		return nil
-	case valuecharge.FieldAlarm2:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarm2(v)
-		return nil
-	case valuecharge.FieldAlarm3:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarm3(v)
-		return nil
-	case valuecharge.FieldStatus:
+	case top.FieldStatus:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddStatus(v)
 		return nil
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
@@ -1657,158 +1566,167 @@ func (m *ValueChargeMutation) AddField(name string, value ent.Value) error {
 		m.AddIsDel(v)
 		return nil
 	}
-	return fmt.Errorf("unknown ValueCharge numeric field %s", name)
+	return fmt.Errorf("unknown Top numeric field %s", name)
 }
 
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
-func (m *ValueChargeMutation) ClearedFields() []string {
+func (m *TopMutation) ClearedFields() []string {
 	var fields []string
-	if m.FieldCleared(valuecharge.FieldOwner) {
-		fields = append(fields, valuecharge.FieldOwner)
+	if m.FieldCleared(top.FieldOwner) {
+		fields = append(fields, top.FieldOwner)
 	}
-	if m.FieldCleared(valuecharge.FieldMemo) {
-		fields = append(fields, valuecharge.FieldMemo)
+	if m.FieldCleared(top.FieldAlarmTime) {
+		fields = append(fields, top.FieldAlarmTime)
+	}
+	if m.FieldCleared(top.FieldEndTime) {
+		fields = append(fields, top.FieldEndTime)
+	}
+	if m.FieldCleared(top.FieldMemo) {
+		fields = append(fields, top.FieldMemo)
 	}
 	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
 // cleared in this mutation.
-func (m *ValueChargeMutation) FieldCleared(name string) bool {
+func (m *TopMutation) FieldCleared(name string) bool {
 	_, ok := m.clearedFields[name]
 	return ok
 }
 
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
-func (m *ValueChargeMutation) ClearField(name string) error {
+func (m *TopMutation) ClearField(name string) error {
 	switch name {
-	case valuecharge.FieldOwner:
+	case top.FieldOwner:
 		m.ClearOwner()
 		return nil
-	case valuecharge.FieldMemo:
+	case top.FieldAlarmTime:
+		m.ClearAlarmTime()
+		return nil
+	case top.FieldEndTime:
+		m.ClearEndTime()
+		return nil
+	case top.FieldMemo:
 		m.ClearMemo()
 		return nil
 	}
-	return fmt.Errorf("unknown ValueCharge nullable field %s", name)
+	return fmt.Errorf("unknown Top nullable field %s", name)
 }
 
 // ResetField resets all changes in the mutation for the field with the given name.
 // It returns an error if the field is not defined in the schema.
-func (m *ValueChargeMutation) ResetField(name string) error {
+func (m *TopMutation) ResetField(name string) error {
 	switch name {
-	case valuecharge.FieldCreateTime:
+	case top.FieldCreateTime:
 		m.ResetCreateTime()
 		return nil
-	case valuecharge.FieldUpdateTime:
+	case top.FieldUpdateTime:
 		m.ResetUpdateTime()
 		return nil
-	case valuecharge.FieldCode:
+	case top.FieldCode:
 		m.ResetCode()
 		return nil
-	case valuecharge.FieldDeviceCode:
+	case top.FieldDeviceCode:
 		m.ResetDeviceCode()
 		return nil
-	case valuecharge.FieldDeviceType:
+	case top.FieldDeviceType:
 		m.ResetDeviceType()
 		return nil
-	case valuecharge.FieldPosCode:
+	case top.FieldPosCode:
 		m.ResetPosCode()
 		return nil
-	case valuecharge.FieldProject:
+	case top.FieldProject:
 		m.ResetProject()
 		return nil
-	case valuecharge.FieldOwner:
+	case top.FieldOwner:
 		m.ResetOwner()
 		return nil
-	case valuecharge.FieldTop:
+	case top.FieldTop:
 		m.ResetTop()
 		return nil
-	case valuecharge.FieldStock:
+	case top.FieldStock:
 		m.ResetStock()
 		return nil
-	case valuecharge.FieldIncr:
+	case top.FieldIncr:
 		m.ResetIncr()
 		return nil
-	case valuecharge.FieldAmount:
+	case top.FieldAmount:
 		m.ResetAmount()
 		return nil
-	case valuecharge.FieldUnitPrice:
+	case top.FieldUnitPrice:
 		m.ResetUnitPrice()
 		return nil
-	case valuecharge.FieldChargeTime:
+	case top.FieldChargeTime:
 		m.ResetChargeTime()
 		return nil
-	case valuecharge.FieldChargeTs:
-		m.ResetChargeTs()
+	case top.FieldAlarm:
+		m.ResetAlarm()
 		return nil
-	case valuecharge.FieldAlarm1:
-		m.ResetAlarm1()
+	case top.FieldAlarmTime:
+		m.ResetAlarmTime()
 		return nil
-	case valuecharge.FieldAlarm2:
-		m.ResetAlarm2()
-		return nil
-	case valuecharge.FieldAlarm3:
-		m.ResetAlarm3()
-		return nil
-	case valuecharge.FieldStatus:
+	case top.FieldStatus:
 		m.ResetStatus()
 		return nil
-	case valuecharge.FieldMemo:
+	case top.FieldEndTime:
+		m.ResetEndTime()
+		return nil
+	case top.FieldMemo:
 		m.ResetMemo()
 		return nil
-	case valuecharge.FieldIsDel:
+	case top.FieldIsDel:
 		m.ResetIsDel()
 		return nil
 	}
-	return fmt.Errorf("unknown ValueCharge field %s", name)
+	return fmt.Errorf("unknown Top field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
-func (m *ValueChargeMutation) AddedEdges() []string {
+func (m *TopMutation) AddedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
-func (m *ValueChargeMutation) AddedIDs(name string) []ent.Value {
+func (m *TopMutation) AddedIDs(name string) []ent.Value {
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
-func (m *ValueChargeMutation) RemovedEdges() []string {
+func (m *TopMutation) RemovedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
-func (m *ValueChargeMutation) RemovedIDs(name string) []ent.Value {
+func (m *TopMutation) RemovedIDs(name string) []ent.Value {
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *ValueChargeMutation) ClearedEdges() []string {
+func (m *TopMutation) ClearedEdges() []string {
 	edges := make([]string, 0, 0)
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
-func (m *ValueChargeMutation) EdgeCleared(name string) bool {
+func (m *TopMutation) EdgeCleared(name string) bool {
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
-func (m *ValueChargeMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown ValueCharge unique edge %s", name)
+func (m *TopMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Top unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
-func (m *ValueChargeMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown ValueCharge edge %s", name)
+func (m *TopMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Top edge %s", name)
 }

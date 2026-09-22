@@ -13,68 +13,68 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/twiglab/h2o/chrgg/orm/ent/predicate"
-	"github.com/twiglab/h2o/chrgg/orm/ent/valuecharge"
+	"github.com/twiglab/h2o/chrgg/orm/ent/top"
 )
 
-// ValueChargeQuery is the builder for querying ValueCharge entities.
-type ValueChargeQuery struct {
+// TopQuery is the builder for querying Top entities.
+type TopQuery struct {
 	config
 	ctx        *QueryContext
-	order      []valuecharge.OrderOption
+	order      []top.OrderOption
 	inters     []Interceptor
-	predicates []predicate.ValueCharge
+	predicates []predicate.Top
 	modifiers  []func(*sql.Selector)
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the ValueChargeQuery builder.
-func (_q *ValueChargeQuery) Where(ps ...predicate.ValueCharge) *ValueChargeQuery {
+// Where adds a new predicate for the TopQuery builder.
+func (_q *TopQuery) Where(ps ...predicate.Top) *TopQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *ValueChargeQuery) Limit(limit int) *ValueChargeQuery {
+func (_q *TopQuery) Limit(limit int) *TopQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *ValueChargeQuery) Offset(offset int) *ValueChargeQuery {
+func (_q *TopQuery) Offset(offset int) *TopQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *ValueChargeQuery) Unique(unique bool) *ValueChargeQuery {
+func (_q *TopQuery) Unique(unique bool) *TopQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *ValueChargeQuery) Order(o ...valuecharge.OrderOption) *ValueChargeQuery {
+func (_q *TopQuery) Order(o ...top.OrderOption) *TopQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
-// First returns the first ValueCharge entity from the query.
-// Returns a *NotFoundError when no ValueCharge was found.
-func (_q *ValueChargeQuery) First(ctx context.Context) (*ValueCharge, error) {
+// First returns the first Top entity from the query.
+// Returns a *NotFoundError when no Top was found.
+func (_q *TopQuery) First(ctx context.Context) (*Top, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{valuecharge.Label}
+		return nil, &NotFoundError{top.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *ValueChargeQuery) FirstX(ctx context.Context) *ValueCharge {
+func (_q *TopQuery) FirstX(ctx context.Context) *Top {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -82,22 +82,22 @@ func (_q *ValueChargeQuery) FirstX(ctx context.Context) *ValueCharge {
 	return node
 }
 
-// FirstID returns the first ValueCharge ID from the query.
-// Returns a *NotFoundError when no ValueCharge ID was found.
-func (_q *ValueChargeQuery) FirstID(ctx context.Context) (id string, err error) {
+// FirstID returns the first Top ID from the query.
+// Returns a *NotFoundError when no Top ID was found.
+func (_q *TopQuery) FirstID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{valuecharge.Label}
+		err = &NotFoundError{top.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *ValueChargeQuery) FirstIDX(ctx context.Context) string {
+func (_q *TopQuery) FirstIDX(ctx context.Context) string {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -105,10 +105,10 @@ func (_q *ValueChargeQuery) FirstIDX(ctx context.Context) string {
 	return id
 }
 
-// Only returns a single ValueCharge entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one ValueCharge entity is found.
-// Returns a *NotFoundError when no ValueCharge entities are found.
-func (_q *ValueChargeQuery) Only(ctx context.Context) (*ValueCharge, error) {
+// Only returns a single Top entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Top entity is found.
+// Returns a *NotFoundError when no Top entities are found.
+func (_q *TopQuery) Only(ctx context.Context) (*Top, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -117,14 +117,14 @@ func (_q *ValueChargeQuery) Only(ctx context.Context) (*ValueCharge, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{valuecharge.Label}
+		return nil, &NotFoundError{top.Label}
 	default:
-		return nil, &NotSingularError{valuecharge.Label}
+		return nil, &NotSingularError{top.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *ValueChargeQuery) OnlyX(ctx context.Context) *ValueCharge {
+func (_q *TopQuery) OnlyX(ctx context.Context) *Top {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -132,10 +132,10 @@ func (_q *ValueChargeQuery) OnlyX(ctx context.Context) *ValueCharge {
 	return node
 }
 
-// OnlyID is like Only, but returns the only ValueCharge ID in the query.
-// Returns a *NotSingularError when more than one ValueCharge ID is found.
+// OnlyID is like Only, but returns the only Top ID in the query.
+// Returns a *NotSingularError when more than one Top ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *ValueChargeQuery) OnlyID(ctx context.Context) (id string, err error) {
+func (_q *TopQuery) OnlyID(ctx context.Context) (id string, err error) {
 	var ids []string
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -144,15 +144,15 @@ func (_q *ValueChargeQuery) OnlyID(ctx context.Context) (id string, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{valuecharge.Label}
+		err = &NotFoundError{top.Label}
 	default:
-		err = &NotSingularError{valuecharge.Label}
+		err = &NotSingularError{top.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *ValueChargeQuery) OnlyIDX(ctx context.Context) string {
+func (_q *TopQuery) OnlyIDX(ctx context.Context) string {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -160,18 +160,18 @@ func (_q *ValueChargeQuery) OnlyIDX(ctx context.Context) string {
 	return id
 }
 
-// All executes the query and returns a list of ValueCharges.
-func (_q *ValueChargeQuery) All(ctx context.Context) ([]*ValueCharge, error) {
+// All executes the query and returns a list of Tops.
+func (_q *TopQuery) All(ctx context.Context) ([]*Top, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*ValueCharge, *ValueChargeQuery]()
-	return withInterceptors[[]*ValueCharge](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*Top, *TopQuery]()
+	return withInterceptors[[]*Top](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *ValueChargeQuery) AllX(ctx context.Context) []*ValueCharge {
+func (_q *TopQuery) AllX(ctx context.Context) []*Top {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -179,20 +179,20 @@ func (_q *ValueChargeQuery) AllX(ctx context.Context) []*ValueCharge {
 	return nodes
 }
 
-// IDs executes the query and returns a list of ValueCharge IDs.
-func (_q *ValueChargeQuery) IDs(ctx context.Context) (ids []string, err error) {
+// IDs executes the query and returns a list of Top IDs.
+func (_q *TopQuery) IDs(ctx context.Context) (ids []string, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(valuecharge.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(top.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *ValueChargeQuery) IDsX(ctx context.Context) []string {
+func (_q *TopQuery) IDsX(ctx context.Context) []string {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -201,16 +201,16 @@ func (_q *ValueChargeQuery) IDsX(ctx context.Context) []string {
 }
 
 // Count returns the count of the given query.
-func (_q *ValueChargeQuery) Count(ctx context.Context) (int, error) {
+func (_q *TopQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*ValueChargeQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*TopQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *ValueChargeQuery) CountX(ctx context.Context) int {
+func (_q *TopQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -219,7 +219,7 @@ func (_q *ValueChargeQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *ValueChargeQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *TopQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -232,7 +232,7 @@ func (_q *ValueChargeQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *ValueChargeQuery) ExistX(ctx context.Context) bool {
+func (_q *TopQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -240,18 +240,18 @@ func (_q *ValueChargeQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the ValueChargeQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the TopQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *ValueChargeQuery) Clone() *ValueChargeQuery {
+func (_q *TopQuery) Clone() *TopQuery {
 	if _q == nil {
 		return nil
 	}
-	return &ValueChargeQuery{
+	return &TopQuery{
 		config:     _q.config,
 		ctx:        _q.ctx.Clone(),
-		order:      append([]valuecharge.OrderOption{}, _q.order...),
+		order:      append([]top.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.ValueCharge{}, _q.predicates...),
+		predicates: append([]predicate.Top{}, _q.predicates...),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -268,15 +268,15 @@ func (_q *ValueChargeQuery) Clone() *ValueChargeQuery {
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.ValueCharge.Query().
-//		GroupBy(valuecharge.FieldCreateTime).
+//	client.Top.Query().
+//		GroupBy(top.FieldCreateTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *ValueChargeQuery) GroupBy(field string, fields ...string) *ValueChargeGroupBy {
+func (_q *TopQuery) GroupBy(field string, fields ...string) *TopGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &ValueChargeGroupBy{build: _q}
+	grbuild := &TopGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = valuecharge.Label
+	grbuild.label = top.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -290,23 +290,23 @@ func (_q *ValueChargeQuery) GroupBy(field string, fields ...string) *ValueCharge
 //		CreateTime time.Time `json:"create_time,omitempty"`
 //	}
 //
-//	client.ValueCharge.Query().
-//		Select(valuecharge.FieldCreateTime).
+//	client.Top.Query().
+//		Select(top.FieldCreateTime).
 //		Scan(ctx, &v)
-func (_q *ValueChargeQuery) Select(fields ...string) *ValueChargeSelect {
+func (_q *TopQuery) Select(fields ...string) *TopSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &ValueChargeSelect{ValueChargeQuery: _q}
-	sbuild.label = valuecharge.Label
+	sbuild := &TopSelect{TopQuery: _q}
+	sbuild.label = top.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a ValueChargeSelect configured with the given aggregations.
-func (_q *ValueChargeQuery) Aggregate(fns ...AggregateFunc) *ValueChargeSelect {
+// Aggregate returns a TopSelect configured with the given aggregations.
+func (_q *TopQuery) Aggregate(fns ...AggregateFunc) *TopSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *ValueChargeQuery) prepareQuery(ctx context.Context) error {
+func (_q *TopQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -318,7 +318,7 @@ func (_q *ValueChargeQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !valuecharge.ValidColumn(f) {
+		if !top.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -332,16 +332,16 @@ func (_q *ValueChargeQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *ValueChargeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*ValueCharge, error) {
+func (_q *TopQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Top, error) {
 	var (
-		nodes = []*ValueCharge{}
+		nodes = []*Top{}
 		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*ValueCharge).scanValues(nil, columns)
+		return (*Top).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &ValueCharge{config: _q.config}
+		node := &Top{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -360,7 +360,7 @@ func (_q *ValueChargeQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*
 	return nodes, nil
 }
 
-func (_q *ValueChargeQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *TopQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	if len(_q.modifiers) > 0 {
 		_spec.Modifiers = _q.modifiers
@@ -372,8 +372,8 @@ func (_q *ValueChargeQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *ValueChargeQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(valuecharge.Table, valuecharge.Columns, sqlgraph.NewFieldSpec(valuecharge.FieldID, field.TypeString))
+func (_q *TopQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(top.Table, top.Columns, sqlgraph.NewFieldSpec(top.FieldID, field.TypeString))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -382,9 +382,9 @@ func (_q *ValueChargeQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, valuecharge.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, top.FieldID)
 		for i := range fields {
-			if fields[i] != valuecharge.FieldID {
+			if fields[i] != top.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -412,12 +412,12 @@ func (_q *ValueChargeQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *ValueChargeQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *TopQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(valuecharge.Table)
+	t1 := builder.Table(top.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = valuecharge.Columns
+		columns = top.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -450,7 +450,7 @@ func (_q *ValueChargeQuery) sqlQuery(ctx context.Context) *sql.Selector {
 // ForUpdate locks the selected rows against concurrent updates, and prevent them from being
 // updated, deleted or "selected ... for update" by other sessions, until the transaction is
 // either committed or rolled-back.
-func (_q *ValueChargeQuery) ForUpdate(opts ...sql.LockOption) *ValueChargeQuery {
+func (_q *TopQuery) ForUpdate(opts ...sql.LockOption) *TopQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -463,7 +463,7 @@ func (_q *ValueChargeQuery) ForUpdate(opts ...sql.LockOption) *ValueChargeQuery 
 // ForShare behaves similarly to ForUpdate, except that it acquires a shared mode lock
 // on any rows that are read. Other sessions can read the rows, but cannot modify them
 // until your transaction commits.
-func (_q *ValueChargeQuery) ForShare(opts ...sql.LockOption) *ValueChargeQuery {
+func (_q *TopQuery) ForShare(opts ...sql.LockOption) *TopQuery {
 	if _q.driver.Dialect() == dialect.Postgres {
 		_q.Unique(false)
 	}
@@ -473,28 +473,28 @@ func (_q *ValueChargeQuery) ForShare(opts ...sql.LockOption) *ValueChargeQuery {
 	return _q
 }
 
-// ValueChargeGroupBy is the group-by builder for ValueCharge entities.
-type ValueChargeGroupBy struct {
+// TopGroupBy is the group-by builder for Top entities.
+type TopGroupBy struct {
 	selector
-	build *ValueChargeQuery
+	build *TopQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *ValueChargeGroupBy) Aggregate(fns ...AggregateFunc) *ValueChargeGroupBy {
+func (_g *TopGroupBy) Aggregate(fns ...AggregateFunc) *TopGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *ValueChargeGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *TopGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ValueChargeQuery, *ValueChargeGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*TopQuery, *TopGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *ValueChargeGroupBy) sqlScan(ctx context.Context, root *ValueChargeQuery, v any) error {
+func (_g *TopGroupBy) sqlScan(ctx context.Context, root *TopQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -521,28 +521,28 @@ func (_g *ValueChargeGroupBy) sqlScan(ctx context.Context, root *ValueChargeQuer
 	return sql.ScanSlice(rows, v)
 }
 
-// ValueChargeSelect is the builder for selecting fields of ValueCharge entities.
-type ValueChargeSelect struct {
-	*ValueChargeQuery
+// TopSelect is the builder for selecting fields of Top entities.
+type TopSelect struct {
+	*TopQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *ValueChargeSelect) Aggregate(fns ...AggregateFunc) *ValueChargeSelect {
+func (_s *TopSelect) Aggregate(fns ...AggregateFunc) *TopSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *ValueChargeSelect) Scan(ctx context.Context, v any) error {
+func (_s *TopSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*ValueChargeQuery, *ValueChargeSelect](ctx, _s.ValueChargeQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*TopQuery, *TopSelect](ctx, _s.TopQuery, _s, _s.inters, v)
 }
 
-func (_s *ValueChargeSelect) sqlScan(ctx context.Context, root *ValueChargeQuery, v any) error {
+func (_s *TopSelect) sqlScan(ctx context.Context, root *TopQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

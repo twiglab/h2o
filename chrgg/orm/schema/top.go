@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -30,15 +32,15 @@ status
 is_del
 */
 
-type ValueCharge struct {
+type Top struct {
 	ent.Schema
 }
 
-func (ValueCharge) Fields() []ent.Field {
+func (Top) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("id").Immutable().NotEmpty().DefaultFunc(id).SchemaType(char(36)),
 
-		field.String("code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("充值编号"),
+		field.String("code").Immutable().NotEmpty().DefaultFunc(id).SchemaType(varchar(64)).Comment("充值编号"),
 		// field.String("no").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("充值单号"),
 
 		field.String("device_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
@@ -56,43 +58,39 @@ func (ValueCharge) Fields() []ent.Field {
 		field.Int64("amount").Immutable().Default(0).Comment("充值金额"),   // 充值金额（ 反算值 电费度数差值 / （单价+ 服务费））
 		field.Int64("unit_price").Immutable().Default(0).Comment("单价"), // 单价
 
-		field.Time("charge_time").Immutable().Comment("充值时间"),
-		field.String("charge_ts").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("充值时间字符串"),
+		field.Time("charge_time").Immutable().Default(time.Now).Comment("充值时间"),
 
-		field.Int("alarm1").Default(0).Comment("报警1"),
-		field.Int("alarm2").Default(0).Comment("报警2"),
-		field.Int("alarm3").Default(0).Comment("报警3"),
+		field.Int("alarm").Default(0).Comment("报警"),
+		field.Time("alarm_time").Optional().Nillable().Comment("报警时间"),
 
-		field.Int("status").Default(0).Comment("状态"), // 备用
+		field.Int("status").Default(0).Comment("当前限额状态"),
+
+		field.Time("end_time").Optional().Nillable().Comment("充值时间"),
 
 		field.String("memo").Optional().SchemaType(varchar(128)).Comment("备注"),
 		field.Int("is_del").Default(0).Comment("软删除"),
 	}
 }
 
-func (ValueCharge) Mixin() []ent.Mixin {
+func (Top) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixin.Time{},
 	}
 }
 
-func (ValueCharge) Indexes() []ent.Index {
+func (Top) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("device_code"),
 		index.Fields("device_type"),
 
-		index.Fields("code").Unique(),
 		index.Fields("charge_time"),
-		index.Fields("charge_ts"),
-
-		// index.Fields("pos_code"),
 
 		index.Fields("is_del"),
 	}
 }
 
-func (ValueCharge) Annotations() []schema.Annotation {
+func (Top) Annotations() []schema.Annotation {
 	return []schema.Annotation{
-		entsql.Annotation{Table: "value_charge"},
+		entsql.Annotation{Table: "device_top"},
 	}
 }

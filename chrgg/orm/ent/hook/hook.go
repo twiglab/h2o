@@ -9,16 +9,16 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm/ent"
 )
 
-// The ValueChargeFunc type is an adapter to allow the use of ordinary
-// function as ValueCharge mutator.
-type ValueChargeFunc func(context.Context, *ent.ValueChargeMutation) (ent.Value, error)
+// The TopFunc type is an adapter to allow the use of ordinary
+// function as Top mutator.
+type TopFunc func(context.Context, *ent.TopMutation) (ent.Value, error)
 
 // Mutate calls f(ctx, m).
-func (f ValueChargeFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.ValueChargeMutation); ok {
+func (f TopFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TopMutation); ok {
 		return f(ctx, mv)
 	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ValueChargeMutation", m)
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TopMutation", m)
 }
 
 // Condition is a hook condition function.

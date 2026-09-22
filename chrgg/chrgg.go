@@ -36,31 +36,38 @@ func (d *Meter) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, d)
 }
 
-type Charge struct {
-	Code       string    `json:"code"`
-	Top        int64     `json:"top"`
-	Current    int64     `json:"current"`
-	Stock      int64     `json:"stock"`
-	Incr       int64     `json:"incr"`
-	Amount     int64     `json:"amount"`
-	UnitPrice  int64     `json:"unit_price"`
+type Top struct {
+	Code      string `json:"code"`
+	Top       int64  `json:"top"`
+	Current   int64  `json:"current"`
+	Stock     int64  `json:"stock"`
+	Incr      int64  `json:"incr"`
+	Amount    int64  `json:"amount"`
+	UnitPrice int64  `json:"unit_price"`
+
 	ChargeTime time.Time `json:"charge_time"`
+
+	Alarm     int        `json:"alarm"`
+	AlarmTime *time.Time `json:"alarm_time,omitzero"`
+
+	Status  int        `json:"status"`
+	EndTime *time.Time `json:"end_time,omitzero"`
 }
 
 type OnOffMessage struct {
 	common.Device
 	Gateway common.Modbus `json:"gateway,omitzero"`
 	Op      string        `json:"op"`
-	Alarm   int           `json:"alarm"`
-	Charge  Charge        `json:"charge,omitzero"`
+	Top     Top           `json:"top,omitzero"`
 }
 
-func newOnOffMessage(md Meter, vc *ent.ValueCharge, op string) OnOffMessage {
+func newOnOffMessage(md Meter, vc *ent.Top, op string) OnOffMessage {
 	return OnOffMessage{
 		Op:      op,
 		Device:  md.Device,
 		Gateway: md.Gateway,
-		Charge: Charge{
+
+		Top: Top{
 			Code:       vc.Code,
 			Top:        vc.Top,
 			Current:    md.Data.DataValue,
@@ -69,6 +76,12 @@ func newOnOffMessage(md Meter, vc *ent.ValueCharge, op string) OnOffMessage {
 			Amount:     vc.Amount,
 			UnitPrice:  vc.UnitPrice,
 			ChargeTime: vc.ChargeTime,
+
+			Alarm:     vc.Alarm,
+			AlarmTime: vc.AlarmTime,
+
+			Status:  vc.Status,
+			EndTime: vc.EndTime,
 		},
 	}
 }
