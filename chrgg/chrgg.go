@@ -10,6 +10,12 @@ import (
 	"github.com/twiglab/h2o/pkg/common"
 )
 
+const (
+	STATUS_END     = 1
+	STATUS_BEGIN   = 0
+	STATUS_INVALID = -1
+)
+
 type SendObject interface {
 	encoding.BinaryMarshaler
 	Topic() string
@@ -45,6 +51,7 @@ type OnOffMessage struct {
 	common.Device
 	Gateway common.Modbus `json:"gateway,omitzero"`
 	Op      string        `json:"op"`
+	Alarm   int           `json:"alarm"`
 	Charge  Charge        `json:"charge,omitzero"`
 }
 
