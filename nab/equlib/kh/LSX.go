@@ -25,7 +25,7 @@ func (e LXS) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.Dev
 
 	var meter nab.Meter
 	meter.Data.DataValue = int64(dataVal)
-	meter.Data.OptStatus = 0x0
+	meter.Data.OptStatus = 0x2
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
