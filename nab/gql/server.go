@@ -28,8 +28,8 @@ func WithPath(p string) Ops {
 	}
 }
 
-func Handle(a* nab.Agent, ops ...Ops) http.Handler {
-	c := &conf{path: "gql"}
+func Handle(a *nab.Agent, ops ...Ops) http.Handler {
+	c := &conf{path: "/gql"}
 
 	for _, o := range ops {
 		o(c)
