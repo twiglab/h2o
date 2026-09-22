@@ -37,6 +37,13 @@ func Any(s string, d any) slog.Attr {
 	return slog.Any(s, d)
 }
 
+func Int64(s string, i int64) slog.Attr {
+	return slog.Int64(s, i)
+}
+
+func Int(s string, i int) slog.Attr {
+	return slog.Int(s, i)
+}
 func String(k, v string) slog.Attr {
 	return slog.String(k, v)
 }
