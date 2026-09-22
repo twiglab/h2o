@@ -26,7 +26,7 @@ type ChargeServer struct {
 	Logger *slog.Logger
 	WAL    *wal.WAL
 
-	AlarmQuota int64
+	Alarm int64
 
 	MCli mqtt.Client
 }
@@ -95,8 +95,8 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		}
 	}
 
-	if s.AlarmQuota != 0 {
-		if (vc.Top - md.Data.DataValue) < s.AlarmQuota {
+	if s.Alarm != 0 {
+		if (vc.Top - md.Data.DataValue) < s.Alarm {
 			if !isAlarm3(vc) { // 没拉闸报警过
 				// 拉闸报警一次
 				_ = vc.Update().
