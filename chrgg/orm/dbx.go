@@ -27,3 +27,5 @@ func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.Top, notfo
 
 	return
 }
+
+// func (d *DBx) NewTop()

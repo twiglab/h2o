@@ -79,6 +79,11 @@ func Code(v string) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldCode, v))
 }
 
+// No applies equality check predicate on the "no" field. It's identical to NoEQ.
+func No(v string) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldNo, v))
+}
+
 // DeviceCode applies equality check predicate on the "device_code" field. It's identical to DeviceCodeEQ.
 func DeviceCode(v string) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldDeviceCode, v))
@@ -307,6 +312,81 @@ func CodeEqualFold(v string) predicate.Top {
 // CodeContainsFold applies the ContainsFold predicate on the "code" field.
 func CodeContainsFold(v string) predicate.Top {
 	return predicate.Top(sql.FieldContainsFold(FieldCode, v))
+}
+
+// NoEQ applies the EQ predicate on the "no" field.
+func NoEQ(v string) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldNo, v))
+}
+
+// NoNEQ applies the NEQ predicate on the "no" field.
+func NoNEQ(v string) predicate.Top {
+	return predicate.Top(sql.FieldNEQ(FieldNo, v))
+}
+
+// NoIn applies the In predicate on the "no" field.
+func NoIn(vs ...string) predicate.Top {
+	return predicate.Top(sql.FieldIn(FieldNo, vs...))
+}
+
+// NoNotIn applies the NotIn predicate on the "no" field.
+func NoNotIn(vs ...string) predicate.Top {
+	return predicate.Top(sql.FieldNotIn(FieldNo, vs...))
+}
+
+// NoGT applies the GT predicate on the "no" field.
+func NoGT(v string) predicate.Top {
+	return predicate.Top(sql.FieldGT(FieldNo, v))
+}
+
+// NoGTE applies the GTE predicate on the "no" field.
+func NoGTE(v string) predicate.Top {
+	return predicate.Top(sql.FieldGTE(FieldNo, v))
+}
+
+// NoLT applies the LT predicate on the "no" field.
+func NoLT(v string) predicate.Top {
+	return predicate.Top(sql.FieldLT(FieldNo, v))
+}
+
+// NoLTE applies the LTE predicate on the "no" field.
+func NoLTE(v string) predicate.Top {
+	return predicate.Top(sql.FieldLTE(FieldNo, v))
+}
+
+// NoContains applies the Contains predicate on the "no" field.
+func NoContains(v string) predicate.Top {
+	return predicate.Top(sql.FieldContains(FieldNo, v))
+}
+
+// NoHasPrefix applies the HasPrefix predicate on the "no" field.
+func NoHasPrefix(v string) predicate.Top {
+	return predicate.Top(sql.FieldHasPrefix(FieldNo, v))
+}
+
+// NoHasSuffix applies the HasSuffix predicate on the "no" field.
+func NoHasSuffix(v string) predicate.Top {
+	return predicate.Top(sql.FieldHasSuffix(FieldNo, v))
+}
+
+// NoIsNil applies the IsNil predicate on the "no" field.
+func NoIsNil() predicate.Top {
+	return predicate.Top(sql.FieldIsNull(FieldNo))
+}
+
+// NoNotNil applies the NotNil predicate on the "no" field.
+func NoNotNil() predicate.Top {
+	return predicate.Top(sql.FieldNotNull(FieldNo))
+}
+
+// NoEqualFold applies the EqualFold predicate on the "no" field.
+func NoEqualFold(v string) predicate.Top {
+	return predicate.Top(sql.FieldEqualFold(FieldNo, v))
+}
+
+// NoContainsFold applies the ContainsFold predicate on the "no" field.
+func NoContainsFold(v string) predicate.Top {
+	return predicate.Top(sql.FieldContainsFold(FieldNo, v))
 }
 
 // DeviceCodeEQ applies the EQ predicate on the "device_code" field.

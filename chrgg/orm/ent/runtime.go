@@ -35,55 +35,55 @@ func init() {
 	// top.CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	top.CodeValidator = topDescCode.Validators[0].(func(string) error)
 	// topDescDeviceCode is the schema descriptor for device_code field.
-	topDescDeviceCode := topFields[2].Descriptor()
+	topDescDeviceCode := topFields[3].Descriptor()
 	// top.DeviceCodeValidator is a validator for the "device_code" field. It is called by the builders before save.
 	top.DeviceCodeValidator = topDescDeviceCode.Validators[0].(func(string) error)
 	// topDescDeviceType is the schema descriptor for device_type field.
-	topDescDeviceType := topFields[3].Descriptor()
+	topDescDeviceType := topFields[4].Descriptor()
 	// top.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	top.DeviceTypeValidator = topDescDeviceType.Validators[0].(func(string) error)
 	// topDescPosCode is the schema descriptor for pos_code field.
-	topDescPosCode := topFields[4].Descriptor()
+	topDescPosCode := topFields[5].Descriptor()
 	// top.PosCodeValidator is a validator for the "pos_code" field. It is called by the builders before save.
 	top.PosCodeValidator = topDescPosCode.Validators[0].(func(string) error)
 	// topDescProject is the schema descriptor for project field.
-	topDescProject := topFields[5].Descriptor()
+	topDescProject := topFields[6].Descriptor()
 	// top.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	top.ProjectValidator = topDescProject.Validators[0].(func(string) error)
 	// topDescTop is the schema descriptor for top field.
-	topDescTop := topFields[7].Descriptor()
+	topDescTop := topFields[8].Descriptor()
 	// top.DefaultTop holds the default value on creation for the top field.
 	top.DefaultTop = topDescTop.Default.(int64)
 	// topDescStock is the schema descriptor for stock field.
-	topDescStock := topFields[8].Descriptor()
+	topDescStock := topFields[9].Descriptor()
 	// top.DefaultStock holds the default value on creation for the stock field.
 	top.DefaultStock = topDescStock.Default.(int64)
 	// topDescIncr is the schema descriptor for incr field.
-	topDescIncr := topFields[9].Descriptor()
+	topDescIncr := topFields[10].Descriptor()
 	// top.DefaultIncr holds the default value on creation for the incr field.
 	top.DefaultIncr = topDescIncr.Default.(int64)
 	// topDescAmount is the schema descriptor for amount field.
-	topDescAmount := topFields[10].Descriptor()
+	topDescAmount := topFields[11].Descriptor()
 	// top.DefaultAmount holds the default value on creation for the amount field.
 	top.DefaultAmount = topDescAmount.Default.(int64)
 	// topDescUnitPrice is the schema descriptor for unit_price field.
-	topDescUnitPrice := topFields[11].Descriptor()
+	topDescUnitPrice := topFields[12].Descriptor()
 	// top.DefaultUnitPrice holds the default value on creation for the unit_price field.
 	top.DefaultUnitPrice = topDescUnitPrice.Default.(int64)
 	// topDescChargeTime is the schema descriptor for charge_time field.
-	topDescChargeTime := topFields[12].Descriptor()
+	topDescChargeTime := topFields[13].Descriptor()
 	// top.DefaultChargeTime holds the default value on creation for the charge_time field.
 	top.DefaultChargeTime = topDescChargeTime.Default.(func() time.Time)
 	// topDescAlarm is the schema descriptor for alarm field.
-	topDescAlarm := topFields[13].Descriptor()
+	topDescAlarm := topFields[14].Descriptor()
 	// top.DefaultAlarm holds the default value on creation for the alarm field.
 	top.DefaultAlarm = topDescAlarm.Default.(int)
 	// topDescStatus is the schema descriptor for status field.
-	topDescStatus := topFields[15].Descriptor()
+	topDescStatus := topFields[16].Descriptor()
 	// top.DefaultStatus holds the default value on creation for the status field.
 	top.DefaultStatus = topDescStatus.Default.(int)
 	// topDescIsDel is the schema descriptor for is_del field.
-	topDescIsDel := topFields[18].Descriptor()
+	topDescIsDel := topFields[19].Descriptor()
 	// top.DefaultIsDel holds the default value on creation for the is_del field.
 	top.DefaultIsDel = topDescIsDel.Default.(int)
 	// topDescID is the schema descriptor for id field.

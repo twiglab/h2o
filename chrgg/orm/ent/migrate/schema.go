@@ -15,6 +15,7 @@ var (
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "no", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -42,22 +43,22 @@ var (
 			{
 				Name:    "top_device_code",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[4]},
+				Columns: []*schema.Column{DeviceTopColumns[5]},
 			},
 			{
 				Name:    "top_device_type",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[5]},
+				Columns: []*schema.Column{DeviceTopColumns[6]},
 			},
 			{
 				Name:    "top_charge_time",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[14]},
+				Columns: []*schema.Column{DeviceTopColumns[15]},
 			},
 			{
 				Name:    "top_is_del",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[20]},
+				Columns: []*schema.Column{DeviceTopColumns[21]},
 			},
 		},
 	}

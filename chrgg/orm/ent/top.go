@@ -23,6 +23,8 @@ type Top struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// 充值编号
 	Code string `json:"code,omitempty"`
+	// 充值单号
+	No string `json:"no,omitempty"`
 	// 设备号
 	DeviceCode string `json:"device_code,omitempty"`
 	// 设备类型
@@ -67,7 +69,7 @@ func (*Top) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case top.FieldTop, top.FieldStock, top.FieldIncr, top.FieldAmount, top.FieldUnitPrice, top.FieldAlarm, top.FieldStatus, top.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case top.FieldID, top.FieldCode, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOwner, top.FieldMemo:
+		case top.FieldID, top.FieldCode, top.FieldNo, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOwner, top.FieldMemo:
 			values[i] = new(sql.NullString)
 		case top.FieldCreateTime, top.FieldUpdateTime, top.FieldChargeTime, top.FieldAlarmTime, top.FieldEndTime:
 			values[i] = new(sql.NullTime)
@@ -109,6 +111,12 @@ func (_m *Top) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
 				_m.Code = value.String
+			}
+		case top.FieldNo:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field no", values[i])
+			} else if value.Valid {
+				_m.No = value.String
 			}
 		case top.FieldDeviceCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -258,6 +266,9 @@ func (_m *Top) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(_m.Code)
+	builder.WriteString(", ")
+	builder.WriteString("no=")
+	builder.WriteString(_m.No)
 	builder.WriteString(", ")
 	builder.WriteString("device_code=")
 	builder.WriteString(_m.DeviceCode)

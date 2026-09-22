@@ -41,7 +41,7 @@ func (Top) Fields() []ent.Field {
 		field.String("id").Immutable().NotEmpty().DefaultFunc(id).SchemaType(char(36)),
 
 		field.String("code").Immutable().NotEmpty().DefaultFunc(id).SchemaType(varchar(64)).Comment("充值编号"),
-		// field.String("no").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("充值单号"),
+		field.String("no").Immutable().Optional().SchemaType(varchar(64)).Comment("充值单号"),
 
 		field.String("device_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("device_type").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
@@ -64,10 +64,10 @@ func (Top) Fields() []ent.Field {
 		field.Time("alarm_time").Optional().Nillable().Comment("报警时间"),
 
 		field.Int("status").Default(0).Comment("当前限额状态"),
-
 		field.Time("end_time").Optional().Nillable().Comment("充值时间"),
 
 		field.String("memo").Optional().SchemaType(varchar(128)).Comment("备注"),
+
 		field.Int("is_del").Default(0).Comment("软删除"),
 	}
 }

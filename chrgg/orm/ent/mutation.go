@@ -36,6 +36,7 @@ type TopMutation struct {
 	create_time   *time.Time
 	update_time   *time.Time
 	code          *string
+	no            *string
 	device_code   *string
 	device_type   *string
 	pos_code      *string
@@ -277,6 +278,55 @@ func (m *TopMutation) OldCode(ctx context.Context) (v string, err error) {
 // ResetCode resets all changes to the "code" field.
 func (m *TopMutation) ResetCode() {
 	m.code = nil
+}
+
+// SetNo sets the "no" field.
+func (m *TopMutation) SetNo(s string) {
+	m.no = &s
+}
+
+// No returns the value of the "no" field in the mutation.
+func (m *TopMutation) No() (r string, exists bool) {
+	v := m.no
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNo returns the old "no" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TopMutation) OldNo(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNo is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNo requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNo: %w", err)
+	}
+	return oldValue.No, nil
+}
+
+// ClearNo clears the value of the "no" field.
+func (m *TopMutation) ClearNo() {
+	m.no = nil
+	m.clearedFields[top.FieldNo] = struct{}{}
+}
+
+// NoCleared returns if the "no" field was cleared in this mutation.
+func (m *TopMutation) NoCleared() bool {
+	_, ok := m.clearedFields[top.FieldNo]
+	return ok
+}
+
+// ResetNo resets all changes to the "no" field.
+func (m *TopMutation) ResetNo() {
+	m.no = nil
+	delete(m.clearedFields, top.FieldNo)
 }
 
 // SetDeviceCode sets the "device_code" field.
@@ -1137,7 +1187,7 @@ func (m *TopMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TopMutation) Fields() []string {
-	fields := make([]string, 0, 20)
+	fields := make([]string, 0, 21)
 	if m.create_time != nil {
 		fields = append(fields, top.FieldCreateTime)
 	}
@@ -1146,6 +1196,9 @@ func (m *TopMutation) Fields() []string {
 	}
 	if m.code != nil {
 		fields = append(fields, top.FieldCode)
+	}
+	if m.no != nil {
+		fields = append(fields, top.FieldNo)
 	}
 	if m.device_code != nil {
 		fields = append(fields, top.FieldDeviceCode)
@@ -1212,6 +1265,8 @@ func (m *TopMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdateTime()
 	case top.FieldCode:
 		return m.Code()
+	case top.FieldNo:
+		return m.No()
 	case top.FieldDeviceCode:
 		return m.DeviceCode()
 	case top.FieldDeviceType:
@@ -1261,6 +1316,8 @@ func (m *TopMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldUpdateTime(ctx)
 	case top.FieldCode:
 		return m.OldCode(ctx)
+	case top.FieldNo:
+		return m.OldNo(ctx)
 	case top.FieldDeviceCode:
 		return m.OldDeviceCode(ctx)
 	case top.FieldDeviceType:
@@ -1324,6 +1381,13 @@ func (m *TopMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
+		return nil
+	case top.FieldNo:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNo(v)
 		return nil
 	case top.FieldDeviceCode:
 		v, ok := value.(string)
@@ -1573,6 +1637,9 @@ func (m *TopMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *TopMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(top.FieldNo) {
+		fields = append(fields, top.FieldNo)
+	}
 	if m.FieldCleared(top.FieldOwner) {
 		fields = append(fields, top.FieldOwner)
 	}
@@ -1599,6 +1666,9 @@ func (m *TopMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *TopMutation) ClearField(name string) error {
 	switch name {
+	case top.FieldNo:
+		m.ClearNo()
+		return nil
 	case top.FieldOwner:
 		m.ClearOwner()
 		return nil
@@ -1627,6 +1697,9 @@ func (m *TopMutation) ResetField(name string) error {
 		return nil
 	case top.FieldCode:
 		m.ResetCode()
+		return nil
+	case top.FieldNo:
+		m.ResetNo()
 		return nil
 	case top.FieldDeviceCode:
 		m.ResetDeviceCode()

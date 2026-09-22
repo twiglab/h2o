@@ -210,6 +210,9 @@ func (_u *TopUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(top.FieldUpdateTime, field.TypeTime, value)
 	}
+	if _u.mutation.NoCleared() {
+		_spec.ClearField(top.FieldNo, field.TypeString)
+	}
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(top.FieldOwner, field.TypeString)
 	}
@@ -480,6 +483,9 @@ func (_u *TopUpdateOne) sqlSave(ctx context.Context) (_node *Top, err error) {
 	}
 	if value, ok := _u.mutation.UpdateTime(); ok {
 		_spec.SetField(top.FieldUpdateTime, field.TypeTime, value)
+	}
+	if _u.mutation.NoCleared() {
+		_spec.ClearField(top.FieldNo, field.TypeString)
 	}
 	if _u.mutation.OwnerCleared() {
 		_spec.ClearField(top.FieldOwner, field.TypeString)

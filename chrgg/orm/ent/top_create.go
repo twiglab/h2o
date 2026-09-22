@@ -65,6 +65,20 @@ func (_c *TopCreate) SetNillableCode(v *string) *TopCreate {
 	return _c
 }
 
+// SetNo sets the "no" field.
+func (_c *TopCreate) SetNo(v string) *TopCreate {
+	_c.mutation.SetNo(v)
+	return _c
+}
+
+// SetNillableNo sets the "no" field if the given value is not nil.
+func (_c *TopCreate) SetNillableNo(v *string) *TopCreate {
+	if v != nil {
+		_c.SetNo(*v)
+	}
+	return _c
+}
+
 // SetDeviceCode sets the "device_code" field.
 func (_c *TopCreate) SetDeviceCode(v string) *TopCreate {
 	_c.mutation.SetDeviceCode(v)
@@ -502,6 +516,10 @@ func (_c *TopCreate) createSpec() (*Top, *sqlgraph.CreateSpec) {
 		_spec.SetField(top.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
+	if value, ok := _c.mutation.No(); ok {
+		_spec.SetField(top.FieldNo, field.TypeString, value)
+		_node.No = value
+	}
 	if value, ok := _c.mutation.DeviceCode(); ok {
 		_spec.SetField(top.FieldDeviceCode, field.TypeString, value)
 		_node.DeviceCode = value
@@ -764,6 +782,9 @@ func (u *TopUpsertOne) UpdateNewValues() *TopUpsertOne {
 		}
 		if _, exists := u.create.mutation.Code(); exists {
 			s.SetIgnore(top.FieldCode)
+		}
+		if _, exists := u.create.mutation.No(); exists {
+			s.SetIgnore(top.FieldNo)
 		}
 		if _, exists := u.create.mutation.DeviceCode(); exists {
 			s.SetIgnore(top.FieldDeviceCode)
@@ -1157,6 +1178,9 @@ func (u *TopUpsertBulk) UpdateNewValues() *TopUpsertBulk {
 			}
 			if _, exists := b.mutation.Code(); exists {
 				s.SetIgnore(top.FieldCode)
+			}
+			if _, exists := b.mutation.No(); exists {
+				s.SetIgnore(top.FieldNo)
 			}
 			if _, exists := b.mutation.DeviceCode(); exists {
 				s.SetIgnore(top.FieldDeviceCode)

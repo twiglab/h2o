@@ -1,0 +1,56 @@
+scalar Int64
+scalar Time
+scalar UUID
+
+type Top {
+  id            : ID!
+  code          : String!
+
+  deviceCode    : String!
+  deviceType    : String!
+
+  posCode       : String!
+  project       : String!
+
+  owner         : String!
+
+  top           : Int64!
+  stock         : Int64!
+  incr          : Int64!
+
+  amount        : Int64!
+  unitPrice     : Int64!
+
+  chargeTime    : Time!
+
+  alarm         : Int!
+  alarmTime     : Time
+
+  status        : Int!
+  endTime       : Time
+
+  memo          : String!
+}
+
+input NewTopInput {
+  deviceCode    : String!
+  deviceType    : String!
+
+  posCode       : String!
+  project       : String!
+
+  top           : Int64!
+  stock         : Int64!
+  incr          : Int64!
+
+  amount        : Int64!
+  unitPrice     : Int64!
+}
+
+type Query {
+  chargeList(input: NewTopInput!): [Top!]!
+}
+
+type Mutation {
+  chargeNewTop(input: NewTopInput!): Top!
+}

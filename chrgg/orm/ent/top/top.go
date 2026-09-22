@@ -19,6 +19,8 @@ const (
 	FieldUpdateTime = "update_time"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
+	// FieldNo holds the string denoting the no field in the database.
+	FieldNo = "no"
 	// FieldDeviceCode holds the string denoting the device_code field in the database.
 	FieldDeviceCode = "device_code"
 	// FieldDeviceType holds the string denoting the device_type field in the database.
@@ -63,6 +65,7 @@ var Columns = []string{
 	FieldCreateTime,
 	FieldUpdateTime,
 	FieldCode,
+	FieldNo,
 	FieldDeviceCode,
 	FieldDeviceType,
 	FieldPosCode,
@@ -156,6 +159,11 @@ func ByUpdateTime(opts ...sql.OrderTermOption) OrderOption {
 // ByCode orders the results by the code field.
 func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
+}
+
+// ByNo orders the results by the no field.
+func ByNo(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNo, opts...).ToFunc()
 }
 
 // ByDeviceCode orders the results by the device_code field.
