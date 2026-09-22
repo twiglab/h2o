@@ -7,18 +7,19 @@ import (
 
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
-	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/pkg/common"
 )
 
-func init() {
-	equlib.Register(FAKE_DEVIVE, &Fake{}) // fake 设备的状态默认为未定义
+type Fake struct {
+	optStatus  int64
+	alwaysOpen bool
 }
 
-const FAKE_DEVIVE = "fake-device"
-
-type Fake struct {
-	optStatus int64
+func New(alwaysOpen bool) *Fake {
+	return &Fake{
+		optStatus:  common.OPT_STATUS_ON,
+		alwaysOpen: alwaysOpen,
+	}
 }
 
 func (e Fake) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab.DeviceData) error {
@@ -52,6 +53,8 @@ func (e *Fake) On(ctx context.Context, cli *modbus.ModbusClient, data nab.Device
 
 func (e *Fake) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
 	data.Logger.DebugContext(ctx, "FAKE DEVICE OFF", slog.String("boxCode", data.Global.Box), slog.Any("Record", data.Record))
-	e.optStatus = common.OPT_STATUS_OFF
+	if !e.alwaysOpen {
+		e.optStatus = common.OPT_STATUS_OFF
+	}
 	return nil
 }
