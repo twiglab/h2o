@@ -39,7 +39,7 @@ func Handle(db *orm.DBx, ops ...Ops) http.Handler {
 	}
 
 	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
-		DBx:db,
+		DBx: db,
 	}}))
 
 	srv.AddTransport(transport.Options{})

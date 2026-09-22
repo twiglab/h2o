@@ -5,8 +5,11 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
+	"github.com/twiglab/h2o/chrgg/gql"
 	"github.com/twiglab/h2o/chrgg/orm"
 )
 
@@ -39,10 +42,11 @@ func run() error {
 	entc := entcli()
 
 	act := chrgg.NewMQTTAction(mcli)
+	db := &orm.DBx{Cli: entc}
 
 	svr := &chrgg.ChargeServer{
 		Sender: act,
-		DBx:    &orm.DBx{Cli: entc},
+		DBx:    db,
 		Logger: sl,
 		WAL:    cwal(),
 		MCli:   mcli,
@@ -51,6 +55,10 @@ func run() error {
 	if err := svr.Run(); err != nil {
 		log.Fatal(err)
 	}
+
+	mux := chi.NewMux()
+	mux.Use(middleware.RequestID)
+	mux.Mount("/gql", gql.Handle(db))
 
 	return http.ListenAndServe(webaddr(), nil)
 }
