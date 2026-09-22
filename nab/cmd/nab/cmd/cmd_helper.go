@@ -47,7 +47,15 @@ func mqttcli() mqtt.Client {
 
 func global() nab.Global {
 	box := viper.GetString("nab.box")
+	if box == "" {
+		log.Fatal("nab.box is nil")
+	}
+
 	project := viper.GetString("nab.project")
+	if project == "" {
+		log.Fatal("nab.project is nil")
+	}
+
 	g := nab.Global{
 		Box:     box,
 		Project: project,
