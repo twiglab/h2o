@@ -51,6 +51,16 @@ var (
 				Columns: []*schema.Column{DeviceTopColumns[6]},
 			},
 			{
+				Name:    "top_pos_code",
+				Unique:  false,
+				Columns: []*schema.Column{DeviceTopColumns[7]},
+			},
+			{
+				Name:    "top_project",
+				Unique:  false,
+				Columns: []*schema.Column{DeviceTopColumns[8]},
+			},
+			{
 				Name:    "top_charge_time",
 				Unique:  false,
 				Columns: []*schema.Column{DeviceTopColumns[15]},

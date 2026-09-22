@@ -83,6 +83,9 @@ func (Top) Indexes() []ent.Index {
 		index.Fields("device_code"),
 		index.Fields("device_type"),
 
+		index.Fields("pos_code"),
+		index.Fields("project"),
+
 		index.Fields("charge_time"),
 
 		index.Fields("is_del"),
