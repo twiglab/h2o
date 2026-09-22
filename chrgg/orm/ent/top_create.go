@@ -229,6 +229,20 @@ func (_c *TopCreate) SetNillableAlarmTime(v *time.Time) *TopCreate {
 	return _c
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (_c *TopCreate) SetAlarmStock(v int64) *TopCreate {
+	_c.mutation.SetAlarmStock(v)
+	return _c
+}
+
+// SetNillableAlarmStock sets the "alarm_stock" field if the given value is not nil.
+func (_c *TopCreate) SetNillableAlarmStock(v *int64) *TopCreate {
+	if v != nil {
+		_c.SetAlarmStock(*v)
+	}
+	return _c
+}
+
 // SetStatus sets the "status" field.
 func (_c *TopCreate) SetStatus(v int) *TopCreate {
 	_c.mutation.SetStatus(v)
@@ -253,6 +267,20 @@ func (_c *TopCreate) SetEndTime(v time.Time) *TopCreate {
 func (_c *TopCreate) SetNillableEndTime(v *time.Time) *TopCreate {
 	if v != nil {
 		_c.SetEndTime(*v)
+	}
+	return _c
+}
+
+// SetEndStock sets the "end_stock" field.
+func (_c *TopCreate) SetEndStock(v int64) *TopCreate {
+	_c.mutation.SetEndStock(v)
+	return _c
+}
+
+// SetNillableEndStock sets the "end_stock" field if the given value is not nil.
+func (_c *TopCreate) SetNillableEndStock(v *int64) *TopCreate {
+	if v != nil {
+		_c.SetEndStock(*v)
 	}
 	return _c
 }
@@ -374,9 +402,17 @@ func (_c *TopCreate) defaults() {
 		v := top.DefaultAlarm
 		_c.mutation.SetAlarm(v)
 	}
+	if _, ok := _c.mutation.AlarmStock(); !ok {
+		v := top.DefaultAlarmStock
+		_c.mutation.SetAlarmStock(v)
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		v := top.DefaultStatus
 		_c.mutation.SetStatus(v)
+	}
+	if _, ok := _c.mutation.EndStock(); !ok {
+		v := top.DefaultEndStock
+		_c.mutation.SetEndStock(v)
 	}
 	if _, ok := _c.mutation.IsDel(); !ok {
 		v := top.DefaultIsDel
@@ -457,8 +493,14 @@ func (_c *TopCreate) check() error {
 	if _, ok := _c.mutation.Alarm(); !ok {
 		return &ValidationError{Name: "alarm", err: errors.New(`ent: missing required field "Top.alarm"`)}
 	}
+	if _, ok := _c.mutation.AlarmStock(); !ok {
+		return &ValidationError{Name: "alarm_stock", err: errors.New(`ent: missing required field "Top.alarm_stock"`)}
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Top.status"`)}
+	}
+	if _, ok := _c.mutation.EndStock(); !ok {
+		return &ValidationError{Name: "end_stock", err: errors.New(`ent: missing required field "Top.end_stock"`)}
 	}
 	if _, ok := _c.mutation.IsDel(); !ok {
 		return &ValidationError{Name: "is_del", err: errors.New(`ent: missing required field "Top.is_del"`)}
@@ -572,6 +614,10 @@ func (_c *TopCreate) createSpec() (*Top, *sqlgraph.CreateSpec) {
 		_spec.SetField(top.FieldAlarmTime, field.TypeTime, value)
 		_node.AlarmTime = &value
 	}
+	if value, ok := _c.mutation.AlarmStock(); ok {
+		_spec.SetField(top.FieldAlarmStock, field.TypeInt64, value)
+		_node.AlarmStock = value
+	}
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(top.FieldStatus, field.TypeInt, value)
 		_node.Status = value
@@ -579,6 +625,10 @@ func (_c *TopCreate) createSpec() (*Top, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.EndTime(); ok {
 		_spec.SetField(top.FieldEndTime, field.TypeTime, value)
 		_node.EndTime = &value
+	}
+	if value, ok := _c.mutation.EndStock(); ok {
+		_spec.SetField(top.FieldEndStock, field.TypeInt64, value)
+		_node.EndStock = value
 	}
 	if value, ok := _c.mutation.Memo(); ok {
 		_spec.SetField(top.FieldMemo, field.TypeString, value)
@@ -688,6 +738,24 @@ func (u *TopUpsert) ClearAlarmTime() *TopUpsert {
 	return u
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (u *TopUpsert) SetAlarmStock(v int64) *TopUpsert {
+	u.Set(top.FieldAlarmStock, v)
+	return u
+}
+
+// UpdateAlarmStock sets the "alarm_stock" field to the value that was provided on create.
+func (u *TopUpsert) UpdateAlarmStock() *TopUpsert {
+	u.SetExcluded(top.FieldAlarmStock)
+	return u
+}
+
+// AddAlarmStock adds v to the "alarm_stock" field.
+func (u *TopUpsert) AddAlarmStock(v int64) *TopUpsert {
+	u.Add(top.FieldAlarmStock, v)
+	return u
+}
+
 // SetStatus sets the "status" field.
 func (u *TopUpsert) SetStatus(v int) *TopUpsert {
 	u.Set(top.FieldStatus, v)
@@ -721,6 +789,24 @@ func (u *TopUpsert) UpdateEndTime() *TopUpsert {
 // ClearEndTime clears the value of the "end_time" field.
 func (u *TopUpsert) ClearEndTime() *TopUpsert {
 	u.SetNull(top.FieldEndTime)
+	return u
+}
+
+// SetEndStock sets the "end_stock" field.
+func (u *TopUpsert) SetEndStock(v int64) *TopUpsert {
+	u.Set(top.FieldEndStock, v)
+	return u
+}
+
+// UpdateEndStock sets the "end_stock" field to the value that was provided on create.
+func (u *TopUpsert) UpdateEndStock() *TopUpsert {
+	u.SetExcluded(top.FieldEndStock)
+	return u
+}
+
+// AddEndStock adds v to the "end_stock" field.
+func (u *TopUpsert) AddEndStock(v int64) *TopUpsert {
+	u.Add(top.FieldEndStock, v)
 	return u
 }
 
@@ -906,6 +992,27 @@ func (u *TopUpsertOne) ClearAlarmTime() *TopUpsertOne {
 	})
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (u *TopUpsertOne) SetAlarmStock(v int64) *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.SetAlarmStock(v)
+	})
+}
+
+// AddAlarmStock adds v to the "alarm_stock" field.
+func (u *TopUpsertOne) AddAlarmStock(v int64) *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.AddAlarmStock(v)
+	})
+}
+
+// UpdateAlarmStock sets the "alarm_stock" field to the value that was provided on create.
+func (u *TopUpsertOne) UpdateAlarmStock() *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateAlarmStock()
+	})
+}
+
 // SetStatus sets the "status" field.
 func (u *TopUpsertOne) SetStatus(v int) *TopUpsertOne {
 	return u.Update(func(s *TopUpsert) {
@@ -945,6 +1052,27 @@ func (u *TopUpsertOne) UpdateEndTime() *TopUpsertOne {
 func (u *TopUpsertOne) ClearEndTime() *TopUpsertOne {
 	return u.Update(func(s *TopUpsert) {
 		s.ClearEndTime()
+	})
+}
+
+// SetEndStock sets the "end_stock" field.
+func (u *TopUpsertOne) SetEndStock(v int64) *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.SetEndStock(v)
+	})
+}
+
+// AddEndStock adds v to the "end_stock" field.
+func (u *TopUpsertOne) AddEndStock(v int64) *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.AddEndStock(v)
+	})
+}
+
+// UpdateEndStock sets the "end_stock" field to the value that was provided on create.
+func (u *TopUpsertOne) UpdateEndStock() *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateEndStock()
 	})
 }
 
@@ -1303,6 +1431,27 @@ func (u *TopUpsertBulk) ClearAlarmTime() *TopUpsertBulk {
 	})
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (u *TopUpsertBulk) SetAlarmStock(v int64) *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.SetAlarmStock(v)
+	})
+}
+
+// AddAlarmStock adds v to the "alarm_stock" field.
+func (u *TopUpsertBulk) AddAlarmStock(v int64) *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.AddAlarmStock(v)
+	})
+}
+
+// UpdateAlarmStock sets the "alarm_stock" field to the value that was provided on create.
+func (u *TopUpsertBulk) UpdateAlarmStock() *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateAlarmStock()
+	})
+}
+
 // SetStatus sets the "status" field.
 func (u *TopUpsertBulk) SetStatus(v int) *TopUpsertBulk {
 	return u.Update(func(s *TopUpsert) {
@@ -1342,6 +1491,27 @@ func (u *TopUpsertBulk) UpdateEndTime() *TopUpsertBulk {
 func (u *TopUpsertBulk) ClearEndTime() *TopUpsertBulk {
 	return u.Update(func(s *TopUpsert) {
 		s.ClearEndTime()
+	})
+}
+
+// SetEndStock sets the "end_stock" field.
+func (u *TopUpsertBulk) SetEndStock(v int64) *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.SetEndStock(v)
+	})
+}
+
+// AddEndStock adds v to the "end_stock" field.
+func (u *TopUpsertBulk) AddEndStock(v int64) *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.AddEndStock(v)
+	})
+}
+
+// UpdateEndStock sets the "end_stock" field to the value that was provided on create.
+func (u *TopUpsertBulk) UpdateEndStock() *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateEndStock()
 	})
 }
 

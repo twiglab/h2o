@@ -78,12 +78,20 @@ func init() {
 	topDescAlarm := topFields[14].Descriptor()
 	// top.DefaultAlarm holds the default value on creation for the alarm field.
 	top.DefaultAlarm = topDescAlarm.Default.(int)
+	// topDescAlarmStock is the schema descriptor for alarm_stock field.
+	topDescAlarmStock := topFields[16].Descriptor()
+	// top.DefaultAlarmStock holds the default value on creation for the alarm_stock field.
+	top.DefaultAlarmStock = topDescAlarmStock.Default.(int64)
 	// topDescStatus is the schema descriptor for status field.
-	topDescStatus := topFields[16].Descriptor()
+	topDescStatus := topFields[17].Descriptor()
 	// top.DefaultStatus holds the default value on creation for the status field.
 	top.DefaultStatus = topDescStatus.Default.(int)
+	// topDescEndStock is the schema descriptor for end_stock field.
+	topDescEndStock := topFields[19].Descriptor()
+	// top.DefaultEndStock holds the default value on creation for the end_stock field.
+	top.DefaultEndStock = topDescEndStock.Default.(int64)
 	// topDescIsDel is the schema descriptor for is_del field.
-	topDescIsDel := topFields[19].Descriptor()
+	topDescIsDel := topFields[21].Descriptor()
 	// top.DefaultIsDel holds the default value on creation for the is_del field.
 	top.DefaultIsDel = topDescIsDel.Default.(int)
 	// topDescID is the schema descriptor for id field.

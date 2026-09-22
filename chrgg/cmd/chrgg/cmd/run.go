@@ -60,5 +60,5 @@ func run() error {
 	mux.Use(middleware.RequestID)
 	mux.Mount("/gql", gql.Handle(db))
 
-	return http.ListenAndServe(webaddr(), nil)
+	return http.ListenAndServe(webaddr(), mux)
 }

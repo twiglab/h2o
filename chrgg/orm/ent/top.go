@@ -51,10 +51,14 @@ type Top struct {
 	Alarm int `json:"alarm,omitempty"`
 	// 报警时间
 	AlarmTime *time.Time `json:"alarm_time,omitempty"`
+	// 报警时刻表显示
+	AlarmStock int64 `json:"alarm_stock,omitempty"`
 	// 当前限额状态
 	Status int `json:"status,omitempty"`
 	// 充值时间
 	EndTime *time.Time `json:"end_time,omitempty"`
+	// 限额结束时表显数值
+	EndStock int64 `json:"end_stock,omitempty"`
 	// 备注
 	Memo string `json:"memo,omitempty"`
 	// 软删除
@@ -67,7 +71,7 @@ func (*Top) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case top.FieldTop, top.FieldStock, top.FieldIncr, top.FieldAmount, top.FieldUnitPrice, top.FieldAlarm, top.FieldStatus, top.FieldIsDel:
+		case top.FieldTop, top.FieldStock, top.FieldIncr, top.FieldAmount, top.FieldUnitPrice, top.FieldAlarm, top.FieldAlarmStock, top.FieldStatus, top.FieldEndStock, top.FieldIsDel:
 			values[i] = new(sql.NullInt64)
 		case top.FieldID, top.FieldCode, top.FieldNo, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOwner, top.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -197,6 +201,12 @@ func (_m *Top) assignValues(columns []string, values []any) error {
 				_m.AlarmTime = new(time.Time)
 				*_m.AlarmTime = value.Time
 			}
+		case top.FieldAlarmStock:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field alarm_stock", values[i])
+			} else if value.Valid {
+				_m.AlarmStock = value.Int64
+			}
 		case top.FieldStatus:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
@@ -209,6 +219,12 @@ func (_m *Top) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.EndTime = new(time.Time)
 				*_m.EndTime = value.Time
+			}
+		case top.FieldEndStock:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field end_stock", values[i])
+			} else if value.Valid {
+				_m.EndStock = value.Int64
 			}
 		case top.FieldMemo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -311,6 +327,9 @@ func (_m *Top) String() string {
 		builder.WriteString(v.Format(time.ANSIC))
 	}
 	builder.WriteString(", ")
+	builder.WriteString("alarm_stock=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AlarmStock))
+	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
@@ -318,6 +337,9 @@ func (_m *Top) String() string {
 		builder.WriteString("end_time=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("end_stock=")
+	builder.WriteString(fmt.Sprintf("%v", _m.EndStock))
 	builder.WriteString(", ")
 	builder.WriteString("memo=")
 	builder.WriteString(_m.Memo)

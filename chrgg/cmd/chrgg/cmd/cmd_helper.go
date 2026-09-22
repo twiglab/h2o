@@ -57,8 +57,9 @@ func mqttcli() mqtt.Client {
 }
 
 func webaddr() string {
-	addr := viper.GetString("chrgg.web.addr")
-	return cmp.Or(addr, ":10003")
+	addr := cmp.Or(viper.GetString("chrgg.web.addr") ,":10003")
+	log.Println("web addr:", addr)
+	return addr
 }
 
 func entcli() *ent.Client {

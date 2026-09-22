@@ -47,10 +47,14 @@ const (
 	FieldAlarm = "alarm"
 	// FieldAlarmTime holds the string denoting the alarm_time field in the database.
 	FieldAlarmTime = "alarm_time"
+	// FieldAlarmStock holds the string denoting the alarm_stock field in the database.
+	FieldAlarmStock = "alarm_stock"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldEndTime holds the string denoting the end_time field in the database.
 	FieldEndTime = "end_time"
+	// FieldEndStock holds the string denoting the end_stock field in the database.
+	FieldEndStock = "end_stock"
 	// FieldMemo holds the string denoting the memo field in the database.
 	FieldMemo = "memo"
 	// FieldIsDel holds the string denoting the is_del field in the database.
@@ -79,8 +83,10 @@ var Columns = []string{
 	FieldChargeTime,
 	FieldAlarm,
 	FieldAlarmTime,
+	FieldAlarmStock,
 	FieldStatus,
 	FieldEndTime,
+	FieldEndStock,
 	FieldMemo,
 	FieldIsDel,
 }
@@ -128,8 +134,12 @@ var (
 	DefaultChargeTime func() time.Time
 	// DefaultAlarm holds the default value on creation for the "alarm" field.
 	DefaultAlarm int
+	// DefaultAlarmStock holds the default value on creation for the "alarm_stock" field.
+	DefaultAlarmStock int64
 	// DefaultStatus holds the default value on creation for the "status" field.
 	DefaultStatus int
+	// DefaultEndStock holds the default value on creation for the "end_stock" field.
+	DefaultEndStock int64
 	// DefaultIsDel holds the default value on creation for the "is_del" field.
 	DefaultIsDel int
 	// DefaultID holds the default value on creation for the "id" field.
@@ -231,6 +241,11 @@ func ByAlarmTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAlarmTime, opts...).ToFunc()
 }
 
+// ByAlarmStock orders the results by the alarm_stock field.
+func ByAlarmStock(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAlarmStock, opts...).ToFunc()
+}
+
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
@@ -239,6 +254,11 @@ func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 // ByEndTime orders the results by the end_time field.
 func ByEndTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEndTime, opts...).ToFunc()
+}
+
+// ByEndStock orders the results by the end_stock field.
+func ByEndStock(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEndStock, opts...).ToFunc()
 }
 
 // ByMemo orders the results by the memo field.

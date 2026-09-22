@@ -32,7 +32,7 @@ func WithPath(p string) Ops {
 
 func Handle(db *orm.DBx, ops ...Ops) http.Handler {
 
-	c := &conf{path: "gql"}
+	c := &conf{path: "/gql"}
 
 	for _, o := range ops {
 		o(c)

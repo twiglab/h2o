@@ -149,6 +149,11 @@ func AlarmTime(v time.Time) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldAlarmTime, v))
 }
 
+// AlarmStock applies equality check predicate on the "alarm_stock" field. It's identical to AlarmStockEQ.
+func AlarmStock(v int64) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldAlarmStock, v))
+}
+
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
 func Status(v int) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldStatus, v))
@@ -157,6 +162,11 @@ func Status(v int) predicate.Top {
 // EndTime applies equality check predicate on the "end_time" field. It's identical to EndTimeEQ.
 func EndTime(v time.Time) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldEndTime, v))
+}
+
+// EndStock applies equality check predicate on the "end_stock" field. It's identical to EndStockEQ.
+func EndStock(v int64) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldEndStock, v))
 }
 
 // Memo applies equality check predicate on the "memo" field. It's identical to MemoEQ.
@@ -1054,6 +1064,46 @@ func AlarmTimeNotNil() predicate.Top {
 	return predicate.Top(sql.FieldNotNull(FieldAlarmTime))
 }
 
+// AlarmStockEQ applies the EQ predicate on the "alarm_stock" field.
+func AlarmStockEQ(v int64) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldAlarmStock, v))
+}
+
+// AlarmStockNEQ applies the NEQ predicate on the "alarm_stock" field.
+func AlarmStockNEQ(v int64) predicate.Top {
+	return predicate.Top(sql.FieldNEQ(FieldAlarmStock, v))
+}
+
+// AlarmStockIn applies the In predicate on the "alarm_stock" field.
+func AlarmStockIn(vs ...int64) predicate.Top {
+	return predicate.Top(sql.FieldIn(FieldAlarmStock, vs...))
+}
+
+// AlarmStockNotIn applies the NotIn predicate on the "alarm_stock" field.
+func AlarmStockNotIn(vs ...int64) predicate.Top {
+	return predicate.Top(sql.FieldNotIn(FieldAlarmStock, vs...))
+}
+
+// AlarmStockGT applies the GT predicate on the "alarm_stock" field.
+func AlarmStockGT(v int64) predicate.Top {
+	return predicate.Top(sql.FieldGT(FieldAlarmStock, v))
+}
+
+// AlarmStockGTE applies the GTE predicate on the "alarm_stock" field.
+func AlarmStockGTE(v int64) predicate.Top {
+	return predicate.Top(sql.FieldGTE(FieldAlarmStock, v))
+}
+
+// AlarmStockLT applies the LT predicate on the "alarm_stock" field.
+func AlarmStockLT(v int64) predicate.Top {
+	return predicate.Top(sql.FieldLT(FieldAlarmStock, v))
+}
+
+// AlarmStockLTE applies the LTE predicate on the "alarm_stock" field.
+func AlarmStockLTE(v int64) predicate.Top {
+	return predicate.Top(sql.FieldLTE(FieldAlarmStock, v))
+}
+
 // StatusEQ applies the EQ predicate on the "status" field.
 func StatusEQ(v int) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldStatus, v))
@@ -1142,6 +1192,46 @@ func EndTimeIsNil() predicate.Top {
 // EndTimeNotNil applies the NotNil predicate on the "end_time" field.
 func EndTimeNotNil() predicate.Top {
 	return predicate.Top(sql.FieldNotNull(FieldEndTime))
+}
+
+// EndStockEQ applies the EQ predicate on the "end_stock" field.
+func EndStockEQ(v int64) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldEndStock, v))
+}
+
+// EndStockNEQ applies the NEQ predicate on the "end_stock" field.
+func EndStockNEQ(v int64) predicate.Top {
+	return predicate.Top(sql.FieldNEQ(FieldEndStock, v))
+}
+
+// EndStockIn applies the In predicate on the "end_stock" field.
+func EndStockIn(vs ...int64) predicate.Top {
+	return predicate.Top(sql.FieldIn(FieldEndStock, vs...))
+}
+
+// EndStockNotIn applies the NotIn predicate on the "end_stock" field.
+func EndStockNotIn(vs ...int64) predicate.Top {
+	return predicate.Top(sql.FieldNotIn(FieldEndStock, vs...))
+}
+
+// EndStockGT applies the GT predicate on the "end_stock" field.
+func EndStockGT(v int64) predicate.Top {
+	return predicate.Top(sql.FieldGT(FieldEndStock, v))
+}
+
+// EndStockGTE applies the GTE predicate on the "end_stock" field.
+func EndStockGTE(v int64) predicate.Top {
+	return predicate.Top(sql.FieldGTE(FieldEndStock, v))
+}
+
+// EndStockLT applies the LT predicate on the "end_stock" field.
+func EndStockLT(v int64) predicate.Top {
+	return predicate.Top(sql.FieldLT(FieldEndStock, v))
+}
+
+// EndStockLTE applies the LTE predicate on the "end_stock" field.
+func EndStockLTE(v int64) predicate.Top {
+	return predicate.Top(sql.FieldLTE(FieldEndStock, v))
 }
 
 // MemoEQ applies the EQ predicate on the "memo" field.

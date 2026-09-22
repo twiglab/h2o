@@ -29,8 +29,10 @@ var (
 		{Name: "charge_time", Type: field.TypeTime},
 		{Name: "alarm", Type: field.TypeInt, Default: 0},
 		{Name: "alarm_time", Type: field.TypeTime, Nullable: true},
+		{Name: "alarm_stock", Type: field.TypeInt64, Default: 0},
 		{Name: "status", Type: field.TypeInt, Default: 0},
 		{Name: "end_time", Type: field.TypeTime, Nullable: true},
+		{Name: "end_stock", Type: field.TypeInt64, Default: 0},
 		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
 		{Name: "is_del", Type: field.TypeInt, Default: 0},
 	}
@@ -68,7 +70,7 @@ var (
 			{
 				Name:    "top_is_del",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[21]},
+				Columns: []*schema.Column{DeviceTopColumns[23]},
 			},
 		},
 	}

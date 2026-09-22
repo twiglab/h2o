@@ -30,42 +30,46 @@ const (
 // TopMutation represents an operation that mutates the Top nodes in the graph.
 type TopMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *string
-	create_time   *time.Time
-	update_time   *time.Time
-	code          *string
-	no            *string
-	device_code   *string
-	device_type   *string
-	pos_code      *string
-	project       *string
-	owner         *string
-	top           *int64
-	addtop        *int64
-	stock         *int64
-	addstock      *int64
-	incr          *int64
-	addincr       *int64
-	amount        *int64
-	addamount     *int64
-	unit_price    *int64
-	addunit_price *int64
-	charge_time   *time.Time
-	alarm         *int
-	addalarm      *int
-	alarm_time    *time.Time
-	status        *int
-	addstatus     *int
-	end_time      *time.Time
-	memo          *string
-	is_del        *int
-	addis_del     *int
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Top, error)
-	predicates    []predicate.Top
+	op             Op
+	typ            string
+	id             *string
+	create_time    *time.Time
+	update_time    *time.Time
+	code           *string
+	no             *string
+	device_code    *string
+	device_type    *string
+	pos_code       *string
+	project        *string
+	owner          *string
+	top            *int64
+	addtop         *int64
+	stock          *int64
+	addstock       *int64
+	incr           *int64
+	addincr        *int64
+	amount         *int64
+	addamount      *int64
+	unit_price     *int64
+	addunit_price  *int64
+	charge_time    *time.Time
+	alarm          *int
+	addalarm       *int
+	alarm_time     *time.Time
+	alarm_stock    *int64
+	addalarm_stock *int64
+	status         *int
+	addstatus      *int
+	end_time       *time.Time
+	end_stock      *int64
+	addend_stock   *int64
+	memo           *string
+	is_del         *int
+	addis_del      *int
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*Top, error)
+	predicates     []predicate.Top
 }
 
 var _ ent.Mutation = (*TopMutation)(nil)
@@ -943,6 +947,62 @@ func (m *TopMutation) ResetAlarmTime() {
 	delete(m.clearedFields, top.FieldAlarmTime)
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (m *TopMutation) SetAlarmStock(i int64) {
+	m.alarm_stock = &i
+	m.addalarm_stock = nil
+}
+
+// AlarmStock returns the value of the "alarm_stock" field in the mutation.
+func (m *TopMutation) AlarmStock() (r int64, exists bool) {
+	v := m.alarm_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAlarmStock returns the old "alarm_stock" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TopMutation) OldAlarmStock(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAlarmStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAlarmStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAlarmStock: %w", err)
+	}
+	return oldValue.AlarmStock, nil
+}
+
+// AddAlarmStock adds i to the "alarm_stock" field.
+func (m *TopMutation) AddAlarmStock(i int64) {
+	if m.addalarm_stock != nil {
+		*m.addalarm_stock += i
+	} else {
+		m.addalarm_stock = &i
+	}
+}
+
+// AddedAlarmStock returns the value that was added to the "alarm_stock" field in this mutation.
+func (m *TopMutation) AddedAlarmStock() (r int64, exists bool) {
+	v := m.addalarm_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAlarmStock resets all changes to the "alarm_stock" field.
+func (m *TopMutation) ResetAlarmStock() {
+	m.alarm_stock = nil
+	m.addalarm_stock = nil
+}
+
 // SetStatus sets the "status" field.
 func (m *TopMutation) SetStatus(i int) {
 	m.status = &i
@@ -1046,6 +1106,62 @@ func (m *TopMutation) EndTimeCleared() bool {
 func (m *TopMutation) ResetEndTime() {
 	m.end_time = nil
 	delete(m.clearedFields, top.FieldEndTime)
+}
+
+// SetEndStock sets the "end_stock" field.
+func (m *TopMutation) SetEndStock(i int64) {
+	m.end_stock = &i
+	m.addend_stock = nil
+}
+
+// EndStock returns the value of the "end_stock" field in the mutation.
+func (m *TopMutation) EndStock() (r int64, exists bool) {
+	v := m.end_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEndStock returns the old "end_stock" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TopMutation) OldEndStock(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEndStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEndStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEndStock: %w", err)
+	}
+	return oldValue.EndStock, nil
+}
+
+// AddEndStock adds i to the "end_stock" field.
+func (m *TopMutation) AddEndStock(i int64) {
+	if m.addend_stock != nil {
+		*m.addend_stock += i
+	} else {
+		m.addend_stock = &i
+	}
+}
+
+// AddedEndStock returns the value that was added to the "end_stock" field in this mutation.
+func (m *TopMutation) AddedEndStock() (r int64, exists bool) {
+	v := m.addend_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetEndStock resets all changes to the "end_stock" field.
+func (m *TopMutation) ResetEndStock() {
+	m.end_stock = nil
+	m.addend_stock = nil
 }
 
 // SetMemo sets the "memo" field.
@@ -1187,7 +1303,7 @@ func (m *TopMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TopMutation) Fields() []string {
-	fields := make([]string, 0, 21)
+	fields := make([]string, 0, 23)
 	if m.create_time != nil {
 		fields = append(fields, top.FieldCreateTime)
 	}
@@ -1239,11 +1355,17 @@ func (m *TopMutation) Fields() []string {
 	if m.alarm_time != nil {
 		fields = append(fields, top.FieldAlarmTime)
 	}
+	if m.alarm_stock != nil {
+		fields = append(fields, top.FieldAlarmStock)
+	}
 	if m.status != nil {
 		fields = append(fields, top.FieldStatus)
 	}
 	if m.end_time != nil {
 		fields = append(fields, top.FieldEndTime)
+	}
+	if m.end_stock != nil {
+		fields = append(fields, top.FieldEndStock)
 	}
 	if m.memo != nil {
 		fields = append(fields, top.FieldMemo)
@@ -1293,10 +1415,14 @@ func (m *TopMutation) Field(name string) (ent.Value, bool) {
 		return m.Alarm()
 	case top.FieldAlarmTime:
 		return m.AlarmTime()
+	case top.FieldAlarmStock:
+		return m.AlarmStock()
 	case top.FieldStatus:
 		return m.Status()
 	case top.FieldEndTime:
 		return m.EndTime()
+	case top.FieldEndStock:
+		return m.EndStock()
 	case top.FieldMemo:
 		return m.Memo()
 	case top.FieldIsDel:
@@ -1344,10 +1470,14 @@ func (m *TopMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldAlarm(ctx)
 	case top.FieldAlarmTime:
 		return m.OldAlarmTime(ctx)
+	case top.FieldAlarmStock:
+		return m.OldAlarmStock(ctx)
 	case top.FieldStatus:
 		return m.OldStatus(ctx)
 	case top.FieldEndTime:
 		return m.OldEndTime(ctx)
+	case top.FieldEndStock:
+		return m.OldEndStock(ctx)
 	case top.FieldMemo:
 		return m.OldMemo(ctx)
 	case top.FieldIsDel:
@@ -1480,6 +1610,13 @@ func (m *TopMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetAlarmTime(v)
 		return nil
+	case top.FieldAlarmStock:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAlarmStock(v)
+		return nil
 	case top.FieldStatus:
 		v, ok := value.(int)
 		if !ok {
@@ -1493,6 +1630,13 @@ func (m *TopMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetEndTime(v)
+		return nil
+	case top.FieldEndStock:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEndStock(v)
 		return nil
 	case top.FieldMemo:
 		v, ok := value.(string)
@@ -1534,8 +1678,14 @@ func (m *TopMutation) AddedFields() []string {
 	if m.addalarm != nil {
 		fields = append(fields, top.FieldAlarm)
 	}
+	if m.addalarm_stock != nil {
+		fields = append(fields, top.FieldAlarmStock)
+	}
 	if m.addstatus != nil {
 		fields = append(fields, top.FieldStatus)
+	}
+	if m.addend_stock != nil {
+		fields = append(fields, top.FieldEndStock)
 	}
 	if m.addis_del != nil {
 		fields = append(fields, top.FieldIsDel)
@@ -1560,8 +1710,12 @@ func (m *TopMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedUnitPrice()
 	case top.FieldAlarm:
 		return m.AddedAlarm()
+	case top.FieldAlarmStock:
+		return m.AddedAlarmStock()
 	case top.FieldStatus:
 		return m.AddedStatus()
+	case top.FieldEndStock:
+		return m.AddedEndStock()
 	case top.FieldIsDel:
 		return m.AddedIsDel()
 	}
@@ -1615,12 +1769,26 @@ func (m *TopMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddAlarm(v)
 		return nil
+	case top.FieldAlarmStock:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAlarmStock(v)
+		return nil
 	case top.FieldStatus:
 		v, ok := value.(int)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddStatus(v)
+		return nil
+	case top.FieldEndStock:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEndStock(v)
 		return nil
 	case top.FieldIsDel:
 		v, ok := value.(int)
@@ -1740,11 +1908,17 @@ func (m *TopMutation) ResetField(name string) error {
 	case top.FieldAlarmTime:
 		m.ResetAlarmTime()
 		return nil
+	case top.FieldAlarmStock:
+		m.ResetAlarmStock()
+		return nil
 	case top.FieldStatus:
 		m.ResetStatus()
 		return nil
 	case top.FieldEndTime:
 		m.ResetEndTime()
+		return nil
+	case top.FieldEndStock:
+		m.ResetEndStock()
 		return nil
 	case top.FieldMemo:
 		m.ResetMemo()

@@ -73,16 +73,25 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) error {
 	//  合闸状态, 连通
 	if cmp.Less(vc.Top, md.Data.DataValue) {
+		// 超额, 拉闸断开
 		if vc.Status == STATUS_BEGIN {
-			// 超额, 拉闸断开
-
+			// 限额记录正常，执行拉闸操作
 			_ = vc.Update().
 				SetStatus(STATUS_END).
-				SetEndTime(time.Now()).
-				Exec(ctx) // 计费结束
+				SetEndTime(time.Now()).         // 计费结束时间
+				SetEndStock(md.Data.DataValue). // 计费结束的表显
+				Exec(ctx)                       // 计费结束
 
+			// 断开
 			ot := newOnOffMessage(md, vc, common.OFF)
 			return s.Sender.SendData(ctx, ot)
+		} else {
+			// 非正常状态，疑似数据有非法修改
+			s.Logger.WarnContext(ctx, "illegal status",
+				slog.Int64("top", vc.Top),
+				slog.Int64("dataValue", md.Data.DataValue),
+				slog.Int("status", vc.Status),
+				slog.Any("meter", md), slog.Any("topRec", vc))
 		}
 	}
 
@@ -92,6 +101,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 				// 拉闸报警一次
 				_ = vc.Update().
 					SetAlarm(1).
+					SetAlarmStock(md.Data.DataValue).
 					SetAlarmTime(time.Now()).
 					Exec(ctx) // 设置报警状态
 

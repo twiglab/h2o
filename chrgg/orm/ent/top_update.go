@@ -75,6 +75,27 @@ func (_u *TopUpdate) ClearAlarmTime() *TopUpdate {
 	return _u
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (_u *TopUpdate) SetAlarmStock(v int64) *TopUpdate {
+	_u.mutation.ResetAlarmStock()
+	_u.mutation.SetAlarmStock(v)
+	return _u
+}
+
+// SetNillableAlarmStock sets the "alarm_stock" field if the given value is not nil.
+func (_u *TopUpdate) SetNillableAlarmStock(v *int64) *TopUpdate {
+	if v != nil {
+		_u.SetAlarmStock(*v)
+	}
+	return _u
+}
+
+// AddAlarmStock adds value to the "alarm_stock" field.
+func (_u *TopUpdate) AddAlarmStock(v int64) *TopUpdate {
+	_u.mutation.AddAlarmStock(v)
+	return _u
+}
+
 // SetStatus sets the "status" field.
 func (_u *TopUpdate) SetStatus(v int) *TopUpdate {
 	_u.mutation.ResetStatus()
@@ -113,6 +134,27 @@ func (_u *TopUpdate) SetNillableEndTime(v *time.Time) *TopUpdate {
 // ClearEndTime clears the value of the "end_time" field.
 func (_u *TopUpdate) ClearEndTime() *TopUpdate {
 	_u.mutation.ClearEndTime()
+	return _u
+}
+
+// SetEndStock sets the "end_stock" field.
+func (_u *TopUpdate) SetEndStock(v int64) *TopUpdate {
+	_u.mutation.ResetEndStock()
+	_u.mutation.SetEndStock(v)
+	return _u
+}
+
+// SetNillableEndStock sets the "end_stock" field if the given value is not nil.
+func (_u *TopUpdate) SetNillableEndStock(v *int64) *TopUpdate {
+	if v != nil {
+		_u.SetEndStock(*v)
+	}
+	return _u
+}
+
+// AddEndStock adds value to the "end_stock" field.
+func (_u *TopUpdate) AddEndStock(v int64) *TopUpdate {
+	_u.mutation.AddEndStock(v)
 	return _u
 }
 
@@ -228,6 +270,12 @@ func (_u *TopUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.AlarmTimeCleared() {
 		_spec.ClearField(top.FieldAlarmTime, field.TypeTime)
 	}
+	if value, ok := _u.mutation.AlarmStock(); ok {
+		_spec.SetField(top.FieldAlarmStock, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedAlarmStock(); ok {
+		_spec.AddField(top.FieldAlarmStock, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(top.FieldStatus, field.TypeInt, value)
 	}
@@ -239,6 +287,12 @@ func (_u *TopUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.EndTimeCleared() {
 		_spec.ClearField(top.FieldEndTime, field.TypeTime)
+	}
+	if value, ok := _u.mutation.EndStock(); ok {
+		_spec.SetField(top.FieldEndStock, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedEndStock(); ok {
+		_spec.AddField(top.FieldEndStock, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Memo(); ok {
 		_spec.SetField(top.FieldMemo, field.TypeString, value)
@@ -319,6 +373,27 @@ func (_u *TopUpdateOne) ClearAlarmTime() *TopUpdateOne {
 	return _u
 }
 
+// SetAlarmStock sets the "alarm_stock" field.
+func (_u *TopUpdateOne) SetAlarmStock(v int64) *TopUpdateOne {
+	_u.mutation.ResetAlarmStock()
+	_u.mutation.SetAlarmStock(v)
+	return _u
+}
+
+// SetNillableAlarmStock sets the "alarm_stock" field if the given value is not nil.
+func (_u *TopUpdateOne) SetNillableAlarmStock(v *int64) *TopUpdateOne {
+	if v != nil {
+		_u.SetAlarmStock(*v)
+	}
+	return _u
+}
+
+// AddAlarmStock adds value to the "alarm_stock" field.
+func (_u *TopUpdateOne) AddAlarmStock(v int64) *TopUpdateOne {
+	_u.mutation.AddAlarmStock(v)
+	return _u
+}
+
 // SetStatus sets the "status" field.
 func (_u *TopUpdateOne) SetStatus(v int) *TopUpdateOne {
 	_u.mutation.ResetStatus()
@@ -357,6 +432,27 @@ func (_u *TopUpdateOne) SetNillableEndTime(v *time.Time) *TopUpdateOne {
 // ClearEndTime clears the value of the "end_time" field.
 func (_u *TopUpdateOne) ClearEndTime() *TopUpdateOne {
 	_u.mutation.ClearEndTime()
+	return _u
+}
+
+// SetEndStock sets the "end_stock" field.
+func (_u *TopUpdateOne) SetEndStock(v int64) *TopUpdateOne {
+	_u.mutation.ResetEndStock()
+	_u.mutation.SetEndStock(v)
+	return _u
+}
+
+// SetNillableEndStock sets the "end_stock" field if the given value is not nil.
+func (_u *TopUpdateOne) SetNillableEndStock(v *int64) *TopUpdateOne {
+	if v != nil {
+		_u.SetEndStock(*v)
+	}
+	return _u
+}
+
+// AddEndStock adds value to the "end_stock" field.
+func (_u *TopUpdateOne) AddEndStock(v int64) *TopUpdateOne {
+	_u.mutation.AddEndStock(v)
 	return _u
 }
 
@@ -502,6 +598,12 @@ func (_u *TopUpdateOne) sqlSave(ctx context.Context) (_node *Top, err error) {
 	if _u.mutation.AlarmTimeCleared() {
 		_spec.ClearField(top.FieldAlarmTime, field.TypeTime)
 	}
+	if value, ok := _u.mutation.AlarmStock(); ok {
+		_spec.SetField(top.FieldAlarmStock, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedAlarmStock(); ok {
+		_spec.AddField(top.FieldAlarmStock, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(top.FieldStatus, field.TypeInt, value)
 	}
@@ -513,6 +615,12 @@ func (_u *TopUpdateOne) sqlSave(ctx context.Context) (_node *Top, err error) {
 	}
 	if _u.mutation.EndTimeCleared() {
 		_spec.ClearField(top.FieldEndTime, field.TypeTime)
+	}
+	if value, ok := _u.mutation.EndStock(); ok {
+		_spec.SetField(top.FieldEndStock, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedEndStock(); ok {
+		_spec.AddField(top.FieldEndStock, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.Memo(); ok {
 		_spec.SetField(top.FieldMemo, field.TypeString, value)
