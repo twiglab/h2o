@@ -16,14 +16,14 @@ type DTZY struct {
 }
 
 func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	optStatus, err := cli.ReadRegister(0x22, modbus.INPUT_REGISTER)
+	dataVal, err := cli.ReadUint32(0x60, modbus.INPUT_REGISTER)
 	if err != nil {
 		return err
 	}
 
 	time.Sleep(300 * time.Millisecond)
 
-	dataVal, err := cli.ReadUint32(0x60, modbus.INPUT_REGISTER)
+	optStatus, err := cli.ReadRegister(0x22, modbus.INPUT_REGISTER)
 	if err != nil {
 		return err
 	}

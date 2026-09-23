@@ -41,10 +41,11 @@ func run() error {
 
 	logger := serverLog()
 
-	db := db()
+	g := global()
+
+	db := db(g)
 	defer db.Close()
 
-	g := global()
 	mcli := mqttcli()
 	act := sender(mcli)
 	cliMgr := clientMgr(db)

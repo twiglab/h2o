@@ -78,9 +78,14 @@ func webaddr() string {
 	return cmp.Or(addr, ":10008")
 }
 
-func db() *orm.IDB {
+func dbfile(g nab.Global) (df, cf string) {
 	dev := viper.GetString("nab.idb.dev")
 	cli := viper.GetString("nab.idb.cli")
+	return cmp.Or(dev, g.Box+"_dev.csv"), cmp.Or(cli, g.Box+"_cli.csv")
+}
+
+func db(g nab.Global) *orm.IDB {
+	dev, cli := dbfile(g)
 
 	db, err := orm.NewIDB(dev, cli)
 	if err != nil {

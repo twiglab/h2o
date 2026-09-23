@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/avast/retry-go/v5"
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/pkg/common"
@@ -11,12 +12,25 @@ import (
 
 const KH_LXS_40_MI = "KH-LXS-40-MI"
 
+func optStatus(op uint16) int64 {
+	if op == 0x00 {
+		return common.OPT_STATUS_OFF
+	}
+	return common.OPT_STATUS_ON
+}
+
 type LXS struct {
 }
 
 func (e LXS) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-
 	dataVal, err := cli.ReadUint32(0x00, modbus.INPUT_REGISTER)
+	if err != nil {
+		return err
+	}
+
+	time.Sleep(300 * time.Millisecond)
+
+	op, err := cli.ReadRegister(0x02, modbus.INPUT_REGISTER)
 	if err != nil {
 		return err
 	}
@@ -25,7 +39,7 @@ func (e LXS) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.Dev
 
 	var meter nab.Meter
 	meter.Data.DataValue = int64(dataVal)
-	meter.Data.OptStatus = common.OPT_STATUS_ON
+	meter.Data.OptStatus = optStatus(op)
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
@@ -43,9 +57,19 @@ func (e LXS) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.Dev
 }
 
 func (e LXS) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	return nil
+	err := retry.New(retry.Attempts(3)).Do(
+		func() error {
+			return cli.WriteRegister(0x02, 0xFF)
+		},
+	)
+	return err
 }
 
 func (e LXS) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	return nil
+	err := retry.New(retry.Attempts(3)).Do(
+		func() error {
+			return cli.WriteRegister(0x02, 0x00)
+		},
+	)
+	return err
 }

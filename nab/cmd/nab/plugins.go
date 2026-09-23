@@ -1,6 +1,5 @@
 package main
 
-/*
 import (
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/equlib/fake"
@@ -13,4 +12,3 @@ func init() {
 	equlib.Register("fake-device", fake.New(false))
 	equlib.Register("fake-device-w", fake.New(true))
 }
-*/
