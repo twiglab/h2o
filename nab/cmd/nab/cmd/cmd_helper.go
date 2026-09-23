@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"path"
 	"slices"
 	"time"
 
@@ -79,9 +80,10 @@ func webaddr() string {
 }
 
 func dbfile(g nab.Global) (df, cf string) {
-	dev := viper.GetString("nab.idb.dev")
-	cli := viper.GetString("nab.idb.cli")
-	return cmp.Or(dev, g.Box+"_dev.csv"), cmp.Or(cli, g.Box+"_cli.csv")
+	p := cmp.Or(viper.GetString("nab.idb.dir"), "idb")
+	dev := cmp.Or(viper.GetString("nab.idb.dev"), g.Box+"_dev.csv")
+	cli := cmp.Or(viper.GetString("nab.idb.cli"), g.Box+"_cli.csv")
+	return path.Join(p, dev), path.Join(p, cli)
 }
 
 func db(g nab.Global) *orm.IDB {
