@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"errors"
+	"time"
 
 	"encoding/json/v2"
 
@@ -68,9 +69,9 @@ func topicPart(t string) (string, string, string) {
 }
 
 type OnOffLite struct {
-	BoxCode string
-	Code    string
-	Op      string
+	Box  string
+	Code string
+	Op   string
 }
 
 func (m OnOffLite) MarshalBinary() (data []byte, err error) {
@@ -78,5 +79,23 @@ func (m OnOffLite) MarshalBinary() (data []byte, err error) {
 }
 
 func (o OnOffLite) Topic() string {
-	return common.H2O + "/onoff/" + o.BoxCode + "/" + o.Code + "/" + o.Op
+	return common.H2O + "/onoff/" + o.Box + "/" + o.Code + "/" + o.Op
+}
+
+type OptChange struct {
+	Box       string
+	Code      string
+	Type      string
+	DataCode  string
+	Op        string
+	OptStatus int64
+	DataTime  time.Time
+}
+
+func (m OptChange) MarshalBinary() (data []byte, err error) {
+	return json.Marshal(m)
+}
+
+func (o OptChange) Topic() string {
+	return common.H2O + "/opt/" + o.Box + "/" + o.Code + "/" + o.Op
 }

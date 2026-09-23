@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"context"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/nab/equlib"
@@ -46,17 +47,20 @@ func (a Agent) On(ctx context.Context, code string) error {
 			IDB:    a.IDB,
 			Logger: a.Logger},
 	)
-
 	if err != nil {
-		a.Logger.Error("onoff error", slog.String("code", dev.Code),
-			slog.String("op", common.ON),
-			slog.Any("record", dev),
-			slog.Any("error", err),
-		)
 		return err
 	}
-	return nil
 
+	oc := OptChange{
+		Box:       a.Global.Box,
+		Code:      dev.Code,
+		Type:      dev.Typ,
+		DataCode:  common.NewDataCode(),
+		Op:        common.OFF,
+		OptStatus: common.OPT_STATUS_OFF,
+		DataTime:  time.Now(),
+	}
+	return a.Sender.SendData(ctx, oc)
 }
 
 func (a Agent) Off(ctx context.Context, code string) error {
@@ -73,16 +77,19 @@ func (a Agent) Off(ctx context.Context, code string) error {
 			IDB:    a.IDB,
 			Logger: a.Logger},
 	)
-
 	if err != nil {
-		a.Logger.Error("onoff error", slog.String("code", dev.Code),
-			slog.String("op", common.OFF),
-			slog.Any("record", dev),
-			slog.Any("error", err),
-		)
 		return err
 	}
-	return nil
+	oc := OptChange{
+		Box:       a.Global.Box,
+		Code:      dev.Code,
+		Type:      dev.Typ,
+		DataCode:  common.NewDataCode(),
+		Op:        common.OFF,
+		OptStatus: common.OPT_STATUS_OFF,
+		DataTime:  time.Now(),
+	}
+	return a.Sender.SendData(ctx, oc)
 }
 
 func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
