@@ -44,8 +44,10 @@ func init() {
 }
 
 func showDev() error {
-	cli := db()
-	defer cli.Close()
+	g := global()
+
+	db := db(g)
+	defer db.Close()
 
 	ctx := context.Background()
 
@@ -61,7 +63,7 @@ func showDev() error {
 		}),
 	)
 
-	rs, err := cli.AllDev(ctx)
+	rs, err := db.AllDev(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

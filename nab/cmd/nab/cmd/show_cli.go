@@ -44,8 +44,10 @@ func init() {
 }
 
 func showCli() error {
-	cli := db()
-	defer cli.Close()
+	g := global()
+
+	db := db(g)
+	defer db.Close()
 
 	ctx := context.Background()
 
@@ -61,7 +63,7 @@ func showCli() error {
 		}),
 	)
 
-	rs, err := cli.AllCli(ctx)
+	rs, err := db.AllCli(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
