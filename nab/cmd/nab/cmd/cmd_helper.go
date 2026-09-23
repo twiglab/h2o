@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"math/rand/v2"
 	"path"
 	"slices"
 	"time"
@@ -116,6 +117,9 @@ func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
 	if err != nil {
 		log.Fatal(err)
 	}
+	rand.Shuffle(len(devs), func(i, j int) {
+		devs[i], devs[j] = devs[j], devs[i]
+	})
 
 	for s := range slices.Chunk(devs, chunk) {
 		lps.AddToNewLoop(delay, f(s))
