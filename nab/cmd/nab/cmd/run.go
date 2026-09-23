@@ -50,6 +50,8 @@ func run() error {
 	act := sender(mcli)
 	cliMgr := clientMgr(db)
 
+	interval := taskInterval()
+
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{
 			Global:    g,
@@ -58,7 +60,7 @@ func run() error {
 			IDB:       db,
 			ClientMgr: cliMgr,
 			Logger:    logger,
-			Delay:     1 * time.Second,
+			Delay:     interval,
 		}
 	})
 

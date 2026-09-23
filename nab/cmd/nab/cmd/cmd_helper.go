@@ -97,7 +97,15 @@ func db(g nab.Global) *orm.IDB {
 	return db
 }
 
+func taskInterval() time.Duration {
+	i := cmp.Or(viper.GetDuration("nab.loop.task.interval"), 1000)
+	return i * time.Millisecond
+}
+
 func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
+	chunk := cmp.Or(viper.GetInt("nab.loops.chunk"), 10)
+	delay := cmp.Or(viper.GetDuration("nab.loops.delay"), 1000)
+
 	lps := nab.NewLoops()
 
 	devs, err := db.AllDev(context.Background())
@@ -105,8 +113,8 @@ func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
 		log.Fatal(err)
 	}
 
-	for s := range slices.Chunk(devs, 10) {
-		lps.AddToNewLoop(1*time.Second, f(s))
+	for s := range slices.Chunk(devs, chunk) {
+		lps.AddToNewLoop(delay*time.Millisecond, f(s))
 	}
 
 	return lps
