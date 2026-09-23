@@ -30,7 +30,7 @@ func mqttcli() mqtt.Client {
 
 func webaddr() string {
 	addr := viper.GetString("vigil.web.addr")
-	return cmp.Or(addr, ":10003")
+	return cmp.Or(addr, ":10007")
 }
 
 func entcli() *ent.Client {
