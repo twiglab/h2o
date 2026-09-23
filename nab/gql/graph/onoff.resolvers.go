@@ -30,9 +30,9 @@ func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input mod
 // DeviceOnOff is the resolver for the deviceOnOff field.
 func (r *mutationResolver) DeviceOnOff(ctx context.Context, input model.DeviceOnOffInput) (*model.OnOff, error) {
 	o := nab.OnOffLite{
-		BoxCode: r.Agent.Global.Box,
-		Code:    input.Code,
-		Op:      input.Op,
+		Box:  r.Agent.Global.Box,
+		Code: input.Code,
+		Op:   input.Op,
 	}
 
 	err := r.Agent.Sender.SendData(ctx, o)
