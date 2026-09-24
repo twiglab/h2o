@@ -112,26 +112,29 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		}
 	}
 
-	if s.Alarm != 0 {
-		if (vc.Top - md.Data.DataValue) < s.Alarm {
-			if !isAlarm(vc) { // 没拉闸报警过
-				// 拉闸报警一次
-				s.WAL.WriteLogContext(ctx,
-					wal.String("top.code", vc.Code),
-					wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
-					wal.String("code", md.Code), wal.String("type", md.Type),
-					wal.String("onoffType", "alarm"), // 超出限额，正常拉闸操作
-					wal.String("msg", "报警拉闸"),
-				)
-				_ = vc.Update().
-					SetAlarm(1).
-					SetAlarmStock(md.Data.DataValue).
-					SetAlarmTime(time.Now()).
-					Exec(ctx) // 设置报警状态
+	// 以下是报警逻辑， 如果alarm 为 0 不报警
+	if s.Alarm == 0 {
+		return nil
+	}
 
-				ot := newOnOffMessage(md, vc, common.OFF)
-				return s.Sender.SendData(ctx, ot)
-			}
+	if (vc.Top - md.Data.DataValue) < s.Alarm {
+		if !isAlarm(vc) { // 没拉闸报警过
+			// 拉闸报警一次
+			s.WAL.WriteLogContext(ctx,
+				wal.String("top.code", vc.Code),
+				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
+				wal.String("code", md.Code), wal.String("type", md.Type),
+				wal.String("onoffType", "alarm"), // 超出限额，正常拉闸操作
+				wal.String("msg", "报警拉闸"),
+			)
+			_ = vc.Update().
+				SetAlarm(1).
+				SetAlarmStock(md.Data.DataValue).
+				SetAlarmTime(time.Now()).
+				Exec(ctx) // 设置报警状态
+
+			ot := newOnOffMessage(md, vc, common.OFF)
+			return s.Sender.SendData(ctx, ot)
 		}
 	}
 
