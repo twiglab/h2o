@@ -15,7 +15,7 @@ import (
 
 const no_alarm = 0
 
-func isAlarm3(vc *ent.Top) bool {
+func isAlarm(vc *ent.Top) bool {
 	return vc.Alarm != no_alarm
 }
 
@@ -65,6 +65,7 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
 		s.WAL.WriteLogContext(ctx,
+			wal.String("top.code", vc.Code),
 			wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
 			wal.String("code", md.Code), wal.String("type", md.Type),
 			wal.String("onoffType", "on"), // 超出限额，正常合闸操作
@@ -84,6 +85,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		if vc.Status == STATUS_BEGIN {
 			// 限额记录正常，执行拉闸操作
 			s.WAL.WriteLogContext(ctx,
+				wal.String("top.code", vc.Code),
 				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
 				wal.String("code", md.Code), wal.String("type", md.Type),
 				wal.String("onoffType", "off"), // 超出限额，正常拉闸操作
@@ -102,6 +104,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		} else {
 			// 非正常状态，疑似数据有非法修改
 			s.Logger.WarnContext(ctx, "illegal status",
+				slog.String("top.code", vc.Code),
 				slog.Int64("top", vc.Top),
 				slog.Int64("dataValue", md.Data.DataValue),
 				slog.Int("status", vc.Status),
@@ -111,9 +114,10 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 
 	if s.Alarm != 0 {
 		if (vc.Top - md.Data.DataValue) < s.Alarm {
-			if !isAlarm3(vc) { // 没拉闸报警过
+			if !isAlarm(vc) { // 没拉闸报警过
 				// 拉闸报警一次
 				s.WAL.WriteLogContext(ctx,
+					wal.String("top.code", vc.Code),
 					wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
 					wal.String("code", md.Code), wal.String("type", md.Type),
 					wal.String("onoffType", "alarm"), // 超出限额，正常拉闸操作
