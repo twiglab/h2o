@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
-	"math/rand/v2"
 	"path"
-	"slices"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -105,10 +103,8 @@ func taskInterval() time.Duration {
 }
 
 func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
-	chunk := cmp.Or(viper.GetInt("nab.loops.chunk"), 10)
 	delay := cmp.Or(viper.GetDuration("nab.loops.delay"), 1000) * time.Millisecond
 
-	log.Println("nab.loops.chunk:", chunk)
 	log.Println("nab.loops.delay:", delay)
 
 	lps := nab.NewLoops()
@@ -117,11 +113,10 @@ func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
 	if err != nil {
 		log.Fatal(err)
 	}
-	rand.Shuffle(len(devs), func(i, j int) {
-		devs[i], devs[j] = devs[j], devs[i]
-	})
 
-	for s := range slices.Chunk(devs, chunk) {
+	a := nab.SplitByCli(devs)
+
+	for _, s := range a {
 		lps.AddToNewLoop(delay, f(s))
 	}
 

@@ -1,8 +1,30 @@
 package nab
 
 import (
+	"cmp"
+	"slices"
 	"time"
+
+	"github.com/twiglab/h2o/nab/orm/ent"
 )
+
+func SplitByCli(list []*ent.Dev) [][]*ent.Dev {
+	slices.SortFunc(list, func(a, b *ent.Dev) int { return cmp.Compare(a.Cli, b.Cli) })
+	returnData := make([][]*ent.Dev, 0)
+	i := 0
+	var j int
+	for {
+		if i >= len(list) {
+			break
+		}
+		for j = i + 1; j < len(list) && list[i].Cli == list[j].Cli; j++ {
+		}
+
+		returnData = append(returnData, list[i:j])
+		i = j
+	}
+	return returnData
+}
 
 type Loops struct {
 	jobs []Job
