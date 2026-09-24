@@ -93,3 +93,19 @@ func (o OnOffMessage) Topic() string {
 func (d OnOffMessage) MarshalBinary() ([]byte, error) {
 	return json.Marshal(d)
 }
+
+type ChrggMessage struct {
+	common.Device
+	Pos     common.Pos        `json:"pos,omitzero"`
+	Data    common.MeterValue `json:"data,omitzero"`
+	Gateway common.Modbus     `json:"gateway,omitzero"`
+	Top     Top               `json:"top,omitzero"`
+}
+
+func (o ChrggMessage) Topic() string {
+	return common.H2O + "/chrgg/" + o.Code + "/" + o.Type
+}
+
+func (d ChrggMessage) MarshalBinary() ([]byte, error) {
+	return json.Marshal(d)
+}

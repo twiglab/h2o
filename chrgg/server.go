@@ -144,7 +144,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return nil
 	}
 
-	c, notfount, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
+	vc, notfount, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
 	if notfount {
 		// 没找到限额，无法计费，默认不计费
 		s.Logger.DebugContext(ctx, "record not found", slog.Any("meter", md))
@@ -159,18 +159,48 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 
 	// 当前限额的业务状态
 	// 这里有个问题要注意，找个状态是记录在当前限额记录上的，记录必须有效
-	if c.Status < STATUS_BEGIN {
-		s.Logger.DebugContext(ctx, "人为指定 status < 0 强制不计费", slog.Any("meter", md), slog.Int("status", c.Status))
+	// 这里是最后一次人为阻止
+	if vc.Status < STATUS_BEGIN {
+		s.Logger.DebugContext(ctx, "人为指定 status < 0 强制不计费", slog.Any("meter", md), slog.Int("status", vc.Status))
 		return nil
 	}
 
+	if vc.Status == STATUS_BEGIN {
+		// 正常状态下，计费没有结束，发送chrgg消息
+		m := ChrggMessage{
+			Device:  md.Device,
+			Pos:     md.Pos,
+			Data:    md.Data,
+			Gateway: md.Gateway,
+			Top: Top{
+				Code:       vc.Code,
+				Top:        vc.Top,
+				Current:    md.Data.DataValue,
+				Stock:      vc.Stock,
+				Incr:       vc.Incr,
+				Amount:     vc.Amount,
+				UnitPrice:  vc.UnitPrice,
+				ChargeTime: vc.ChargeTime,
+
+				Alarm:     vc.Alarm,
+				AlarmTime: vc.AlarmTime,
+
+				Status:  vc.Status,
+				EndTime: vc.EndTime,
+			},
+		}
+		s.Sender.SendData(ctx, m)
+	}
+
+	// 注意： 即便状态为 STATUS_END 也是要继续执行的
+	// 是否开关，完全由限额决定
 	switch md.Data.OptStatus {
 	case common.OPT_STATUS_OFF:
 		//  拉闸(关闭)状态
-		return s.doStatusOff(ctx, md, c)
+		return s.doStatusOff(ctx, md, vc)
 	case common.OPT_STATUS_ON:
 		//  合闸(打开)状态
-		return s.doStatusOn(ctx, md, c)
+		return s.doStatusOn(ctx, md, vc)
 	}
 
 	// 程序不应该运行到这里
