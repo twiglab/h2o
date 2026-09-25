@@ -57,8 +57,9 @@ type Top struct {
 type OnOffMessage struct {
 	common.Device
 	Gateway common.Modbus `json:"gateway,omitzero"`
-	Op      string        `json:"op"`
 	Top     Top           `json:"top,omitzero"`
+
+	Op string `json:"op"`
 }
 
 func newOnOffMessage(md Meter, vc *ent.Top, op string) OnOffMessage {

@@ -83,13 +83,13 @@ func (o OnOffLite) Topic() string {
 }
 
 type OptChange struct {
-	Box       string
-	Code      string
-	Type      string
-	DataCode  string
-	Op        string
-	OptStatus int64
-	DataTime  time.Time
+	Box       string    `json:"box,omitempty"`
+	Code      string    `json:"code,omitempty"`
+	Type      string    `json:"type,omitempty"`
+	DataCode  string    `json:"data_code,omitempty"`
+	Op        string    `json:"op,omitempty"`
+	OptStatus int64     `json:"opt_status,omitempty"`
+	DataTime  time.Time `json:"data_time,omitempty"`
 }
 
 func (m OptChange) MarshalBinary() (data []byte, err error) {
