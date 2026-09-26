@@ -3,8 +3,8 @@ package orm
 import (
 	"context"
 
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/vigil"
-	"github.com/twiglab/h2o/vigil/orm/ent"
 )
 
 type DBx struct {

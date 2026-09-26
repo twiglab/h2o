@@ -10,9 +10,10 @@ import (
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
+	"github.com/twiglab/h2o/dbcli"
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
-	"github.com/twiglab/h2o/vigil/orm/ent"
 	"github.com/twiglab/h2o/vigil/tsdb"
 )
 
@@ -37,7 +38,7 @@ func entcli() *ent.Client {
 	name := viper.GetString("vigil.db.name")
 	dsn := viper.GetString("vigil.db.dsn")
 
-	cli, err := orm.OpenEntClient(name, dsn)
+	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
 		log.Fatal(fmt.Errorf("ent err: %w", err))
 	}
