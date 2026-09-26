@@ -9,7 +9,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
-	"github.com/twiglab/h2o/chrgg/gql"
 	"github.com/twiglab/h2o/chrgg/orm"
 )
 
@@ -59,7 +58,7 @@ func run() error {
 
 	mux := chi.NewMux()
 	mux.Use(middleware.RequestID)
-	mux.Mount("/gql", gql.Handle(db))
+	//mux.Mount("/gql", gql.Handle(db))
 
 	return http.ListenAndServe(webaddr(), mux)
 }

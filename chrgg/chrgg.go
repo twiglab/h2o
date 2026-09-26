@@ -6,7 +6,7 @@ import (
 	"encoding/json/v2"
 	"time"
 
-	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/pkg/common"
 )
 

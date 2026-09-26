@@ -8,10 +8,10 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/chrgg"
-	"github.com/twiglab/h2o/chrgg/orm"
-	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
+	"github.com/twiglab/h2o/dbcli"
+	"github.com/twiglab/h2o/dbcli/ent"
 )
 
 func rootLog() *slog.Logger {
@@ -67,7 +67,7 @@ func entcli() *ent.Client {
 	dsn := viper.GetString("chrgg.db.dsn")
 
 	//cli, err := orm.OpenEntClient(name, dsn, ent.Debug())
-	cli, err := orm.OpenEntClient(name, dsn)
+	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

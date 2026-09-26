@@ -8,8 +8,8 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/chrgg/orm"
-	"github.com/twiglab/h2o/chrgg/orm/ent"
 	"github.com/twiglab/h2o/clog/wal"
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/pkg/common"
 )
 

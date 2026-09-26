@@ -10,7 +10,7 @@ import (
 	"fmt"
 
 	"github.com/twiglab/h2o/chrgg/gql/graph/model"
-	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/dbcli/ent"
 )
 
 // ChargeNewTop is the resolver for the chargeNewTop field.

@@ -17,7 +17,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
 	"github.com/twiglab/h2o/chrgg/gql/graph/model"
-	"github.com/twiglab/h2o/chrgg/orm/ent"
+	"github.com/twiglab/h2o/dbcli/ent"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -697,7 +697,7 @@ func (ec *executionContext) _Mutation_chargeNewTop(ctx context.Context, field gr
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v *ent.Top) graphql.Marshaler {
-			return ec.marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋchrggᚋormᚋentᚐTop(ctx, selections, v)
+			return ec.marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋdbcliᚋentᚐTop(ctx, selections, v)
 		},
 		true,
 		true,
@@ -741,7 +741,7 @@ func (ec *executionContext) _Query_chargeList(ctx context.Context, field graphql
 		},
 		nil,
 		func(ctx context.Context, selections ast.SelectionSet, v []*ent.Top) graphql.Marshaler {
-			return ec.marshalNTop2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋchrggᚋormᚋentᚐTopᚄ(ctx, selections, v)
+			return ec.marshalNTop2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋdbcliᚋentᚐTopᚄ(ctx, selections, v)
 		},
 		true,
 		true,
@@ -3286,11 +3286,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) marshalNTop2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋchrggᚋormᚋentᚐTopᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Top) graphql.Marshaler {
+func (ec *executionContext) marshalNTop2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋdbcliᚋentᚐTopᚄ(ctx context.Context, sel ast.SelectionSet, v []*ent.Top) graphql.Marshaler {
 	ret := graphql.MarshalSliceConcurrently(ctx, len(v), 0, false, func(ctx context.Context, i int) graphql.Marshaler {
 		fc := graphql.GetFieldContext(ctx)
 		fc.Result = &v[i]
-		return ec.marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋchrggᚋormᚋentᚐTop(ctx, sel, v[i])
+		return ec.marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋdbcliᚋentᚐTop(ctx, sel, v[i])
 	})
 
 	for _, e := range ret {
@@ -3302,7 +3302,7 @@ func (ec *executionContext) marshalNTop2ᚕᚖgithubᚗcomᚋtwiglabᚋh2oᚋchr
 	return ret
 }
 
-func (ec *executionContext) marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋchrggᚋormᚋentᚐTop(ctx context.Context, sel ast.SelectionSet, v *ent.Top) graphql.Marshaler {
+func (ec *executionContext) marshalNTop2ᚖgithubᚗcomᚋtwiglabᚋh2oᚋdbcliᚋentᚐTop(ctx context.Context, sel ast.SelectionSet, v *ent.Top) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			graphql.AddErrorf(ctx, "the requested element is null which the schema does not allow")

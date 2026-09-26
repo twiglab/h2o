@@ -1,8 +1,6 @@
 package graph
 
-import (
-	"github.com/twiglab/h2o/chrgg/orm"
-)
+import "github.com/twiglab/h2o/chrgg/orm"
 
 // This file will not be regenerated automatically.
 //

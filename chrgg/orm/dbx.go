@@ -3,8 +3,8 @@ package orm
 import (
 	"context"
 
-	"github.com/twiglab/h2o/chrgg/orm/ent"
-	"github.com/twiglab/h2o/chrgg/orm/ent/top"
+	"github.com/twiglab/h2o/dbcli/ent"
+	"github.com/twiglab/h2o/dbcli/ent/top"
 )
 
 type DBx struct {
