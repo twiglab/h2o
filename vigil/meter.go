@@ -3,8 +3,8 @@ package vigil
 import (
 	"encoding/json/v2"
 
-	"github.com/montanaflynn/stats"
 	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/vigil/stats"
 )
 
 type Meter struct {
@@ -25,8 +25,11 @@ func (d *ElectricityMeter) UnmarshalBinary(data []byte) error {
 }
 
 func (d *ElectricityMeter) setup() {
-	fd := stats.LoadRawData([]int64{d.Data.CurrentA, d.Data.CurrentB, d.Data.CurrentC})
-	d.STD, _ = fd.StandardDeviationPopulation()
+	_, d.STD = stats.MeanAndStdDev([]float64{
+		float64(d.Data.CurrentA),
+		float64(d.Data.CurrentB),
+		float64(d.Data.CurrentC),
+	})
 }
 
 type WaterMeter struct {
