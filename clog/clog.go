@@ -56,9 +56,10 @@ func ConsoleLog(level slog.Level) *slog.Logger {
 
 func NewLogWriter(logf string) io.Writer {
 	return &lumberjack.Logger{
-		Filename:  logf,
-		MaxSize:   30, // megabytes
-		MaxAge:    60, // days
-		LocalTime: true,
+		Filename:   logf,
+		MaxSize:    30,  // megabytes
+		MaxAge:     60,  // days
+		MaxBackups: 100, // 最多100个
+		LocalTime:  true,
 	}
 }
