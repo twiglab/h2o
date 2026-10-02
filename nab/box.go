@@ -89,7 +89,7 @@ type OptChange struct {
 	DataCode  string    `json:"data_code,omitempty"`
 	Op        string    `json:"op,omitempty"`
 	OptStatus int64     `json:"opt_status,omitempty"`
-	DataTime  time.Time `json:"data_time,omitempty"`
+	DataTime  time.Time `json:"data_time,omitzero"`
 }
 
 func (m OptChange) MarshalBinary() (data []byte, err error) {
