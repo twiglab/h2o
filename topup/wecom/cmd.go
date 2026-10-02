@@ -33,6 +33,8 @@ func NewCommandManager() CommandManager {
 	m["p"] = posQueryCmdFn
 	m["t"] = topCmdFn
 
+	m["c"] = chargeCmdFn
+
 	return CommandManager{m: m}
 }
 

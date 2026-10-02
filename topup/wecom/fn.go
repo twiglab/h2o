@@ -24,3 +24,7 @@ func fmtTime(t time.Time) string {
 func sub(a, b int64) int64 {
 	return a - b
 }
+
+func add(a, b int64) int64 {
+	return a + b
+}
