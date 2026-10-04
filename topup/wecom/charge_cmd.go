@@ -18,14 +18,16 @@ import (
 type chargeCmd struct {
 	Code string
 
-	Incr  int64
-	Stock int64
+	Incr   int64
+	Stock  int64
+	Amount int64
 
 	TopVal int64
 
-	Device *ent.Device
-	Nh     *ent.NhRecord
-	Top    *ent.Top
+	Device   *ent.Device
+	Nh       *ent.NhRecord
+	Top      *ent.Top
+	TopAfter *ent.Top
 
 	cli   *ent.Client
 	templ *template.Template
@@ -33,11 +35,34 @@ type chargeCmd struct {
 
 func (c *chargeCmd) Args(args ...string) error {
 	c.Code = args[1]
-	i, err := strconv.ParseFloat(args[2], 64)
-	if err != nil {
-		return err
+
+	if len(args) >= 3 {
+		// 限额增量
+		incr, err := strconv.ParseFloat(args[2], 64)
+		if err != nil {
+			return err
+		}
+		c.Incr = int64(math.Ceil(incr * 100))
 	}
-	c.Incr = int64(math.Ceil(i * 100))
+
+	if len(args) >= 4 {
+		// 金额
+		amount, err := strconv.ParseFloat(args[3], 64)
+		if err != nil {
+			return err
+		}
+		c.Amount = int64(amount * 100) // 截断，钱支持到分
+	}
+
+	if len(args) >= 5 {
+		// 起点
+		stock, err := strconv.ParseFloat(args[4], 64)
+		if err != nil {
+			return err
+		}
+		c.Stock = int64(stock * 100) // 截断，存量支持到0.01
+	}
+
 	return nil
 }
 
@@ -97,7 +122,8 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 	cr.SetStock(x.Stock)
 	cr.SetIncr(x.Incr)
 
-	return cr.Exec(ctx)
+	x.TopAfter, err = cr.Save(ctx)
+	return
 }
 
 func (x chargeCmd) ToString() string {

@@ -30,16 +30,21 @@ const top_cmd_tpl = `
 const charge_cmd_tpl = `
 # 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}
 >充值度数 **{{.Incr | du}}** 度，起点**{{.Stock | du}}**
->充值后限额：**{{ add .Incr .Stock | du}}** 度
->当前表显**{{ .Nh.DataValue | du}}** 度
+>充值金额 **{{.Amount | fen}}**
+>充值后限额：**{{ .TopVal | du}}** 度
+>当前表显 **{{ .Nh.DataValue | du}}** 度
 
-充值后请用 t {{ .Code }} 命令查看限额详情
+>充值日期 {{.TopAfter.ChargeTime | datetime}}
+>充值代码 {{ .TopAfter.Code }}
+
+充值后可用 t {{ .Code }} 命令查看限额详情
 `
 
 func build() *template.Template {
 	t := template.New("cmd").Funcs(
 		template.FuncMap{
 			"du":       du,
+			"fen":      du,
 			"datetime": fmtTime,
 			"sub":      sub,
 			"add":      add,
