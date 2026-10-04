@@ -1,0 +1,57 @@
+package proto
+
+import "strings"
+
+const H2O = "h2o"
+
+const (
+	DATA = "data"
+	OPT  = "opt"
+
+	ONOFF = "onoff"
+	QUOTA = "quota"
+)
+
+const (
+	TYPE_ELECTRICITY = "E"
+	TYPE_WATER       = "W"
+	TYPE_GAS         = "G"
+)
+
+const (
+	GeneralDataTopic = "h2o/data/#"
+)
+
+func DataTopic(d Device) string {
+	return H2O + "/data/" + d.Code + "/" + d.Type
+}
+
+func TopicPart(topic string) []string {
+	parts := strings.Split(topic, "/")
+	_ = parts[1]
+
+	if parts[0] != H2O {
+		panic("not h2o topic")
+	}
+	return parts
+
+}
+
+func DataTopicPart(topic string) (string, string, string, string) {
+	parts := TopicPart(topic)
+	_ = parts[3]
+	return parts[0], parts[1], parts[2], parts[3]
+}
+
+func DataTopicType(topic string) string {
+	_, _, _, t := DataTopicPart(topic)
+	switch t {
+	case TYPE_WATER:
+		return WaterDataTopic
+	case TYPE_ELECTRICITY:
+		return ElectricityDataTopic
+	case TYPE_GAS:
+		return GasDataTopic
+	}
+	panic(topic + " not supports")
+}
