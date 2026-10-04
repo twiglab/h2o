@@ -21,7 +21,7 @@ const top_cmd_tpl = `
 | 时间 | 度数 | 限额 | 金额 | 铺位号 |
 | :-----: | :----: | :----: | :-----: | :-----: |
 {{ range .Tops -}}
-| {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | du}} | {{.PosCode}} |
+| {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | yuan}} | {{.PosCode}} |
 {{ end }}
 >剩余约**{{ sub .Last.Top .Curr.DataValue | du}}** 度
 {{ end }}
@@ -29,12 +29,12 @@ const top_cmd_tpl = `
 
 const charge_cmd_tpl = `
 # 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}
->充值度数 **{{.Incr | du}}** 度，起点**{{.Stock | du}}**
->充值金额 **{{.Amount | fen}}**
+>充值度数 **{{.Incr | du}}** 度，起点**{{.Stock | du}}** 度
+>充值金额 **{{ .Amount | yuan }}** 元
 >充值后限额：**{{ .TopVal | du}}** 度
 >当前表显 **{{ .Nh.DataValue | du}}** 度
 
->充值日期 {{.TopAfter.ChargeTime | datetime}}
+>充值时间 {{.TopAfter.ChargeTime | datetime}}
 >充值代码 {{ .TopAfter.Code }}
 
 充值后可用 t {{ .Code }} 命令查看限额详情
@@ -44,7 +44,7 @@ func build() *template.Template {
 	t := template.New("cmd").Funcs(
 		template.FuncMap{
 			"du":       du,
-			"fen":      du,
+			"yuan":     du,
 			"datetime": fmtTime,
 			"sub":      sub,
 			"add":      add,

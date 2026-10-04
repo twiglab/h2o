@@ -122,6 +122,8 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 	cr.SetStock(x.Stock)
 	cr.SetIncr(x.Incr)
 
+	cr.SetAmount(x.Amount)
+
 	x.TopAfter, err = cr.Save(ctx)
 	return
 }
