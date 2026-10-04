@@ -40,6 +40,15 @@ const charge_cmd_tpl = `
 充值后可用 t {{ .Code }} 命令查看限额详情
 `
 
+const pos_cmd_tpl = `
+## 表具列表
+| 铺位号 | 表号 | 表具号 | 类型 | 状态 |
+| :-----: | :----: | :----: | :-----: | :-----: |
+{{ range .Devices -}}
+| {{ .PosCode }} | **{{.DeviceCode}}** | **{{.DeviceSn}}** | {{.DeviceType}} | {{.Status}} |
+{{ end }}
+`
+
 func build() *template.Template {
 	t := template.New("cmd").Funcs(
 		template.FuncMap{
@@ -53,5 +62,6 @@ func build() *template.Template {
 	template.Must(t.New("help").Parse(help_cmd_tpl))
 	template.Must(t.New("top").Parse(top_cmd_tpl))
 	template.Must(t.New("charge").Parse(charge_cmd_tpl))
+	template.Must(t.New("pos").Parse(pos_cmd_tpl))
 	return t
 }

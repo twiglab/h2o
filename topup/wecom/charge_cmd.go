@@ -29,8 +29,8 @@ type chargeCmd struct {
 	Top      *ent.Top
 	TopAfter *ent.Top
 
-	cli   *ent.Client
-	templ *template.Template
+	cli  *ent.Client
+	tmpl *template.Template
 }
 
 func (c *chargeCmd) Args(args ...string) error {
@@ -130,12 +130,12 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 
 func (x chargeCmd) ToString() string {
 	var sb strings.Builder
-	_ = x.templ.ExecuteTemplate(&sb, "charge", x)
+	_ = x.tmpl.ExecuteTemplate(&sb, "charge", x)
 	return sb.String()
 }
 
 func chargeCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	c := &chargeCmd{cli: cfg.Cli, templ: build()}
+	c := &chargeCmd{cli: cfg.Cli, tmpl: build()}
 	c.Args(args...)
 	return c, nil
 }

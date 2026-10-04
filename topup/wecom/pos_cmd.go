@@ -3,20 +3,20 @@ package wecom
 import (
 	"context"
 	"strings"
+	"text/template"
 
-	"github.com/olekukonko/tablewriter"
-	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/dbcli/ent/device"
 )
 
 type PosQueryCmd struct {
-	Cli *ent.Client
-
 	PosCode string
 	Type    string
 
-	all []*ent.Device
+	Devices []*ent.Device
+
+	cli  *ent.Client
+	tmpl *template.Template
 }
 
 func (c *PosQueryCmd) Args(args ...string) error {
@@ -27,7 +27,7 @@ func (c *PosQueryCmd) Args(args ...string) error {
 }
 
 func (c *PosQueryCmd) Do(ctx context.Context) (err error) {
-	q := c.Cli.Device.Query().
+	q := c.cli.Device.Query().
 		Where(device.IsDelEQ(0), device.PosCodeNotNil()).
 		Order(ent.Asc(device.FieldDeviceType))
 		// Limit(10).
@@ -40,27 +40,19 @@ func (c *PosQueryCmd) Do(ctx context.Context) (err error) {
 		q.Where(device.DeviceTypeEQ(c.Type))
 	}
 
-	c.all, err = q.All(ctx)
+	c.Devices, err = q.All(ctx)
 	return
 }
 
 func (c PosQueryCmd) ToString() string {
 	var sb strings.Builder
-	table := tablewriter.NewTable(&sb,
-		tablewriter.WithRenderer(renderer.NewMarkdown()),
-	)
-
-	table.Header([]string{"铺位", "编号", "类型"})
-
-	for _, r := range c.all {
-		table.Append([]string{r.PosCode, r.DeviceCode, r.DeviceType})
-	}
-	table.Render()
+	_ = c.tmpl.ExecuteTemplate(&sb, "pos", c)
 	return sb.String()
+
 }
 
 func posQueryCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	u := &PosQueryCmd{Cli: cfg.Cli}
+	u := &PosQueryCmd{cli: cfg.Cli}
 	err := u.Args(args...)
 	return u, err
 }

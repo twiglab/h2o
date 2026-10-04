@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"text/template"
 
+	"github.com/go-sphere/wecom-aibot-go-sdk/aibot"
 	"github.com/twiglab/h2o/dbcli/ent"
 )
 
 type CmdCfg struct {
-	Cli *ent.Client
+	Cli  *ent.Client
+	Temp *template.Template
+
+	Frame       *aibot.WsFrame
+	TextMessage aibot.TextMessage
 }
 
 type CommandMarker func(cfg CmdCfg, args ...string) (Commander, error)
