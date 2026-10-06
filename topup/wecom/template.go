@@ -1,7 +1,9 @@
 package wecom
 
 import (
+	"fmt"
 	"text/template"
+	"time"
 )
 
 const help_cmd_tpl = `
@@ -49,7 +51,24 @@ const pos_cmd_tpl = `
 {{ end }}
 `
 
-func build() *template.Template {
+const usage_cmd_tpl = `
+## 用量列表 表号：{{ .Code }}
+| 表号 | 表显 | 类型 | 时间 |
+| :----: | :----: | :-----: | :-----: |
+{{ range .All -}}
+| **{{.DeviceCode}}** | **{{.DataValue | du}}** | {{.DeviceType}} | {{.DataTime | datetime}} |
+{{ end }}
+`
+
+const (
+	template_help   = "help"
+	template_pos    = "pos"
+	template_charge = "charge"
+	template_top    = "top"
+	template_usage  = "usage"
+)
+
+func BuildTemplate() *template.Template {
 	t := template.New("cmd").Funcs(
 		template.FuncMap{
 			"du":       du,
@@ -59,9 +78,34 @@ func build() *template.Template {
 			"add":      add,
 		},
 	)
-	template.Must(t.New("help").Parse(help_cmd_tpl))
-	template.Must(t.New("top").Parse(top_cmd_tpl))
-	template.Must(t.New("charge").Parse(charge_cmd_tpl))
-	template.Must(t.New("pos").Parse(pos_cmd_tpl))
+	template.Must(t.New(template_help).Parse(help_cmd_tpl))
+	template.Must(t.New(template_top).Parse(top_cmd_tpl))
+	template.Must(t.New(template_charge).Parse(charge_cmd_tpl))
+	template.Must(t.New(template_pos).Parse(pos_cmd_tpl))
+	template.Must(t.New(template_usage).Parse(usage_cmd_tpl))
 	return t
+}
+
+func du(i int64) string {
+	x := float64(i) * 0.01
+	return fmt.Sprintf("%.2f", x)
+}
+
+func fmtTimePtr(t *time.Time) string {
+	if t == nil {
+		return ""
+	}
+	return t.Format(time.DateTime)
+}
+
+func fmtTime(t time.Time) string {
+	return t.Format(time.DateTime)
+}
+
+func sub(a, b int64) int64 {
+	return a - b
+}
+
+func add(a, b int64) int64 {
+	return a + b
 }

@@ -2,7 +2,6 @@ package wecom
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"text/template"
 
@@ -12,15 +11,14 @@ import (
 )
 
 type topCmd struct {
-	Cli *ent.Client
+	cli  *ent.Client
+	tmpl *template.Template
 
 	Code string
 
 	Tops []*ent.Top
 	Curr *ent.NhRecord
 	Last *ent.Top
-
-	tmpl *template.Template
 }
 
 func (c *topCmd) Args(args ...string) error {
@@ -29,20 +27,16 @@ func (c *topCmd) Args(args ...string) error {
 }
 
 func (c *topCmd) Do(ctx context.Context) (err error) {
-	c.Curr, err = c.Cli.NhRecord.Query().
+	c.Curr, err = c.cli.NhRecord.Query().
 		Where(nhrecord.DeviceCodeEQ(c.Code)).
 		Order(ent.Desc(nhrecord.FieldDataTime)).
 		First(ctx)
-
-	if ent.IsNotFound(err) {
-		return ErrorCmd{str: fmt.Sprintf("%s 无采集信息", c.Code)}
-	}
 
 	if err != nil {
 		return err
 	}
 
-	c.Tops, err = c.Cli.Top.Query().
+	c.Tops, err = c.cli.Top.Query().
 		Where(top.DeviceCodeEQ(c.Code)).
 		Order(ent.Desc(top.FieldChargeTime)).
 		Limit(10).
@@ -61,14 +55,14 @@ func (c *topCmd) Do(ctx context.Context) (err error) {
 
 func (c topCmd) ToString() string {
 	var sb strings.Builder
-	if err := c.tmpl.ExecuteTemplate(&sb, "top", c); err != nil {
+	if err := c.tmpl.ExecuteTemplate(&sb, template_top, c); err != nil {
 		return err.Error()
 	}
 	return sb.String()
 }
 
-func topCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	u := &topCmd{Cli: cfg.Cli, tmpl: build()}
+func topCmdFn(cfg Global, args ...string) (Commander, error) {
+	u := &topCmd{cli: cfg.Client, tmpl: cfg.Template}
 	err := u.Args(args...)
 	return u, err
 }

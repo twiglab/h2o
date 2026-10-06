@@ -130,12 +130,11 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 
 func (x chargeCmd) ToString() string {
 	var sb strings.Builder
-	_ = x.tmpl.ExecuteTemplate(&sb, "charge", x)
+	_ = x.tmpl.ExecuteTemplate(&sb, template_charge, x)
 	return sb.String()
 }
 
-func chargeCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	c := &chargeCmd{cli: cfg.Cli, tmpl: build()}
-	c.Args(args...)
-	return c, nil
+func chargeCmdFn(cfg Global, args ...string) (Commander, error) {
+	c := &chargeCmd{cli: cfg.Client, tmpl: cfg.Template}
+	return c, c.Args(args...)
 }

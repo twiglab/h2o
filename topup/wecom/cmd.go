@@ -11,27 +11,30 @@ import (
 	"github.com/twiglab/h2o/dbcli/ent"
 )
 
-type CmdCfg struct {
-	Cli  *ent.Client
-	Temp *template.Template
+type Global struct {
+	Client   *ent.Client
+	Template *template.Template
 
 	Frame       *aibot.WsFrame
 	TextMessage aibot.TextMessage
 }
 
-type CommandMarker func(cfg CmdCfg, args ...string) (Commander, error)
+type CmdMakeFn func(cfg Global, args ...string) (Commander, error)
 
 type Commander interface {
 	Do(context.Context) error
 	ToString() string
 }
 
-type CommandManager struct {
-	m map[string]CommandMarker
+type CmdMgr struct {
+	Client   *ent.Client
+	Template *template.Template
+
+	m map[string]CmdMakeFn
 }
 
-func NewCommandManager() CommandManager {
-	m := make(map[string]CommandMarker)
+func (c *CmdMgr) Init() {
+	m := make(map[string]CmdMakeFn)
 	m["h"] = helpCmdFn
 	m["?"] = helpCmdFn
 
@@ -41,31 +44,63 @@ func NewCommandManager() CommandManager {
 
 	m["c"] = chargeCmdFn
 
-	return CommandManager{m: m}
+	c.m = m
 }
 
-func (m CommandManager) Parser(cfg CmdCfg, input []string) (cmd Commander, err error) {
+func (c CmdMgr) TextMessageHandle(wscli *aibot.WSClient) func(*aibot.WsFrame) {
+	return func(frame *aibot.WsFrame) {
+		var msg aibot.TextMessage
+		if err := aibot.ParseMessageBody(frame, &msg); err != nil {
+			fmt.Println("解析消息失败:", err.Error())
+			return
+		}
+
+		fmt.Printf("收到文本: %s\n", msg.Text.Content)
+
+		cfg := Global{
+			Client:      c.Client,
+			Template:    c.Template,
+			Frame:       frame,
+			TextMessage: msg,
+		}
+
+		args := strings.FieldsFunc(msg.Text.Content, isField)
+
+		cmd, err := c.Parser(cfg, args)
+		if err != nil {
+			wscli.Reply(frame, aibot.CreateMarkdownReplyBody(err.Error()), "")
+			return
+		}
+
+		if err := cmd.Do(context.Background()); err != nil {
+			wscli.Reply(frame, aibot.CreateMarkdownReplyBody(err.Error()), "")
+			return
+		}
+		wscli.Reply(frame, aibot.CreateMarkdownReplyBody(cmd.ToString()), "")
+	}
+}
+
+func (c CmdMgr) Parser(cfg Global, input []string) (cmd Commander, err error) {
 	args := slices.DeleteFunc(input, func(item string) bool {
 		return strings.Contains(item, "@")
 	})
-	if cf, ok := m.m[args[0]]; ok {
+
+	cc := strings.ToLower(args[0])
+	if cf, ok := c.m[cc]; ok {
 		cmd, err = cf(cfg, args...)
 		return
 	}
-	return hCmd, fmt.Errorf("not found cmd: %s", args[0])
+	return helpCmdFn(cfg, input...)
 }
 
-type ErrorCmd struct {
-	str string
-}
-
-func (e ErrorCmd) Error() string {
-	return e.str
-}
-func (e ErrorCmd) Do(_ context.Context) error {
-	return e
-}
-
-func (e ErrorCmd) ToString() string {
-	return e.str
+func isField(r rune) bool {
+	switch r {
+	case ' ':
+		return true
+	case '\t':
+		return true
+	case ',':
+		return true
+	}
+	return false
 }

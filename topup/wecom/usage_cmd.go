@@ -2,21 +2,20 @@ package wecom
 
 import (
 	"context"
-	"fmt"
 	"strings"
+	"text/template"
 
-	"github.com/olekukonko/tablewriter"
-	"github.com/olekukonko/tablewriter/renderer"
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
 )
 
 type UsageCmd struct {
-	Cli *ent.Client
+	cli   *ent.Client
+	templ *template.Template
 
 	Code string
 
-	all []*ent.NhRecord
+	All []*ent.NhRecord
 }
 
 func (c *UsageCmd) Args(args ...string) error {
@@ -25,7 +24,7 @@ func (c *UsageCmd) Args(args ...string) error {
 }
 
 func (c *UsageCmd) Do(ctx context.Context) (err error) {
-	c.all, err = c.Cli.NhRecord.Query().
+	c.All, err = c.cli.NhRecord.Query().
 		Where(nhrecord.DeviceCodeEQ(c.Code)).
 		Order(ent.Desc(nhrecord.FieldDataTime)).
 		Limit(10).
@@ -36,21 +35,12 @@ func (c *UsageCmd) Do(ctx context.Context) (err error) {
 
 func (c UsageCmd) ToString() string {
 	var sb strings.Builder
-	table := tablewriter.NewTable(&sb,
-		tablewriter.WithRenderer(renderer.NewMarkdown()),
-	)
-
-	table.Header([]string{"编号", "度数", "时间"})
-
-	for _, r := range c.all {
-		table.Append([]string{r.DeviceCode, fmt.Sprint(r.DataValue), r.DataTs})
-	}
-	table.Render()
+	_ = c.templ.ExecuteTemplate(&sb, template_usage, c)
 	return sb.String()
 }
 
-func usageCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	u := &UsageCmd{Cli: cfg.Cli}
+func usageCmdFn(cfg Global, args ...string) (Commander, error) {
+	u := &UsageCmd{cli: cfg.Client, templ: cfg.Template}
 	err := u.Args(args...)
 	return u, err
 }

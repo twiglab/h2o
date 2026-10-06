@@ -12,6 +12,7 @@ import (
 type PosQueryCmd struct {
 	PosCode string
 	Type    string
+	Limit   int
 
 	Devices []*ent.Device
 
@@ -29,8 +30,8 @@ func (c *PosQueryCmd) Args(args ...string) error {
 func (c *PosQueryCmd) Do(ctx context.Context) (err error) {
 	q := c.cli.Device.Query().
 		Where(device.IsDelEQ(0), device.PosCodeNotNil()).
-		Order(ent.Asc(device.FieldDeviceType))
-		// Limit(10).
+		Order(ent.Asc(device.FieldDeviceType)).
+		Limit(c.Limit)
 
 	if c.PosCode != "" {
 		q.Where(device.PosCodeEQ(c.PosCode))
@@ -46,13 +47,12 @@ func (c *PosQueryCmd) Do(ctx context.Context) (err error) {
 
 func (c PosQueryCmd) ToString() string {
 	var sb strings.Builder
-	_ = c.tmpl.ExecuteTemplate(&sb, "pos", c)
+	_ = c.tmpl.ExecuteTemplate(&sb, template_pos, c)
 	return sb.String()
 
 }
 
-func posQueryCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	u := &PosQueryCmd{cli: cfg.Cli}
-	err := u.Args(args...)
-	return u, err
+func posQueryCmdFn(cfg Global, args ...string) (Commander, error) {
+	u := &PosQueryCmd{cli: cfg.Client, tmpl: cfg.Template, Limit: 10}
+	return u, u.Args(args...)
 }

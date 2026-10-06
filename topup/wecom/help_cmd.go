@@ -6,29 +6,21 @@ import (
 	"text/template"
 )
 
-var hCmd = h()
-
-func h() helpCmd {
-	t, _ := template.New("x").Parse(help_cmd_tpl)
-	return helpCmd{
-		help: t,
-	}
-}
-
 type helpCmd struct {
-	help *template.Template
+	Template *template.Template
 }
 
-func (x helpCmd) Do(ctx context.Context) error {
+func (h helpCmd) Do(ctx context.Context) error {
 	return nil
 }
 
-func (x helpCmd) ToString() string {
+func (h helpCmd) ToString() string {
 	var sb strings.Builder
-	_ = x.help.Execute(&sb, nil)
+	_ = h.Template.ExecuteTemplate(&sb, "help", nil)
 	return sb.String()
 }
 
-func helpCmdFn(cfg CmdCfg, args ...string) (Commander, error) {
-	return hCmd, nil
+func helpCmdFn(cfg Global, args ...string) (Commander, error) {
+	help := helpCmd{Template: cfg.Template}
+	return help, nil
 }
