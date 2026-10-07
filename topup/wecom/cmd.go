@@ -14,9 +14,12 @@ import (
 type Global struct {
 	Client   *ent.Client
 	Template *template.Template
+	Context  context.Context
 
 	Frame       *aibot.WsFrame
 	TextMessage aibot.TextMessage
+
+	Auth *FixUserGroup
 }
 
 type CmdMakeFn func(cfg Global, args ...string) (Commander, error)
@@ -27,13 +30,17 @@ type Commander interface {
 }
 
 type CmdMgr struct {
-	Client   *ent.Client
-	Template *template.Template
+	Client  *ent.Client
+	Auth    *FixUserGroup
+	Context context.Context
 
-	m map[string]CmdMakeFn
+	templ *template.Template
+	m     map[string]CmdMakeFn
 }
 
 func (c *CmdMgr) Init() {
+	c.templ = BuildTemplate()
+
 	m := make(map[string]CmdMakeFn)
 	m["h"] = helpCmdFn
 	m["?"] = helpCmdFn
@@ -58,10 +65,14 @@ func (c CmdMgr) TextMessageHandle(wscli *aibot.WSClient) func(*aibot.WsFrame) {
 		fmt.Printf("收到文本: %s\n", msg.Text.Content)
 
 		cfg := Global{
-			Client:      c.Client,
-			Template:    c.Template,
+			Client:   c.Client,
+			Template: c.templ,
+			Context:  c.Context,
+
 			Frame:       frame,
 			TextMessage: msg,
+
+			Auth: c.Auth,
 		}
 
 		args := strings.FieldsFunc(msg.Text.Content, isField)
