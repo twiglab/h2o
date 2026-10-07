@@ -4,15 +4,17 @@ import (
 	"fmt"
 	"text/template"
 	"time"
+
+	"github.com/twiglab/h2o/pkg/common"
 )
 
 const help_cmd_tpl = `
 支持下列命令
 1. 使用?或者h命令显示帮助
 2. p <铺位号>，列出对应铺位中表具
-  例如：p F1_01
+  例如：p F1_04
 3. t <表号>，查询对应仪表的当前用量和充值记录
-  例如：t 909_21
+  例如：t 909_32
 `
 
 const top_cmd_tpl = `
@@ -47,7 +49,7 @@ const pos_cmd_tpl = `
 | 铺位号 | 表号 | 表具号 | 类型 | 状态 |
 | :-----: | :----: | :----: | :-----: | :-----: |
 {{ range .Devices -}}
-| {{ .PosCode }} | **{{.DeviceCode}}** | **{{.DeviceSn}}** | {{.DeviceType}} | {{.Status}} |
+| {{ .PosCode }} | **{{.DeviceCode}}** | **{{.DeviceSn}}** | {{.DeviceType | dt}} | {{.Status}} |
 {{ end }}
 `
 
@@ -56,7 +58,7 @@ const usage_cmd_tpl = `
 | 表号 | 表显 | 类型 | 时间 |
 | :----: | :----: | :-----: | :-----: |
 {{ range .All -}}
-| **{{.DeviceCode}}** | **{{.DataValue | du}}** | {{.DeviceType}} | {{.DataTime | datetime}} |
+| **{{.DeviceCode}}** | **{{.DataValue | du}}** | {{.DeviceType | dt}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
@@ -74,6 +76,7 @@ func buildTemplate() *template.Template {
 			"du":       du,
 			"yuan":     du,
 			"datetime": fmtTime,
+			"dt":       deviceType,
 			"sub":      sub,
 			"add":      add,
 		},
@@ -108,4 +111,15 @@ func sub(a, b int64) int64 {
 
 func add(a, b int64) int64 {
 	return a + b
+}
+func deviceType(t string) string {
+	switch t {
+	case common.TYPE_ELECTRICITY:
+		return "电表"
+	case common.TYPE_WATER:
+		return "水表"
+	case common.TYPE_GAS:
+		return "气表"
+	}
+	return "unknow"
 }
