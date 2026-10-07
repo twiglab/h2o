@@ -68,7 +68,7 @@ const (
 	template_usage  = "usage"
 )
 
-func BuildTemplate() *template.Template {
+func buildTemplate() *template.Template {
 	t := template.New("cmd").Funcs(
 		template.FuncMap{
 			"du":       du,

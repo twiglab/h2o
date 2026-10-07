@@ -39,7 +39,7 @@ type CmdMgr struct {
 }
 
 func (c *CmdMgr) Init() {
-	c.templ = BuildTemplate()
+	c.templ = buildTemplate()
 
 	m := make(map[string]CmdMakeFn)
 	m["h"] = helpCmdFn
@@ -62,7 +62,7 @@ func (c CmdMgr) TextMessageHandle(wscli *aibot.WSClient) func(*aibot.WsFrame) {
 			return
 		}
 
-		fmt.Printf("收到文本: %s\n", msg.Text.Content)
+		fmt.Printf("收到文本: %s, userID: %s\n", msg.Text.Content, msg.From.UserID)
 
 		cfg := Global{
 			Client:   c.Client,
