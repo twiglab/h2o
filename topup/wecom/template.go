@@ -10,16 +10,23 @@ import (
 
 const help_cmd_tpl = `
 支持下列命令
-1. 使用?或者h命令显示帮助
-2. p <铺位号>，列出对应铺位中表具
+1. 使用 ? 或者 h 命令显示帮助
+2. p <铺位号>，列出对应铺位中表具，如省略铺位号，则列出所有
   例如：p F1_04
 3. t <表号>，查询对应仪表的当前用量和充值记录
-  例如：t 909_32
+3. u <表号>，列出指定表号的用量采集列表
+  例如：u 909_32
+-------
+以下命令只能指定人员在指定群组执行
+1. c <表号> <增量> [<金额> <起点>]
+   指定表号设定限额，限额计算公式为 增量 + max(当前表显示，上次限额)
+  例如：c 909_32 50
 `
 
 const top_cmd_tpl = `
 # 表号：{{ .Code }}
->当前表显 **{{.Curr.DataValue | du}}** 度，采集时间**{{.Curr.DataTime | datetime}}**
+>当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
+>当前余量（限额 - 表显示） **{{ sub .Last.Top .Curr.DataValue | du}}** 度
 {{ if .Tops }}
 ## 充值记录
 | 时间 | 度数 | 限额 | 金额 | 铺位号 |
@@ -27,7 +34,6 @@ const top_cmd_tpl = `
 {{ range .Tops -}}
 | {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | yuan}} | {{.PosCode}} |
 {{ end }}
->剩余约**{{ sub .Last.Top .Curr.DataValue | du}}** 度
 {{ end }}
 `
 
