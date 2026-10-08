@@ -10,5 +10,5 @@ const (
 type MeterValue struct {
 	DataValue int64          `json:"data_value,omitempty"` // 表显读数
 	OptStatus int64          `json:"opt_status,omitempty"` // 开合状态
-	Extra     map[string]any `json:",embed,omitzero"`
+	Extra     map[string]any `json:",embed"`
 }
