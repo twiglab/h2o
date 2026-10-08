@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/dbx"
 	"github.com/twiglab/h2o/pkg/common"
 )
 

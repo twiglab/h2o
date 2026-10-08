@@ -5,7 +5,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 const help_cmd_tpl = `
@@ -120,11 +120,11 @@ func add(a, b int64) int64 {
 }
 func deviceType(t string) string {
 	switch t {
-	case common.TYPE_ELECTRICITY:
+	case proto.TYPE_ELECTRICITY:
 		return "电表"
-	case common.TYPE_WATER:
+	case proto.TYPE_WATER:
 		return "水表"
-	case common.TYPE_GAS:
+	case proto.TYPE_GAS:
 		return "气表"
 	}
 	return "unknow"
