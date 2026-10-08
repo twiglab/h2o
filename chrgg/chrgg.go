@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/twiglab/h2o/dbcli/ent"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 const (
@@ -26,10 +26,10 @@ type Sender interface {
 }
 
 type Meter struct {
-	common.Device
-	Pos     common.Pos        `json:"pos,omitzero"`
-	Data    common.MeterValue `json:"data,omitzero"`
-	Gateway common.Modbus     `json:"gateway,omitzero"`
+	proto.Device
+	Pos     proto.Pos        `json:"pos,omitzero"`
+	Data    proto.MeterValue `json:"data,omitzero"`
+	Gateway proto.Modbus     `json:"gateway,omitzero"`
 }
 
 func (d *Meter) UnmarshalBinary(data []byte) error {
@@ -55,40 +55,16 @@ type Top struct {
 }
 
 type OnOffMessage struct {
-	common.Device
-	Gateway common.Modbus `json:"gateway,omitzero"`
-	Top     Top           `json:"top,omitzero"`
+	proto.Device
+	Data    proto.MeterValue `json:"data,omitzero"`
+	Gateway proto.Modbus     `json:"gateway,omitzero"`
+	Top     *ent.Top         `json:"top,omitzero"`
 
 	Op string `json:"op"`
 }
 
-func newOnOffMessage(md Meter, vc *ent.Top, op string) OnOffMessage {
-	return OnOffMessage{
-		Op:      op,
-		Device:  md.Device,
-		Gateway: md.Gateway,
-
-		Top: Top{
-			Code:       vc.Code,
-			Top:        vc.Top,
-			Current:    md.Data.DataValue,
-			Stock:      vc.Stock,
-			Incr:       vc.Incr,
-			Amount:     vc.Amount,
-			UnitPrice:  vc.UnitPrice,
-			ChargeTime: vc.ChargeTime,
-
-			Alarm:     vc.Alarm,
-			AlarmTime: vc.AlarmTime,
-
-			Status:  vc.Status,
-			EndTime: vc.EndTime,
-		},
-	}
-}
-
 func (o OnOffMessage) Topic() string {
-	return common.H2O + "/onoff/" + o.Gateway.Code + "/" + o.Code + "/" + o.Op
+	return proto.H2O + "/" + proto.ONOFF + "/" + o.Gateway.Code + "/" + o.Code + "/" + o.Op
 }
 
 func (d OnOffMessage) MarshalBinary() ([]byte, error) {
@@ -96,17 +72,29 @@ func (d OnOffMessage) MarshalBinary() ([]byte, error) {
 }
 
 type ChrggMessage struct {
-	common.Device
-	Pos     common.Pos        `json:"pos,omitzero"`
-	Data    common.MeterValue `json:"data,omitzero"`
-	Gateway common.Modbus     `json:"gateway,omitzero"`
-	Top     Top               `json:"top,omitzero"`
+	proto.Device
+	Pos     proto.Pos        `json:"pos,omitzero"`
+	Data    proto.MeterValue `json:"data,omitzero"`
+	Gateway proto.Modbus     `json:"gateway,omitzero"`
+	Top     *ent.Top         `json:"top,omitzero"`
 }
 
 func (o ChrggMessage) Topic() string {
-	return common.H2O + "/chrgg/" + o.Code + "/" + o.Type
+	return proto.H2O + "/" + proto.QUOTA + "/" + o.Code + "/" + o.Type
 }
 
 func (d ChrggMessage) MarshalBinary() ([]byte, error) {
 	return json.Marshal(d)
+}
+
+func newOnOffMessage(md Meter, vc *ent.Top, op string) OnOffMessage {
+	return OnOffMessage{
+		Device:  md.Device,
+		Data:    md.Data,
+		Gateway: md.Gateway,
+
+		Top: vc,
+
+		Op: op,
+	}
 }

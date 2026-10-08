@@ -10,10 +10,12 @@ import (
 	"github.com/twiglab/h2o/chrgg/orm"
 	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/dbcli/ent"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 const no_alarm = 0
+
+const GeneralDataTopic = "h2o/data/#"
 
 func isAlarm(vc *ent.Top) bool {
 	return vc.Alarm != no_alarm
@@ -32,7 +34,7 @@ type ChargeServer struct {
 }
 
 func (s *ChargeServer) Run() error {
-	t := s.MCli.Subscribe(common.GeneralDataTopic, 0x01, s.MsgHandle())
+	t := s.MCli.Subscribe(GeneralDataTopic, 0x01, s.MsgHandle())
 	t.Wait()
 	return t.Error()
 }
@@ -45,17 +47,18 @@ func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 
 		defer msg.Ack()
 
-		switch common.DataTopicType(msg.Topic()) {
-		case common.GasDataTopic:
-		case common.ElectricityDataTopic, common.WaterDataTopic: // 目前只支持水表和电表
-			var em Meter
-			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
-				s.Logger.Error("unmarshal error", slog.Any("error", err))
-				return
-			}
-			if err := s.Charge(context.Background(), em); err != nil {
-				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
-			}
+		parts := proto.TopicPart(msg.Topic())
+		if parts[1] != proto.DATA {
+			return
+		}
+
+		var em Meter
+		if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+			s.Logger.Error("unmarshal error", slog.Any("error", err))
+			return
+		}
+		if err := s.Charge(context.Background(), em); err != nil {
+			s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
 		}
 	}
 }
@@ -72,7 +75,7 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 			wal.String("msg", "正常合闸"),
 		)
 
-		ot := newOnOffMessage(md, vc, common.ON)
+		ot := newOnOffMessage(md, vc, proto.ON)
 		return s.Sender.SendData(ctx, ot)
 	}
 	return nil
@@ -99,7 +102,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 				Exec(ctx)                       // 计费结束
 
 			// 断开
-			ot := newOnOffMessage(md, vc, common.OFF)
+			ot := newOnOffMessage(md, vc, proto.OFF)
 			return s.Sender.SendData(ctx, ot)
 		} else {
 			// 非正常状态，疑似数据有非法修改
@@ -133,7 +136,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 				SetAlarmTime(time.Now()).
 				Exec(ctx) // 设置报警状态
 
-			ot := newOnOffMessage(md, vc, common.OFF)
+			ot := newOnOffMessage(md, vc, proto.OFF)
 			return s.Sender.SendData(ctx, ot)
 		}
 	}
@@ -142,7 +145,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 }
 
 func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
-	if md.Data.OptStatus == common.OPT_STATUS_UNKNOW {
+	if md.Data.OptStatus == proto.OPT_STATUS_UNKNOW {
 		s.Logger.DebugContext(ctx, "status unknow", slog.Any("meter", md))
 		return nil
 	}
@@ -175,22 +178,7 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 			Pos:     md.Pos,
 			Data:    md.Data,
 			Gateway: md.Gateway,
-			Top: Top{
-				Code:       vc.Code,
-				Top:        vc.Top,
-				Current:    md.Data.DataValue,
-				Stock:      vc.Stock,
-				Incr:       vc.Incr,
-				Amount:     vc.Amount,
-				UnitPrice:  vc.UnitPrice,
-				ChargeTime: vc.ChargeTime,
-
-				Alarm:     vc.Alarm,
-				AlarmTime: vc.AlarmTime,
-
-				Status:  vc.Status,
-				EndTime: vc.EndTime,
-			},
+			Top:     vc,
 		}
 		s.Sender.SendData(ctx, m)
 	}
@@ -198,10 +186,10 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 	// 注意： 即便状态为 STATUS_END 也是要继续执行的
 	// 是否开关，完全由限额决定
 	switch md.Data.OptStatus {
-	case common.OPT_STATUS_OFF:
+	case proto.OPT_STATUS_OFF:
 		//  拉闸(关闭)状态
 		return s.doStatusOff(ctx, md, vc)
-	case common.OPT_STATUS_ON:
+	case proto.OPT_STATUS_ON:
 		//  合闸(打开)状态
 		return s.doStatusOn(ctx, md, vc)
 	}
