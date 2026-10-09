@@ -26,7 +26,7 @@ const help_cmd_tpl = `
 const top_cmd_tpl = `
 # 表号：{{ .Code }}
 >当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
->当前余量（限额 - 表显示） **{{ sub .Last.Top .Curr.DataValue | du}}** 度
+>当前余量（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
 {{ if .Tops }}
 ## 充值记录
 | 时间 | 度数 | 限额 | 金额 | 铺位号 |
@@ -85,6 +85,7 @@ func buildTemplate() *template.Template {
 			"dt":       deviceType,
 			"sub":      sub,
 			"add":      add,
+			"usage":    usageStatus,
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
@@ -128,4 +129,15 @@ func deviceType(t string) string {
 		return "气表"
 	}
 	return "unknow"
+}
+
+func usageStatus(status int) string {
+	switch status {
+	case 0:
+		return "正常"
+	case 1:
+		return "结束"
+	}
+
+	return "非正常状态"
 }
