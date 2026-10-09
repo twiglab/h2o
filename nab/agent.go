@@ -45,7 +45,8 @@ func (a Agent) On(ctx context.Context, code string) error {
 			Sender: a.Sender,
 			Global: a.Global,
 			IDB:    a.IDB,
-			Logger: a.Logger},
+			Logger: a.Logger,
+		},
 	)
 	if err != nil {
 		return err
@@ -56,8 +57,8 @@ func (a Agent) On(ctx context.Context, code string) error {
 		Code:      dev.Code,
 		Type:      dev.Typ,
 		DataCode:  common.NewDataCode(),
-		Op:        common.OFF,
-		OptStatus: common.OPT_STATUS_OFF,
+		Op:        common.ON,
+		OptStatus: common.OPT_STATUS_ON,
 		DataTime:  time.Now(),
 	}
 	return a.Sender.SendData(ctx, oc)
@@ -75,7 +76,8 @@ func (a Agent) Off(ctx context.Context, code string) error {
 			Sender: a.Sender,
 			Global: a.Global,
 			IDB:    a.IDB,
-			Logger: a.Logger},
+			Logger: a.Logger,
+		},
 	)
 	if err != nil {
 		return err
