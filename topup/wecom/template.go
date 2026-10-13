@@ -26,7 +26,9 @@ const help_cmd_tpl = `
 const top_cmd_tpl = `
 # 表号：{{ .Code }}
 >当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
+{{ if .Last }}
 >当前余量（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
+{{ end }}
 {{ if .Tops }}
 ## 充值记录
 | 时间 | 度数 | 限额 | 金额 | 铺位号 |

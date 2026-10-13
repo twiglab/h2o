@@ -2,6 +2,7 @@ package wecom
 
 import (
 	"context"
+	"errors"
 	"strings"
 	"text/template"
 
@@ -33,7 +34,8 @@ func (c *topCmd) Do(ctx context.Context) (err error) {
 		First(ctx)
 
 	if err != nil {
-		return err
+		err = errors.New("无采集记录")
+		return
 	}
 
 	c.Tops, err = c.cli.Top.Query().
