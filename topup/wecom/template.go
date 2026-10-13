@@ -28,6 +28,8 @@ const top_cmd_tpl = `
 >当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
 {{ if .Last }}
 >当前余量（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
+{{else}}
+>无限额记录
 {{ end }}
 {{ if .Tops }}
 ## 充值记录
