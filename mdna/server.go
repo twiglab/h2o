@@ -5,22 +5,15 @@ import (
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 type Server struct {
-	DBx  *dbx.DBx
-	MCli mqtt.Client
-
 	Speaker Speaker
 
 	Logger *slog.Logger
 
 	Context context.Context
-
-	Alarm1 int64
-	Alarm2 int64
-	Alarm3 int64
 }
 
 func (s *Server) Run(ctx context.Context) error {
@@ -45,11 +38,11 @@ func (s *Server) MsgHandle() mqtt.MessageHandler {
 
 		defer msg.Ack()
 
-		parts := common.TopicPart(msg.Topic())
+		parts := proto.TopicPart(msg.Topic())
 		topicType := parts[1]
 
 		switch topicType {
-		case "chrgg": // chrgg 发送的限额消息
+		case proto.QUOTA: // chrgg 发送的限额消息
 			var chg ChrggMessage
 			if err := chg.UnmarshalBinary(msg.Payload()); err != nil {
 				// log
@@ -59,7 +52,7 @@ func (s *Server) MsgHandle() mqtt.MessageHandler {
 				// log
 				return
 			}
-		case "opt": // 盒子发送的开关消息(optStatus变更)
+		case proto.OPT: // 盒子发送的开关消息(optStatus变更)
 			code, op := parts[3], parts[4]
 			if err := s.OnOpt(s.Context, code, op); err != nil {
 				// log
@@ -70,13 +63,8 @@ func (s *Server) MsgHandle() mqtt.MessageHandler {
 }
 
 func (s *Server) OnOpt(ctx context.Context, code, op string) error {
-	if op == common.ON {
+	if op == proto.ON {
 		return nil
-	}
-
-	dev, err := s.DBx.LoadDevice(ctx, code)
-	if err != nil {
-		return err
 	}
 
 	n := Notice{
