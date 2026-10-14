@@ -4,41 +4,33 @@ import (
 	"context"
 	"strings"
 	"text/template"
-	"time"
 
 	"github.com/twiglab/h2o/mdna"
 	"github.com/xen0n/go-workwx/v2"
 )
 
 type WxBot struct {
-	BotKey string
-	Tmpl   *template.Template
+	templ *template.Template
+	whc   *workwx.WebhookClient
 }
 
 func NewWxBot(key string) WxBot {
-	tmpl := template.New("notice").Funcs(fm())
-	tmpl.New("opt").Parse(optTempl)
-	tmpl.New("chrgg").Parse(chrggTempl)
+	t := template.New("notice").Funcs(fm())
+
+	template.Must(t.New("opt").Parse(optTempl))
+	template.Must(t.New("chrgg").Parse(chrggTempl))
 
 	return WxBot{
-		BotKey: key,
-		Tmpl:   tmpl,
+		whc:   workwx.NewWebhookClient(key),
+		templ: t,
 	}
 }
 
-func (w WxBot) Notice(ctx context.Context, n mdna.Notice) error {
-	wc := workwx.NewWebhookClient(w.BotKey)
-
-	now := time.Now()
-
+func (w WxBot) StatusChangeNotice(ctx context.Context, n mdna.StatusChangeNoticeBody) error {
 	var sb strings.Builder
 	sb.Grow(2048)
-	if err := w.Tmpl.ExecuteTemplate(&sb, n.Type, NotictBox{
-		Now:    now,
-		Notice: n,
-	}); err != nil {
+	if err := w.templ.ExecuteTemplate(&sb, "opt", n); err != nil {
 		return err
 	}
-
-	return wc.SendMarkdownV2Message(sb.String())
+	return w.whc.SendMarkdownV2Message(sb.String())
 }

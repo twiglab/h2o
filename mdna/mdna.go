@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding"
 	"encoding/json/v2"
+	"time"
 
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/proto"
 )
 
@@ -34,13 +36,13 @@ func (d *ChrggMessage) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, d)
 }
 
-type Notice struct {
-	Device *ent.Device
-	Type   string
-	Charge ChrggMessage
+type StatusChangeNoticeBody struct {
+	Now    time.Time
+	Code   string
 	Op     string
+	Device *ent.Device
 }
 
 type Speaker interface {
-	Notice(ctx context.Context, n Notice) error
+	StatusChangeNotice(ctx context.Context, n StatusChangeNoticeBody) error
 }

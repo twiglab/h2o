@@ -2,7 +2,9 @@ package mdna
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/proto"
@@ -10,26 +12,28 @@ import (
 
 type Server struct {
 	Speaker Speaker
+	MCli    mqtt.Client
+	DBx     *DBx
 
 	Logger *slog.Logger
 
-	Context context.Context
+	context context.Context
 }
 
 func (s *Server) Run(ctx context.Context) error {
-	s.Context = ctx
+	s.context = ctx
 
 	msgMap := map[string]byte{
 		"h2o/chrgg/#": 0x01,
 		"h2o/opt/#":   0x01,
 	}
 
-	t := s.MCli.SubscribeMultiple(msgMap, s.MsgHandle())
+	t := s.MCli.SubscribeMultiple(msgMap, s.msgHandle())
 	t.Wait()
 	return t.Error()
 }
 
-func (s *Server) MsgHandle() mqtt.MessageHandler {
+func (s *Server) msgHandle() mqtt.MessageHandler {
 
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
@@ -48,14 +52,14 @@ func (s *Server) MsgHandle() mqtt.MessageHandler {
 				// log
 				return
 			}
-			if err := s.OnChrgg(s.Context, chg); err != nil {
+			if err := s.OnChrgg(s.context, chg); err != nil {
 				// log
 				return
 			}
 		case proto.OPT: // 盒子发送的开关消息(optStatus变更)
 			code, op := parts[3], parts[4]
-			if err := s.OnOpt(s.Context, code, op); err != nil {
-				// log
+			if err := s.OnOpt(s.context, code, op); err != nil {
+				fmt.Println(err)
 				return
 			}
 		}
@@ -67,34 +71,20 @@ func (s *Server) OnOpt(ctx context.Context, code, op string) error {
 		return nil
 	}
 
-	n := Notice{
-		Device: dev,
-		Type:   "opt",
-		Op:     op,
+	dev, err := s.DBx.LoadDeviceByCode(ctx, code)
+	if err != nil {
+		return err
 	}
-	return s.Speaker.Notice(ctx, n)
+
+	n := StatusChangeNoticeBody{
+		Now:    time.Now(),
+		Code:   code,
+		Op:     op,
+		Device: dev,
+	}
+	return s.Speaker.StatusChangeNotice(ctx, n)
 }
 
 func (s *Server) OnChrgg(ctx context.Context, chg ChrggMessage) error {
-
-	if chg.Top.Status != 0 {
-		// 已经结束或者非法的限额记录
-		return nil
-	}
-
-	if chg.Data.DataValue > chg.Top.Top {
-		// 人为调整的记录
-		return nil
-	}
-
-	dev, err := s.DBx.LoadDevice(ctx, chg.Code)
-	if err != nil {
-		return nil
-	}
-	n := Notice{
-		Device: dev,
-		Charge: chg,
-		Type:   "chrgg",
-	}
-	return s.Speaker.Notice(ctx, n)
+	return nil
 }

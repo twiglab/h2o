@@ -7,7 +7,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
-	github.com/twiglab/h2o/dbx v0.0.0-00010101000000-000000000000
+	github.com/twiglab/h2o/dbcli v0.0.0-00010101000000-000000000000
 	github.com/xen0n/go-workwx/v2 v2.0.0-alpha.1
 )
 
@@ -66,4 +66,4 @@ tool entgo.io/ent/cmd/ent
 
 replace github.com/twiglab/h2o => ../
 
-replace github.com/twiglab/h2o/dbx => ../dbx
+replace github.com/twiglab/h2o/dbcli => ../dbcli
