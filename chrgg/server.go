@@ -180,7 +180,9 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 			Gateway: md.Gateway,
 			Top:     vc,
 		}
-		s.Sender.SendData(ctx, m)
+		if err := s.Sender.SendData(ctx, m); err != nil {
+			s.Logger.InfoContext(ctx, "send quota msg error", slog.Any("error", err))
+		}
 	}
 
 	// 注意： 即便状态为 STATUS_END 也是要继续执行的
