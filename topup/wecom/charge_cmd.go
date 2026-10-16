@@ -19,7 +19,7 @@ type chargeCmd struct {
 	Code string
 
 	Incr   int64
-	Stock  int64
+	Stock  int64 // 输入的存量
 	Amount int64
 
 	TopVal int64
@@ -91,7 +91,8 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 	}
 
 	if time.Since(x.Nh.DataTime) > 12*time.Hour {
-		return errors.New("最后一次采集大于12小时")
+		err = errors.New("最后一次采集大于12小时，表具可能存在错误")
+		return
 	}
 
 	x.Top, err = x.cli.Top.Query().
@@ -106,10 +107,12 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 		x.Top = &ent.Top{}
 	}
 
+	// 没有输入存量，存量就是上一次的top
 	if x.Stock == 0 {
-		x.Stock = max(x.Top.Top, x.Top.EndStock, x.Nh.DataValue)
+		x.Stock = x.Top.Top
 	}
 
+	// 当前限额 永远等于存量+incr
 	x.TopVal = x.Stock + x.Incr
 
 	cr := x.cli.Top.Create()

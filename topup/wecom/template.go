@@ -18,8 +18,8 @@ const help_cmd_tpl = `
   例如：u 909_32
 -------
 以下命令只能指定人员在指定群组执行
-1. c <表号> <增量> [<金额> <起点>]
-   指定表号设定限额，限额计算公式为 增量 + max(当前表显示，上次限额)
+1. c <表号> <增量> [<金额> <存量>]
+   指定表号设定限额，限额计算公式为 增量 + 上次限额
   例如：c 909_32 50
 `
 
@@ -27,7 +27,7 @@ const top_cmd_tpl = `
 # 表号：{{ .Code }}
 >当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
 {{ if .Last }}
->当前余量（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
+>当前余额（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
 {{else}}
 >无限额记录
 {{ end }}
@@ -43,13 +43,15 @@ const top_cmd_tpl = `
 
 const charge_cmd_tpl = `
 # 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}
->充值度数 **{{.Incr | du}}** 度，起点**{{.Stock | du}}** 度
->充值金额 **{{ .Amount | yuan }}** 元
->充值后限额：**{{ .TopVal | du}}** 度
->当前表显 **{{ .Nh.DataValue | du}}** 度
+>充值度数：**{{.Incr | du}}** 度，存量**{{.Stock | du}}** 度
+>表显：**{{ .Nh.DataValue | du}}** 度，采集时间 {{ .Nh.DataTime | datetime}}
 
->充值时间 {{.TopAfter.ChargeTime | datetime}}
->充值代码 {{ .TopAfter.Code }}
+>限额：**{{ .TopVal | du}}** 度
+>余额（限额 - 表显） **{{ sub .TopVal .Nh.DataValue | du}}** 度
+>金额：**{{ .Amount | yuan }}** 元
+
+>充值时间：{{.TopAfter.ChargeTime | datetime}}
+>充值代码：{{ .TopAfter.Code }}
 
 充值后可用 t {{ .Code }} 命令查看限额详情
 `
