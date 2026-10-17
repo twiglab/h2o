@@ -9,8 +9,8 @@ import (
 	"context"
 
 	"github.com/twiglab/h2o/archon/gql/graph/model"
-	"github.com/twiglab/h2o/archon/orm/ent"
-	"github.com/twiglab/h2o/archon/orm/ent/device"
+	"github.com/twiglab/h2o/dbcli/ent"
+	"github.com/twiglab/h2o/dbcli/ent/device"
 )
 
 // DeviceCreate is the resolver for the deviceCreate field.

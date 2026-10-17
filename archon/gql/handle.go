@@ -9,7 +9,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"github.com/twiglab/h2o/archon/gql/graph"
 	"github.com/twiglab/h2o/archon/orm"
-	"github.com/twiglab/h2o/archon/orm/ent"
+	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 

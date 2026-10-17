@@ -7,8 +7,9 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/archon/orm"
-	"github.com/twiglab/h2o/archon/orm/ent"
 	"github.com/twiglab/h2o/clog"
+	"github.com/twiglab/h2o/dbcli"
+	"github.com/twiglab/h2o/dbcli/ent"
 )
 
 func webaddr() string {
@@ -20,7 +21,7 @@ func entcli() *ent.Client {
 	name := viper.GetString("archon.db.name")
 	dsn := viper.GetString("archon.db.dsn")
 
-	cli, err := orm.OpenEntClient(name, dsn)
+	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
 		log.Fatal(err)
 	}

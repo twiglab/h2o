@@ -2,10 +2,6 @@
 
 package model
 
-import (
-	"github.com/twiglab/h2o/archon/orm/ent"
-)
-
 type DeviceCleanInput struct {
 	Name string `json:"name"`
 }
@@ -47,27 +43,4 @@ type DeviceModifyInput struct {
 
 type DeviceRemoveInput struct {
 	ID string `json:"id"`
-}
-
-type ViewRecordBeforeIn struct {
-	DeviceCode string `json:"deviceCode"`
-	DataTs     string `json:"dataTs"`
-	PageSize   int    `json:"pageSize"`
-}
-
-type ViewRecordBeforeOut struct {
-	Result     []*ent.ViewRecord `json:"result"`
-	DeviceCode string            `json:"deviceCode"`
-	DataTs     string            `json:"dataTs"`
-	PageSize   int               `json:"pageSize"`
-}
-
-type ViewRecordPageIn struct {
-	PosCode    string `json:"posCode"`
-	Project    string `json:"project"`
-	DeviceCode string `json:"deviceCode"`
-	Start      string `json:"start"`
-	End        string `json:"end"`
-	Last       string `json:"last"`
-	PageSize   int    `json:"pageSize"`
 }
