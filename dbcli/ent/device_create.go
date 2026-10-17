@@ -106,13 +106,13 @@ func (_c *DeviceCreate) SetNillableGatewayCode(v *string) *DeviceCreate {
 }
 
 // SetRate sets the "rate" field.
-func (_c *DeviceCreate) SetRate(v int) *DeviceCreate {
+func (_c *DeviceCreate) SetRate(v int64) *DeviceCreate {
 	_c.mutation.SetRate(v)
 	return _c
 }
 
 // SetNillableRate sets the "rate" field if the given value is not nil.
-func (_c *DeviceCreate) SetNillableRate(v *int) *DeviceCreate {
+func (_c *DeviceCreate) SetNillableRate(v *int64) *DeviceCreate {
 	if v != nil {
 		_c.SetRate(*v)
 	}
@@ -120,13 +120,13 @@ func (_c *DeviceCreate) SetNillableRate(v *int) *DeviceCreate {
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (_c *DeviceCreate) SetUnitPrice(v int) *DeviceCreate {
+func (_c *DeviceCreate) SetUnitPrice(v int64) *DeviceCreate {
 	_c.mutation.SetUnitPrice(v)
 	return _c
 }
 
 // SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
-func (_c *DeviceCreate) SetNillableUnitPrice(v *int) *DeviceCreate {
+func (_c *DeviceCreate) SetNillableUnitPrice(v *int64) *DeviceCreate {
 	if v != nil {
 		_c.SetUnitPrice(*v)
 	}
@@ -149,6 +149,20 @@ func (_c *DeviceCreate) SetPosCode(v string) *DeviceCreate {
 func (_c *DeviceCreate) SetNillablePosCode(v *string) *DeviceCreate {
 	if v != nil {
 		_c.SetPosCode(*v)
+	}
+	return _c
+}
+
+// SetPosName sets the "pos_name" field.
+func (_c *DeviceCreate) SetPosName(v string) *DeviceCreate {
+	_c.mutation.SetPosName(v)
+	return _c
+}
+
+// SetNillablePosName sets the "pos_name" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillablePosName(v *string) *DeviceCreate {
+	if v != nil {
+		_c.SetPosName(*v)
 	}
 	return _c
 }
@@ -416,11 +430,11 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_node.GatewayCode = value
 	}
 	if value, ok := _c.mutation.Rate(); ok {
-		_spec.SetField(device.FieldRate, field.TypeInt, value)
+		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 		_node.Rate = value
 	}
 	if value, ok := _c.mutation.UnitPrice(); ok {
-		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
 		_node.UnitPrice = value
 	}
 	if value, ok := _c.mutation.Project(); ok {
@@ -430,6 +444,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
+	}
+	if value, ok := _c.mutation.PosName(); ok {
+		_spec.SetField(device.FieldPosName, field.TypeString, value)
+		_node.PosName = value
 	}
 	if value, ok := _c.mutation.AreaCode(); ok {
 		_spec.SetField(device.FieldAreaCode, field.TypeString, value)
@@ -594,7 +612,7 @@ func (u *DeviceUpsert) ClearGatewayCode() *DeviceUpsert {
 }
 
 // SetRate sets the "rate" field.
-func (u *DeviceUpsert) SetRate(v int) *DeviceUpsert {
+func (u *DeviceUpsert) SetRate(v int64) *DeviceUpsert {
 	u.Set(device.FieldRate, v)
 	return u
 }
@@ -606,13 +624,13 @@ func (u *DeviceUpsert) UpdateRate() *DeviceUpsert {
 }
 
 // AddRate adds v to the "rate" field.
-func (u *DeviceUpsert) AddRate(v int) *DeviceUpsert {
+func (u *DeviceUpsert) AddRate(v int64) *DeviceUpsert {
 	u.Add(device.FieldRate, v)
 	return u
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (u *DeviceUpsert) SetUnitPrice(v int) *DeviceUpsert {
+func (u *DeviceUpsert) SetUnitPrice(v int64) *DeviceUpsert {
 	u.Set(device.FieldUnitPrice, v)
 	return u
 }
@@ -624,7 +642,7 @@ func (u *DeviceUpsert) UpdateUnitPrice() *DeviceUpsert {
 }
 
 // AddUnitPrice adds v to the "unit_price" field.
-func (u *DeviceUpsert) AddUnitPrice(v int) *DeviceUpsert {
+func (u *DeviceUpsert) AddUnitPrice(v int64) *DeviceUpsert {
 	u.Add(device.FieldUnitPrice, v)
 	return u
 }
@@ -644,6 +662,24 @@ func (u *DeviceUpsert) UpdatePosCode() *DeviceUpsert {
 // ClearPosCode clears the value of the "pos_code" field.
 func (u *DeviceUpsert) ClearPosCode() *DeviceUpsert {
 	u.SetNull(device.FieldPosCode)
+	return u
+}
+
+// SetPosName sets the "pos_name" field.
+func (u *DeviceUpsert) SetPosName(v string) *DeviceUpsert {
+	u.Set(device.FieldPosName, v)
+	return u
+}
+
+// UpdatePosName sets the "pos_name" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdatePosName() *DeviceUpsert {
+	u.SetExcluded(device.FieldPosName)
+	return u
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (u *DeviceUpsert) ClearPosName() *DeviceUpsert {
+	u.SetNull(device.FieldPosName)
 	return u
 }
 
@@ -897,14 +933,14 @@ func (u *DeviceUpsertOne) ClearGatewayCode() *DeviceUpsertOne {
 }
 
 // SetRate sets the "rate" field.
-func (u *DeviceUpsertOne) SetRate(v int) *DeviceUpsertOne {
+func (u *DeviceUpsertOne) SetRate(v int64) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.SetRate(v)
 	})
 }
 
 // AddRate adds v to the "rate" field.
-func (u *DeviceUpsertOne) AddRate(v int) *DeviceUpsertOne {
+func (u *DeviceUpsertOne) AddRate(v int64) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.AddRate(v)
 	})
@@ -918,14 +954,14 @@ func (u *DeviceUpsertOne) UpdateRate() *DeviceUpsertOne {
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (u *DeviceUpsertOne) SetUnitPrice(v int) *DeviceUpsertOne {
+func (u *DeviceUpsertOne) SetUnitPrice(v int64) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.SetUnitPrice(v)
 	})
 }
 
 // AddUnitPrice adds v to the "unit_price" field.
-func (u *DeviceUpsertOne) AddUnitPrice(v int) *DeviceUpsertOne {
+func (u *DeviceUpsertOne) AddUnitPrice(v int64) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.AddUnitPrice(v)
 	})
@@ -956,6 +992,27 @@ func (u *DeviceUpsertOne) UpdatePosCode() *DeviceUpsertOne {
 func (u *DeviceUpsertOne) ClearPosCode() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearPosCode()
+	})
+}
+
+// SetPosName sets the "pos_name" field.
+func (u *DeviceUpsertOne) SetPosName(v string) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetPosName(v)
+	})
+}
+
+// UpdatePosName sets the "pos_name" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdatePosName() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdatePosName()
+	})
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (u *DeviceUpsertOne) ClearPosName() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearPosName()
 	})
 }
 
@@ -1391,14 +1448,14 @@ func (u *DeviceUpsertBulk) ClearGatewayCode() *DeviceUpsertBulk {
 }
 
 // SetRate sets the "rate" field.
-func (u *DeviceUpsertBulk) SetRate(v int) *DeviceUpsertBulk {
+func (u *DeviceUpsertBulk) SetRate(v int64) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.SetRate(v)
 	})
 }
 
 // AddRate adds v to the "rate" field.
-func (u *DeviceUpsertBulk) AddRate(v int) *DeviceUpsertBulk {
+func (u *DeviceUpsertBulk) AddRate(v int64) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.AddRate(v)
 	})
@@ -1412,14 +1469,14 @@ func (u *DeviceUpsertBulk) UpdateRate() *DeviceUpsertBulk {
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (u *DeviceUpsertBulk) SetUnitPrice(v int) *DeviceUpsertBulk {
+func (u *DeviceUpsertBulk) SetUnitPrice(v int64) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.SetUnitPrice(v)
 	})
 }
 
 // AddUnitPrice adds v to the "unit_price" field.
-func (u *DeviceUpsertBulk) AddUnitPrice(v int) *DeviceUpsertBulk {
+func (u *DeviceUpsertBulk) AddUnitPrice(v int64) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.AddUnitPrice(v)
 	})
@@ -1450,6 +1507,27 @@ func (u *DeviceUpsertBulk) UpdatePosCode() *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) ClearPosCode() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearPosCode()
+	})
+}
+
+// SetPosName sets the "pos_name" field.
+func (u *DeviceUpsertBulk) SetPosName(v string) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetPosName(v)
+	})
+}
+
+// UpdatePosName sets the "pos_name" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdatePosName() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdatePosName()
+	})
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (u *DeviceUpsertBulk) ClearPosName() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearPosName()
 	})
 }
 

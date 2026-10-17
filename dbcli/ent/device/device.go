@@ -35,6 +35,8 @@ const (
 	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
+	// FieldPosName holds the string denoting the pos_name field in the database.
+	FieldPosName = "pos_name"
 	// FieldAreaCode holds the string denoting the area_code field in the database.
 	FieldAreaCode = "area_code"
 	// FieldPcode holds the string denoting the pcode field in the database.
@@ -63,6 +65,7 @@ var Columns = []string{
 	FieldUnitPrice,
 	FieldProject,
 	FieldPosCode,
+	FieldPosName,
 	FieldAreaCode,
 	FieldPcode,
 	FieldStatus,
@@ -92,9 +95,9 @@ var (
 	// DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	DeviceTypeValidator func(string) error
 	// DefaultRate holds the default value on creation for the "rate" field.
-	DefaultRate int
+	DefaultRate int64
 	// DefaultUnitPrice holds the default value on creation for the "unit_price" field.
-	DefaultUnitPrice int
+	DefaultUnitPrice int64
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	ProjectValidator func(string) error
 	// DefaultStatus holds the default value on creation for the "status" field.
@@ -168,6 +171,11 @@ func ByProject(opts ...sql.OrderTermOption) OrderOption {
 // ByPosCode orders the results by the pos_code field.
 func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
+}
+
+// ByPosName orders the results by the pos_name field.
+func ByPosName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPosName, opts...).ToFunc()
 }
 
 // ByAreaCode orders the results by the area_code field.

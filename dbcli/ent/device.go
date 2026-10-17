@@ -32,13 +32,15 @@ type Device struct {
 	// 网关编号
 	GatewayCode string `json:"gateway_code,omitempty"`
 	// 倍率
-	Rate int `json:"rate,omitempty"`
+	Rate int64 `json:"rate,omitempty"`
 	// 每度电的单价
-	UnitPrice int `json:"unit_price,omitempty"`
+	UnitPrice int64 `json:"unit_price,omitempty"`
 	// 项目编号
 	Project string `json:"project,omitempty"`
 	// 位置编号
 	PosCode string `json:"pos_code,omitempty"`
+	// 位置名称
+	PosName string `json:"pos_name,omitempty"`
 	// 区域编号
 	AreaCode string `json:"area_code,omitempty"`
 	// 对外位置编号
@@ -59,7 +61,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case device.FieldRate, device.FieldUnitPrice, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldGatewayCode, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
+		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldGatewayCode, device.FieldProject, device.FieldPosCode, device.FieldPosName, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
 		case device.FieldCreateTime, device.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -130,13 +132,13 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field rate", values[i])
 			} else if value.Valid {
-				_m.Rate = int(value.Int64)
+				_m.Rate = value.Int64
 			}
 		case device.FieldUnitPrice:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field unit_price", values[i])
 			} else if value.Valid {
-				_m.UnitPrice = int(value.Int64)
+				_m.UnitPrice = value.Int64
 			}
 		case device.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -149,6 +151,12 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pos_code", values[i])
 			} else if value.Valid {
 				_m.PosCode = value.String
+			}
+		case device.FieldPosName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field pos_name", values[i])
+			} else if value.Valid {
+				_m.PosName = value.String
 			}
 		case device.FieldAreaCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -248,6 +256,9 @@ func (_m *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pos_code=")
 	builder.WriteString(_m.PosCode)
+	builder.WriteString(", ")
+	builder.WriteString("pos_name=")
+	builder.WriteString(_m.PosName)
 	builder.WriteString(", ")
 	builder.WriteString("area_code=")
 	builder.WriteString(_m.AreaCode)

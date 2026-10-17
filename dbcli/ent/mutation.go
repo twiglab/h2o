@@ -44,12 +44,13 @@ type DeviceMutation struct {
 	device_sn     *string
 	device_name   *string
 	gateway_code  *string
-	rate          *int
-	addrate       *int
-	unit_price    *int
-	addunit_price *int
+	rate          *int64
+	addrate       *int64
+	unit_price    *int64
+	addunit_price *int64
 	project       *string
 	pos_code      *string
+	pos_name      *string
 	area_code     *string
 	pcode         *string
 	status        *int
@@ -459,13 +460,13 @@ func (m *DeviceMutation) ResetGatewayCode() {
 }
 
 // SetRate sets the "rate" field.
-func (m *DeviceMutation) SetRate(i int) {
+func (m *DeviceMutation) SetRate(i int64) {
 	m.rate = &i
 	m.addrate = nil
 }
 
 // Rate returns the value of the "rate" field in the mutation.
-func (m *DeviceMutation) Rate() (r int, exists bool) {
+func (m *DeviceMutation) Rate() (r int64, exists bool) {
 	v := m.rate
 	if v == nil {
 		return
@@ -476,7 +477,7 @@ func (m *DeviceMutation) Rate() (r int, exists bool) {
 // OldRate returns the old "rate" field's value of the Device entity.
 // If the Device object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceMutation) OldRate(ctx context.Context) (v int, err error) {
+func (m *DeviceMutation) OldRate(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldRate is only allowed on UpdateOne operations")
 	}
@@ -491,7 +492,7 @@ func (m *DeviceMutation) OldRate(ctx context.Context) (v int, err error) {
 }
 
 // AddRate adds i to the "rate" field.
-func (m *DeviceMutation) AddRate(i int) {
+func (m *DeviceMutation) AddRate(i int64) {
 	if m.addrate != nil {
 		*m.addrate += i
 	} else {
@@ -500,7 +501,7 @@ func (m *DeviceMutation) AddRate(i int) {
 }
 
 // AddedRate returns the value that was added to the "rate" field in this mutation.
-func (m *DeviceMutation) AddedRate() (r int, exists bool) {
+func (m *DeviceMutation) AddedRate() (r int64, exists bool) {
 	v := m.addrate
 	if v == nil {
 		return
@@ -515,13 +516,13 @@ func (m *DeviceMutation) ResetRate() {
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (m *DeviceMutation) SetUnitPrice(i int) {
+func (m *DeviceMutation) SetUnitPrice(i int64) {
 	m.unit_price = &i
 	m.addunit_price = nil
 }
 
 // UnitPrice returns the value of the "unit_price" field in the mutation.
-func (m *DeviceMutation) UnitPrice() (r int, exists bool) {
+func (m *DeviceMutation) UnitPrice() (r int64, exists bool) {
 	v := m.unit_price
 	if v == nil {
 		return
@@ -532,7 +533,7 @@ func (m *DeviceMutation) UnitPrice() (r int, exists bool) {
 // OldUnitPrice returns the old "unit_price" field's value of the Device entity.
 // If the Device object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DeviceMutation) OldUnitPrice(ctx context.Context) (v int, err error) {
+func (m *DeviceMutation) OldUnitPrice(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldUnitPrice is only allowed on UpdateOne operations")
 	}
@@ -547,7 +548,7 @@ func (m *DeviceMutation) OldUnitPrice(ctx context.Context) (v int, err error) {
 }
 
 // AddUnitPrice adds i to the "unit_price" field.
-func (m *DeviceMutation) AddUnitPrice(i int) {
+func (m *DeviceMutation) AddUnitPrice(i int64) {
 	if m.addunit_price != nil {
 		*m.addunit_price += i
 	} else {
@@ -556,7 +557,7 @@ func (m *DeviceMutation) AddUnitPrice(i int) {
 }
 
 // AddedUnitPrice returns the value that was added to the "unit_price" field in this mutation.
-func (m *DeviceMutation) AddedUnitPrice() (r int, exists bool) {
+func (m *DeviceMutation) AddedUnitPrice() (r int64, exists bool) {
 	v := m.addunit_price
 	if v == nil {
 		return
@@ -653,6 +654,55 @@ func (m *DeviceMutation) PosCodeCleared() bool {
 func (m *DeviceMutation) ResetPosCode() {
 	m.pos_code = nil
 	delete(m.clearedFields, device.FieldPosCode)
+}
+
+// SetPosName sets the "pos_name" field.
+func (m *DeviceMutation) SetPosName(s string) {
+	m.pos_name = &s
+}
+
+// PosName returns the value of the "pos_name" field in the mutation.
+func (m *DeviceMutation) PosName() (r string, exists bool) {
+	v := m.pos_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPosName returns the old "pos_name" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldPosName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPosName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPosName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPosName: %w", err)
+	}
+	return oldValue.PosName, nil
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (m *DeviceMutation) ClearPosName() {
+	m.pos_name = nil
+	m.clearedFields[device.FieldPosName] = struct{}{}
+}
+
+// PosNameCleared returns if the "pos_name" field was cleared in this mutation.
+func (m *DeviceMutation) PosNameCleared() bool {
+	_, ok := m.clearedFields[device.FieldPosName]
+	return ok
+}
+
+// ResetPosName resets all changes to the "pos_name" field.
+func (m *DeviceMutation) ResetPosName() {
+	m.pos_name = nil
+	delete(m.clearedFields, device.FieldPosName)
 }
 
 // SetAreaCode sets the "area_code" field.
@@ -948,7 +998,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 17)
 	if m.create_time != nil {
 		fields = append(fields, device.FieldCreateTime)
 	}
@@ -981,6 +1031,9 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.pos_code != nil {
 		fields = append(fields, device.FieldPosCode)
+	}
+	if m.pos_name != nil {
+		fields = append(fields, device.FieldPosName)
 	}
 	if m.area_code != nil {
 		fields = append(fields, device.FieldAreaCode)
@@ -1027,6 +1080,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.Project()
 	case device.FieldPosCode:
 		return m.PosCode()
+	case device.FieldPosName:
+		return m.PosName()
 	case device.FieldAreaCode:
 		return m.AreaCode()
 	case device.FieldPcode:
@@ -1068,6 +1123,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldProject(ctx)
 	case device.FieldPosCode:
 		return m.OldPosCode(ctx)
+	case device.FieldPosName:
+		return m.OldPosName(ctx)
 	case device.FieldAreaCode:
 		return m.OldAreaCode(ctx)
 	case device.FieldPcode:
@@ -1137,14 +1194,14 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		m.SetGatewayCode(v)
 		return nil
 	case device.FieldRate:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRate(v)
 		return nil
 	case device.FieldUnitPrice:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1163,6 +1220,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPosCode(v)
+		return nil
+	case device.FieldPosName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPosName(v)
 		return nil
 	case device.FieldAreaCode:
 		v, ok := value.(string)
@@ -1245,14 +1309,14 @@ func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 	switch name {
 	case device.FieldRate:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRate(v)
 		return nil
 	case device.FieldUnitPrice:
-		v, ok := value.(int)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -1292,6 +1356,9 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldPosCode) {
 		fields = append(fields, device.FieldPosCode)
 	}
+	if m.FieldCleared(device.FieldPosName) {
+		fields = append(fields, device.FieldPosName)
+	}
 	if m.FieldCleared(device.FieldAreaCode) {
 		fields = append(fields, device.FieldAreaCode)
 	}
@@ -1326,6 +1393,9 @@ func (m *DeviceMutation) ClearField(name string) error {
 		return nil
 	case device.FieldPosCode:
 		m.ClearPosCode()
+		return nil
+	case device.FieldPosName:
+		m.ClearPosName()
 		return nil
 	case device.FieldAreaCode:
 		m.ClearAreaCode()
@@ -1376,6 +1446,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldPosCode:
 		m.ResetPosCode()
+		return nil
+	case device.FieldPosName:
+		m.ResetPosName()
 		return nil
 	case device.FieldAreaCode:
 		m.ResetAreaCode()

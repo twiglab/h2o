@@ -100,12 +100,12 @@ func GatewayCode(v string) predicate.Device {
 }
 
 // Rate applies equality check predicate on the "rate" field. It's identical to RateEQ.
-func Rate(v int) predicate.Device {
+func Rate(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
 }
 
 // UnitPrice applies equality check predicate on the "unit_price" field. It's identical to UnitPriceEQ.
-func UnitPrice(v int) predicate.Device {
+func UnitPrice(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldUnitPrice, v))
 }
 
@@ -117,6 +117,11 @@ func Project(v string) predicate.Device {
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
 func PosCode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldPosCode, v))
+}
+
+// PosName applies equality check predicate on the "pos_name" field. It's identical to PosNameEQ.
+func PosName(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldPosName, v))
 }
 
 // AreaCode applies equality check predicate on the "area_code" field. It's identical to AreaCodeEQ.
@@ -580,82 +585,82 @@ func GatewayCodeContainsFold(v string) predicate.Device {
 }
 
 // RateEQ applies the EQ predicate on the "rate" field.
-func RateEQ(v int) predicate.Device {
+func RateEQ(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
 }
 
 // RateNEQ applies the NEQ predicate on the "rate" field.
-func RateNEQ(v int) predicate.Device {
+func RateNEQ(v int64) predicate.Device {
 	return predicate.Device(sql.FieldNEQ(FieldRate, v))
 }
 
 // RateIn applies the In predicate on the "rate" field.
-func RateIn(vs ...int) predicate.Device {
+func RateIn(vs ...int64) predicate.Device {
 	return predicate.Device(sql.FieldIn(FieldRate, vs...))
 }
 
 // RateNotIn applies the NotIn predicate on the "rate" field.
-func RateNotIn(vs ...int) predicate.Device {
+func RateNotIn(vs ...int64) predicate.Device {
 	return predicate.Device(sql.FieldNotIn(FieldRate, vs...))
 }
 
 // RateGT applies the GT predicate on the "rate" field.
-func RateGT(v int) predicate.Device {
+func RateGT(v int64) predicate.Device {
 	return predicate.Device(sql.FieldGT(FieldRate, v))
 }
 
 // RateGTE applies the GTE predicate on the "rate" field.
-func RateGTE(v int) predicate.Device {
+func RateGTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldGTE(FieldRate, v))
 }
 
 // RateLT applies the LT predicate on the "rate" field.
-func RateLT(v int) predicate.Device {
+func RateLT(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLT(FieldRate, v))
 }
 
 // RateLTE applies the LTE predicate on the "rate" field.
-func RateLTE(v int) predicate.Device {
+func RateLTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldRate, v))
 }
 
 // UnitPriceEQ applies the EQ predicate on the "unit_price" field.
-func UnitPriceEQ(v int) predicate.Device {
+func UnitPriceEQ(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldUnitPrice, v))
 }
 
 // UnitPriceNEQ applies the NEQ predicate on the "unit_price" field.
-func UnitPriceNEQ(v int) predicate.Device {
+func UnitPriceNEQ(v int64) predicate.Device {
 	return predicate.Device(sql.FieldNEQ(FieldUnitPrice, v))
 }
 
 // UnitPriceIn applies the In predicate on the "unit_price" field.
-func UnitPriceIn(vs ...int) predicate.Device {
+func UnitPriceIn(vs ...int64) predicate.Device {
 	return predicate.Device(sql.FieldIn(FieldUnitPrice, vs...))
 }
 
 // UnitPriceNotIn applies the NotIn predicate on the "unit_price" field.
-func UnitPriceNotIn(vs ...int) predicate.Device {
+func UnitPriceNotIn(vs ...int64) predicate.Device {
 	return predicate.Device(sql.FieldNotIn(FieldUnitPrice, vs...))
 }
 
 // UnitPriceGT applies the GT predicate on the "unit_price" field.
-func UnitPriceGT(v int) predicate.Device {
+func UnitPriceGT(v int64) predicate.Device {
 	return predicate.Device(sql.FieldGT(FieldUnitPrice, v))
 }
 
 // UnitPriceGTE applies the GTE predicate on the "unit_price" field.
-func UnitPriceGTE(v int) predicate.Device {
+func UnitPriceGTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldGTE(FieldUnitPrice, v))
 }
 
 // UnitPriceLT applies the LT predicate on the "unit_price" field.
-func UnitPriceLT(v int) predicate.Device {
+func UnitPriceLT(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLT(FieldUnitPrice, v))
 }
 
 // UnitPriceLTE applies the LTE predicate on the "unit_price" field.
-func UnitPriceLTE(v int) predicate.Device {
+func UnitPriceLTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldUnitPrice, v))
 }
 
@@ -797,6 +802,81 @@ func PosCodeEqualFold(v string) predicate.Device {
 // PosCodeContainsFold applies the ContainsFold predicate on the "pos_code" field.
 func PosCodeContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldPosCode, v))
+}
+
+// PosNameEQ applies the EQ predicate on the "pos_name" field.
+func PosNameEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldPosName, v))
+}
+
+// PosNameNEQ applies the NEQ predicate on the "pos_name" field.
+func PosNameNEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldPosName, v))
+}
+
+// PosNameIn applies the In predicate on the "pos_name" field.
+func PosNameIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldPosName, vs...))
+}
+
+// PosNameNotIn applies the NotIn predicate on the "pos_name" field.
+func PosNameNotIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldPosName, vs...))
+}
+
+// PosNameGT applies the GT predicate on the "pos_name" field.
+func PosNameGT(v string) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldPosName, v))
+}
+
+// PosNameGTE applies the GTE predicate on the "pos_name" field.
+func PosNameGTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldPosName, v))
+}
+
+// PosNameLT applies the LT predicate on the "pos_name" field.
+func PosNameLT(v string) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldPosName, v))
+}
+
+// PosNameLTE applies the LTE predicate on the "pos_name" field.
+func PosNameLTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldPosName, v))
+}
+
+// PosNameContains applies the Contains predicate on the "pos_name" field.
+func PosNameContains(v string) predicate.Device {
+	return predicate.Device(sql.FieldContains(FieldPosName, v))
+}
+
+// PosNameHasPrefix applies the HasPrefix predicate on the "pos_name" field.
+func PosNameHasPrefix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasPrefix(FieldPosName, v))
+}
+
+// PosNameHasSuffix applies the HasSuffix predicate on the "pos_name" field.
+func PosNameHasSuffix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasSuffix(FieldPosName, v))
+}
+
+// PosNameIsNil applies the IsNil predicate on the "pos_name" field.
+func PosNameIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldPosName))
+}
+
+// PosNameNotNil applies the NotNil predicate on the "pos_name" field.
+func PosNameNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldPosName))
+}
+
+// PosNameEqualFold applies the EqualFold predicate on the "pos_name" field.
+func PosNameEqualFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldEqualFold(FieldPosName, v))
+}
+
+// PosNameContainsFold applies the ContainsFold predicate on the "pos_name" field.
+func PosNameContainsFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldContainsFold(FieldPosName, v))
 }
 
 // AreaCodeEQ applies the EQ predicate on the "area_code" field.

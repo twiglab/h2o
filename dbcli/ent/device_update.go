@@ -123,14 +123,14 @@ func (_u *DeviceUpdate) ClearGatewayCode() *DeviceUpdate {
 }
 
 // SetRate sets the "rate" field.
-func (_u *DeviceUpdate) SetRate(v int) *DeviceUpdate {
+func (_u *DeviceUpdate) SetRate(v int64) *DeviceUpdate {
 	_u.mutation.ResetRate()
 	_u.mutation.SetRate(v)
 	return _u
 }
 
 // SetNillableRate sets the "rate" field if the given value is not nil.
-func (_u *DeviceUpdate) SetNillableRate(v *int) *DeviceUpdate {
+func (_u *DeviceUpdate) SetNillableRate(v *int64) *DeviceUpdate {
 	if v != nil {
 		_u.SetRate(*v)
 	}
@@ -138,20 +138,20 @@ func (_u *DeviceUpdate) SetNillableRate(v *int) *DeviceUpdate {
 }
 
 // AddRate adds value to the "rate" field.
-func (_u *DeviceUpdate) AddRate(v int) *DeviceUpdate {
+func (_u *DeviceUpdate) AddRate(v int64) *DeviceUpdate {
 	_u.mutation.AddRate(v)
 	return _u
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (_u *DeviceUpdate) SetUnitPrice(v int) *DeviceUpdate {
+func (_u *DeviceUpdate) SetUnitPrice(v int64) *DeviceUpdate {
 	_u.mutation.ResetUnitPrice()
 	_u.mutation.SetUnitPrice(v)
 	return _u
 }
 
 // SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
-func (_u *DeviceUpdate) SetNillableUnitPrice(v *int) *DeviceUpdate {
+func (_u *DeviceUpdate) SetNillableUnitPrice(v *int64) *DeviceUpdate {
 	if v != nil {
 		_u.SetUnitPrice(*v)
 	}
@@ -159,7 +159,7 @@ func (_u *DeviceUpdate) SetNillableUnitPrice(v *int) *DeviceUpdate {
 }
 
 // AddUnitPrice adds value to the "unit_price" field.
-func (_u *DeviceUpdate) AddUnitPrice(v int) *DeviceUpdate {
+func (_u *DeviceUpdate) AddUnitPrice(v int64) *DeviceUpdate {
 	_u.mutation.AddUnitPrice(v)
 	return _u
 }
@@ -181,6 +181,26 @@ func (_u *DeviceUpdate) SetNillablePosCode(v *string) *DeviceUpdate {
 // ClearPosCode clears the value of the "pos_code" field.
 func (_u *DeviceUpdate) ClearPosCode() *DeviceUpdate {
 	_u.mutation.ClearPosCode()
+	return _u
+}
+
+// SetPosName sets the "pos_name" field.
+func (_u *DeviceUpdate) SetPosName(v string) *DeviceUpdate {
+	_u.mutation.SetPosName(v)
+	return _u
+}
+
+// SetNillablePosName sets the "pos_name" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillablePosName(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetPosName(*v)
+	}
+	return _u
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (_u *DeviceUpdate) ClearPosName() *DeviceUpdate {
+	_u.mutation.ClearPosName()
 	return _u
 }
 
@@ -382,22 +402,28 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Rate(); ok {
-		_spec.SetField(device.FieldRate, field.TypeInt, value)
+		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRate(); ok {
-		_spec.AddField(device.FieldRate, field.TypeInt, value)
+		_spec.AddField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UnitPrice(); ok {
-		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUnitPrice(); ok {
-		_spec.AddField(device.FieldUnitPrice, field.TypeInt, value)
+		_spec.AddField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 	}
 	if _u.mutation.PosCodeCleared() {
 		_spec.ClearField(device.FieldPosCode, field.TypeString)
+	}
+	if value, ok := _u.mutation.PosName(); ok {
+		_spec.SetField(device.FieldPosName, field.TypeString, value)
+	}
+	if _u.mutation.PosNameCleared() {
+		_spec.ClearField(device.FieldPosName, field.TypeString)
 	}
 	if value, ok := _u.mutation.AreaCode(); ok {
 		_spec.SetField(device.FieldAreaCode, field.TypeString, value)
@@ -544,14 +570,14 @@ func (_u *DeviceUpdateOne) ClearGatewayCode() *DeviceUpdateOne {
 }
 
 // SetRate sets the "rate" field.
-func (_u *DeviceUpdateOne) SetRate(v int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) SetRate(v int64) *DeviceUpdateOne {
 	_u.mutation.ResetRate()
 	_u.mutation.SetRate(v)
 	return _u
 }
 
 // SetNillableRate sets the "rate" field if the given value is not nil.
-func (_u *DeviceUpdateOne) SetNillableRate(v *int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) SetNillableRate(v *int64) *DeviceUpdateOne {
 	if v != nil {
 		_u.SetRate(*v)
 	}
@@ -559,20 +585,20 @@ func (_u *DeviceUpdateOne) SetNillableRate(v *int) *DeviceUpdateOne {
 }
 
 // AddRate adds value to the "rate" field.
-func (_u *DeviceUpdateOne) AddRate(v int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) AddRate(v int64) *DeviceUpdateOne {
 	_u.mutation.AddRate(v)
 	return _u
 }
 
 // SetUnitPrice sets the "unit_price" field.
-func (_u *DeviceUpdateOne) SetUnitPrice(v int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) SetUnitPrice(v int64) *DeviceUpdateOne {
 	_u.mutation.ResetUnitPrice()
 	_u.mutation.SetUnitPrice(v)
 	return _u
 }
 
 // SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
-func (_u *DeviceUpdateOne) SetNillableUnitPrice(v *int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) SetNillableUnitPrice(v *int64) *DeviceUpdateOne {
 	if v != nil {
 		_u.SetUnitPrice(*v)
 	}
@@ -580,7 +606,7 @@ func (_u *DeviceUpdateOne) SetNillableUnitPrice(v *int) *DeviceUpdateOne {
 }
 
 // AddUnitPrice adds value to the "unit_price" field.
-func (_u *DeviceUpdateOne) AddUnitPrice(v int) *DeviceUpdateOne {
+func (_u *DeviceUpdateOne) AddUnitPrice(v int64) *DeviceUpdateOne {
 	_u.mutation.AddUnitPrice(v)
 	return _u
 }
@@ -602,6 +628,26 @@ func (_u *DeviceUpdateOne) SetNillablePosCode(v *string) *DeviceUpdateOne {
 // ClearPosCode clears the value of the "pos_code" field.
 func (_u *DeviceUpdateOne) ClearPosCode() *DeviceUpdateOne {
 	_u.mutation.ClearPosCode()
+	return _u
+}
+
+// SetPosName sets the "pos_name" field.
+func (_u *DeviceUpdateOne) SetPosName(v string) *DeviceUpdateOne {
+	_u.mutation.SetPosName(v)
+	return _u
+}
+
+// SetNillablePosName sets the "pos_name" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillablePosName(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetPosName(*v)
+	}
+	return _u
+}
+
+// ClearPosName clears the value of the "pos_name" field.
+func (_u *DeviceUpdateOne) ClearPosName() *DeviceUpdateOne {
+	_u.mutation.ClearPosName()
 	return _u
 }
 
@@ -833,22 +879,28 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Rate(); ok {
-		_spec.SetField(device.FieldRate, field.TypeInt, value)
+		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRate(); ok {
-		_spec.AddField(device.FieldRate, field.TypeInt, value)
+		_spec.AddField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UnitPrice(); ok {
-		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedUnitPrice(); ok {
-		_spec.AddField(device.FieldUnitPrice, field.TypeInt, value)
+		_spec.AddField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 	}
 	if _u.mutation.PosCodeCleared() {
 		_spec.ClearField(device.FieldPosCode, field.TypeString)
+	}
+	if value, ok := _u.mutation.PosName(); ok {
+		_spec.SetField(device.FieldPosName, field.TypeString, value)
+	}
+	if _u.mutation.PosNameCleared() {
+		_spec.ClearField(device.FieldPosName, field.TypeString)
 	}
 	if value, ok := _u.mutation.AreaCode(); ok {
 		_spec.SetField(device.FieldAreaCode, field.TypeString, value)
