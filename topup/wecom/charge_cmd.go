@@ -107,6 +107,11 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 		x.Top = &ent.Top{}
 	}
 
+	if time.Since(x.Top.ChargeTime) < 5*time.Minute {
+		err = errors.New("充值间隔必须大于5分钟")
+		return
+	}
+
 	// 没有输入存量，存量就是上一次的top
 	if x.Stock == 0 {
 		x.Stock = x.Top.Top
