@@ -104,6 +104,11 @@ func Rate(v int) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
 }
 
+// UnitPrice applies equality check predicate on the "unit_price" field. It's identical to UnitPriceEQ.
+func UnitPrice(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldUnitPrice, v))
+}
+
 // Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
 func Project(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldProject, v))
@@ -612,6 +617,46 @@ func RateLT(v int) predicate.Device {
 // RateLTE applies the LTE predicate on the "rate" field.
 func RateLTE(v int) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldRate, v))
+}
+
+// UnitPriceEQ applies the EQ predicate on the "unit_price" field.
+func UnitPriceEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldUnitPrice, v))
+}
+
+// UnitPriceNEQ applies the NEQ predicate on the "unit_price" field.
+func UnitPriceNEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldUnitPrice, v))
+}
+
+// UnitPriceIn applies the In predicate on the "unit_price" field.
+func UnitPriceIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldUnitPrice, vs...))
+}
+
+// UnitPriceNotIn applies the NotIn predicate on the "unit_price" field.
+func UnitPriceNotIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldUnitPrice, vs...))
+}
+
+// UnitPriceGT applies the GT predicate on the "unit_price" field.
+func UnitPriceGT(v int) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldUnitPrice, v))
+}
+
+// UnitPriceGTE applies the GTE predicate on the "unit_price" field.
+func UnitPriceGTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldUnitPrice, v))
+}
+
+// UnitPriceLT applies the LT predicate on the "unit_price" field.
+func UnitPriceLT(v int) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldUnitPrice, v))
+}
+
+// UnitPriceLTE applies the LTE predicate on the "unit_price" field.
+func UnitPriceLTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldUnitPrice, v))
 }
 
 // ProjectEQ applies the EQ predicate on the "project" field.

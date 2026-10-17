@@ -143,6 +143,27 @@ func (_u *DeviceUpdate) AddRate(v int) *DeviceUpdate {
 	return _u
 }
 
+// SetUnitPrice sets the "unit_price" field.
+func (_u *DeviceUpdate) SetUnitPrice(v int) *DeviceUpdate {
+	_u.mutation.ResetUnitPrice()
+	_u.mutation.SetUnitPrice(v)
+	return _u
+}
+
+// SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableUnitPrice(v *int) *DeviceUpdate {
+	if v != nil {
+		_u.SetUnitPrice(*v)
+	}
+	return _u
+}
+
+// AddUnitPrice adds value to the "unit_price" field.
+func (_u *DeviceUpdate) AddUnitPrice(v int) *DeviceUpdate {
+	_u.mutation.AddUnitPrice(v)
+	return _u
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_u *DeviceUpdate) SetPosCode(v string) *DeviceUpdate {
 	_u.mutation.SetPosCode(v)
@@ -366,6 +387,12 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedRate(); ok {
 		_spec.AddField(device.FieldRate, field.TypeInt, value)
 	}
+	if value, ok := _u.mutation.UnitPrice(); ok {
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUnitPrice(); ok {
+		_spec.AddField(device.FieldUnitPrice, field.TypeInt, value)
+	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 	}
@@ -534,6 +561,27 @@ func (_u *DeviceUpdateOne) SetNillableRate(v *int) *DeviceUpdateOne {
 // AddRate adds value to the "rate" field.
 func (_u *DeviceUpdateOne) AddRate(v int) *DeviceUpdateOne {
 	_u.mutation.AddRate(v)
+	return _u
+}
+
+// SetUnitPrice sets the "unit_price" field.
+func (_u *DeviceUpdateOne) SetUnitPrice(v int) *DeviceUpdateOne {
+	_u.mutation.ResetUnitPrice()
+	_u.mutation.SetUnitPrice(v)
+	return _u
+}
+
+// SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableUnitPrice(v *int) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetUnitPrice(*v)
+	}
+	return _u
+}
+
+// AddUnitPrice adds value to the "unit_price" field.
+func (_u *DeviceUpdateOne) AddUnitPrice(v int) *DeviceUpdateOne {
+	_u.mutation.AddUnitPrice(v)
 	return _u
 }
 
@@ -789,6 +837,12 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	}
 	if value, ok := _u.mutation.AddedRate(); ok {
 		_spec.AddField(device.FieldRate, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.UnitPrice(); ok {
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUnitPrice(); ok {
+		_spec.AddField(device.FieldUnitPrice, field.TypeInt, value)
 	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)

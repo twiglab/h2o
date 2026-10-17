@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/twiglab/h2o/dbcli/ent/alarm"
 	"github.com/twiglab/h2o/dbcli/ent/device"
 	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
 	"github.com/twiglab/h2o/dbcli/ent/top"
@@ -76,7 +75,6 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			alarm.Table:    alarm.ValidColumn,
 			device.Table:   device.ValidColumn,
 			nhrecord.Table: nhrecord.ValidColumn,
 			top.Table:      top.ValidColumn,

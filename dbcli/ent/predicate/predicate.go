@@ -6,9 +6,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Alarm is the predicate function for alarm builders.
-type Alarm func(*sql.Selector)
-
 // Device is the predicate function for device builders.
 type Device func(*sql.Selector)
 

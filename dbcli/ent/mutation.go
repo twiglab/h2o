@@ -11,7 +11,6 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/dbcli/ent/alarm"
 	"github.com/twiglab/h2o/dbcli/ent/device"
 	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
 	"github.com/twiglab/h2o/dbcli/ent/predicate"
@@ -27,1144 +26,10 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeAlarm    = "Alarm"
 	TypeDevice   = "Device"
 	TypeNhRecord = "NhRecord"
 	TypeTop      = "Top"
 )
-
-// AlarmMutation represents an operation that mutates the Alarm nodes in the graph.
-type AlarmMutation struct {
-	config
-	op               Op
-	typ              string
-	id               *string
-	top_id           *string
-	top_code         *string
-	alarm_1          *int
-	addalarm_1       *int
-	alarm_time_1     *time.Time
-	alarm_stock_1    *int64
-	addalarm_stock_1 *int64
-	alarm_2          *int
-	addalarm_2       *int
-	alarm_time_2     *time.Time
-	alarm_stock_2    *int64
-	addalarm_stock_2 *int64
-	alarm_3          *int
-	addalarm_3       *int
-	alarm_time_3     *time.Time
-	alarm_stock_3    *int64
-	addalarm_stock_3 *int64
-	clearedFields    map[string]struct{}
-	done             bool
-	oldValue         func(context.Context) (*Alarm, error)
-	predicates       []predicate.Alarm
-}
-
-var _ ent.Mutation = (*AlarmMutation)(nil)
-
-// alarmOption allows management of the mutation configuration using functional options.
-type alarmOption func(*AlarmMutation)
-
-// newAlarmMutation creates new mutation for the Alarm entity.
-func newAlarmMutation(c config, op Op, opts ...alarmOption) *AlarmMutation {
-	m := &AlarmMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeAlarm,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withAlarmID sets the ID field of the mutation.
-func withAlarmID(id string) alarmOption {
-	return func(m *AlarmMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *Alarm
-		)
-		m.oldValue = func(ctx context.Context) (*Alarm, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().Alarm.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withAlarm sets the old Alarm of the mutation.
-func withAlarm(node *Alarm) alarmOption {
-	return func(m *AlarmMutation) {
-		m.oldValue = func(context.Context) (*Alarm, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m AlarmMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m AlarmMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Alarm entities.
-func (m *AlarmMutation) SetID(id string) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *AlarmMutation) ID() (id string, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *AlarmMutation) IDs(ctx context.Context) ([]string, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []string{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().Alarm.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetTopID sets the "top_id" field.
-func (m *AlarmMutation) SetTopID(s string) {
-	m.top_id = &s
-}
-
-// TopID returns the value of the "top_id" field in the mutation.
-func (m *AlarmMutation) TopID() (r string, exists bool) {
-	v := m.top_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTopID returns the old "top_id" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldTopID(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTopID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTopID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTopID: %w", err)
-	}
-	return oldValue.TopID, nil
-}
-
-// ResetTopID resets all changes to the "top_id" field.
-func (m *AlarmMutation) ResetTopID() {
-	m.top_id = nil
-}
-
-// SetTopCode sets the "top_code" field.
-func (m *AlarmMutation) SetTopCode(s string) {
-	m.top_code = &s
-}
-
-// TopCode returns the value of the "top_code" field in the mutation.
-func (m *AlarmMutation) TopCode() (r string, exists bool) {
-	v := m.top_code
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTopCode returns the old "top_code" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldTopCode(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTopCode is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTopCode requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTopCode: %w", err)
-	}
-	return oldValue.TopCode, nil
-}
-
-// ResetTopCode resets all changes to the "top_code" field.
-func (m *AlarmMutation) ResetTopCode() {
-	m.top_code = nil
-}
-
-// SetAlarm1 sets the "alarm_1" field.
-func (m *AlarmMutation) SetAlarm1(i int) {
-	m.alarm_1 = &i
-	m.addalarm_1 = nil
-}
-
-// Alarm1 returns the value of the "alarm_1" field in the mutation.
-func (m *AlarmMutation) Alarm1() (r int, exists bool) {
-	v := m.alarm_1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarm1 returns the old "alarm_1" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarm1(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm1 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm1 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm1: %w", err)
-	}
-	return oldValue.Alarm1, nil
-}
-
-// AddAlarm1 adds i to the "alarm_1" field.
-func (m *AlarmMutation) AddAlarm1(i int) {
-	if m.addalarm_1 != nil {
-		*m.addalarm_1 += i
-	} else {
-		m.addalarm_1 = &i
-	}
-}
-
-// AddedAlarm1 returns the value that was added to the "alarm_1" field in this mutation.
-func (m *AlarmMutation) AddedAlarm1() (r int, exists bool) {
-	v := m.addalarm_1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarm1 resets all changes to the "alarm_1" field.
-func (m *AlarmMutation) ResetAlarm1() {
-	m.alarm_1 = nil
-	m.addalarm_1 = nil
-}
-
-// SetAlarmTime1 sets the "alarm_time_1" field.
-func (m *AlarmMutation) SetAlarmTime1(t time.Time) {
-	m.alarm_time_1 = &t
-}
-
-// AlarmTime1 returns the value of the "alarm_time_1" field in the mutation.
-func (m *AlarmMutation) AlarmTime1() (r time.Time, exists bool) {
-	v := m.alarm_time_1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmTime1 returns the old "alarm_time_1" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmTime1(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmTime1 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmTime1 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmTime1: %w", err)
-	}
-	return oldValue.AlarmTime1, nil
-}
-
-// ClearAlarmTime1 clears the value of the "alarm_time_1" field.
-func (m *AlarmMutation) ClearAlarmTime1() {
-	m.alarm_time_1 = nil
-	m.clearedFields[alarm.FieldAlarmTime1] = struct{}{}
-}
-
-// AlarmTime1Cleared returns if the "alarm_time_1" field was cleared in this mutation.
-func (m *AlarmMutation) AlarmTime1Cleared() bool {
-	_, ok := m.clearedFields[alarm.FieldAlarmTime1]
-	return ok
-}
-
-// ResetAlarmTime1 resets all changes to the "alarm_time_1" field.
-func (m *AlarmMutation) ResetAlarmTime1() {
-	m.alarm_time_1 = nil
-	delete(m.clearedFields, alarm.FieldAlarmTime1)
-}
-
-// SetAlarmStock1 sets the "alarm_stock_1" field.
-func (m *AlarmMutation) SetAlarmStock1(i int64) {
-	m.alarm_stock_1 = &i
-	m.addalarm_stock_1 = nil
-}
-
-// AlarmStock1 returns the value of the "alarm_stock_1" field in the mutation.
-func (m *AlarmMutation) AlarmStock1() (r int64, exists bool) {
-	v := m.alarm_stock_1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmStock1 returns the old "alarm_stock_1" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmStock1(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmStock1 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmStock1 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmStock1: %w", err)
-	}
-	return oldValue.AlarmStock1, nil
-}
-
-// AddAlarmStock1 adds i to the "alarm_stock_1" field.
-func (m *AlarmMutation) AddAlarmStock1(i int64) {
-	if m.addalarm_stock_1 != nil {
-		*m.addalarm_stock_1 += i
-	} else {
-		m.addalarm_stock_1 = &i
-	}
-}
-
-// AddedAlarmStock1 returns the value that was added to the "alarm_stock_1" field in this mutation.
-func (m *AlarmMutation) AddedAlarmStock1() (r int64, exists bool) {
-	v := m.addalarm_stock_1
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarmStock1 resets all changes to the "alarm_stock_1" field.
-func (m *AlarmMutation) ResetAlarmStock1() {
-	m.alarm_stock_1 = nil
-	m.addalarm_stock_1 = nil
-}
-
-// SetAlarm2 sets the "alarm_2" field.
-func (m *AlarmMutation) SetAlarm2(i int) {
-	m.alarm_2 = &i
-	m.addalarm_2 = nil
-}
-
-// Alarm2 returns the value of the "alarm_2" field in the mutation.
-func (m *AlarmMutation) Alarm2() (r int, exists bool) {
-	v := m.alarm_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarm2 returns the old "alarm_2" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarm2(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm2 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm2 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm2: %w", err)
-	}
-	return oldValue.Alarm2, nil
-}
-
-// AddAlarm2 adds i to the "alarm_2" field.
-func (m *AlarmMutation) AddAlarm2(i int) {
-	if m.addalarm_2 != nil {
-		*m.addalarm_2 += i
-	} else {
-		m.addalarm_2 = &i
-	}
-}
-
-// AddedAlarm2 returns the value that was added to the "alarm_2" field in this mutation.
-func (m *AlarmMutation) AddedAlarm2() (r int, exists bool) {
-	v := m.addalarm_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarm2 resets all changes to the "alarm_2" field.
-func (m *AlarmMutation) ResetAlarm2() {
-	m.alarm_2 = nil
-	m.addalarm_2 = nil
-}
-
-// SetAlarmTime2 sets the "alarm_time_2" field.
-func (m *AlarmMutation) SetAlarmTime2(t time.Time) {
-	m.alarm_time_2 = &t
-}
-
-// AlarmTime2 returns the value of the "alarm_time_2" field in the mutation.
-func (m *AlarmMutation) AlarmTime2() (r time.Time, exists bool) {
-	v := m.alarm_time_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmTime2 returns the old "alarm_time_2" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmTime2(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmTime2 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmTime2 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmTime2: %w", err)
-	}
-	return oldValue.AlarmTime2, nil
-}
-
-// ClearAlarmTime2 clears the value of the "alarm_time_2" field.
-func (m *AlarmMutation) ClearAlarmTime2() {
-	m.alarm_time_2 = nil
-	m.clearedFields[alarm.FieldAlarmTime2] = struct{}{}
-}
-
-// AlarmTime2Cleared returns if the "alarm_time_2" field was cleared in this mutation.
-func (m *AlarmMutation) AlarmTime2Cleared() bool {
-	_, ok := m.clearedFields[alarm.FieldAlarmTime2]
-	return ok
-}
-
-// ResetAlarmTime2 resets all changes to the "alarm_time_2" field.
-func (m *AlarmMutation) ResetAlarmTime2() {
-	m.alarm_time_2 = nil
-	delete(m.clearedFields, alarm.FieldAlarmTime2)
-}
-
-// SetAlarmStock2 sets the "alarm_stock_2" field.
-func (m *AlarmMutation) SetAlarmStock2(i int64) {
-	m.alarm_stock_2 = &i
-	m.addalarm_stock_2 = nil
-}
-
-// AlarmStock2 returns the value of the "alarm_stock_2" field in the mutation.
-func (m *AlarmMutation) AlarmStock2() (r int64, exists bool) {
-	v := m.alarm_stock_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmStock2 returns the old "alarm_stock_2" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmStock2(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmStock2 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmStock2 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmStock2: %w", err)
-	}
-	return oldValue.AlarmStock2, nil
-}
-
-// AddAlarmStock2 adds i to the "alarm_stock_2" field.
-func (m *AlarmMutation) AddAlarmStock2(i int64) {
-	if m.addalarm_stock_2 != nil {
-		*m.addalarm_stock_2 += i
-	} else {
-		m.addalarm_stock_2 = &i
-	}
-}
-
-// AddedAlarmStock2 returns the value that was added to the "alarm_stock_2" field in this mutation.
-func (m *AlarmMutation) AddedAlarmStock2() (r int64, exists bool) {
-	v := m.addalarm_stock_2
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarmStock2 resets all changes to the "alarm_stock_2" field.
-func (m *AlarmMutation) ResetAlarmStock2() {
-	m.alarm_stock_2 = nil
-	m.addalarm_stock_2 = nil
-}
-
-// SetAlarm3 sets the "alarm_3" field.
-func (m *AlarmMutation) SetAlarm3(i int) {
-	m.alarm_3 = &i
-	m.addalarm_3 = nil
-}
-
-// Alarm3 returns the value of the "alarm_3" field in the mutation.
-func (m *AlarmMutation) Alarm3() (r int, exists bool) {
-	v := m.alarm_3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarm3 returns the old "alarm_3" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarm3(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarm3 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarm3 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarm3: %w", err)
-	}
-	return oldValue.Alarm3, nil
-}
-
-// AddAlarm3 adds i to the "alarm_3" field.
-func (m *AlarmMutation) AddAlarm3(i int) {
-	if m.addalarm_3 != nil {
-		*m.addalarm_3 += i
-	} else {
-		m.addalarm_3 = &i
-	}
-}
-
-// AddedAlarm3 returns the value that was added to the "alarm_3" field in this mutation.
-func (m *AlarmMutation) AddedAlarm3() (r int, exists bool) {
-	v := m.addalarm_3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarm3 resets all changes to the "alarm_3" field.
-func (m *AlarmMutation) ResetAlarm3() {
-	m.alarm_3 = nil
-	m.addalarm_3 = nil
-}
-
-// SetAlarmTime3 sets the "alarm_time_3" field.
-func (m *AlarmMutation) SetAlarmTime3(t time.Time) {
-	m.alarm_time_3 = &t
-}
-
-// AlarmTime3 returns the value of the "alarm_time_3" field in the mutation.
-func (m *AlarmMutation) AlarmTime3() (r time.Time, exists bool) {
-	v := m.alarm_time_3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmTime3 returns the old "alarm_time_3" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmTime3(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmTime3 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmTime3 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmTime3: %w", err)
-	}
-	return oldValue.AlarmTime3, nil
-}
-
-// ClearAlarmTime3 clears the value of the "alarm_time_3" field.
-func (m *AlarmMutation) ClearAlarmTime3() {
-	m.alarm_time_3 = nil
-	m.clearedFields[alarm.FieldAlarmTime3] = struct{}{}
-}
-
-// AlarmTime3Cleared returns if the "alarm_time_3" field was cleared in this mutation.
-func (m *AlarmMutation) AlarmTime3Cleared() bool {
-	_, ok := m.clearedFields[alarm.FieldAlarmTime3]
-	return ok
-}
-
-// ResetAlarmTime3 resets all changes to the "alarm_time_3" field.
-func (m *AlarmMutation) ResetAlarmTime3() {
-	m.alarm_time_3 = nil
-	delete(m.clearedFields, alarm.FieldAlarmTime3)
-}
-
-// SetAlarmStock3 sets the "alarm_stock_3" field.
-func (m *AlarmMutation) SetAlarmStock3(i int64) {
-	m.alarm_stock_3 = &i
-	m.addalarm_stock_3 = nil
-}
-
-// AlarmStock3 returns the value of the "alarm_stock_3" field in the mutation.
-func (m *AlarmMutation) AlarmStock3() (r int64, exists bool) {
-	v := m.alarm_stock_3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAlarmStock3 returns the old "alarm_stock_3" field's value of the Alarm entity.
-// If the Alarm object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *AlarmMutation) OldAlarmStock3(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAlarmStock3 is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAlarmStock3 requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAlarmStock3: %w", err)
-	}
-	return oldValue.AlarmStock3, nil
-}
-
-// AddAlarmStock3 adds i to the "alarm_stock_3" field.
-func (m *AlarmMutation) AddAlarmStock3(i int64) {
-	if m.addalarm_stock_3 != nil {
-		*m.addalarm_stock_3 += i
-	} else {
-		m.addalarm_stock_3 = &i
-	}
-}
-
-// AddedAlarmStock3 returns the value that was added to the "alarm_stock_3" field in this mutation.
-func (m *AlarmMutation) AddedAlarmStock3() (r int64, exists bool) {
-	v := m.addalarm_stock_3
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAlarmStock3 resets all changes to the "alarm_stock_3" field.
-func (m *AlarmMutation) ResetAlarmStock3() {
-	m.alarm_stock_3 = nil
-	m.addalarm_stock_3 = nil
-}
-
-// Where appends a list predicates to the AlarmMutation builder.
-func (m *AlarmMutation) Where(ps ...predicate.Alarm) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the AlarmMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *AlarmMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.Alarm, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *AlarmMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *AlarmMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (Alarm).
-func (m *AlarmMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *AlarmMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.top_id != nil {
-		fields = append(fields, alarm.FieldTopID)
-	}
-	if m.top_code != nil {
-		fields = append(fields, alarm.FieldTopCode)
-	}
-	if m.alarm_1 != nil {
-		fields = append(fields, alarm.FieldAlarm1)
-	}
-	if m.alarm_time_1 != nil {
-		fields = append(fields, alarm.FieldAlarmTime1)
-	}
-	if m.alarm_stock_1 != nil {
-		fields = append(fields, alarm.FieldAlarmStock1)
-	}
-	if m.alarm_2 != nil {
-		fields = append(fields, alarm.FieldAlarm2)
-	}
-	if m.alarm_time_2 != nil {
-		fields = append(fields, alarm.FieldAlarmTime2)
-	}
-	if m.alarm_stock_2 != nil {
-		fields = append(fields, alarm.FieldAlarmStock2)
-	}
-	if m.alarm_3 != nil {
-		fields = append(fields, alarm.FieldAlarm3)
-	}
-	if m.alarm_time_3 != nil {
-		fields = append(fields, alarm.FieldAlarmTime3)
-	}
-	if m.alarm_stock_3 != nil {
-		fields = append(fields, alarm.FieldAlarmStock3)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *AlarmMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case alarm.FieldTopID:
-		return m.TopID()
-	case alarm.FieldTopCode:
-		return m.TopCode()
-	case alarm.FieldAlarm1:
-		return m.Alarm1()
-	case alarm.FieldAlarmTime1:
-		return m.AlarmTime1()
-	case alarm.FieldAlarmStock1:
-		return m.AlarmStock1()
-	case alarm.FieldAlarm2:
-		return m.Alarm2()
-	case alarm.FieldAlarmTime2:
-		return m.AlarmTime2()
-	case alarm.FieldAlarmStock2:
-		return m.AlarmStock2()
-	case alarm.FieldAlarm3:
-		return m.Alarm3()
-	case alarm.FieldAlarmTime3:
-		return m.AlarmTime3()
-	case alarm.FieldAlarmStock3:
-		return m.AlarmStock3()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *AlarmMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case alarm.FieldTopID:
-		return m.OldTopID(ctx)
-	case alarm.FieldTopCode:
-		return m.OldTopCode(ctx)
-	case alarm.FieldAlarm1:
-		return m.OldAlarm1(ctx)
-	case alarm.FieldAlarmTime1:
-		return m.OldAlarmTime1(ctx)
-	case alarm.FieldAlarmStock1:
-		return m.OldAlarmStock1(ctx)
-	case alarm.FieldAlarm2:
-		return m.OldAlarm2(ctx)
-	case alarm.FieldAlarmTime2:
-		return m.OldAlarmTime2(ctx)
-	case alarm.FieldAlarmStock2:
-		return m.OldAlarmStock2(ctx)
-	case alarm.FieldAlarm3:
-		return m.OldAlarm3(ctx)
-	case alarm.FieldAlarmTime3:
-		return m.OldAlarmTime3(ctx)
-	case alarm.FieldAlarmStock3:
-		return m.OldAlarmStock3(ctx)
-	}
-	return nil, fmt.Errorf("unknown Alarm field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *AlarmMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case alarm.FieldTopID:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTopID(v)
-		return nil
-	case alarm.FieldTopCode:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTopCode(v)
-		return nil
-	case alarm.FieldAlarm1:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarm1(v)
-		return nil
-	case alarm.FieldAlarmTime1:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmTime1(v)
-		return nil
-	case alarm.FieldAlarmStock1:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmStock1(v)
-		return nil
-	case alarm.FieldAlarm2:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarm2(v)
-		return nil
-	case alarm.FieldAlarmTime2:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmTime2(v)
-		return nil
-	case alarm.FieldAlarmStock2:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmStock2(v)
-		return nil
-	case alarm.FieldAlarm3:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarm3(v)
-		return nil
-	case alarm.FieldAlarmTime3:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmTime3(v)
-		return nil
-	case alarm.FieldAlarmStock3:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAlarmStock3(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Alarm field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *AlarmMutation) AddedFields() []string {
-	var fields []string
-	if m.addalarm_1 != nil {
-		fields = append(fields, alarm.FieldAlarm1)
-	}
-	if m.addalarm_stock_1 != nil {
-		fields = append(fields, alarm.FieldAlarmStock1)
-	}
-	if m.addalarm_2 != nil {
-		fields = append(fields, alarm.FieldAlarm2)
-	}
-	if m.addalarm_stock_2 != nil {
-		fields = append(fields, alarm.FieldAlarmStock2)
-	}
-	if m.addalarm_3 != nil {
-		fields = append(fields, alarm.FieldAlarm3)
-	}
-	if m.addalarm_stock_3 != nil {
-		fields = append(fields, alarm.FieldAlarmStock3)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *AlarmMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case alarm.FieldAlarm1:
-		return m.AddedAlarm1()
-	case alarm.FieldAlarmStock1:
-		return m.AddedAlarmStock1()
-	case alarm.FieldAlarm2:
-		return m.AddedAlarm2()
-	case alarm.FieldAlarmStock2:
-		return m.AddedAlarmStock2()
-	case alarm.FieldAlarm3:
-		return m.AddedAlarm3()
-	case alarm.FieldAlarmStock3:
-		return m.AddedAlarmStock3()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *AlarmMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case alarm.FieldAlarm1:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarm1(v)
-		return nil
-	case alarm.FieldAlarmStock1:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarmStock1(v)
-		return nil
-	case alarm.FieldAlarm2:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarm2(v)
-		return nil
-	case alarm.FieldAlarmStock2:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarmStock2(v)
-		return nil
-	case alarm.FieldAlarm3:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarm3(v)
-		return nil
-	case alarm.FieldAlarmStock3:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAlarmStock3(v)
-		return nil
-	}
-	return fmt.Errorf("unknown Alarm numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *AlarmMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(alarm.FieldAlarmTime1) {
-		fields = append(fields, alarm.FieldAlarmTime1)
-	}
-	if m.FieldCleared(alarm.FieldAlarmTime2) {
-		fields = append(fields, alarm.FieldAlarmTime2)
-	}
-	if m.FieldCleared(alarm.FieldAlarmTime3) {
-		fields = append(fields, alarm.FieldAlarmTime3)
-	}
-	return fields
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *AlarmMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *AlarmMutation) ClearField(name string) error {
-	switch name {
-	case alarm.FieldAlarmTime1:
-		m.ClearAlarmTime1()
-		return nil
-	case alarm.FieldAlarmTime2:
-		m.ClearAlarmTime2()
-		return nil
-	case alarm.FieldAlarmTime3:
-		m.ClearAlarmTime3()
-		return nil
-	}
-	return fmt.Errorf("unknown Alarm nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *AlarmMutation) ResetField(name string) error {
-	switch name {
-	case alarm.FieldTopID:
-		m.ResetTopID()
-		return nil
-	case alarm.FieldTopCode:
-		m.ResetTopCode()
-		return nil
-	case alarm.FieldAlarm1:
-		m.ResetAlarm1()
-		return nil
-	case alarm.FieldAlarmTime1:
-		m.ResetAlarmTime1()
-		return nil
-	case alarm.FieldAlarmStock1:
-		m.ResetAlarmStock1()
-		return nil
-	case alarm.FieldAlarm2:
-		m.ResetAlarm2()
-		return nil
-	case alarm.FieldAlarmTime2:
-		m.ResetAlarmTime2()
-		return nil
-	case alarm.FieldAlarmStock2:
-		m.ResetAlarmStock2()
-		return nil
-	case alarm.FieldAlarm3:
-		m.ResetAlarm3()
-		return nil
-	case alarm.FieldAlarmTime3:
-		m.ResetAlarmTime3()
-		return nil
-	case alarm.FieldAlarmStock3:
-		m.ResetAlarmStock3()
-		return nil
-	}
-	return fmt.Errorf("unknown Alarm field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *AlarmMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *AlarmMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *AlarmMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *AlarmMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *AlarmMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *AlarmMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *AlarmMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown Alarm unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *AlarmMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown Alarm edge %s", name)
-}
 
 // DeviceMutation represents an operation that mutates the Device nodes in the graph.
 type DeviceMutation struct {
@@ -1181,6 +46,8 @@ type DeviceMutation struct {
 	gateway_code  *string
 	rate          *int
 	addrate       *int
+	unit_price    *int
+	addunit_price *int
 	project       *string
 	pos_code      *string
 	area_code     *string
@@ -1647,6 +514,62 @@ func (m *DeviceMutation) ResetRate() {
 	m.addrate = nil
 }
 
+// SetUnitPrice sets the "unit_price" field.
+func (m *DeviceMutation) SetUnitPrice(i int) {
+	m.unit_price = &i
+	m.addunit_price = nil
+}
+
+// UnitPrice returns the value of the "unit_price" field in the mutation.
+func (m *DeviceMutation) UnitPrice() (r int, exists bool) {
+	v := m.unit_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUnitPrice returns the old "unit_price" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldUnitPrice(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUnitPrice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUnitPrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUnitPrice: %w", err)
+	}
+	return oldValue.UnitPrice, nil
+}
+
+// AddUnitPrice adds i to the "unit_price" field.
+func (m *DeviceMutation) AddUnitPrice(i int) {
+	if m.addunit_price != nil {
+		*m.addunit_price += i
+	} else {
+		m.addunit_price = &i
+	}
+}
+
+// AddedUnitPrice returns the value that was added to the "unit_price" field in this mutation.
+func (m *DeviceMutation) AddedUnitPrice() (r int, exists bool) {
+	v := m.addunit_price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUnitPrice resets all changes to the "unit_price" field.
+func (m *DeviceMutation) ResetUnitPrice() {
+	m.unit_price = nil
+	m.addunit_price = nil
+}
+
 // SetProject sets the "project" field.
 func (m *DeviceMutation) SetProject(s string) {
 	m.project = &s
@@ -2025,7 +948,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.create_time != nil {
 		fields = append(fields, device.FieldCreateTime)
 	}
@@ -2049,6 +972,9 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.rate != nil {
 		fields = append(fields, device.FieldRate)
+	}
+	if m.unit_price != nil {
+		fields = append(fields, device.FieldUnitPrice)
 	}
 	if m.project != nil {
 		fields = append(fields, device.FieldProject)
@@ -2095,6 +1021,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.GatewayCode()
 	case device.FieldRate:
 		return m.Rate()
+	case device.FieldUnitPrice:
+		return m.UnitPrice()
 	case device.FieldProject:
 		return m.Project()
 	case device.FieldPosCode:
@@ -2134,6 +1062,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldGatewayCode(ctx)
 	case device.FieldRate:
 		return m.OldRate(ctx)
+	case device.FieldUnitPrice:
+		return m.OldUnitPrice(ctx)
 	case device.FieldProject:
 		return m.OldProject(ctx)
 	case device.FieldPosCode:
@@ -2213,6 +1143,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetRate(v)
 		return nil
+	case device.FieldUnitPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUnitPrice(v)
+		return nil
 	case device.FieldProject:
 		v, ok := value.(string)
 		if !ok {
@@ -2273,6 +1210,9 @@ func (m *DeviceMutation) AddedFields() []string {
 	if m.addrate != nil {
 		fields = append(fields, device.FieldRate)
 	}
+	if m.addunit_price != nil {
+		fields = append(fields, device.FieldUnitPrice)
+	}
 	if m.addstatus != nil {
 		fields = append(fields, device.FieldStatus)
 	}
@@ -2289,6 +1229,8 @@ func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case device.FieldRate:
 		return m.AddedRate()
+	case device.FieldUnitPrice:
+		return m.AddedUnitPrice()
 	case device.FieldStatus:
 		return m.AddedStatus()
 	case device.FieldIsDel:
@@ -2308,6 +1250,13 @@ func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRate(v)
+		return nil
+	case device.FieldUnitPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUnitPrice(v)
 		return nil
 	case device.FieldStatus:
 		v, ok := value.(int)
@@ -2418,6 +1367,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldRate:
 		m.ResetRate()
+		return nil
+	case device.FieldUnitPrice:
+		m.ResetUnitPrice()
 		return nil
 	case device.FieldProject:
 		m.ResetProject()

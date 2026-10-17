@@ -119,6 +119,20 @@ func (_c *DeviceCreate) SetNillableRate(v *int) *DeviceCreate {
 	return _c
 }
 
+// SetUnitPrice sets the "unit_price" field.
+func (_c *DeviceCreate) SetUnitPrice(v int) *DeviceCreate {
+	_c.mutation.SetUnitPrice(v)
+	return _c
+}
+
+// SetNillableUnitPrice sets the "unit_price" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableUnitPrice(v *int) *DeviceCreate {
+	if v != nil {
+		_c.SetUnitPrice(*v)
+	}
+	return _c
+}
+
 // SetProject sets the "project" field.
 func (_c *DeviceCreate) SetProject(v string) *DeviceCreate {
 	_c.mutation.SetProject(v)
@@ -270,6 +284,10 @@ func (_c *DeviceCreate) defaults() {
 		v := device.DefaultRate
 		_c.mutation.SetRate(v)
 	}
+	if _, ok := _c.mutation.UnitPrice(); !ok {
+		v := device.DefaultUnitPrice
+		_c.mutation.SetUnitPrice(v)
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		v := device.DefaultStatus
 		_c.mutation.SetStatus(v)
@@ -310,6 +328,9 @@ func (_c *DeviceCreate) check() error {
 	}
 	if _, ok := _c.mutation.Rate(); !ok {
 		return &ValidationError{Name: "rate", err: errors.New(`ent: missing required field "Device.rate"`)}
+	}
+	if _, ok := _c.mutation.UnitPrice(); !ok {
+		return &ValidationError{Name: "unit_price", err: errors.New(`ent: missing required field "Device.unit_price"`)}
 	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "Device.project"`)}
@@ -397,6 +418,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt, value)
 		_node.Rate = value
+	}
+	if value, ok := _c.mutation.UnitPrice(); ok {
+		_spec.SetField(device.FieldUnitPrice, field.TypeInt, value)
+		_node.UnitPrice = value
 	}
 	if value, ok := _c.mutation.Project(); ok {
 		_spec.SetField(device.FieldProject, field.TypeString, value)
@@ -583,6 +608,24 @@ func (u *DeviceUpsert) UpdateRate() *DeviceUpsert {
 // AddRate adds v to the "rate" field.
 func (u *DeviceUpsert) AddRate(v int) *DeviceUpsert {
 	u.Add(device.FieldRate, v)
+	return u
+}
+
+// SetUnitPrice sets the "unit_price" field.
+func (u *DeviceUpsert) SetUnitPrice(v int) *DeviceUpsert {
+	u.Set(device.FieldUnitPrice, v)
+	return u
+}
+
+// UpdateUnitPrice sets the "unit_price" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateUnitPrice() *DeviceUpsert {
+	u.SetExcluded(device.FieldUnitPrice)
+	return u
+}
+
+// AddUnitPrice adds v to the "unit_price" field.
+func (u *DeviceUpsert) AddUnitPrice(v int) *DeviceUpsert {
+	u.Add(device.FieldUnitPrice, v)
 	return u
 }
 
@@ -871,6 +914,27 @@ func (u *DeviceUpsertOne) AddRate(v int) *DeviceUpsertOne {
 func (u *DeviceUpsertOne) UpdateRate() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateRate()
+	})
+}
+
+// SetUnitPrice sets the "unit_price" field.
+func (u *DeviceUpsertOne) SetUnitPrice(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetUnitPrice(v)
+	})
+}
+
+// AddUnitPrice adds v to the "unit_price" field.
+func (u *DeviceUpsertOne) AddUnitPrice(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddUnitPrice(v)
+	})
+}
+
+// UpdateUnitPrice sets the "unit_price" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateUnitPrice() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateUnitPrice()
 	})
 }
 
@@ -1344,6 +1408,27 @@ func (u *DeviceUpsertBulk) AddRate(v int) *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) UpdateRate() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateRate()
+	})
+}
+
+// SetUnitPrice sets the "unit_price" field.
+func (u *DeviceUpsertBulk) SetUnitPrice(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetUnitPrice(v)
+	})
+}
+
+// AddUnitPrice adds v to the "unit_price" field.
+func (u *DeviceUpsertBulk) AddUnitPrice(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddUnitPrice(v)
+	})
+}
+
+// UpdateUnitPrice sets the "unit_price" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateUnitPrice() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateUnitPrice()
 	})
 }
 

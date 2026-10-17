@@ -9,39 +9,6 @@ import (
 )
 
 var (
-	// MdnaAlarmColumns holds the columns for the "mdna_alarm" table.
-	MdnaAlarmColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
-		{Name: "top_id", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
-		{Name: "top_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "alarm_1", Type: field.TypeInt, Default: 0},
-		{Name: "alarm_time_1", Type: field.TypeTime, Nullable: true},
-		{Name: "alarm_stock_1", Type: field.TypeInt64, Default: 0},
-		{Name: "alarm_2", Type: field.TypeInt, Default: 0},
-		{Name: "alarm_time_2", Type: field.TypeTime, Nullable: true},
-		{Name: "alarm_stock_2", Type: field.TypeInt64, Default: 0},
-		{Name: "alarm_3", Type: field.TypeInt, Default: 0},
-		{Name: "alarm_time_3", Type: field.TypeTime, Nullable: true},
-		{Name: "alarm_stock_3", Type: field.TypeInt64, Default: 0},
-	}
-	// MdnaAlarmTable holds the schema information for the "mdna_alarm" table.
-	MdnaAlarmTable = &schema.Table{
-		Name:       "mdna_alarm",
-		Columns:    MdnaAlarmColumns,
-		PrimaryKey: []*schema.Column{MdnaAlarmColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "alarm_top_id",
-				Unique:  true,
-				Columns: []*schema.Column{MdnaAlarmColumns[1]},
-			},
-			{
-				Name:    "alarm_top_code",
-				Unique:  true,
-				Columns: []*schema.Column{MdnaAlarmColumns[2]},
-			},
-		},
-	}
 	// DeviceColumns holds the columns for the "device" table.
 	DeviceColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeString, SchemaType: map[string]string{"mysql": "char(36)", "postgres": "char(36)", "sqlite3": "char(36)"}},
@@ -53,6 +20,7 @@ var (
 		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "gateway_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "rate", Type: field.TypeInt, Default: 1},
+		{Name: "unit_price", Type: field.TypeInt, Default: 0},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "area_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -85,17 +53,17 @@ var (
 			{
 				Name:    "device_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[10]},
+				Columns: []*schema.Column{DeviceColumns[11]},
 			},
 			{
 				Name:    "device_project",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[9]},
+				Columns: []*schema.Column{DeviceColumns[10]},
 			},
 			{
 				Name:    "device_pcode",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[12]},
+				Columns: []*schema.Column{DeviceColumns[13]},
 			},
 		},
 	}
@@ -230,7 +198,6 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		MdnaAlarmTable,
 		DeviceTable,
 		NhRecordTable,
 		DeviceTopTable,
@@ -238,9 +205,6 @@ var (
 )
 
 func init() {
-	MdnaAlarmTable.Annotation = &entsql.Annotation{
-		Table: "mdna_alarm",
-	}
 	DeviceTable.Annotation = &entsql.Annotation{
 		Table: "device",
 	}

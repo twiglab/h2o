@@ -29,6 +29,8 @@ const (
 	FieldGatewayCode = "gateway_code"
 	// FieldRate holds the string denoting the rate field in the database.
 	FieldRate = "rate"
+	// FieldUnitPrice holds the string denoting the unit_price field in the database.
+	FieldUnitPrice = "unit_price"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldDeviceName,
 	FieldGatewayCode,
 	FieldRate,
+	FieldUnitPrice,
 	FieldProject,
 	FieldPosCode,
 	FieldAreaCode,
@@ -90,6 +93,8 @@ var (
 	DeviceTypeValidator func(string) error
 	// DefaultRate holds the default value on creation for the "rate" field.
 	DefaultRate int
+	// DefaultUnitPrice holds the default value on creation for the "unit_price" field.
+	DefaultUnitPrice int
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	ProjectValidator func(string) error
 	// DefaultStatus holds the default value on creation for the "status" field.
@@ -148,6 +153,11 @@ func ByGatewayCode(opts ...sql.OrderTermOption) OrderOption {
 // ByRate orders the results by the rate field.
 func ByRate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRate, opts...).ToFunc()
+}
+
+// ByUnitPrice orders the results by the unit_price field.
+func ByUnitPrice(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUnitPrice, opts...).ToFunc()
 }
 
 // ByProject orders the results by the project field.

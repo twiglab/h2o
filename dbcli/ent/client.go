@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/twiglab/h2o/dbcli/ent/alarm"
 	"github.com/twiglab/h2o/dbcli/ent/device"
 	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
 	"github.com/twiglab/h2o/dbcli/ent/top"
@@ -27,8 +26,6 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
-	// Alarm is the client for interacting with the Alarm builders.
-	Alarm *AlarmClient
 	// Device is the client for interacting with the Device builders.
 	Device *DeviceClient
 	// NhRecord is the client for interacting with the NhRecord builders.
@@ -46,7 +43,6 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
-	c.Alarm = NewAlarmClient(c.config)
 	c.Device = NewDeviceClient(c.config)
 	c.NhRecord = NewNhRecordClient(c.config)
 	c.Top = NewTopClient(c.config)
@@ -142,7 +138,6 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:      ctx,
 		config:   cfg,
-		Alarm:    NewAlarmClient(cfg),
 		Device:   NewDeviceClient(cfg),
 		NhRecord: NewNhRecordClient(cfg),
 		Top:      NewTopClient(cfg),
@@ -165,7 +160,6 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	return &Tx{
 		ctx:      ctx,
 		config:   cfg,
-		Alarm:    NewAlarmClient(cfg),
 		Device:   NewDeviceClient(cfg),
 		NhRecord: NewNhRecordClient(cfg),
 		Top:      NewTopClient(cfg),
@@ -175,7 +169,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Alarm.
+//		Device.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -197,7 +191,6 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
-	c.Alarm.Use(hooks...)
 	c.Device.Use(hooks...)
 	c.NhRecord.Use(hooks...)
 	c.Top.Use(hooks...)
@@ -206,7 +199,6 @@ func (c *Client) Use(hooks ...Hook) {
 // Intercept adds the query interceptors to all the entity clients.
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
-	c.Alarm.Intercept(interceptors...)
 	c.Device.Intercept(interceptors...)
 	c.NhRecord.Intercept(interceptors...)
 	c.Top.Intercept(interceptors...)
@@ -215,8 +207,6 @@ func (c *Client) Intercept(interceptors ...Interceptor) {
 // Mutate implements the ent.Mutator interface.
 func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
-	case *AlarmMutation:
-		return c.Alarm.mutate(ctx, m)
 	case *DeviceMutation:
 		return c.Device.mutate(ctx, m)
 	case *NhRecordMutation:
@@ -225,139 +215,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.Top.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
-	}
-}
-
-// AlarmClient is a client for the Alarm schema.
-type AlarmClient struct {
-	config
-}
-
-// NewAlarmClient returns a client for the Alarm from the given config.
-func NewAlarmClient(c config) *AlarmClient {
-	return &AlarmClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `alarm.Hooks(f(g(h())))`.
-func (c *AlarmClient) Use(hooks ...Hook) {
-	c.hooks.Alarm = append(c.hooks.Alarm, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `alarm.Intercept(f(g(h())))`.
-func (c *AlarmClient) Intercept(interceptors ...Interceptor) {
-	c.inters.Alarm = append(c.inters.Alarm, interceptors...)
-}
-
-// Create returns a builder for creating a Alarm entity.
-func (c *AlarmClient) Create() *AlarmCreate {
-	mutation := newAlarmMutation(c.config, OpCreate)
-	return &AlarmCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of Alarm entities.
-func (c *AlarmClient) CreateBulk(builders ...*AlarmCreate) *AlarmCreateBulk {
-	return &AlarmCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *AlarmClient) MapCreateBulk(slice any, setFunc func(*AlarmCreate, int)) *AlarmCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &AlarmCreateBulk{err: fmt.Errorf("calling to AlarmClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*AlarmCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &AlarmCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for Alarm.
-func (c *AlarmClient) Update() *AlarmUpdate {
-	mutation := newAlarmMutation(c.config, OpUpdate)
-	return &AlarmUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *AlarmClient) UpdateOne(_m *Alarm) *AlarmUpdateOne {
-	mutation := newAlarmMutation(c.config, OpUpdateOne, withAlarm(_m))
-	return &AlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *AlarmClient) UpdateOneID(id string) *AlarmUpdateOne {
-	mutation := newAlarmMutation(c.config, OpUpdateOne, withAlarmID(id))
-	return &AlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for Alarm.
-func (c *AlarmClient) Delete() *AlarmDelete {
-	mutation := newAlarmMutation(c.config, OpDelete)
-	return &AlarmDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *AlarmClient) DeleteOne(_m *Alarm) *AlarmDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *AlarmClient) DeleteOneID(id string) *AlarmDeleteOne {
-	builder := c.Delete().Where(alarm.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &AlarmDeleteOne{builder}
-}
-
-// Query returns a query builder for Alarm.
-func (c *AlarmClient) Query() *AlarmQuery {
-	return &AlarmQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeAlarm},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a Alarm entity by its id.
-func (c *AlarmClient) Get(ctx context.Context, id string) (*Alarm, error) {
-	return c.Query().Where(alarm.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *AlarmClient) GetX(ctx context.Context, id string) *Alarm {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *AlarmClient) Hooks() []Hook {
-	return c.hooks.Alarm
-}
-
-// Interceptors returns the client interceptors.
-func (c *AlarmClient) Interceptors() []Interceptor {
-	return c.inters.Alarm
-}
-
-func (c *AlarmClient) mutate(ctx context.Context, m *AlarmMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&AlarmCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&AlarmUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&AlarmUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&AlarmDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown Alarm mutation op: %q", m.Op())
 	}
 }
 
@@ -763,10 +620,10 @@ func (c *TopClient) mutate(ctx context.Context, m *TopMutation) (Value, error) {
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Alarm, Device, NhRecord, Top []ent.Hook
+		Device, NhRecord, Top []ent.Hook
 	}
 	inters struct {
-		Alarm, Device, NhRecord, Top []ent.Interceptor
+		Device, NhRecord, Top []ent.Interceptor
 	}
 )
 

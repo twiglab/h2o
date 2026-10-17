@@ -33,6 +33,8 @@ type Device struct {
 	GatewayCode string `json:"gateway_code,omitempty"`
 	// 倍率
 	Rate int `json:"rate,omitempty"`
+	// 每度电的单价
+	UnitPrice int `json:"unit_price,omitempty"`
 	// 项目编号
 	Project string `json:"project,omitempty"`
 	// 位置编号
@@ -55,7 +57,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldRate, device.FieldStatus, device.FieldIsDel:
+		case device.FieldRate, device.FieldUnitPrice, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
 		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldGatewayCode, device.FieldProject, device.FieldPosCode, device.FieldAreaCode, device.FieldPcode, device.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -129,6 +131,12 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field rate", values[i])
 			} else if value.Valid {
 				_m.Rate = int(value.Int64)
+			}
+		case device.FieldUnitPrice:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field unit_price", values[i])
+			} else if value.Valid {
+				_m.UnitPrice = int(value.Int64)
 			}
 		case device.FieldProject:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -231,6 +239,9 @@ func (_m *Device) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("rate=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Rate))
+	builder.WriteString(", ")
+	builder.WriteString("unit_price=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UnitPrice))
 	builder.WriteString(", ")
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)

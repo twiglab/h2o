@@ -110,30 +110,6 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
-// The AlarmQueryRuleFunc type is an adapter to allow the use of ordinary
-// functions as a query rule.
-type AlarmQueryRuleFunc func(context.Context, *ent.AlarmQuery) error
-
-// EvalQuery return f(ctx, q).
-func (f AlarmQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.AlarmQuery); ok {
-		return f(ctx, q)
-	}
-	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AlarmQuery", q)
-}
-
-// The AlarmMutationRuleFunc type is an adapter to allow the use of ordinary
-// functions as a mutation rule.
-type AlarmMutationRuleFunc func(context.Context, *ent.AlarmMutation) error
-
-// EvalMutation calls f(ctx, m).
-func (f AlarmMutationRuleFunc) EvalMutation(ctx context.Context, m ent.Mutation) error {
-	if m, ok := m.(*ent.AlarmMutation); ok {
-		return f(ctx, m)
-	}
-	return Denyf("ent/privacy: unexpected mutation type %T, expect *ent.AlarmMutation", m)
-}
-
 // The DeviceQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type DeviceQueryRuleFunc func(context.Context, *ent.DeviceQuery) error

@@ -5,7 +5,6 @@ package ent
 import (
 	"time"
 
-	"github.com/twiglab/h2o/dbcli/ent/alarm"
 	"github.com/twiglab/h2o/dbcli/ent/device"
 	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
 	"github.com/twiglab/h2o/dbcli/ent/top"
@@ -16,46 +15,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	alarmFields := schema.Alarm{}.Fields()
-	_ = alarmFields
-	// alarmDescTopID is the schema descriptor for top_id field.
-	alarmDescTopID := alarmFields[1].Descriptor()
-	// alarm.TopIDValidator is a validator for the "top_id" field. It is called by the builders before save.
-	alarm.TopIDValidator = alarmDescTopID.Validators[0].(func(string) error)
-	// alarmDescTopCode is the schema descriptor for top_code field.
-	alarmDescTopCode := alarmFields[2].Descriptor()
-	// alarm.TopCodeValidator is a validator for the "top_code" field. It is called by the builders before save.
-	alarm.TopCodeValidator = alarmDescTopCode.Validators[0].(func(string) error)
-	// alarmDescAlarm1 is the schema descriptor for alarm_1 field.
-	alarmDescAlarm1 := alarmFields[3].Descriptor()
-	// alarm.DefaultAlarm1 holds the default value on creation for the alarm_1 field.
-	alarm.DefaultAlarm1 = alarmDescAlarm1.Default.(int)
-	// alarmDescAlarmStock1 is the schema descriptor for alarm_stock_1 field.
-	alarmDescAlarmStock1 := alarmFields[5].Descriptor()
-	// alarm.DefaultAlarmStock1 holds the default value on creation for the alarm_stock_1 field.
-	alarm.DefaultAlarmStock1 = alarmDescAlarmStock1.Default.(int64)
-	// alarmDescAlarm2 is the schema descriptor for alarm_2 field.
-	alarmDescAlarm2 := alarmFields[6].Descriptor()
-	// alarm.DefaultAlarm2 holds the default value on creation for the alarm_2 field.
-	alarm.DefaultAlarm2 = alarmDescAlarm2.Default.(int)
-	// alarmDescAlarmStock2 is the schema descriptor for alarm_stock_2 field.
-	alarmDescAlarmStock2 := alarmFields[8].Descriptor()
-	// alarm.DefaultAlarmStock2 holds the default value on creation for the alarm_stock_2 field.
-	alarm.DefaultAlarmStock2 = alarmDescAlarmStock2.Default.(int64)
-	// alarmDescAlarm3 is the schema descriptor for alarm_3 field.
-	alarmDescAlarm3 := alarmFields[9].Descriptor()
-	// alarm.DefaultAlarm3 holds the default value on creation for the alarm_3 field.
-	alarm.DefaultAlarm3 = alarmDescAlarm3.Default.(int)
-	// alarmDescAlarmStock3 is the schema descriptor for alarm_stock_3 field.
-	alarmDescAlarmStock3 := alarmFields[11].Descriptor()
-	// alarm.DefaultAlarmStock3 holds the default value on creation for the alarm_stock_3 field.
-	alarm.DefaultAlarmStock3 = alarmDescAlarmStock3.Default.(int64)
-	// alarmDescID is the schema descriptor for id field.
-	alarmDescID := alarmFields[0].Descriptor()
-	// alarm.DefaultID holds the default value on creation for the id field.
-	alarm.DefaultID = alarmDescID.Default.(func() string)
-	// alarm.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	alarm.IDValidator = alarmDescID.Validators[0].(func(string) error)
 	deviceMixin := schema.Device{}.Mixin()
 	deviceMixinFields0 := deviceMixin[0].Fields()
 	_ = deviceMixinFields0
@@ -83,16 +42,20 @@ func init() {
 	deviceDescRate := deviceFields[6].Descriptor()
 	// device.DefaultRate holds the default value on creation for the rate field.
 	device.DefaultRate = deviceDescRate.Default.(int)
+	// deviceDescUnitPrice is the schema descriptor for unit_price field.
+	deviceDescUnitPrice := deviceFields[7].Descriptor()
+	// device.DefaultUnitPrice holds the default value on creation for the unit_price field.
+	device.DefaultUnitPrice = deviceDescUnitPrice.Default.(int)
 	// deviceDescProject is the schema descriptor for project field.
-	deviceDescProject := deviceFields[7].Descriptor()
+	deviceDescProject := deviceFields[8].Descriptor()
 	// device.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	device.ProjectValidator = deviceDescProject.Validators[0].(func(string) error)
 	// deviceDescStatus is the schema descriptor for status field.
-	deviceDescStatus := deviceFields[11].Descriptor()
+	deviceDescStatus := deviceFields[12].Descriptor()
 	// device.DefaultStatus holds the default value on creation for the status field.
 	device.DefaultStatus = deviceDescStatus.Default.(int)
 	// deviceDescIsDel is the schema descriptor for is_del field.
-	deviceDescIsDel := deviceFields[13].Descriptor()
+	deviceDescIsDel := deviceFields[14].Descriptor()
 	// device.DefaultIsDel holds the default value on creation for the is_del field.
 	device.DefaultIsDel = deviceDescIsDel.Default.(int)
 	// deviceDescID is the schema descriptor for id field.

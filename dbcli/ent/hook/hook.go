@@ -9,18 +9,6 @@ import (
 	"github.com/twiglab/h2o/dbcli/ent"
 )
 
-// The AlarmFunc type is an adapter to allow the use of ordinary
-// function as Alarm mutator.
-type AlarmFunc func(context.Context, *ent.AlarmMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f AlarmFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.AlarmMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AlarmMutation", m)
-}
-
 // The DeviceFunc type is an adapter to allow the use of ordinary
 // function as Device mutator.
 type DeviceFunc func(context.Context, *ent.DeviceMutation) (ent.Value, error)
