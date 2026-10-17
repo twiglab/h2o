@@ -25,11 +25,12 @@ func (Device) Fields() []ent.Field {
 
 		field.String("gateway_code").Optional().SchemaType(varchar(64)).Comment("网关编号"),
 
-		field.Int("rate").Default(1).Comment("倍率"),
-		field.Int("unit_price").Default(0).Comment("每度电的单价"), // 特别注意，是每度电的单价，不是表显
+		field.Int64("rate").Default(1).Comment("倍率"),
+		field.Int64("unit_price").Default(0).Comment("每度电的单价"), // 特别注意，是每度电的单价，不是表显
 
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 		field.String("pos_code").Optional().SchemaType(varchar(64)).Comment("位置编号"),
+		field.String("pos_name").Optional().SchemaType(varchar(64)).Comment("位置名称"),
 		field.String("area_code").Optional().SchemaType(varchar(64)).Comment("区域编号"),
 		field.String("pcode").Optional().SchemaType(varchar(64)).Comment("对外位置编号"),
 
