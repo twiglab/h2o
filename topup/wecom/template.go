@@ -24,8 +24,8 @@ const help_cmd_tpl = `
 `
 
 const top_cmd_tpl = `
-# 表号：{{ .Code }}
->当前表显 **{{.Curr.DataValue | du}}** 度，采集时间 **{{.Curr.DataTime | datetime}}**
+# 表号：{{ .Code }}，铺位号：{{.Device.PosCode}}（{{.Device.PosName}}）
+>当前表显 **{{.Curr.DataValue | du}}** ，采集时间 **{{.Curr.DataTime | datetime}}**
 {{ if .Last }}
 >当前余额（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
 {{else}}
@@ -58,10 +58,10 @@ const charge_cmd_tpl = `
 
 const pos_cmd_tpl = `
 ## 表具列表
-| 铺位号 | 表号 | 表具号 | 类型 | 状态 |
-| :-----: | :----: | :----: | :-----: | :-----: |
+| 铺位号 | 商铺名称 | 表号 | 表具号 | 类型 | 倍率 | 单价 |
+| :-----: | :----: | :----: | :-----: | :-----: | :-----: | :-----: |
 {{ range .Devices -}}
-| {{ .PosCode }} | **{{.DeviceCode}}** | **{{.DeviceSn}}** | {{.DeviceType | dt}} | {{.Status}} |
+| {{ .PosCode }} | {{ .PosName }} |**{{.DeviceCode}}** | **{{.DeviceSn}}** | {{.DeviceType | dt}} | {{.Rate}} | {{.UnitPrice}} |
 {{ end }}
 `
 
