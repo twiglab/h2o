@@ -4,6 +4,7 @@ go 1.27.0
 
 require (
 	github.com/go-sphere/wecom-aibot-go-sdk v1.0.5
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
