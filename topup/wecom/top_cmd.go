@@ -14,12 +14,15 @@ import (
 type topCmd struct {
 	cli  *ent.Client
 	tmpl *template.Template
+	dbx  *DBx
 
 	Code string
 
 	Tops []*ent.Top
 	Curr *ent.NhRecord
 	Last *ent.Top
+
+	Device *ent.Device
 }
 
 func (c *topCmd) Args(args ...string) error {
@@ -28,6 +31,12 @@ func (c *topCmd) Args(args ...string) error {
 }
 
 func (c *topCmd) Do(ctx context.Context) (err error) {
+	c.Device, err = c.dbx.LoadDeviceByCode(ctx, c.Code)
+	if err != nil {
+		err = errors.New("表号不存在")
+		return
+	}
+
 	c.Curr, err = c.cli.NhRecord.Query().
 		Where(nhrecord.DeviceCodeEQ(c.Code)).
 		Order(ent.Desc(nhrecord.FieldDataTime)).
@@ -64,7 +73,12 @@ func (c topCmd) ToString() string {
 }
 
 func topCmdFn(cfg Global, args ...string) (Commander, error) {
-	u := &topCmd{cli: cfg.Client, tmpl: cfg.Template}
+	u := &topCmd{
+		cli:  cfg.Client,
+		tmpl: cfg.Template,
+		dbx:  &DBx{cli: cfg.Client},
+	}
+
 	err := u.Args(args...)
 	return u, err
 }
