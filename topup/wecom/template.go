@@ -14,8 +14,9 @@ const help_cmd_tpl = `
 2. p <铺位号>，列出对应铺位中表具，如省略铺位号，则列出所有
   例如：p F1_04
 3. t <表号>，查询对应仪表的当前用量和充值记录
-3. u <表号>，列出指定表号的用量采集列表
+4. u <表号>，列出指定表号的用量采集列表
   例如：u 909_32
+5. report 查看当前用量报表
 -------
 以下命令只能指定人员在指定群组执行
 1. c <表号> <增量> [<金额> <存量>]
@@ -66,11 +67,35 @@ const pos_cmd_tpl = `
 `
 
 const usage_cmd_tpl = `
-## 用量列表 表号：{{ .Code }}
+## 用量列表 表号：{{ .Code }}，铺位号：{{.Device.PosCode}}（{{.Device.PosName}}）
+>表具：**{{.Device.DeviceSn}}**
+>倍率：**{{.Device.Rate}}**
+>最后一次采集时间：{{.Record.DataTime | datetime}}
+{{ if .Top }}
+>剩余电量 [(限额 - 表显) * 倍率]：**{{ eng .Top.Top .Record.DataValue .Device.Rate | du}}** 度，供电状态 **{{ .Top.Status | usage }}**
+{{else}}
+>无限额记录
+{{ end }}
+## 充值记录
+| 时间 | 增量 | 限额 | 金额 | 起点 |
+| :-----: | :----: | :----: | :-----: | :-----: |
+{{ range .Tops -}}
+| {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | yuan}} | {{.Stock | du}} |
+{{ end }}
+## 采集记录
 | 表号 | 表显 | 类型 | 时间 |
 | :----: | :----: | :-----: | :-----: |
-{{ range .All -}}
+{{ range .Records -}}
 | **{{.DeviceCode}}** | **{{.DataValue | du}}** | {{.DeviceType | dt}} | {{.DataTime | datetime}} |
+{{end}}
+`
+
+const report_cmd_tpl = `
+## 用量报告
+| 商铺名称 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   倍率  |  表显  |  限额   |   余额   | 采集时间 |
+| :------: | :------: | :-----: | :-----: | :----: | :----: | :-----: | :------: | :------: | :------: |
+{{ range .Items -}}
+| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{.Rate}} | {{.DataValue | du}} | {{.Top | du}} | {{.Diff | du}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
@@ -80,6 +105,7 @@ const (
 	template_charge = "charge"
 	template_top    = "top"
 	template_usage  = "usage"
+	template_report = "report"
 )
 
 func buildTemplate() *template.Template {
@@ -92,6 +118,7 @@ func buildTemplate() *template.Template {
 			"sub":      sub,
 			"add":      add,
 			"usage":    usageStatus,
+			"eng":      eng,
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
@@ -99,12 +126,17 @@ func buildTemplate() *template.Template {
 	template.Must(t.New(template_charge).Parse(charge_cmd_tpl))
 	template.Must(t.New(template_pos).Parse(pos_cmd_tpl))
 	template.Must(t.New(template_usage).Parse(usage_cmd_tpl))
+	template.Must(t.New(template_report).Parse(report_cmd_tpl))
 	return t
 }
 
 func du(i int64) string {
 	x := float64(i) * 0.01
 	return fmt.Sprintf("%.2f", x)
+}
+
+func eng(t, v, r int64) int64 {
+	return (t - v) * r
 }
 
 func fmtTimePtr(t *time.Time) string {
