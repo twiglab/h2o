@@ -103,8 +103,6 @@ from
 			device_top
 		where
 			status = 0
-		order by
-			pos_code
 ) t
 	where
 		t.num = 1
@@ -117,6 +115,7 @@ join
 		max(data_time) as dt
 	from
 		nh_record
+		where data_time >= CURRENT_DATE - INTERVAL '7 day'
 	group by
 		device_code
 ) b on
