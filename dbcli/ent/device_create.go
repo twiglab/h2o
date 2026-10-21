@@ -133,6 +133,20 @@ func (_c *DeviceCreate) SetNillableUnitPrice(v *int64) *DeviceCreate {
 	return _c
 }
 
+// SetAlarm sets the "alarm" field.
+func (_c *DeviceCreate) SetAlarm(v int64) *DeviceCreate {
+	_c.mutation.SetAlarm(v)
+	return _c
+}
+
+// SetNillableAlarm sets the "alarm" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableAlarm(v *int64) *DeviceCreate {
+	if v != nil {
+		_c.SetAlarm(*v)
+	}
+	return _c
+}
+
 // SetProject sets the "project" field.
 func (_c *DeviceCreate) SetProject(v string) *DeviceCreate {
 	_c.mutation.SetProject(v)
@@ -191,6 +205,20 @@ func (_c *DeviceCreate) SetPcode(v string) *DeviceCreate {
 func (_c *DeviceCreate) SetNillablePcode(v *string) *DeviceCreate {
 	if v != nil {
 		_c.SetPcode(*v)
+	}
+	return _c
+}
+
+// SetOutCode sets the "out_code" field.
+func (_c *DeviceCreate) SetOutCode(v string) *DeviceCreate {
+	_c.mutation.SetOutCode(v)
+	return _c
+}
+
+// SetNillableOutCode sets the "out_code" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableOutCode(v *string) *DeviceCreate {
+	if v != nil {
+		_c.SetOutCode(*v)
 	}
 	return _c
 }
@@ -302,6 +330,10 @@ func (_c *DeviceCreate) defaults() {
 		v := device.DefaultUnitPrice
 		_c.mutation.SetUnitPrice(v)
 	}
+	if _, ok := _c.mutation.Alarm(); !ok {
+		v := device.DefaultAlarm
+		_c.mutation.SetAlarm(v)
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		v := device.DefaultStatus
 		_c.mutation.SetStatus(v)
@@ -345,6 +377,9 @@ func (_c *DeviceCreate) check() error {
 	}
 	if _, ok := _c.mutation.UnitPrice(); !ok {
 		return &ValidationError{Name: "unit_price", err: errors.New(`ent: missing required field "Device.unit_price"`)}
+	}
+	if _, ok := _c.mutation.Alarm(); !ok {
+		return &ValidationError{Name: "alarm", err: errors.New(`ent: missing required field "Device.alarm"`)}
 	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "Device.project"`)}
@@ -437,6 +472,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
 		_node.UnitPrice = value
 	}
+	if value, ok := _c.mutation.Alarm(); ok {
+		_spec.SetField(device.FieldAlarm, field.TypeInt64, value)
+		_node.Alarm = value
+	}
 	if value, ok := _c.mutation.Project(); ok {
 		_spec.SetField(device.FieldProject, field.TypeString, value)
 		_node.Project = value
@@ -456,6 +495,10 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Pcode(); ok {
 		_spec.SetField(device.FieldPcode, field.TypeString, value)
 		_node.Pcode = value
+	}
+	if value, ok := _c.mutation.OutCode(); ok {
+		_spec.SetField(device.FieldOutCode, field.TypeString, value)
+		_node.OutCode = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(device.FieldStatus, field.TypeInt, value)
@@ -647,6 +690,24 @@ func (u *DeviceUpsert) AddUnitPrice(v int64) *DeviceUpsert {
 	return u
 }
 
+// SetAlarm sets the "alarm" field.
+func (u *DeviceUpsert) SetAlarm(v int64) *DeviceUpsert {
+	u.Set(device.FieldAlarm, v)
+	return u
+}
+
+// UpdateAlarm sets the "alarm" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateAlarm() *DeviceUpsert {
+	u.SetExcluded(device.FieldAlarm)
+	return u
+}
+
+// AddAlarm adds v to the "alarm" field.
+func (u *DeviceUpsert) AddAlarm(v int64) *DeviceUpsert {
+	u.Add(device.FieldAlarm, v)
+	return u
+}
+
 // SetPosCode sets the "pos_code" field.
 func (u *DeviceUpsert) SetPosCode(v string) *DeviceUpsert {
 	u.Set(device.FieldPosCode, v)
@@ -716,6 +777,24 @@ func (u *DeviceUpsert) UpdatePcode() *DeviceUpsert {
 // ClearPcode clears the value of the "pcode" field.
 func (u *DeviceUpsert) ClearPcode() *DeviceUpsert {
 	u.SetNull(device.FieldPcode)
+	return u
+}
+
+// SetOutCode sets the "out_code" field.
+func (u *DeviceUpsert) SetOutCode(v string) *DeviceUpsert {
+	u.Set(device.FieldOutCode, v)
+	return u
+}
+
+// UpdateOutCode sets the "out_code" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateOutCode() *DeviceUpsert {
+	u.SetExcluded(device.FieldOutCode)
+	return u
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (u *DeviceUpsert) ClearOutCode() *DeviceUpsert {
+	u.SetNull(device.FieldOutCode)
 	return u
 }
 
@@ -974,6 +1053,27 @@ func (u *DeviceUpsertOne) UpdateUnitPrice() *DeviceUpsertOne {
 	})
 }
 
+// SetAlarm sets the "alarm" field.
+func (u *DeviceUpsertOne) SetAlarm(v int64) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetAlarm(v)
+	})
+}
+
+// AddAlarm adds v to the "alarm" field.
+func (u *DeviceUpsertOne) AddAlarm(v int64) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddAlarm(v)
+	})
+}
+
+// UpdateAlarm sets the "alarm" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateAlarm() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateAlarm()
+	})
+}
+
 // SetPosCode sets the "pos_code" field.
 func (u *DeviceUpsertOne) SetPosCode(v string) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1055,6 +1155,27 @@ func (u *DeviceUpsertOne) UpdatePcode() *DeviceUpsertOne {
 func (u *DeviceUpsertOne) ClearPcode() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearPcode()
+	})
+}
+
+// SetOutCode sets the "out_code" field.
+func (u *DeviceUpsertOne) SetOutCode(v string) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetOutCode(v)
+	})
+}
+
+// UpdateOutCode sets the "out_code" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateOutCode() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateOutCode()
+	})
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (u *DeviceUpsertOne) ClearOutCode() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearOutCode()
 	})
 }
 
@@ -1489,6 +1610,27 @@ func (u *DeviceUpsertBulk) UpdateUnitPrice() *DeviceUpsertBulk {
 	})
 }
 
+// SetAlarm sets the "alarm" field.
+func (u *DeviceUpsertBulk) SetAlarm(v int64) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetAlarm(v)
+	})
+}
+
+// AddAlarm adds v to the "alarm" field.
+func (u *DeviceUpsertBulk) AddAlarm(v int64) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddAlarm(v)
+	})
+}
+
+// UpdateAlarm sets the "alarm" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateAlarm() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateAlarm()
+	})
+}
+
 // SetPosCode sets the "pos_code" field.
 func (u *DeviceUpsertBulk) SetPosCode(v string) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1570,6 +1712,27 @@ func (u *DeviceUpsertBulk) UpdatePcode() *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) ClearPcode() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.ClearPcode()
+	})
+}
+
+// SetOutCode sets the "out_code" field.
+func (u *DeviceUpsertBulk) SetOutCode(v string) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetOutCode(v)
+	})
+}
+
+// UpdateOutCode sets the "out_code" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateOutCode() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateOutCode()
+	})
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (u *DeviceUpsertBulk) ClearOutCode() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearOutCode()
 	})
 }
 

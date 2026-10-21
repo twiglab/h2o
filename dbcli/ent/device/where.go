@@ -109,6 +109,11 @@ func UnitPrice(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldUnitPrice, v))
 }
 
+// Alarm applies equality check predicate on the "alarm" field. It's identical to AlarmEQ.
+func Alarm(v int64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldAlarm, v))
+}
+
 // Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
 func Project(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldProject, v))
@@ -132,6 +137,11 @@ func AreaCode(v string) predicate.Device {
 // Pcode applies equality check predicate on the "pcode" field. It's identical to PcodeEQ.
 func Pcode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldPcode, v))
+}
+
+// OutCode applies equality check predicate on the "out_code" field. It's identical to OutCodeEQ.
+func OutCode(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldOutCode, v))
 }
 
 // Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
@@ -664,6 +674,46 @@ func UnitPriceLTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldUnitPrice, v))
 }
 
+// AlarmEQ applies the EQ predicate on the "alarm" field.
+func AlarmEQ(v int64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldAlarm, v))
+}
+
+// AlarmNEQ applies the NEQ predicate on the "alarm" field.
+func AlarmNEQ(v int64) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldAlarm, v))
+}
+
+// AlarmIn applies the In predicate on the "alarm" field.
+func AlarmIn(vs ...int64) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldAlarm, vs...))
+}
+
+// AlarmNotIn applies the NotIn predicate on the "alarm" field.
+func AlarmNotIn(vs ...int64) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldAlarm, vs...))
+}
+
+// AlarmGT applies the GT predicate on the "alarm" field.
+func AlarmGT(v int64) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldAlarm, v))
+}
+
+// AlarmGTE applies the GTE predicate on the "alarm" field.
+func AlarmGTE(v int64) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldAlarm, v))
+}
+
+// AlarmLT applies the LT predicate on the "alarm" field.
+func AlarmLT(v int64) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldAlarm, v))
+}
+
+// AlarmLTE applies the LTE predicate on the "alarm" field.
+func AlarmLTE(v int64) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldAlarm, v))
+}
+
 // ProjectEQ applies the EQ predicate on the "project" field.
 func ProjectEQ(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldProject, v))
@@ -1027,6 +1077,81 @@ func PcodeEqualFold(v string) predicate.Device {
 // PcodeContainsFold applies the ContainsFold predicate on the "pcode" field.
 func PcodeContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldPcode, v))
+}
+
+// OutCodeEQ applies the EQ predicate on the "out_code" field.
+func OutCodeEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldOutCode, v))
+}
+
+// OutCodeNEQ applies the NEQ predicate on the "out_code" field.
+func OutCodeNEQ(v string) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldOutCode, v))
+}
+
+// OutCodeIn applies the In predicate on the "out_code" field.
+func OutCodeIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldOutCode, vs...))
+}
+
+// OutCodeNotIn applies the NotIn predicate on the "out_code" field.
+func OutCodeNotIn(vs ...string) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldOutCode, vs...))
+}
+
+// OutCodeGT applies the GT predicate on the "out_code" field.
+func OutCodeGT(v string) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldOutCode, v))
+}
+
+// OutCodeGTE applies the GTE predicate on the "out_code" field.
+func OutCodeGTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldOutCode, v))
+}
+
+// OutCodeLT applies the LT predicate on the "out_code" field.
+func OutCodeLT(v string) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldOutCode, v))
+}
+
+// OutCodeLTE applies the LTE predicate on the "out_code" field.
+func OutCodeLTE(v string) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldOutCode, v))
+}
+
+// OutCodeContains applies the Contains predicate on the "out_code" field.
+func OutCodeContains(v string) predicate.Device {
+	return predicate.Device(sql.FieldContains(FieldOutCode, v))
+}
+
+// OutCodeHasPrefix applies the HasPrefix predicate on the "out_code" field.
+func OutCodeHasPrefix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasPrefix(FieldOutCode, v))
+}
+
+// OutCodeHasSuffix applies the HasSuffix predicate on the "out_code" field.
+func OutCodeHasSuffix(v string) predicate.Device {
+	return predicate.Device(sql.FieldHasSuffix(FieldOutCode, v))
+}
+
+// OutCodeIsNil applies the IsNil predicate on the "out_code" field.
+func OutCodeIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldOutCode))
+}
+
+// OutCodeNotNil applies the NotNil predicate on the "out_code" field.
+func OutCodeNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldOutCode))
+}
+
+// OutCodeEqualFold applies the EqualFold predicate on the "out_code" field.
+func OutCodeEqualFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldEqualFold(FieldOutCode, v))
+}
+
+// OutCodeContainsFold applies the ContainsFold predicate on the "out_code" field.
+func OutCodeContainsFold(v string) predicate.Device {
+	return predicate.Device(sql.FieldContainsFold(FieldOutCode, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

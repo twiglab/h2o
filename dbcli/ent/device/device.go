@@ -31,6 +31,8 @@ const (
 	FieldRate = "rate"
 	// FieldUnitPrice holds the string denoting the unit_price field in the database.
 	FieldUnitPrice = "unit_price"
+	// FieldAlarm holds the string denoting the alarm field in the database.
+	FieldAlarm = "alarm"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
@@ -41,6 +43,8 @@ const (
 	FieldAreaCode = "area_code"
 	// FieldPcode holds the string denoting the pcode field in the database.
 	FieldPcode = "pcode"
+	// FieldOutCode holds the string denoting the out_code field in the database.
+	FieldOutCode = "out_code"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldMemo holds the string denoting the memo field in the database.
@@ -63,11 +67,13 @@ var Columns = []string{
 	FieldGatewayCode,
 	FieldRate,
 	FieldUnitPrice,
+	FieldAlarm,
 	FieldProject,
 	FieldPosCode,
 	FieldPosName,
 	FieldAreaCode,
 	FieldPcode,
+	FieldOutCode,
 	FieldStatus,
 	FieldMemo,
 	FieldIsDel,
@@ -98,6 +104,8 @@ var (
 	DefaultRate int64
 	// DefaultUnitPrice holds the default value on creation for the "unit_price" field.
 	DefaultUnitPrice int64
+	// DefaultAlarm holds the default value on creation for the "alarm" field.
+	DefaultAlarm int64
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	ProjectValidator func(string) error
 	// DefaultStatus holds the default value on creation for the "status" field.
@@ -163,6 +171,11 @@ func ByUnitPrice(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUnitPrice, opts...).ToFunc()
 }
 
+// ByAlarm orders the results by the alarm field.
+func ByAlarm(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAlarm, opts...).ToFunc()
+}
+
 // ByProject orders the results by the project field.
 func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
@@ -186,6 +199,11 @@ func ByAreaCode(opts ...sql.OrderTermOption) OrderOption {
 // ByPcode orders the results by the pcode field.
 func ByPcode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPcode, opts...).ToFunc()
+}
+
+// ByOutCode orders the results by the out_code field.
+func ByOutCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutCode, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

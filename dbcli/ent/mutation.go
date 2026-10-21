@@ -48,11 +48,14 @@ type DeviceMutation struct {
 	addrate       *int64
 	unit_price    *int64
 	addunit_price *int64
+	alarm         *int64
+	addalarm      *int64
 	project       *string
 	pos_code      *string
 	pos_name      *string
 	area_code     *string
 	pcode         *string
+	out_code      *string
 	status        *int
 	addstatus     *int
 	memo          *string
@@ -571,6 +574,62 @@ func (m *DeviceMutation) ResetUnitPrice() {
 	m.addunit_price = nil
 }
 
+// SetAlarm sets the "alarm" field.
+func (m *DeviceMutation) SetAlarm(i int64) {
+	m.alarm = &i
+	m.addalarm = nil
+}
+
+// Alarm returns the value of the "alarm" field in the mutation.
+func (m *DeviceMutation) Alarm() (r int64, exists bool) {
+	v := m.alarm
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAlarm returns the old "alarm" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldAlarm(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAlarm is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAlarm requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAlarm: %w", err)
+	}
+	return oldValue.Alarm, nil
+}
+
+// AddAlarm adds i to the "alarm" field.
+func (m *DeviceMutation) AddAlarm(i int64) {
+	if m.addalarm != nil {
+		*m.addalarm += i
+	} else {
+		m.addalarm = &i
+	}
+}
+
+// AddedAlarm returns the value that was added to the "alarm" field in this mutation.
+func (m *DeviceMutation) AddedAlarm() (r int64, exists bool) {
+	v := m.addalarm
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAlarm resets all changes to the "alarm" field.
+func (m *DeviceMutation) ResetAlarm() {
+	m.alarm = nil
+	m.addalarm = nil
+}
+
 // SetProject sets the "project" field.
 func (m *DeviceMutation) SetProject(s string) {
 	m.project = &s
@@ -803,6 +862,55 @@ func (m *DeviceMutation) ResetPcode() {
 	delete(m.clearedFields, device.FieldPcode)
 }
 
+// SetOutCode sets the "out_code" field.
+func (m *DeviceMutation) SetOutCode(s string) {
+	m.out_code = &s
+}
+
+// OutCode returns the value of the "out_code" field in the mutation.
+func (m *DeviceMutation) OutCode() (r string, exists bool) {
+	v := m.out_code
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOutCode returns the old "out_code" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldOutCode(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOutCode is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOutCode requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOutCode: %w", err)
+	}
+	return oldValue.OutCode, nil
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (m *DeviceMutation) ClearOutCode() {
+	m.out_code = nil
+	m.clearedFields[device.FieldOutCode] = struct{}{}
+}
+
+// OutCodeCleared returns if the "out_code" field was cleared in this mutation.
+func (m *DeviceMutation) OutCodeCleared() bool {
+	_, ok := m.clearedFields[device.FieldOutCode]
+	return ok
+}
+
+// ResetOutCode resets all changes to the "out_code" field.
+func (m *DeviceMutation) ResetOutCode() {
+	m.out_code = nil
+	delete(m.clearedFields, device.FieldOutCode)
+}
+
 // SetStatus sets the "status" field.
 func (m *DeviceMutation) SetStatus(i int) {
 	m.status = &i
@@ -998,7 +1106,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 19)
 	if m.create_time != nil {
 		fields = append(fields, device.FieldCreateTime)
 	}
@@ -1026,6 +1134,9 @@ func (m *DeviceMutation) Fields() []string {
 	if m.unit_price != nil {
 		fields = append(fields, device.FieldUnitPrice)
 	}
+	if m.alarm != nil {
+		fields = append(fields, device.FieldAlarm)
+	}
 	if m.project != nil {
 		fields = append(fields, device.FieldProject)
 	}
@@ -1040,6 +1151,9 @@ func (m *DeviceMutation) Fields() []string {
 	}
 	if m.pcode != nil {
 		fields = append(fields, device.FieldPcode)
+	}
+	if m.out_code != nil {
+		fields = append(fields, device.FieldOutCode)
 	}
 	if m.status != nil {
 		fields = append(fields, device.FieldStatus)
@@ -1076,6 +1190,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.Rate()
 	case device.FieldUnitPrice:
 		return m.UnitPrice()
+	case device.FieldAlarm:
+		return m.Alarm()
 	case device.FieldProject:
 		return m.Project()
 	case device.FieldPosCode:
@@ -1086,6 +1202,8 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.AreaCode()
 	case device.FieldPcode:
 		return m.Pcode()
+	case device.FieldOutCode:
+		return m.OutCode()
 	case device.FieldStatus:
 		return m.Status()
 	case device.FieldMemo:
@@ -1119,6 +1237,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldRate(ctx)
 	case device.FieldUnitPrice:
 		return m.OldUnitPrice(ctx)
+	case device.FieldAlarm:
+		return m.OldAlarm(ctx)
 	case device.FieldProject:
 		return m.OldProject(ctx)
 	case device.FieldPosCode:
@@ -1129,6 +1249,8 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldAreaCode(ctx)
 	case device.FieldPcode:
 		return m.OldPcode(ctx)
+	case device.FieldOutCode:
+		return m.OldOutCode(ctx)
 	case device.FieldStatus:
 		return m.OldStatus(ctx)
 	case device.FieldMemo:
@@ -1207,6 +1329,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUnitPrice(v)
 		return nil
+	case device.FieldAlarm:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAlarm(v)
+		return nil
 	case device.FieldProject:
 		v, ok := value.(string)
 		if !ok {
@@ -1241,6 +1370,13 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPcode(v)
+		return nil
+	case device.FieldOutCode:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOutCode(v)
 		return nil
 	case device.FieldStatus:
 		v, ok := value.(int)
@@ -1277,6 +1413,9 @@ func (m *DeviceMutation) AddedFields() []string {
 	if m.addunit_price != nil {
 		fields = append(fields, device.FieldUnitPrice)
 	}
+	if m.addalarm != nil {
+		fields = append(fields, device.FieldAlarm)
+	}
 	if m.addstatus != nil {
 		fields = append(fields, device.FieldStatus)
 	}
@@ -1295,6 +1434,8 @@ func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedRate()
 	case device.FieldUnitPrice:
 		return m.AddedUnitPrice()
+	case device.FieldAlarm:
+		return m.AddedAlarm()
 	case device.FieldStatus:
 		return m.AddedStatus()
 	case device.FieldIsDel:
@@ -1321,6 +1462,13 @@ func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUnitPrice(v)
+		return nil
+	case device.FieldAlarm:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAlarm(v)
 		return nil
 	case device.FieldStatus:
 		v, ok := value.(int)
@@ -1365,6 +1513,9 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldPcode) {
 		fields = append(fields, device.FieldPcode)
 	}
+	if m.FieldCleared(device.FieldOutCode) {
+		fields = append(fields, device.FieldOutCode)
+	}
 	if m.FieldCleared(device.FieldMemo) {
 		fields = append(fields, device.FieldMemo)
 	}
@@ -1402,6 +1553,9 @@ func (m *DeviceMutation) ClearField(name string) error {
 		return nil
 	case device.FieldPcode:
 		m.ClearPcode()
+		return nil
+	case device.FieldOutCode:
+		m.ClearOutCode()
 		return nil
 	case device.FieldMemo:
 		m.ClearMemo()
@@ -1441,6 +1595,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 	case device.FieldUnitPrice:
 		m.ResetUnitPrice()
 		return nil
+	case device.FieldAlarm:
+		m.ResetAlarm()
+		return nil
 	case device.FieldProject:
 		m.ResetProject()
 		return nil
@@ -1455,6 +1612,9 @@ func (m *DeviceMutation) ResetField(name string) error {
 		return nil
 	case device.FieldPcode:
 		m.ResetPcode()
+		return nil
+	case device.FieldOutCode:
+		m.ResetOutCode()
 		return nil
 	case device.FieldStatus:
 		m.ResetStatus()

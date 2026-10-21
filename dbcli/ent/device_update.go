@@ -164,6 +164,27 @@ func (_u *DeviceUpdate) AddUnitPrice(v int64) *DeviceUpdate {
 	return _u
 }
 
+// SetAlarm sets the "alarm" field.
+func (_u *DeviceUpdate) SetAlarm(v int64) *DeviceUpdate {
+	_u.mutation.ResetAlarm()
+	_u.mutation.SetAlarm(v)
+	return _u
+}
+
+// SetNillableAlarm sets the "alarm" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableAlarm(v *int64) *DeviceUpdate {
+	if v != nil {
+		_u.SetAlarm(*v)
+	}
+	return _u
+}
+
+// AddAlarm adds value to the "alarm" field.
+func (_u *DeviceUpdate) AddAlarm(v int64) *DeviceUpdate {
+	_u.mutation.AddAlarm(v)
+	return _u
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_u *DeviceUpdate) SetPosCode(v string) *DeviceUpdate {
 	_u.mutation.SetPosCode(v)
@@ -241,6 +262,26 @@ func (_u *DeviceUpdate) SetNillablePcode(v *string) *DeviceUpdate {
 // ClearPcode clears the value of the "pcode" field.
 func (_u *DeviceUpdate) ClearPcode() *DeviceUpdate {
 	_u.mutation.ClearPcode()
+	return _u
+}
+
+// SetOutCode sets the "out_code" field.
+func (_u *DeviceUpdate) SetOutCode(v string) *DeviceUpdate {
+	_u.mutation.SetOutCode(v)
+	return _u
+}
+
+// SetNillableOutCode sets the "out_code" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableOutCode(v *string) *DeviceUpdate {
+	if v != nil {
+		_u.SetOutCode(*v)
+	}
+	return _u
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (_u *DeviceUpdate) ClearOutCode() *DeviceUpdate {
+	_u.mutation.ClearOutCode()
 	return _u
 }
 
@@ -413,6 +454,12 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedUnitPrice(); ok {
 		_spec.AddField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
+	if value, ok := _u.mutation.Alarm(); ok {
+		_spec.SetField(device.FieldAlarm, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedAlarm(); ok {
+		_spec.AddField(device.FieldAlarm, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 	}
@@ -436,6 +483,12 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.PcodeCleared() {
 		_spec.ClearField(device.FieldPcode, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutCode(); ok {
+		_spec.SetField(device.FieldOutCode, field.TypeString, value)
+	}
+	if _u.mutation.OutCodeCleared() {
+		_spec.ClearField(device.FieldOutCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(device.FieldStatus, field.TypeInt, value)
@@ -611,6 +664,27 @@ func (_u *DeviceUpdateOne) AddUnitPrice(v int64) *DeviceUpdateOne {
 	return _u
 }
 
+// SetAlarm sets the "alarm" field.
+func (_u *DeviceUpdateOne) SetAlarm(v int64) *DeviceUpdateOne {
+	_u.mutation.ResetAlarm()
+	_u.mutation.SetAlarm(v)
+	return _u
+}
+
+// SetNillableAlarm sets the "alarm" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableAlarm(v *int64) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetAlarm(*v)
+	}
+	return _u
+}
+
+// AddAlarm adds value to the "alarm" field.
+func (_u *DeviceUpdateOne) AddAlarm(v int64) *DeviceUpdateOne {
+	_u.mutation.AddAlarm(v)
+	return _u
+}
+
 // SetPosCode sets the "pos_code" field.
 func (_u *DeviceUpdateOne) SetPosCode(v string) *DeviceUpdateOne {
 	_u.mutation.SetPosCode(v)
@@ -688,6 +762,26 @@ func (_u *DeviceUpdateOne) SetNillablePcode(v *string) *DeviceUpdateOne {
 // ClearPcode clears the value of the "pcode" field.
 func (_u *DeviceUpdateOne) ClearPcode() *DeviceUpdateOne {
 	_u.mutation.ClearPcode()
+	return _u
+}
+
+// SetOutCode sets the "out_code" field.
+func (_u *DeviceUpdateOne) SetOutCode(v string) *DeviceUpdateOne {
+	_u.mutation.SetOutCode(v)
+	return _u
+}
+
+// SetNillableOutCode sets the "out_code" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableOutCode(v *string) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetOutCode(*v)
+	}
+	return _u
+}
+
+// ClearOutCode clears the value of the "out_code" field.
+func (_u *DeviceUpdateOne) ClearOutCode() *DeviceUpdateOne {
+	_u.mutation.ClearOutCode()
 	return _u
 }
 
@@ -890,6 +984,12 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	if value, ok := _u.mutation.AddedUnitPrice(); ok {
 		_spec.AddField(device.FieldUnitPrice, field.TypeInt64, value)
 	}
+	if value, ok := _u.mutation.Alarm(); ok {
+		_spec.SetField(device.FieldAlarm, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedAlarm(); ok {
+		_spec.AddField(device.FieldAlarm, field.TypeInt64, value)
+	}
 	if value, ok := _u.mutation.PosCode(); ok {
 		_spec.SetField(device.FieldPosCode, field.TypeString, value)
 	}
@@ -913,6 +1013,12 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	}
 	if _u.mutation.PcodeCleared() {
 		_spec.ClearField(device.FieldPcode, field.TypeString)
+	}
+	if value, ok := _u.mutation.OutCode(); ok {
+		_spec.SetField(device.FieldOutCode, field.TypeString, value)
+	}
+	if _u.mutation.OutCodeCleared() {
+		_spec.ClearField(device.FieldOutCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(device.FieldStatus, field.TypeInt, value)
