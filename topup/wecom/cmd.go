@@ -46,10 +46,13 @@ func (c *CmdMgr) Init() {
 	m["?"] = helpCmdFn
 
 	m["u"] = usageCmdFn
+	m["t"] = usageCmdFn
 	m["p"] = posQueryCmdFn
-	m["t"] = topCmdFn
 
 	m["c"] = chargeCmdFn
+	m["m"] = moneyCmdFn
+
+	m["report"] = reportCmdFn
 
 	c.m = m
 }

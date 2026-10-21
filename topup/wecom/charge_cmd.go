@@ -16,6 +16,9 @@ import (
 )
 
 type chargeCmd struct {
+	cli  *ent.Client
+	tmpl *template.Template
+
 	Code string
 
 	Incr   int64
@@ -28,9 +31,6 @@ type chargeCmd struct {
 	Nh       *ent.NhRecord
 	Top      *ent.Top
 	TopAfter *ent.Top
-
-	cli  *ent.Client
-	tmpl *template.Template
 }
 
 func (c *chargeCmd) Args(args ...string) error {
@@ -71,8 +71,8 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 		Where(device.IsDelEQ(0)).
 		Where(device.DeviceCodeEQ(x.Code)).
 		Only(ctx)
-
 	if err != nil {
+		err = errors.New("表号不存在")
 		return
 	}
 
@@ -81,12 +81,7 @@ func (x *chargeCmd) Do(ctx context.Context) (err error) {
 		Order(ent.Desc(nhrecord.FieldDataTime)).
 		First(ctx)
 	if err != nil {
-		if ent.IsNotFound(err) {
-			x.Nh = &ent.NhRecord{
-				// DataValue:  0,
-				DataTime: time.Now(),
-			}
-		}
+		err = errors.New("没有采集记录")
 		return
 	}
 

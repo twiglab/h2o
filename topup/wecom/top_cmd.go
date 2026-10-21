@@ -31,7 +31,7 @@ func (c *topCmd) Args(args ...string) error {
 }
 
 func (c *topCmd) Do(ctx context.Context) (err error) {
-	c.Device, err = c.dbx.LoadDeviceByCode(ctx, c.Code)
+	c.Device, err = c.dbx.LoadDevice(ctx, c.Code)
 	if err != nil {
 		err = errors.New("表号不存在")
 		return

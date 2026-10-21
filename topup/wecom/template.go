@@ -13,10 +13,9 @@ const help_cmd_tpl = `
 1. 使用 ? 或者 h 命令显示帮助
 2. p <铺位号>，列出对应铺位中表具，如省略铺位号，则列出所有
   例如：p F1_04
-3. t <表号>，查询对应仪表的当前用量和充值记录
-4. u <表号>，列出指定表号的用量采集列表
+3. u <表号>，列出指定表号的使用情况
   例如：u 909_32
-5. report 查看当前用量报表
+4. report 查看当前用量报表
 -------
 以下命令只能指定人员在指定群组执行
 1. c <表号> <增量> [<金额> <存量>]
@@ -43,18 +42,21 @@ const top_cmd_tpl = `
 `
 
 const charge_cmd_tpl = `
-# 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}
->充值度数：**{{.Incr | du}}** 度，存量**{{.Stock | du}}** 度
->表显：**{{ .Nh.DataValue | du}}** 度，采集时间 {{ .Nh.DataTime | datetime}}
+# 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}（{{ .Device.PosName }}）
+>表具：**{{.Device.DeviceSn}}**
+>倍率：**{{.Device.Rate}}**
+>表显：**{{ .Nh.DataValue | du}}**，采集时间 {{ .Nh.DataTime | datetime}}
 
->限额：**{{ .TopVal | du}}** 度
->余额（限额 - 表显） **{{ sub .TopVal .Nh.DataValue | du}}** 度
->金额：**{{ .Amount | yuan }}** 元
+>增量：**{{.Incr | du}}** ，存量：**{{.Stock | du}}**
+>限额：**{{ .TopVal | du}}**
 
+>可用电量 [(限额 - 当前表显) * 倍率]：**{{ eng .TopVal .Nh.DataValue .Device.Rate | du}}** 度
+
+>本次充值金额：**{{ .Amount | yuan }}** 元
 >充值时间：{{.TopAfter.ChargeTime | datetime}}
 >充值代码：{{ .TopAfter.Code }}
 
-充值后可用 t {{ .Code }} 命令查看限额详情
+充值后可用 u {{ .Code }} 命令查看使用详情
 `
 
 const pos_cmd_tpl = `
@@ -72,17 +74,17 @@ const usage_cmd_tpl = `
 >倍率：**{{.Device.Rate}}**
 >最后一次采集时间：{{.Record.DataTime | datetime}}
 {{ if .Top }}
->剩余电量 [(限额 - 表显) * 倍率]：**{{ eng .Top.Top .Record.DataValue .Device.Rate | du}}** 度，供电状态 **{{ .Top.Status | usage }}**
+>可用电量 [(限额 - 当前表显) * 倍率]：**{{ eng .Top.Top .Record.DataValue .Device.Rate | du}}** 度，供电状态 **{{ .Top.Status | usage }}**
 {{else}}
 >无限额记录
 {{ end }}
-## 充值记录
-| 时间 | 增量 | 限额 | 金额 | 起点 |
+## 最近充限额记录
+| 时间 | 限额(表显) | 增量(表显) | 起点(表显) | 金额 |
 | :-----: | :----: | :----: | :-----: | :-----: |
 {{ range .Tops -}}
-| {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | yuan}} | {{.Stock | du}} |
+| {{.ChargeTime | datetime}} | {{.Top | du}} | **{{.Incr | du}}** | {{.Stock | du}} | {{.Amount | yuan}} |
 {{ end }}
-## 采集记录
+## 最近采集记录
 | 表号 | 表显 | 类型 | 时间 |
 | :----: | :----: | :-----: | :-----: |
 {{ range .Records -}}
@@ -92,10 +94,10 @@ const usage_cmd_tpl = `
 
 const report_cmd_tpl = `
 ## 用量报告
-| 商铺名称 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   倍率  |  表显  |  限额   |   余额   | 采集时间 |
-| :------: | :------: | :-----: | :-----: | :----: | :----: | :-----: | :------: | :------: | :------: |
+| 商铺名称 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
+| :------: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{.Rate}} | {{.DataValue | du}} | {{.Top | du}} | {{.Diff | du}} | {{.DataTime | datetime}} |
+| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{.Alarm}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 

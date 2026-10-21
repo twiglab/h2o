@@ -60,6 +60,7 @@ type reportItem struct {
 
 	Rate    int64   `db:"rate"`
 	PosName *string `db:"pos_name"`
+	Alarm   int64   `db:"alarm"`
 
 	DiffEng int64 `db:"diff_eng"`
 }
@@ -79,7 +80,8 @@ select
 	a.top - b.dv as diff
 ,
 c.rate ,
-c.pos_name
+c.pos_name,
+c.alarm
 ,
 (a.top - b.dv) * c.rate as diff_eng
 
@@ -121,5 +123,5 @@ join
 	(a.device_code = b.device_code)
 join device c on
 	(a.device_code = c.device_code)
-
+order by a.pos_code
 `
