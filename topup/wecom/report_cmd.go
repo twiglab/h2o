@@ -123,5 +123,5 @@ join
 	(a.device_code = b.device_code)
 join device c on
 	(a.device_code = c.device_code)
-order by a.pos_code
+order by c.pos_code
 `
