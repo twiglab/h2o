@@ -144,6 +144,12 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 
 		ctx := context.Background()
 
+		a.Logger.InfoContext(ctx, "onoff message",
+			slog.String("boxCode", boxCode),
+			slog.String("deviceCode", devCode),
+			slog.String("op", op),
+		)
+
 		switch op {
 		case common.ON:
 			if err := a.On(ctx, devCode); err != nil {
