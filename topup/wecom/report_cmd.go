@@ -101,8 +101,6 @@ from
 			row_number() over(partition by device_code order by charge_time desc) as num
 		from
 			device_top
-		where
-			status = 0
 ) t
 	where
 		t.num = 1

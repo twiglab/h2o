@@ -23,24 +23,6 @@ const help_cmd_tpl = `
   例如：c 909_32 50
 `
 
-const top_cmd_tpl = `
-# 表号：{{ .Code }}，铺位号：{{.Device.PosCode}}（{{.Device.PosName}}）
->当前表显 **{{.Curr.DataValue | du}}** ，采集时间 **{{.Curr.DataTime | datetime}}**
-{{ if .Last }}
->当前余额（限额 - 表显） **{{ sub .Last.Top .Curr.DataValue | du}}** 度，供电状态 **{{ .Last.Status | usage }}**
-{{else}}
->无限额记录
-{{ end }}
-{{ if .Tops }}
-## 充值记录
-| 时间 | 度数 | 限额 | 金额 | 铺位号 |
-| :-----: | :----: | :----: | :-----: | :-----: |
-{{ range .Tops -}}
-| {{.ChargeTime | datetime}} | **{{.Incr | du}}** | **{{.Top | du}}** | {{.Amount | yuan}} | {{.PosCode}} |
-{{ end }}
-{{ end }}
-`
-
 const charge_cmd_tpl = `
 # 表号：{{ .Code }} 铺位号：{{ .Device.PosCode }}（{{ .Device.PosName }}）
 >表具：**{{.Device.DeviceSn}}**
@@ -124,7 +106,6 @@ func buildTemplate() *template.Template {
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
-	template.Must(t.New(template_top).Parse(top_cmd_tpl))
 	template.Must(t.New(template_charge).Parse(charge_cmd_tpl))
 	template.Must(t.New(template_pos).Parse(pos_cmd_tpl))
 	template.Must(t.New(template_usage).Parse(usage_cmd_tpl))
