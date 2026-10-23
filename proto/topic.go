@@ -1,6 +1,9 @@
 package proto
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 const H2O = "h2o"
 
@@ -23,12 +26,10 @@ const (
 	TYPE_GAS         = "G"
 )
 
-func TopicPart(topic string) []string {
+func TopicPart(topic string) ([]string, error) {
 	parts := strings.Split(topic, "/")
-	_ = parts[1]
-
-	if parts[0] != H2O {
-		panic("not h2o topic")
+	if len(parts) < 2 || parts[0] != H2O {
+		return nil, fmt.Errorf("invalid h2o topic: %q", topic)
 	}
-	return parts
+	return parts, nil
 }
