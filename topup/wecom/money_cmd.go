@@ -3,16 +3,13 @@ package wecom
 import (
 	"context"
 	"errors"
-	"math/big"
+	"math"
 	"strconv"
 	"strings"
 	"text/template"
 	"time"
 
 	"github.com/twiglab/h2o/dbcli/ent"
-	"github.com/twiglab/h2o/dbcli/ent/device"
-	"github.com/twiglab/h2o/dbcli/ent/nhrecord"
-	"github.com/twiglab/h2o/dbcli/ent/top"
 )
 
 type moneyCmd struct {
@@ -31,6 +28,7 @@ type moneyCmd struct {
 
 	cli  *ent.Client
 	tmpl *template.Template
+	dbx  *DBx
 }
 
 func (c *moneyCmd) Args(args ...string) error {
@@ -43,24 +41,27 @@ func (c *moneyCmd) Args(args ...string) error {
 	}
 	c.Amount = int64(amount * 100) // 截断，钱支持到分
 
+	if len(args) >= 4 {
+		// 起点
+		stock, err := strconv.ParseFloat(args[3], 64)
+		if err != nil {
+			return err
+		}
+		c.Stock = int64(stock * 100) // 截断，存量支持到 0.01
+	}
+
 	return nil
 }
 
 func (x *moneyCmd) Do(ctx context.Context) (err error) {
-	x.Device, err = x.cli.Device.Query().
-		Where(device.IsDelEQ(0)).
-		Where(device.DeviceCodeEQ(x.Code)).
-		Only(ctx)
+	x.Device, err = x.dbx.LoadDevice(ctx, x.Code)
 
 	if err != nil {
 		err = errors.New("表号不存在")
 		return
 	}
 
-	x.Nh, err = x.cli.NhRecord.Query().
-		Where(nhrecord.DeviceCodeEQ(x.Code)).
-		Order(ent.Desc(nhrecord.FieldDataTime)).
-		First(ctx)
+	x.Nh, err = x.dbx.LoadRecordLast(ctx, x.Code)
 	if err != nil {
 		err = errors.New("没有采集记录")
 		return
@@ -71,16 +72,12 @@ func (x *moneyCmd) Do(ctx context.Context) (err error) {
 		return
 	}
 
-	x.Top, err = x.cli.Top.Query().
-		Where(top.DeviceCodeEQ(x.Code)).
-		Where(top.IsDelEQ(0)).
-		Order(ent.Desc(top.FieldChargeTime)).
-		First(ctx)
-	if err != nil {
-		if !ent.IsNotFound(err) {
-			return
-		}
+	x.Top, err = x.dbx.LoadTopLast(ctx, x.Code)
+	if ent.IsNotFound(err) {
 		x.Top = &ent.Top{}
+	}
+	if ent.MaskNotFound(err) != nil {
+		return err
 	}
 
 	if time.Since(x.Top.ChargeTime) < 5*time.Minute {
@@ -88,22 +85,17 @@ func (x *moneyCmd) Do(ctx context.Context) (err error) {
 		return
 	}
 
-	/*
-	   if x.Device.Rate == 0 || x.Device.UnitPrice == 0 {
-	           return errors.New("表具倍率或单价未配置")
-	   }
-	*/
+	if x.Device.Rate == 0 || x.Device.UnitPrice == 0 {
+		err = errors.New("表具倍率或单价未配置")
+		return
+	}
 
-	x.Stock = x.Top.Top
+	// 没有输入存量，存量就是上一次的top
+	if x.Stock == 0 {
+		x.Stock = x.Top.Top
+	}
 
-	a := big.NewInt(x.Amount)
-	r := big.NewInt(x.Device.Rate)
-	u := big.NewInt(x.Device.UnitPrice)
-
-	z := a.Div(a, r)
-	z = z.Div(z, u)
-
-	x.Incr = z.Int64() + 1 // 多给 0.01
+	x.Incr = calcIncr(x.Amount, x.Device.Rate, x.Device.UnitPrice)
 	x.TopVal = x.Stock + x.Incr
 
 	cr := x.cli.Top.Create()
@@ -144,6 +136,15 @@ func moneyCmdFn(cfg Global, args ...string) (Commander, error) {
 	c := &moneyCmd{
 		cli:  cfg.Client,
 		tmpl: cfg.Template,
+		dbx:  &DBx{cli: cfg.Client},
 	}
 	return c, c.Args(args...)
+}
+
+func calcIncr(a, r, u int64) int64 {
+	//var a, r, u int64 = 10000, 1, 121
+	if r == 0 || u == 0 {
+		return 0
+	}
+	return int64(math.Ceil(float64(a) / float64(r) / float64(u) * 100))
 }

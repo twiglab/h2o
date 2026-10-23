@@ -31,11 +31,27 @@ func (d *DBx) LoadRecordLimit(ctx context.Context, code string, limit int) ([]*e
 	return all, err
 }
 
+func (d *DBx) LoadRecordLast(ctx context.Context, code string) (*ent.NhRecord, error) {
+	a, err := d.cli.NhRecord.Query().
+		Where(nhrecord.DeviceCodeEQ(code)).
+		Order(ent.Desc(nhrecord.FieldDataTime)).
+		First(ctx)
+	return a, err
+}
+
 func (d *DBx) LoadTopLimit(ctx context.Context, code string, limit int) ([]*ent.Top, error) {
 	a, err := d.cli.Top.Query().
-		Where(top.DeviceCodeEQ(code)).
+		Where(top.DeviceCodeEQ(code), top.IsDelEQ(0)).
 		Order(ent.Desc(top.FieldChargeTime)).
 		Limit(limit).
 		All(ctx)
+	return a, err
+}
+
+func (d *DBx) LoadTopLast(ctx context.Context, code string) (*ent.Top, error) {
+	a, err := d.cli.Top.Query().
+		Where(top.DeviceCodeEQ(code), top.IsDelEQ(0)).
+		Order(ent.Desc(top.FieldChargeTime)).
+		First(ctx)
 	return a, err
 }
