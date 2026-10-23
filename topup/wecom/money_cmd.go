@@ -88,6 +88,12 @@ func (x *moneyCmd) Do(ctx context.Context) (err error) {
 		return
 	}
 
+	/*
+	   if x.Device.Rate == 0 || x.Device.UnitPrice == 0 {
+	           return errors.New("表具倍率或单价未配置")
+	   }
+	*/
+
 	x.Stock = x.Top.Top
 
 	a := big.NewInt(x.Amount)
