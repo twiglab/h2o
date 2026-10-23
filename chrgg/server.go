@@ -42,6 +42,7 @@ func (s *ChargeServer) Run() error {
 func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
+			msg.Ack()
 			return
 		}
 

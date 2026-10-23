@@ -37,6 +37,7 @@ func (s *Server) msgHandle() mqtt.MessageHandler {
 
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
+			msg.Ack()
 			return
 		}
 
