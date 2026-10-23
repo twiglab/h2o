@@ -48,7 +48,12 @@ func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 
 		defer msg.Ack()
 
-		parts := proto.TopicPart(msg.Topic())
+		parts, err := proto.TopicPart(msg.Topic())
+		if err != nil {
+			s.Logger.Error("topic error", slog.String("topic", msg.Topic()), slog.Any("error", err))
+			return
+		}
+
 		if parts[1] != proto.DATA {
 			return
 		}
