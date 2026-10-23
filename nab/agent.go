@@ -36,7 +36,7 @@ func (a Agent) Start() error {
 func (a Agent) On(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	err = mcli.DoOn(ctx, onoff,
@@ -67,7 +67,7 @@ func (a Agent) On(ctx context.Context, code string) error {
 func (a Agent) Off(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
 	if err != nil {
-		return nil
+		return err
 	}
 
 	err = mcli.DoOff(ctx, onoff,
@@ -127,6 +127,7 @@ func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 func (a Agent) msgHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
+			msg.Ack()
 			return
 		}
 		defer msg.Ack()
@@ -140,6 +141,8 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 				slog.String("global.Box", a.Global.Box),
 				slog.String("op", op),
 			)
+
+			return
 		}
 
 		ctx := context.Background()
@@ -164,8 +167,9 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 					slog.String("op", op),
 					slog.Any("error", err),
 				)
-				return
 			}
+		default:
+			a.Logger.Error("onoff unknow op", slog.String("code", devCode), slog.String("op", op))
 		}
 	}
 }

@@ -29,23 +29,26 @@ func (t CollectTask) Run() {
 				slog.String("clazz", dev.Clazz),
 				slog.String("box", t.Global.Box),
 				slog.Any("record", dev))
+
+			continue
 		}
+
 		client, err := t.ClientMgr.ClientByCode(dev.Cli)
 		if err != nil {
 			t.Logger.Error("CollectTask.NotFoundClient", slog.String("code", dev.Code),
 				slog.String("cli", dev.Clazz),
 				slog.String("box", t.Global.Box),
 				slog.Any("record", dev))
+
+			continue
 		}
 
-		err = client.DoCollect(context.Background(), coltor, DeviceData{
+		if err = client.DoCollect(context.Background(), coltor, DeviceData{
 			Record: dev,
 			Global: t.Global,
 			Sender: t.Sender,
 			Logger: t.Logger,
-		})
-
-		if err != nil {
+		}); err != nil {
 			t.Logger.Error("CollectTask.CollectError", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
 		}
 		time.Sleep(t.Delay)
