@@ -10,25 +10,6 @@ type Cache[K comparable, V any] interface {
 	Set(context.Context, K, V) error
 }
 
-type MapCache[K comparable, V any] struct {
-	m map[K]V
-}
-
-func NewMapCache[K comparable, V any]() MapCache[K, V] {
-	return MapCache[K, V]{
-		m: make(map[K]V),
-	}
-}
-
-func (m MapCache[K, V]) Get(ctx context.Context, k K) (v V, ok bool, err error) {
-	v, ok = m.m[k]
-	return
-}
-func (m MapCache[K, V]) Set(_ context.Context, k K, v V) error {
-	m.m[k] = v
-	return nil
-}
-
 type SyncMapCache[K comparable, V any] struct {
 	syncMap sync.Map
 }
@@ -53,8 +34,8 @@ func (e EmptyCache[K, V]) Get(_ context.Context, _ K) (val V, ok bool, err error
 func (e EmptyCache[K, V]) Set(_ context.Context, _ K, _ V) (err error)            { return }
 
 type tiersCache[K comparable, V any] struct {
-	c Cache[K, V]
-	p Cache[K, V]
+	c Cache[K, V] // 当前
+	p Cache[K, V] // 上一级
 }
 
 func WithCache[K comparable, V any](p, c Cache[K, V]) Cache[K, V] {
@@ -75,5 +56,8 @@ func (t tiersCache[K, V]) Get(ctx context.Context, key K) (v V, ok bool, err err
 }
 
 func (t tiersCache[K, V]) Set(ctx context.Context, k K, v V) error {
-	return nil
+	if err := t.p.Set(ctx, k, v); err != nil {
+		return err
+	}
+	return t.c.Set(ctx, k, v)
 }
