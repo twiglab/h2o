@@ -1692,10 +1692,8 @@ type NhRecordMutation struct {
 	adddata_value *int64
 	data_code     *string
 	data_time     *time.Time
-	data_ts       *string
 	project       *string
 	pos_code      *string
-	owner         *string
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*NhRecord, error)
@@ -2127,42 +2125,6 @@ func (m *NhRecordMutation) ResetDataTime() {
 	m.data_time = nil
 }
 
-// SetDataTs sets the "data_ts" field.
-func (m *NhRecordMutation) SetDataTs(s string) {
-	m.data_ts = &s
-}
-
-// DataTs returns the value of the "data_ts" field in the mutation.
-func (m *NhRecordMutation) DataTs() (r string, exists bool) {
-	v := m.data_ts
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldDataTs returns the old "data_ts" field's value of the NhRecord entity.
-// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NhRecordMutation) OldDataTs(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldDataTs is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldDataTs requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldDataTs: %w", err)
-	}
-	return oldValue.DataTs, nil
-}
-
-// ResetDataTs resets all changes to the "data_ts" field.
-func (m *NhRecordMutation) ResetDataTs() {
-	m.data_ts = nil
-}
-
 // SetProject sets the "project" field.
 func (m *NhRecordMutation) SetProject(s string) {
 	m.project = &s
@@ -2248,55 +2210,6 @@ func (m *NhRecordMutation) ResetPosCode() {
 	delete(m.clearedFields, nhrecord.FieldPosCode)
 }
 
-// SetOwner sets the "owner" field.
-func (m *NhRecordMutation) SetOwner(s string) {
-	m.owner = &s
-}
-
-// Owner returns the value of the "owner" field in the mutation.
-func (m *NhRecordMutation) Owner() (r string, exists bool) {
-	v := m.owner
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldOwner returns the old "owner" field's value of the NhRecord entity.
-// If the NhRecord object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *NhRecordMutation) OldOwner(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOwner requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
-	}
-	return oldValue.Owner, nil
-}
-
-// ClearOwner clears the value of the "owner" field.
-func (m *NhRecordMutation) ClearOwner() {
-	m.owner = nil
-	m.clearedFields[nhrecord.FieldOwner] = struct{}{}
-}
-
-// OwnerCleared returns if the "owner" field was cleared in this mutation.
-func (m *NhRecordMutation) OwnerCleared() bool {
-	_, ok := m.clearedFields[nhrecord.FieldOwner]
-	return ok
-}
-
-// ResetOwner resets all changes to the "owner" field.
-func (m *NhRecordMutation) ResetOwner() {
-	m.owner = nil
-	delete(m.clearedFields, nhrecord.FieldOwner)
-}
-
 // Where appends a list predicates to the NhRecordMutation builder.
 func (m *NhRecordMutation) Where(ps ...predicate.NhRecord) {
 	m.predicates = append(m.predicates, ps...)
@@ -2331,7 +2244,7 @@ func (m *NhRecordMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *NhRecordMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 10)
 	if m.create_time != nil {
 		fields = append(fields, nhrecord.FieldCreateTime)
 	}
@@ -2356,17 +2269,11 @@ func (m *NhRecordMutation) Fields() []string {
 	if m.data_time != nil {
 		fields = append(fields, nhrecord.FieldDataTime)
 	}
-	if m.data_ts != nil {
-		fields = append(fields, nhrecord.FieldDataTs)
-	}
 	if m.project != nil {
 		fields = append(fields, nhrecord.FieldProject)
 	}
 	if m.pos_code != nil {
 		fields = append(fields, nhrecord.FieldPosCode)
-	}
-	if m.owner != nil {
-		fields = append(fields, nhrecord.FieldOwner)
 	}
 	return fields
 }
@@ -2392,14 +2299,10 @@ func (m *NhRecordMutation) Field(name string) (ent.Value, bool) {
 		return m.DataCode()
 	case nhrecord.FieldDataTime:
 		return m.DataTime()
-	case nhrecord.FieldDataTs:
-		return m.DataTs()
 	case nhrecord.FieldProject:
 		return m.Project()
 	case nhrecord.FieldPosCode:
 		return m.PosCode()
-	case nhrecord.FieldOwner:
-		return m.Owner()
 	}
 	return nil, false
 }
@@ -2425,14 +2328,10 @@ func (m *NhRecordMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldDataCode(ctx)
 	case nhrecord.FieldDataTime:
 		return m.OldDataTime(ctx)
-	case nhrecord.FieldDataTs:
-		return m.OldDataTs(ctx)
 	case nhrecord.FieldProject:
 		return m.OldProject(ctx)
 	case nhrecord.FieldPosCode:
 		return m.OldPosCode(ctx)
-	case nhrecord.FieldOwner:
-		return m.OldOwner(ctx)
 	}
 	return nil, fmt.Errorf("unknown NhRecord field %s", name)
 }
@@ -2498,13 +2397,6 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDataTime(v)
 		return nil
-	case nhrecord.FieldDataTs:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetDataTs(v)
-		return nil
 	case nhrecord.FieldProject:
 		v, ok := value.(string)
 		if !ok {
@@ -2518,13 +2410,6 @@ func (m *NhRecordMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPosCode(v)
-		return nil
-	case nhrecord.FieldOwner:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetOwner(v)
 		return nil
 	}
 	return fmt.Errorf("unknown NhRecord field %s", name)
@@ -2577,9 +2462,6 @@ func (m *NhRecordMutation) ClearedFields() []string {
 	if m.FieldCleared(nhrecord.FieldPosCode) {
 		fields = append(fields, nhrecord.FieldPosCode)
 	}
-	if m.FieldCleared(nhrecord.FieldOwner) {
-		fields = append(fields, nhrecord.FieldOwner)
-	}
 	return fields
 }
 
@@ -2599,9 +2481,6 @@ func (m *NhRecordMutation) ClearField(name string) error {
 		return nil
 	case nhrecord.FieldPosCode:
 		m.ClearPosCode()
-		return nil
-	case nhrecord.FieldOwner:
-		m.ClearOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown NhRecord nullable field %s", name)
@@ -2635,17 +2514,11 @@ func (m *NhRecordMutation) ResetField(name string) error {
 	case nhrecord.FieldDataTime:
 		m.ResetDataTime()
 		return nil
-	case nhrecord.FieldDataTs:
-		m.ResetDataTs()
-		return nil
 	case nhrecord.FieldProject:
 		m.ResetProject()
 		return nil
 	case nhrecord.FieldPosCode:
 		m.ResetPosCode()
-		return nil
-	case nhrecord.FieldOwner:
-		m.ResetOwner()
 		return nil
 	}
 	return fmt.Errorf("unknown NhRecord field %s", name)
@@ -2713,7 +2586,7 @@ type TopMutation struct {
 	device_type    *string
 	pos_code       *string
 	project        *string
-	owner          *string
+	out_code       *string
 	top            *int64
 	addtop         *int64
 	stock          *int64
@@ -3149,53 +3022,53 @@ func (m *TopMutation) ResetProject() {
 	m.project = nil
 }
 
-// SetOwner sets the "owner" field.
-func (m *TopMutation) SetOwner(s string) {
-	m.owner = &s
+// SetOutCode sets the "out_code" field.
+func (m *TopMutation) SetOutCode(s string) {
+	m.out_code = &s
 }
 
-// Owner returns the value of the "owner" field in the mutation.
-func (m *TopMutation) Owner() (r string, exists bool) {
-	v := m.owner
+// OutCode returns the value of the "out_code" field in the mutation.
+func (m *TopMutation) OutCode() (r string, exists bool) {
+	v := m.out_code
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldOwner returns the old "owner" field's value of the Top entity.
+// OldOutCode returns the old "out_code" field's value of the Top entity.
 // If the Top object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TopMutation) OldOwner(ctx context.Context) (v string, err error) {
+func (m *TopMutation) OldOutCode(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldOwner is only allowed on UpdateOne operations")
+		return v, errors.New("OldOutCode is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldOwner requires an ID field in the mutation")
+		return v, errors.New("OldOutCode requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
+		return v, fmt.Errorf("querying old value for OldOutCode: %w", err)
 	}
-	return oldValue.Owner, nil
+	return oldValue.OutCode, nil
 }
 
-// ClearOwner clears the value of the "owner" field.
-func (m *TopMutation) ClearOwner() {
-	m.owner = nil
-	m.clearedFields[top.FieldOwner] = struct{}{}
+// ClearOutCode clears the value of the "out_code" field.
+func (m *TopMutation) ClearOutCode() {
+	m.out_code = nil
+	m.clearedFields[top.FieldOutCode] = struct{}{}
 }
 
-// OwnerCleared returns if the "owner" field was cleared in this mutation.
-func (m *TopMutation) OwnerCleared() bool {
-	_, ok := m.clearedFields[top.FieldOwner]
+// OutCodeCleared returns if the "out_code" field was cleared in this mutation.
+func (m *TopMutation) OutCodeCleared() bool {
+	_, ok := m.clearedFields[top.FieldOutCode]
 	return ok
 }
 
-// ResetOwner resets all changes to the "owner" field.
-func (m *TopMutation) ResetOwner() {
-	m.owner = nil
-	delete(m.clearedFields, top.FieldOwner)
+// ResetOutCode resets all changes to the "out_code" field.
+func (m *TopMutation) ResetOutCode() {
+	m.out_code = nil
+	delete(m.clearedFields, top.FieldOutCode)
 }
 
 // SetTop sets the "top" field.
@@ -4000,8 +3873,8 @@ func (m *TopMutation) Fields() []string {
 	if m.project != nil {
 		fields = append(fields, top.FieldProject)
 	}
-	if m.owner != nil {
-		fields = append(fields, top.FieldOwner)
+	if m.out_code != nil {
+		fields = append(fields, top.FieldOutCode)
 	}
 	if m.top != nil {
 		fields = append(fields, top.FieldTop)
@@ -4069,8 +3942,8 @@ func (m *TopMutation) Field(name string) (ent.Value, bool) {
 		return m.PosCode()
 	case top.FieldProject:
 		return m.Project()
-	case top.FieldOwner:
-		return m.Owner()
+	case top.FieldOutCode:
+		return m.OutCode()
 	case top.FieldTop:
 		return m.Top()
 	case top.FieldStock:
@@ -4124,8 +3997,8 @@ func (m *TopMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldPosCode(ctx)
 	case top.FieldProject:
 		return m.OldProject(ctx)
-	case top.FieldOwner:
-		return m.OldOwner(ctx)
+	case top.FieldOutCode:
+		return m.OldOutCode(ctx)
 	case top.FieldTop:
 		return m.OldTop(ctx)
 	case top.FieldStock:
@@ -4219,12 +4092,12 @@ func (m *TopMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProject(v)
 		return nil
-	case top.FieldOwner:
+	case top.FieldOutCode:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetOwner(v)
+		m.SetOutCode(v)
 		return nil
 	case top.FieldTop:
 		v, ok := value.(int64)
@@ -4480,8 +4353,8 @@ func (m *TopMutation) ClearedFields() []string {
 	if m.FieldCleared(top.FieldNo) {
 		fields = append(fields, top.FieldNo)
 	}
-	if m.FieldCleared(top.FieldOwner) {
-		fields = append(fields, top.FieldOwner)
+	if m.FieldCleared(top.FieldOutCode) {
+		fields = append(fields, top.FieldOutCode)
 	}
 	if m.FieldCleared(top.FieldAlarmTime) {
 		fields = append(fields, top.FieldAlarmTime)
@@ -4509,8 +4382,8 @@ func (m *TopMutation) ClearField(name string) error {
 	case top.FieldNo:
 		m.ClearNo()
 		return nil
-	case top.FieldOwner:
-		m.ClearOwner()
+	case top.FieldOutCode:
+		m.ClearOutCode()
 		return nil
 	case top.FieldAlarmTime:
 		m.ClearAlarmTime()
@@ -4553,8 +4426,8 @@ func (m *TopMutation) ResetField(name string) error {
 	case top.FieldProject:
 		m.ResetProject()
 		return nil
-	case top.FieldOwner:
-		m.ResetOwner()
+	case top.FieldOutCode:
+		m.ResetOutCode()
 		return nil
 	case top.FieldTop:
 		m.ResetTop()

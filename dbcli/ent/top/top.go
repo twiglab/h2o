@@ -29,8 +29,8 @@ const (
 	FieldPosCode = "pos_code"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
-	// FieldOwner holds the string denoting the owner field in the database.
-	FieldOwner = "owner"
+	// FieldOutCode holds the string denoting the out_code field in the database.
+	FieldOutCode = "out_code"
 	// FieldTop holds the string denoting the top field in the database.
 	FieldTop = "top"
 	// FieldStock holds the string denoting the stock field in the database.
@@ -74,7 +74,7 @@ var Columns = []string{
 	FieldDeviceType,
 	FieldPosCode,
 	FieldProject,
-	FieldOwner,
+	FieldOutCode,
 	FieldTop,
 	FieldStock,
 	FieldIncr,
@@ -196,9 +196,9 @@ func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
 }
 
-// ByOwner orders the results by the owner field.
-func ByOwner(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOwner, opts...).ToFunc()
+// ByOutCode orders the results by the out_code field.
+func ByOutCode(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOutCode, opts...).ToFunc()
 }
 
 // ByTop orders the results by the top field.

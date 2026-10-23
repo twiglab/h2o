@@ -33,8 +33,8 @@ type Top struct {
 	PosCode string `json:"pos_code,omitempty"`
 	// 项目编号
 	Project string `json:"project,omitempty"`
-	// 归属
-	Owner string `json:"owner,omitempty"`
+	// 外部关联号
+	OutCode string `json:"out_code,omitempty"`
 	// 限额
 	Top int64 `json:"top,omitempty"`
 	// 当前数值
@@ -73,7 +73,7 @@ func (*Top) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case top.FieldTop, top.FieldStock, top.FieldIncr, top.FieldAmount, top.FieldUnitPrice, top.FieldAlarm, top.FieldAlarmStock, top.FieldStatus, top.FieldEndStock, top.FieldIsDel:
 			values[i] = new(sql.NullInt64)
-		case top.FieldID, top.FieldCode, top.FieldNo, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOwner, top.FieldMemo:
+		case top.FieldID, top.FieldCode, top.FieldNo, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOutCode, top.FieldMemo:
 			values[i] = new(sql.NullString)
 		case top.FieldCreateTime, top.FieldUpdateTime, top.FieldChargeTime, top.FieldAlarmTime, top.FieldEndTime:
 			values[i] = new(sql.NullTime)
@@ -146,11 +146,11 @@ func (_m *Top) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Project = value.String
 			}
-		case top.FieldOwner:
+		case top.FieldOutCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field owner", values[i])
+				return fmt.Errorf("unexpected type %T for field out_code", values[i])
 			} else if value.Valid {
-				_m.Owner = value.String
+				_m.OutCode = value.String
 			}
 		case top.FieldTop:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -298,8 +298,8 @@ func (_m *Top) String() string {
 	builder.WriteString("project=")
 	builder.WriteString(_m.Project)
 	builder.WriteString(", ")
-	builder.WriteString("owner=")
-	builder.WriteString(_m.Owner)
+	builder.WriteString("out_code=")
+	builder.WriteString(_m.OutCode)
 	builder.WriteString(", ")
 	builder.WriteString("top=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Top))

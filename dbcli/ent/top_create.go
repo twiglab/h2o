@@ -103,16 +103,16 @@ func (_c *TopCreate) SetProject(v string) *TopCreate {
 	return _c
 }
 
-// SetOwner sets the "owner" field.
-func (_c *TopCreate) SetOwner(v string) *TopCreate {
-	_c.mutation.SetOwner(v)
+// SetOutCode sets the "out_code" field.
+func (_c *TopCreate) SetOutCode(v string) *TopCreate {
+	_c.mutation.SetOutCode(v)
 	return _c
 }
 
-// SetNillableOwner sets the "owner" field if the given value is not nil.
-func (_c *TopCreate) SetNillableOwner(v *string) *TopCreate {
+// SetNillableOutCode sets the "out_code" field if the given value is not nil.
+func (_c *TopCreate) SetNillableOutCode(v *string) *TopCreate {
 	if v != nil {
-		_c.SetOwner(*v)
+		_c.SetOutCode(*v)
 	}
 	return _c
 }
@@ -578,9 +578,9 @@ func (_c *TopCreate) createSpec() (*Top, *sqlgraph.CreateSpec) {
 		_spec.SetField(top.FieldProject, field.TypeString, value)
 		_node.Project = value
 	}
-	if value, ok := _c.mutation.Owner(); ok {
-		_spec.SetField(top.FieldOwner, field.TypeString, value)
-		_node.Owner = value
+	if value, ok := _c.mutation.OutCode(); ok {
+		_spec.SetField(top.FieldOutCode, field.TypeString, value)
+		_node.OutCode = value
 	}
 	if value, ok := _c.mutation.Top(); ok {
 		_spec.SetField(top.FieldTop, field.TypeInt64, value)
@@ -884,8 +884,8 @@ func (u *TopUpsertOne) UpdateNewValues() *TopUpsertOne {
 		if _, exists := u.create.mutation.Project(); exists {
 			s.SetIgnore(top.FieldProject)
 		}
-		if _, exists := u.create.mutation.Owner(); exists {
-			s.SetIgnore(top.FieldOwner)
+		if _, exists := u.create.mutation.OutCode(); exists {
+			s.SetIgnore(top.FieldOutCode)
 		}
 		if _, exists := u.create.mutation.Top(); exists {
 			s.SetIgnore(top.FieldTop)
@@ -1322,8 +1322,8 @@ func (u *TopUpsertBulk) UpdateNewValues() *TopUpsertBulk {
 			if _, exists := b.mutation.Project(); exists {
 				s.SetIgnore(top.FieldProject)
 			}
-			if _, exists := b.mutation.Owner(); exists {
-				s.SetIgnore(top.FieldOwner)
+			if _, exists := b.mutation.OutCode(); exists {
+				s.SetIgnore(top.FieldOutCode)
 			}
 			if _, exists := b.mutation.Top(); exists {
 				s.SetIgnore(top.FieldTop)

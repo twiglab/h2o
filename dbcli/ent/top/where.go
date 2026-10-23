@@ -104,9 +104,9 @@ func Project(v string) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldProject, v))
 }
 
-// Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
-func Owner(v string) predicate.Top {
-	return predicate.Top(sql.FieldEQ(FieldOwner, v))
+// OutCode applies equality check predicate on the "out_code" field. It's identical to OutCodeEQ.
+func OutCode(v string) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldOutCode, v))
 }
 
 // Top applies equality check predicate on the "top" field. It's identical to TopEQ.
@@ -659,79 +659,79 @@ func ProjectContainsFold(v string) predicate.Top {
 	return predicate.Top(sql.FieldContainsFold(FieldProject, v))
 }
 
-// OwnerEQ applies the EQ predicate on the "owner" field.
-func OwnerEQ(v string) predicate.Top {
-	return predicate.Top(sql.FieldEQ(FieldOwner, v))
+// OutCodeEQ applies the EQ predicate on the "out_code" field.
+func OutCodeEQ(v string) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldOutCode, v))
 }
 
-// OwnerNEQ applies the NEQ predicate on the "owner" field.
-func OwnerNEQ(v string) predicate.Top {
-	return predicate.Top(sql.FieldNEQ(FieldOwner, v))
+// OutCodeNEQ applies the NEQ predicate on the "out_code" field.
+func OutCodeNEQ(v string) predicate.Top {
+	return predicate.Top(sql.FieldNEQ(FieldOutCode, v))
 }
 
-// OwnerIn applies the In predicate on the "owner" field.
-func OwnerIn(vs ...string) predicate.Top {
-	return predicate.Top(sql.FieldIn(FieldOwner, vs...))
+// OutCodeIn applies the In predicate on the "out_code" field.
+func OutCodeIn(vs ...string) predicate.Top {
+	return predicate.Top(sql.FieldIn(FieldOutCode, vs...))
 }
 
-// OwnerNotIn applies the NotIn predicate on the "owner" field.
-func OwnerNotIn(vs ...string) predicate.Top {
-	return predicate.Top(sql.FieldNotIn(FieldOwner, vs...))
+// OutCodeNotIn applies the NotIn predicate on the "out_code" field.
+func OutCodeNotIn(vs ...string) predicate.Top {
+	return predicate.Top(sql.FieldNotIn(FieldOutCode, vs...))
 }
 
-// OwnerGT applies the GT predicate on the "owner" field.
-func OwnerGT(v string) predicate.Top {
-	return predicate.Top(sql.FieldGT(FieldOwner, v))
+// OutCodeGT applies the GT predicate on the "out_code" field.
+func OutCodeGT(v string) predicate.Top {
+	return predicate.Top(sql.FieldGT(FieldOutCode, v))
 }
 
-// OwnerGTE applies the GTE predicate on the "owner" field.
-func OwnerGTE(v string) predicate.Top {
-	return predicate.Top(sql.FieldGTE(FieldOwner, v))
+// OutCodeGTE applies the GTE predicate on the "out_code" field.
+func OutCodeGTE(v string) predicate.Top {
+	return predicate.Top(sql.FieldGTE(FieldOutCode, v))
 }
 
-// OwnerLT applies the LT predicate on the "owner" field.
-func OwnerLT(v string) predicate.Top {
-	return predicate.Top(sql.FieldLT(FieldOwner, v))
+// OutCodeLT applies the LT predicate on the "out_code" field.
+func OutCodeLT(v string) predicate.Top {
+	return predicate.Top(sql.FieldLT(FieldOutCode, v))
 }
 
-// OwnerLTE applies the LTE predicate on the "owner" field.
-func OwnerLTE(v string) predicate.Top {
-	return predicate.Top(sql.FieldLTE(FieldOwner, v))
+// OutCodeLTE applies the LTE predicate on the "out_code" field.
+func OutCodeLTE(v string) predicate.Top {
+	return predicate.Top(sql.FieldLTE(FieldOutCode, v))
 }
 
-// OwnerContains applies the Contains predicate on the "owner" field.
-func OwnerContains(v string) predicate.Top {
-	return predicate.Top(sql.FieldContains(FieldOwner, v))
+// OutCodeContains applies the Contains predicate on the "out_code" field.
+func OutCodeContains(v string) predicate.Top {
+	return predicate.Top(sql.FieldContains(FieldOutCode, v))
 }
 
-// OwnerHasPrefix applies the HasPrefix predicate on the "owner" field.
-func OwnerHasPrefix(v string) predicate.Top {
-	return predicate.Top(sql.FieldHasPrefix(FieldOwner, v))
+// OutCodeHasPrefix applies the HasPrefix predicate on the "out_code" field.
+func OutCodeHasPrefix(v string) predicate.Top {
+	return predicate.Top(sql.FieldHasPrefix(FieldOutCode, v))
 }
 
-// OwnerHasSuffix applies the HasSuffix predicate on the "owner" field.
-func OwnerHasSuffix(v string) predicate.Top {
-	return predicate.Top(sql.FieldHasSuffix(FieldOwner, v))
+// OutCodeHasSuffix applies the HasSuffix predicate on the "out_code" field.
+func OutCodeHasSuffix(v string) predicate.Top {
+	return predicate.Top(sql.FieldHasSuffix(FieldOutCode, v))
 }
 
-// OwnerIsNil applies the IsNil predicate on the "owner" field.
-func OwnerIsNil() predicate.Top {
-	return predicate.Top(sql.FieldIsNull(FieldOwner))
+// OutCodeIsNil applies the IsNil predicate on the "out_code" field.
+func OutCodeIsNil() predicate.Top {
+	return predicate.Top(sql.FieldIsNull(FieldOutCode))
 }
 
-// OwnerNotNil applies the NotNil predicate on the "owner" field.
-func OwnerNotNil() predicate.Top {
-	return predicate.Top(sql.FieldNotNull(FieldOwner))
+// OutCodeNotNil applies the NotNil predicate on the "out_code" field.
+func OutCodeNotNil() predicate.Top {
+	return predicate.Top(sql.FieldNotNull(FieldOutCode))
 }
 
-// OwnerEqualFold applies the EqualFold predicate on the "owner" field.
-func OwnerEqualFold(v string) predicate.Top {
-	return predicate.Top(sql.FieldEqualFold(FieldOwner, v))
+// OutCodeEqualFold applies the EqualFold predicate on the "out_code" field.
+func OutCodeEqualFold(v string) predicate.Top {
+	return predicate.Top(sql.FieldEqualFold(FieldOutCode, v))
 }
 
-// OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
-func OwnerContainsFold(v string) predicate.Top {
-	return predicate.Top(sql.FieldContainsFold(FieldOwner, v))
+// OutCodeContainsFold applies the ContainsFold predicate on the "out_code" field.
+func OutCodeContainsFold(v string) predicate.Top {
+	return predicate.Top(sql.FieldContainsFold(FieldOutCode, v))
 }
 
 // TopEQ applies the EQ predicate on the "top" field.

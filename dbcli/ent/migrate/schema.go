@@ -81,10 +81,8 @@ var (
 		{Name: "data_value", Type: field.TypeInt64, Default: 0},
 		{Name: "data_code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "data_time", Type: field.TypeTime},
-		{Name: "data_ts", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 	}
 	// NhRecordTable holds the schema information for the "nh_record" table.
 	NhRecordTable = &schema.Table{
@@ -113,24 +111,14 @@ var (
 				Columns: []*schema.Column{NhRecordColumns[8]},
 			},
 			{
-				Name:    "nhrecord_data_ts",
+				Name:    "nhrecord_project",
 				Unique:  false,
 				Columns: []*schema.Column{NhRecordColumns[9]},
 			},
 			{
-				Name:    "nhrecord_project",
-				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[10]},
-			},
-			{
 				Name:    "nhrecord_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[11]},
-			},
-			{
-				Name:    "nhrecord_owner",
-				Unique:  false,
-				Columns: []*schema.Column{NhRecordColumns[12]},
+				Columns: []*schema.Column{NhRecordColumns[10]},
 			},
 		},
 	}
@@ -145,7 +133,7 @@ var (
 		{Name: "device_type", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "pos_code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "owner", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "out_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "top", Type: field.TypeInt64, Default: 0},
 		{Name: "stock", Type: field.TypeInt64, Default: 0},
 		{Name: "incr", Type: field.TypeInt64, Default: 0},

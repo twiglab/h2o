@@ -103,12 +103,6 @@ func (_c *NhRecordCreate) SetDataTime(v time.Time) *NhRecordCreate {
 	return _c
 }
 
-// SetDataTs sets the "data_ts" field.
-func (_c *NhRecordCreate) SetDataTs(v string) *NhRecordCreate {
-	_c.mutation.SetDataTs(v)
-	return _c
-}
-
 // SetProject sets the "project" field.
 func (_c *NhRecordCreate) SetProject(v string) *NhRecordCreate {
 	_c.mutation.SetProject(v)
@@ -125,20 +119,6 @@ func (_c *NhRecordCreate) SetPosCode(v string) *NhRecordCreate {
 func (_c *NhRecordCreate) SetNillablePosCode(v *string) *NhRecordCreate {
 	if v != nil {
 		_c.SetPosCode(*v)
-	}
-	return _c
-}
-
-// SetOwner sets the "owner" field.
-func (_c *NhRecordCreate) SetOwner(v string) *NhRecordCreate {
-	_c.mutation.SetOwner(v)
-	return _c
-}
-
-// SetNillableOwner sets the "owner" field if the given value is not nil.
-func (_c *NhRecordCreate) SetNillableOwner(v *string) *NhRecordCreate {
-	if v != nil {
-		_c.SetOwner(*v)
 	}
 	return _c
 }
@@ -248,14 +228,6 @@ func (_c *NhRecordCreate) check() error {
 	if _, ok := _c.mutation.DataTime(); !ok {
 		return &ValidationError{Name: "data_time", err: errors.New(`ent: missing required field "NhRecord.data_time"`)}
 	}
-	if _, ok := _c.mutation.DataTs(); !ok {
-		return &ValidationError{Name: "data_ts", err: errors.New(`ent: missing required field "NhRecord.data_ts"`)}
-	}
-	if v, ok := _c.mutation.DataTs(); ok {
-		if err := nhrecord.DataTsValidator(v); err != nil {
-			return &ValidationError{Name: "data_ts", err: fmt.Errorf(`ent: validator failed for field "NhRecord.data_ts": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Project(); !ok {
 		return &ValidationError{Name: "project", err: errors.New(`ent: missing required field "NhRecord.project"`)}
 	}
@@ -337,10 +309,6 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 		_spec.SetField(nhrecord.FieldDataTime, field.TypeTime, value)
 		_node.DataTime = value
 	}
-	if value, ok := _c.mutation.DataTs(); ok {
-		_spec.SetField(nhrecord.FieldDataTs, field.TypeString, value)
-		_node.DataTs = value
-	}
 	if value, ok := _c.mutation.Project(); ok {
 		_spec.SetField(nhrecord.FieldProject, field.TypeString, value)
 		_node.Project = value
@@ -348,10 +316,6 @@ func (_c *NhRecordCreate) createSpec() (*NhRecord, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.PosCode(); ok {
 		_spec.SetField(nhrecord.FieldPosCode, field.TypeString, value)
 		_node.PosCode = value
-	}
-	if value, ok := _c.mutation.Owner(); ok {
-		_spec.SetField(nhrecord.FieldOwner, field.TypeString, value)
-		_node.Owner = value
 	}
 	return _node, _spec
 }
@@ -455,17 +419,11 @@ func (u *NhRecordUpsertOne) UpdateNewValues() *NhRecordUpsertOne {
 		if _, exists := u.create.mutation.DataTime(); exists {
 			s.SetIgnore(nhrecord.FieldDataTime)
 		}
-		if _, exists := u.create.mutation.DataTs(); exists {
-			s.SetIgnore(nhrecord.FieldDataTs)
-		}
 		if _, exists := u.create.mutation.Project(); exists {
 			s.SetIgnore(nhrecord.FieldProject)
 		}
 		if _, exists := u.create.mutation.PosCode(); exists {
 			s.SetIgnore(nhrecord.FieldPosCode)
-		}
-		if _, exists := u.create.mutation.Owner(); exists {
-			s.SetIgnore(nhrecord.FieldOwner)
 		}
 	}))
 	return u
@@ -716,17 +674,11 @@ func (u *NhRecordUpsertBulk) UpdateNewValues() *NhRecordUpsertBulk {
 			if _, exists := b.mutation.DataTime(); exists {
 				s.SetIgnore(nhrecord.FieldDataTime)
 			}
-			if _, exists := b.mutation.DataTs(); exists {
-				s.SetIgnore(nhrecord.FieldDataTs)
-			}
 			if _, exists := b.mutation.Project(); exists {
 				s.SetIgnore(nhrecord.FieldProject)
 			}
 			if _, exists := b.mutation.PosCode(); exists {
 				s.SetIgnore(nhrecord.FieldPosCode)
-			}
-			if _, exists := b.mutation.Owner(); exists {
-				s.SetIgnore(nhrecord.FieldOwner)
 			}
 		}
 	}))

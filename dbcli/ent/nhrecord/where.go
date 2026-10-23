@@ -104,11 +104,6 @@ func DataTime(v time.Time) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldDataTime, v))
 }
 
-// DataTs applies equality check predicate on the "data_ts" field. It's identical to DataTsEQ.
-func DataTs(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldDataTs, v))
-}
-
 // Project applies equality check predicate on the "project" field. It's identical to ProjectEQ.
 func Project(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
@@ -117,11 +112,6 @@ func Project(v string) predicate.NhRecord {
 // PosCode applies equality check predicate on the "pos_code" field. It's identical to PosCodeEQ.
 func PosCode(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldPosCode, v))
-}
-
-// Owner applies equality check predicate on the "owner" field. It's identical to OwnerEQ.
-func Owner(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldOwner, v))
 }
 
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
@@ -554,71 +544,6 @@ func DataTimeLTE(v time.Time) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldLTE(FieldDataTime, v))
 }
 
-// DataTsEQ applies the EQ predicate on the "data_ts" field.
-func DataTsEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldDataTs, v))
-}
-
-// DataTsNEQ applies the NEQ predicate on the "data_ts" field.
-func DataTsNEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNEQ(FieldDataTs, v))
-}
-
-// DataTsIn applies the In predicate on the "data_ts" field.
-func DataTsIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIn(FieldDataTs, vs...))
-}
-
-// DataTsNotIn applies the NotIn predicate on the "data_ts" field.
-func DataTsNotIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotIn(FieldDataTs, vs...))
-}
-
-// DataTsGT applies the GT predicate on the "data_ts" field.
-func DataTsGT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGT(FieldDataTs, v))
-}
-
-// DataTsGTE applies the GTE predicate on the "data_ts" field.
-func DataTsGTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGTE(FieldDataTs, v))
-}
-
-// DataTsLT applies the LT predicate on the "data_ts" field.
-func DataTsLT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLT(FieldDataTs, v))
-}
-
-// DataTsLTE applies the LTE predicate on the "data_ts" field.
-func DataTsLTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLTE(FieldDataTs, v))
-}
-
-// DataTsContains applies the Contains predicate on the "data_ts" field.
-func DataTsContains(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContains(FieldDataTs, v))
-}
-
-// DataTsHasPrefix applies the HasPrefix predicate on the "data_ts" field.
-func DataTsHasPrefix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasPrefix(FieldDataTs, v))
-}
-
-// DataTsHasSuffix applies the HasSuffix predicate on the "data_ts" field.
-func DataTsHasSuffix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasSuffix(FieldDataTs, v))
-}
-
-// DataTsEqualFold applies the EqualFold predicate on the "data_ts" field.
-func DataTsEqualFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEqualFold(FieldDataTs, v))
-}
-
-// DataTsContainsFold applies the ContainsFold predicate on the "data_ts" field.
-func DataTsContainsFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContainsFold(FieldDataTs, v))
-}
-
 // ProjectEQ applies the EQ predicate on the "project" field.
 func ProjectEQ(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldEQ(FieldProject, v))
@@ -757,81 +682,6 @@ func PosCodeEqualFold(v string) predicate.NhRecord {
 // PosCodeContainsFold applies the ContainsFold predicate on the "pos_code" field.
 func PosCodeContainsFold(v string) predicate.NhRecord {
 	return predicate.NhRecord(sql.FieldContainsFold(FieldPosCode, v))
-}
-
-// OwnerEQ applies the EQ predicate on the "owner" field.
-func OwnerEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEQ(FieldOwner, v))
-}
-
-// OwnerNEQ applies the NEQ predicate on the "owner" field.
-func OwnerNEQ(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNEQ(FieldOwner, v))
-}
-
-// OwnerIn applies the In predicate on the "owner" field.
-func OwnerIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIn(FieldOwner, vs...))
-}
-
-// OwnerNotIn applies the NotIn predicate on the "owner" field.
-func OwnerNotIn(vs ...string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotIn(FieldOwner, vs...))
-}
-
-// OwnerGT applies the GT predicate on the "owner" field.
-func OwnerGT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGT(FieldOwner, v))
-}
-
-// OwnerGTE applies the GTE predicate on the "owner" field.
-func OwnerGTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldGTE(FieldOwner, v))
-}
-
-// OwnerLT applies the LT predicate on the "owner" field.
-func OwnerLT(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLT(FieldOwner, v))
-}
-
-// OwnerLTE applies the LTE predicate on the "owner" field.
-func OwnerLTE(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldLTE(FieldOwner, v))
-}
-
-// OwnerContains applies the Contains predicate on the "owner" field.
-func OwnerContains(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContains(FieldOwner, v))
-}
-
-// OwnerHasPrefix applies the HasPrefix predicate on the "owner" field.
-func OwnerHasPrefix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasPrefix(FieldOwner, v))
-}
-
-// OwnerHasSuffix applies the HasSuffix predicate on the "owner" field.
-func OwnerHasSuffix(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldHasSuffix(FieldOwner, v))
-}
-
-// OwnerIsNil applies the IsNil predicate on the "owner" field.
-func OwnerIsNil() predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldIsNull(FieldOwner))
-}
-
-// OwnerNotNil applies the NotNil predicate on the "owner" field.
-func OwnerNotNil() predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldNotNull(FieldOwner))
-}
-
-// OwnerEqualFold applies the EqualFold predicate on the "owner" field.
-func OwnerEqualFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldEqualFold(FieldOwner, v))
-}
-
-// OwnerContainsFold applies the ContainsFold predicate on the "owner" field.
-func OwnerContainsFold(v string) predicate.NhRecord {
-	return predicate.NhRecord(sql.FieldContainsFold(FieldOwner, v))
 }
 
 // And groups predicates with the AND operator between them.

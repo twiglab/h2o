@@ -99,12 +99,8 @@ func init() {
 	nhrecordDescDataCode := nhrecordFields[5].Descriptor()
 	// nhrecord.DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	nhrecord.DataCodeValidator = nhrecordDescDataCode.Validators[0].(func(string) error)
-	// nhrecordDescDataTs is the schema descriptor for data_ts field.
-	nhrecordDescDataTs := nhrecordFields[7].Descriptor()
-	// nhrecord.DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
-	nhrecord.DataTsValidator = nhrecordDescDataTs.Validators[0].(func(string) error)
 	// nhrecordDescProject is the schema descriptor for project field.
-	nhrecordDescProject := nhrecordFields[8].Descriptor()
+	nhrecordDescProject := nhrecordFields[7].Descriptor()
 	// nhrecord.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	nhrecord.ProjectValidator = nhrecordDescProject.Validators[0].(func(string) error)
 	// nhrecordDescID is the schema descriptor for id field.

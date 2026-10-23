@@ -49,7 +49,7 @@ func (Top) Fields() []ent.Field {
 		field.String("pos_code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("位置编号"),
 		field.String("project").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("项目编号"),
 
-		field.String("owner").Immutable().Optional().SchemaType(varchar(64)).Comment("归属"),
+		field.String("out_code").Immutable().Optional().SchemaType(varchar(64)).Comment("外部关联号"),
 
 		field.Int64("top").Immutable().Default(0).Comment("限额"),     // top （限额，这里指度数，冲到多少度， = 当前表显+充电度数）
 		field.Int64("stock").Immutable().Default(0).Comment("当前数值"), // 当前度数（充电时候的表显）

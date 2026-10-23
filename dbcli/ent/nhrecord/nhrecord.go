@@ -29,14 +29,10 @@ const (
 	FieldDataCode = "data_code"
 	// FieldDataTime holds the string denoting the data_time field in the database.
 	FieldDataTime = "data_time"
-	// FieldDataTs holds the string denoting the data_ts field in the database.
-	FieldDataTs = "data_ts"
 	// FieldProject holds the string denoting the project field in the database.
 	FieldProject = "project"
 	// FieldPosCode holds the string denoting the pos_code field in the database.
 	FieldPosCode = "pos_code"
-	// FieldOwner holds the string denoting the owner field in the database.
-	FieldOwner = "owner"
 	// Table holds the table name of the nhrecord in the database.
 	Table = "nh_record"
 )
@@ -52,10 +48,8 @@ var Columns = []string{
 	FieldDataValue,
 	FieldDataCode,
 	FieldDataTime,
-	FieldDataTs,
 	FieldProject,
 	FieldPosCode,
-	FieldOwner,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -83,8 +77,6 @@ var (
 	DefaultDataValue int64
 	// DataCodeValidator is a validator for the "data_code" field. It is called by the builders before save.
 	DataCodeValidator func(string) error
-	// DataTsValidator is a validator for the "data_ts" field. It is called by the builders before save.
-	DataTsValidator func(string) error
 	// ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	ProjectValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -141,11 +133,6 @@ func ByDataTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDataTime, opts...).ToFunc()
 }
 
-// ByDataTs orders the results by the data_ts field.
-func ByDataTs(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldDataTs, opts...).ToFunc()
-}
-
 // ByProject orders the results by the project field.
 func ByProject(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProject, opts...).ToFunc()
@@ -154,9 +141,4 @@ func ByProject(opts ...sql.OrderTermOption) OrderOption {
 // ByPosCode orders the results by the pos_code field.
 func ByPosCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPosCode, opts...).ToFunc()
-}
-
-// ByOwner orders the results by the owner field.
-func ByOwner(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldOwner, opts...).ToFunc()
 }

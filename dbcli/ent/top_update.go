@@ -255,8 +255,8 @@ func (_u *TopUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.NoCleared() {
 		_spec.ClearField(top.FieldNo, field.TypeString)
 	}
-	if _u.mutation.OwnerCleared() {
-		_spec.ClearField(top.FieldOwner, field.TypeString)
+	if _u.mutation.OutCodeCleared() {
+		_spec.ClearField(top.FieldOutCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Alarm(); ok {
 		_spec.SetField(top.FieldAlarm, field.TypeInt, value)
@@ -583,8 +583,8 @@ func (_u *TopUpdateOne) sqlSave(ctx context.Context) (_node *Top, err error) {
 	if _u.mutation.NoCleared() {
 		_spec.ClearField(top.FieldNo, field.TypeString)
 	}
-	if _u.mutation.OwnerCleared() {
-		_spec.ClearField(top.FieldOwner, field.TypeString)
+	if _u.mutation.OutCodeCleared() {
+		_spec.ClearField(top.FieldOutCode, field.TypeString)
 	}
 	if value, ok := _u.mutation.Alarm(); ok {
 		_spec.SetField(top.FieldAlarm, field.TypeInt, value)
