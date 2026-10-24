@@ -14,7 +14,7 @@ type SyncMapCache[K comparable, V any] struct {
 	syncMap sync.Map
 }
 
-func (l *SyncMapCache[K, V]) Get(ctx context.Context, k K) (v V, ok bool, err error) {
+func (l *SyncMapCache[K, V]) Get(_ context.Context, k K) (v V, ok bool, err error) {
 	var a any
 	if a, ok = l.syncMap.Load(k); ok {
 		v = a.(V)
