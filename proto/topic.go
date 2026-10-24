@@ -33,3 +33,8 @@ func TopicPart(topic string) ([]string, error) {
 	}
 	return parts, nil
 }
+
+func MakeTopic(typ string, parts ...string) string {
+	c := append([]string{H2O, typ}, parts...)
+	return strings.Join(c, "/")
+}
