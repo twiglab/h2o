@@ -36,6 +36,7 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
+	meter.SN = data.Record.Sn
 	meter.DataCode = proto.NewDataCode()
 	meter.DataTime = now
 
