@@ -18,5 +18,6 @@ func (m Meter) MarshalBinary() (data []byte, err error) {
 }
 
 func (m Meter) Topic() string {
-	return proto.H2O + "/data/" + m.Code + "/" + m.Type
+	return proto.MakeTopic(proto.DATA, m.Gateway.Code, m.Code, m.Type)
+
 }
