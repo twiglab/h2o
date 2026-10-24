@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
@@ -14,7 +15,6 @@ import (
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/vigil"
 	"github.com/twiglab/h2o/vigil/orm"
-	"github.com/twiglab/h2o/vigil/tsdb"
 )
 
 func mqttcli() mqtt.Client {
@@ -49,6 +49,7 @@ func dbx(c *ent.Client) *orm.DBx {
 	return &orm.DBx{Client: c}
 }
 
+/*
 func tdb() *tsdb.Schemaless {
 	dsn := viper.GetString("vigil.tsdb.dsn")
 	sch, err := tsdb.NewSchLe(dsn)
@@ -57,6 +58,7 @@ func tdb() *tsdb.Schemaless {
 	}
 	return sch
 }
+*/
 
 func rootLog() *slog.Logger {
 	rlogF := viper.GetString("vigil.log.root.file")
@@ -86,4 +88,12 @@ func wallog() *wal.WAL {
 	}
 	log.Println("wal file:", logf)
 	return wal.New(wal.Conf{Filename: logf})
+}
+
+const GeneralDataTopic = "h2o/data/#"
+
+const f = "20060102150405"
+
+func Ts(now time.Time) string {
+	return now.Format(f)
 }

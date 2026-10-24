@@ -8,13 +8,8 @@ import (
 )
 
 type Recorder interface {
-	TabbElecty(ctx context.Context, data ElectricityMeter) error
-	TabbWater(ctx context.Context, data WaterMeter) error
+	Tabb(ctx context.Context, code string, data Meter) error
 }
-
-type LogRecord struct {
-}
-
 
 type recordCache struct {
 	r Recorder
@@ -27,22 +22,14 @@ func WithRecorder(r Recorder) Recorder {
 	}
 }
 
-func (r *recordCache) TabbElecty(ctx context.Context, data ElectricityMeter) error {
+func (r *recordCache) Tabb(ctx context.Context, code string, data Meter) error {
 	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
 		if t.Hour() == data.DataTime.Hour() {
 			return nil
 		}
 	}
-	r.c.Set(ctx, data.Code, data.DataTime)
-	return r.r.TabbElecty(ctx, data)
-}
-
-func (r *recordCache) TabbWater(ctx context.Context, data WaterMeter) error {
-	if t, ok, _ := r.c.Get(ctx, data.Code); ok {
-		if t.Hour() == data.DataTime.Hour() {
-			return nil
-		}
+	if err := r.c.Set(ctx, data.Code, data.DataTime); err != nil {
+		return err
 	}
-	r.c.Set(ctx, data.Code, data.DataTime)
-	return r.r.TabbWater(ctx, data)
+	return r.r.Tabb(ctx, data.Code, data)
 }

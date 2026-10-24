@@ -4,7 +4,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"github.com/twiglab/h2o/pkg/common"
 	"github.com/twiglab/h2o/vigil"
 
 	"github.com/spf13/cobra"
@@ -36,13 +35,13 @@ func run() {
 	cli := entcli()
 
 	hub := &vigil.Hub{
-		DB:     vigil.WithRecorder(dbx(cli)),
-		TSDB:   tdb(),
+		DB: vigil.WithRecorder(dbx(cli)),
+		// TSDB:   tdb(),
 		Logger: serverLog(),
 		WAL:    wallog(),
 	}
 	mcli := mqttcli()
-	token := mcli.Subscribe(common.GeneralDataTopic, 0x01, vigil.Handle(hub))
+	token := mcli.Subscribe(GeneralDataTopic, 0x01, vigil.Handle(hub))
 	token.Wait()
 
 	http.ListenAndServe(webaddr(), nil)

@@ -6,7 +6,6 @@ import (
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/common"
 )
 
 const CLIENT_ID = "vigil"
@@ -25,33 +24,16 @@ func Handle(s *Hub) mqtt.MessageHandler {
 
 		defer msg.Ack()
 
-		switch common.DataTopicType(msg.Topic()) {
-		case common.WaterDataTopic:
-			var wm WaterMeter
-			if err := wm.UnmarshalBinary(msg.Payload()); err != nil {
-				s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
-				return
-			}
-			wm.setup()
-			if err := s.HandleWater(ctx, wm); err != nil {
-				s.Logger.ErrorContext(ctx, "handle water error", slog.Any("err", err))
-				return
-			}
-
-		case common.ElectricityDataTopic:
-			var em ElectricityMeter
-			if err := em.UnmarshalBinary(msg.Payload()); err != nil {
-				s.Logger.ErrorContext(ctx, "unmarshal electy error", slog.Any("err", err))
-				return
-			}
-			em.setup()
-			if err := s.HandleElecty(ctx, em); err != nil {
-				s.Logger.ErrorContext(ctx, "handle electy error", slog.Any("err", err))
-				return
-			}
-
-		case common.GasDataTopic:
+		var wm Meter
+		if err := wm.UnmarshalBinary(msg.Payload()); err != nil {
+			s.Logger.ErrorContext(ctx, "unmarshal water error", slog.Any("err", err))
+			return
 		}
+		if err := s.Handle(ctx, wm); err != nil {
+			s.Logger.ErrorContext(ctx, "handle water error", slog.Any("err", err))
+			return
+		}
+
 	}
 }
 
@@ -76,6 +58,7 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 func RawHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
+			msg.Ack()
 			return
 		}
 		defer msg.Ack()

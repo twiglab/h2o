@@ -3,8 +3,6 @@ package tsdb
 import (
 	"context"
 
-	"github.com/influxdata/line-protocol/v2/lineprotocol"
-	"github.com/taosdata/driver-go/v3/common"
 	"github.com/taosdata/driver-go/v3/ws/unified"
 	"github.com/twiglab/h2o/vigil"
 )
@@ -24,6 +22,11 @@ func NewSchLe(dsn string) (*Schemaless, error) {
 	}, nil
 }
 
+func (s *Schemaless) Tabb(ctx context.Context, data vigil.Meter) error {
+	return nil
+}
+
+/*
 func (s *Schemaless) TabbElecty(ctx context.Context, data vigil.ElectricityMeter) error {
 
 	var enc lineprotocol.Encoder
@@ -87,3 +90,4 @@ func (s *Schemaless) TabbWater(ctx context.Context, data vigil.WaterMeter) error
 
 	return s.schemaless.SchemalessInsert(common.GetReqID(), line, unified.InfluxDBLineProtocol, TSDB_SML_TIMESTAMP_SECONDS, 0, "")
 }
+*/
