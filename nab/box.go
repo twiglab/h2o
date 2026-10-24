@@ -7,7 +7,7 @@ import (
 
 	"encoding/json/v2"
 
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 
 	"github.com/twiglab/h2o/nab/orm"
 )
@@ -54,11 +54,11 @@ func (g ClientMgr) ClientByCode(code string) (*ModbusCli, error) {
 }
 
 func SubscriptTopic(boxCode string) string {
-	return common.H2O + "/onoff/" + boxCode + "/#"
+	return proto.H2O + "/onoff/" + boxCode + "/#"
 }
 
 func topicPart(t string) (string, string, string) {
-	ss := common.TopicPart(t)
+	ss, _ := proto.TopicPart(t)
 	_ = ss[4]
 
 	if ss[1] != "onoff" {
@@ -79,7 +79,7 @@ func (m OnOffLite) MarshalBinary() (data []byte, err error) {
 }
 
 func (o OnOffLite) Topic() string {
-	return common.H2O + "/onoff/" + o.Box + "/" + o.Code + "/" + o.Op
+	return proto.H2O + "/onoff/" + o.Box + "/" + o.Code + "/" + o.Op
 }
 
 type OptChange struct {
@@ -97,5 +97,5 @@ func (m OptChange) MarshalBinary() (data []byte, err error) {
 }
 
 func (o OptChange) Topic() string {
-	return common.H2O + "/opt/" + o.Box + "/" + o.Code + "/" + o.Op
+	return proto.H2O + "/opt/" + o.Box + "/" + o.Code + "/" + o.Op
 }

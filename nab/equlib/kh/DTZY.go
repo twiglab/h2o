@@ -7,7 +7,7 @@ import (
 	"github.com/avast/retry-go/v5"
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 const KH_DTZY2851_CD7_1 = "KH-DTZY2851-CD7-1"
@@ -36,14 +36,13 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
-	meter.DataCode = common.NewDataCode()
+	meter.DataCode = proto.NewDataCode()
 	meter.DataTime = now
-	meter.DataTs = common.Ts(now)
 
 	meter.Pos.Project = data.Global.Project
 
 	meter.Gateway.Code = data.Global.Box
-	meter.Gateway.Type = common.GATEWAY_NH
+	meter.Gateway.Type = proto.GATEWAY_NH
 	meter.Gateway.UnitID = data.Record.UnitID
 
 	return data.Sender.SendData(ctx, meter)

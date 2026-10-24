@@ -10,7 +10,7 @@ import (
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 type OnOffer interface {
@@ -56,9 +56,9 @@ func (a Agent) On(ctx context.Context, code string) error {
 		Box:       a.Global.Box,
 		Code:      dev.Code,
 		Type:      dev.Typ,
-		DataCode:  common.NewDataCode(),
-		Op:        common.ON,
-		OptStatus: common.OPT_STATUS_ON,
+		DataCode:  proto.NewDataCode(),
+		Op:        proto.ON,
+		OptStatus: proto.OPT_STATUS_ON,
 		DataTime:  time.Now(),
 	}
 	return a.Sender.SendData(ctx, oc)
@@ -86,9 +86,9 @@ func (a Agent) Off(ctx context.Context, code string) error {
 		Box:       a.Global.Box,
 		Code:      dev.Code,
 		Type:      dev.Typ,
-		DataCode:  common.NewDataCode(),
-		Op:        common.OFF,
-		OptStatus: common.OPT_STATUS_OFF,
+		DataCode:  proto.NewDataCode(),
+		Op:        proto.OFF,
+		OptStatus: proto.OPT_STATUS_OFF,
 		DataTime:  time.Now(),
 	}
 	return a.Sender.SendData(ctx, oc)
@@ -154,14 +154,14 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 		)
 
 		switch op {
-		case common.ON:
+		case proto.ON:
 			if err := a.On(ctx, devCode); err != nil {
 				a.Logger.Error("onoff error", slog.String("code", devCode),
 					slog.String("op", op),
 					slog.Any("error", err),
 				)
 			}
-		case common.OFF:
+		case proto.OFF:
 			if err := a.Off(ctx, devCode); err != nil {
 				a.Logger.Error("onoff error", slog.String("code", devCode),
 					slog.String("op", op),

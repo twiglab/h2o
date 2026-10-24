@@ -2,11 +2,11 @@ package nab
 
 import (
 	"context"
-	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/twiglab/h2o/pkg/common"
 )
+
+const NAB = "nab"
 
 type MQTTAction struct {
 	client mqtt.Client
@@ -46,7 +46,5 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 }
 
 func ClientID(code string) string {
-	now := time.Now()
-	ts := common.Ts(now)
-	return code + "@" + ts
+	return code + "@" + NAB
 }

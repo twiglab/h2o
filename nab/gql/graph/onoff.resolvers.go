@@ -10,7 +10,7 @@ import (
 
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/gql/graph/model"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 // DeviceOnOffImmediately is the resolver for the deviceOnOffImmediately field.
@@ -18,9 +18,9 @@ func (r *mutationResolver) DeviceOnOffImmediately(ctx context.Context, input mod
 	var err error
 
 	switch input.Op {
-	case common.ON:
+	case proto.ON:
 		err = r.Agent.On(ctx, input.Code)
-	case common.OFF:
+	case proto.OFF:
 		err = r.Agent.Off(ctx, input.Code)
 	}
 

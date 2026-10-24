@@ -6,7 +6,7 @@ import (
 
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
-	"github.com/twiglab/h2o/pkg/common"
+	"github.com/twiglab/h2o/proto"
 )
 
 const CLF_OC_PT = "CLF-OC-PT"
@@ -25,18 +25,17 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 
 	var meter nab.Meter
 	meter.Data.DataValue = int64(dataVal)
-	meter.Data.OptStatus = common.OPT_STATUS_UNKNOW
+	meter.Data.OptStatus = proto.OPT_STATUS_UNKNOW
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
-	meter.DataCode = common.NewDataCode()
+	meter.DataCode = proto.NewDataCode()
 	meter.DataTime = now
-	meter.DataTs = common.Ts(now)
 
 	meter.Pos.Project = data.Global.Project
 
 	meter.Gateway.Code = data.Global.Box
-	meter.Gateway.Type = common.GATEWAY_NH
+	meter.Gateway.Type = proto.GATEWAY_NH
 	meter.Gateway.UnitID = data.Record.UnitID
 
 	return data.Sender.SendData(ctx, meter)
