@@ -7,6 +7,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
@@ -25,6 +26,7 @@ type Agent struct {
 	IDB    *orm.IDB
 	CliMgr *ClientMgr
 	MCli   mqtt.Client
+	WAL    *wal.WAL
 }
 
 func (a Agent) Start() error {
@@ -147,10 +149,10 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 
 		ctx := context.Background()
 
-		a.Logger.InfoContext(ctx, "onoff message",
-			slog.String("boxCode", boxCode),
-			slog.String("deviceCode", devCode),
-			slog.String("op", op),
+		a.WAL.WriteLogContext(ctx,
+			wal.String("box", boxCode),
+			wal.String("device", devCode),
+			wal.String("op", op),
 		)
 
 		switch op {

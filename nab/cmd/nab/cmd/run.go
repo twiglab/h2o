@@ -52,6 +52,8 @@ func run() error {
 
 	interval := taskInterval()
 
+	wl := wallog()
+
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{
 			Global:    g,
@@ -71,6 +73,7 @@ func run() error {
 		CliMgr: cliMgr,
 		MCli:   mcli,
 		Logger: logger,
+		WAL:    wl,
 	}
 
 	log.Println("run after 5s")
