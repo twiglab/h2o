@@ -85,7 +85,7 @@ const report_cmd_tpl = `
 | 商铺名称 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
 | :------: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{.Alarm}} | {{.DataTime | datetime}} |
+| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{eng .Alarm 0 .Rate}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
