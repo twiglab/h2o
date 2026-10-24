@@ -1,0 +1,45 @@
+[nab]
+# 必填参数, 网关代码
+box = "888"
+
+# 必填参数
+project = "888"
+
+[nab.idb]
+#dir = "idb"
+#dev = "dev.csv"
+#cli = "cli.csv"
+
+[nab.loops]
+# 每个loop结束后的延时时间, 默认1000 (毫秒)
+# delay = 1000 
+
+[nab.loop.task]
+# 每个task之间延, 默认1000 (毫秒)
+# interval = 1000 
+
+[nab.web]
+# nab web address，默认 :10008
+# addr = ":10008"
+
+[nab.sender]
+# mqtt empty is log 
+# use = "mqtt"
+
+[nab.sender.mqtt]
+# broker url , 如果sender为mqtt，此参数必填
+# broker = "127.0.0.1:1883"
+
+[nab.log]
+level = "debug"
+
+[nab.log.root]
+# file = "logs/root.log" # empty is console
+# level = "debug"
+
+[nab.log.server]
+# file = "logs/server.log"
+# level = "debug"
+
+[nab.wal]
+file = "wal/wal.log"
