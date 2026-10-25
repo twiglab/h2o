@@ -55,6 +55,7 @@ func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 		}
 
 		if parts[1] != proto.DATA {
+			s.Logger.Error("topic error", slog.String("topic", msg.Topic()), slog.String("part1", parts[1]))
 			return
 		}
 
