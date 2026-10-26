@@ -3,19 +3,19 @@ module github.com/twiglab/h2o/archon
 go 1.27.0
 
 require (
-	github.com/99designs/gqlgen v0.17.95
+	github.com/99designs/gqlgen v0.17.98
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
 	github.com/twiglab/h2o/dbcli v0.0.0-00010101000000-000000000000
-	github.com/vektah/gqlparser/v2 v2.5.37
+	github.com/vektah/gqlparser/v2 v2.5.64
 )
 
 require (
 	ariga.io/atlas v1.3.0 // indirect
 	entgo.io/ent v0.14.6 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/agnivade/levenshtein v1.2.1 // indirect
+	github.com/agnivade/levenshtein v1.2.2 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -36,7 +36,7 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.11.0 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
-	github.com/mattn/go-colorable v0.1.15 // indirect
+	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
 	github.com/mattn/go-sqlite3 v1.14.50 // indirect
@@ -53,7 +53,7 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/urfave/cli/v3 v3.11.0 // indirect
+	github.com/urfave/cli/v3 v3.14.0 // indirect
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect

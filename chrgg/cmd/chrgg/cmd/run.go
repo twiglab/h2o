@@ -58,7 +58,5 @@ func run() error {
 
 	mux := chi.NewMux()
 	mux.Use(middleware.RequestID)
-	//mux.Mount("/gql", gql.Handle(db))
-
 	return http.ListenAndServe(webaddr(), mux)
 }
