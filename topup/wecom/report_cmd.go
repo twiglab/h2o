@@ -83,7 +83,7 @@ c.rate ,
 c.pos_name,
 c.alarm
 ,
-(a.top - b.dv) * c.rate as diff_eng
+(a.top - b.dv) as diff_eng
 
 from
 	(

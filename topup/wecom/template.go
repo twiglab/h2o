@@ -1,6 +1,7 @@
 package wecom
 
 import (
+	"cmp"
 	"fmt"
 	"text/template"
 	"time"
@@ -82,10 +83,10 @@ const usage_cmd_tpl = `
 
 const report_cmd_tpl = `
 ## 用量报告
-| 商铺名称 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
-| :------: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
+| 商铺名称 | 预警 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
+| :------: |:---: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{.PosName}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DiffEng | du}} |{{eng .Alarm 0 .Rate}} | {{.DataTime | datetime}} |
+| {{.PosName}} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
@@ -109,6 +110,7 @@ func buildTemplate() *template.Template {
 			"add":      add,
 			"usage":    usageStatus,
 			"eng":      eng,
+			"cui":      cui,
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
@@ -167,4 +169,11 @@ func usageStatus(status int) string {
 	}
 
 	return "非正常状态"
+}
+
+func cui(a, b int64) string {
+	if cmp.Less(a, b) {
+		return "崔"
+	}
+	return ""
 }

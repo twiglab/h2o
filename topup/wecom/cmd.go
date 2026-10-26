@@ -53,6 +53,7 @@ func (c *CmdMgr) Init() {
 	m["m"] = moneyCmdFn
 
 	m["report"] = reportCmdFn
+	m["r"] = reportCmdFn
 
 	c.m = m
 }
