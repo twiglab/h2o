@@ -64,9 +64,14 @@ func (s *ChargeServer) MsgHandle() mqtt.MessageHandler {
 			s.Logger.Error("unmarshal error", slog.Any("error", err))
 			return
 		}
-		if err := s.Charge(context.Background(), em); err != nil {
-			s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
-		}
+
+		// 协程处理
+		go func() {
+			if err := s.Charge(context.Background(), em); err != nil {
+				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
+			}
+		}()
+
 	}
 }
 
