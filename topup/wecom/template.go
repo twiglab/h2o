@@ -82,7 +82,7 @@ const usage_cmd_tpl = `
 `
 
 const report_cmd_tpl = `
-## 用量报告
+## 用量报告 时间：{{ .Now | datetime }}
 | 商铺名称 | 预警 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
 | :------: |:---: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
@@ -173,7 +173,7 @@ func usageStatus(status int) string {
 
 func cui(a, b int64) string {
 	if cmp.Less(a, b) {
-		return "崔"
+		return "催"
 	}
 	return ""
 }

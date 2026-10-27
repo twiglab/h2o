@@ -15,9 +15,11 @@ type reportCmd struct {
 	cli  *ent.Client
 
 	Items []reportItem
+	Now   time.Time
 }
 
 func (c *reportCmd) Do(ctx context.Context) error {
+	c.Now = time.Now()
 	rows, err := c.cli.QueryContext(ctx, report_sql)
 	if err != nil {
 		return err
@@ -39,7 +41,6 @@ func reportCmdFn(cfg Global, args ...string) (Commander, error) {
 	u := &reportCmd{
 		tmpl: cfg.Template,
 		cli:  cfg.Client,
-		//		dbx:  &DBx{cli: cfg.Client},
 	}
 	return u, nil
 }
