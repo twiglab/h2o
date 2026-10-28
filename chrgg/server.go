@@ -183,20 +183,6 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return nil
 	}
 
-	if vc.Status == STATUS_BEGIN {
-		// 正常状态下，计费没有结束，发送chrgg消息
-		m := ChrggMessage{
-			Device:  md.Device,
-			Pos:     md.Pos,
-			Data:    md.Data,
-			Gateway: md.Gateway,
-			Top:     vc,
-		}
-		if err := s.Sender.SendData(ctx, m); err != nil {
-			s.Logger.InfoContext(ctx, "send quota msg error", slog.Any("error", err))
-		}
-	}
-
 	// 注意： 即便状态为 STATUS_END 也是要继续执行的
 	// 是否开关，完全由限额决定
 	switch md.Data.OptStatus {

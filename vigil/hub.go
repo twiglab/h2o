@@ -25,7 +25,7 @@ func (h *Hub) Handle(ctx context.Context, data Meter) error {
 		wal.Any("data", data),
 	)
 
-	//h.TSDB.TabbElecty(ctx, data)
+	// h.TSDB.Tabb(ctx, data.Code, data)
 
 	if err := h.DB.Tabb(ctx, data.Code, data); err != nil {
 		h.Logger.ErrorContext(ctx, "Record Electy error", slog.Any("data", data), slog.Any("error", err))

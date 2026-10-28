@@ -71,22 +71,6 @@ func (d OnOffMessage) MarshalBinary() ([]byte, error) {
 	return json.Marshal(d)
 }
 
-type ChrggMessage struct {
-	proto.Device
-	Pos     proto.Pos        `json:"pos,omitzero"`
-	Data    proto.MeterValue `json:"data,omitzero"`
-	Gateway proto.Modbus     `json:"gateway,omitzero"`
-	Top     *ent.Top         `json:"top,omitzero"`
-}
-
-func (o ChrggMessage) Topic() string {
-	return proto.H2O + "/" + proto.QUOTA + "/" + o.Code + "/" + o.Type
-}
-
-func (d ChrggMessage) MarshalBinary() ([]byte, error) {
-	return json.Marshal(d)
-}
-
 func newOnOffMessage(md Meter, vc *ent.Top, op string) OnOffMessage {
 	return OnOffMessage{
 		Device:  md.Device,

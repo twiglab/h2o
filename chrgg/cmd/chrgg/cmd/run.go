@@ -5,8 +5,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/chrgg"
 	"github.com/twiglab/h2o/chrgg/orm"
@@ -56,7 +54,5 @@ func run() error {
 		log.Fatal(err)
 	}
 
-	mux := chi.NewMux()
-	mux.Use(middleware.RequestID)
-	return http.ListenAndServe(webaddr(), mux)
+	return http.ListenAndServe(webaddr(), nil)
 }
