@@ -86,7 +86,7 @@ const report_cmd_tpl = `
 | 商铺名称 | 预警 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
 | :------: |:---: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{.PosName}} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
+| {{.PosName}} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} ({{tian .DiffEng .Alarm}}天) |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
@@ -111,6 +111,7 @@ func buildTemplate() *template.Template {
 			"usage":    usageStatus,
 			"eng":      eng,
 			"cui":      cui,
+			"tian":     tian,
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
@@ -172,8 +173,15 @@ func usageStatus(status int) string {
 }
 
 func cui(a, b int64) string {
-	if cmp.Less(a, b) {
+	if cmp.Less(a, b/2) {
 		return "催"
 	}
 	return ""
+}
+
+func tian(a, b int64) int64 {
+	if b == 0 {
+		return 0
+	}
+	return a / (b / 30)
 }
