@@ -16,7 +16,7 @@ const help_cmd_tpl = `
   例如：p F1_04
 3. u <表号>，列出指定表号的使用情况
   例如：u 909_32
-4. report 查看当前用量报表
+4. report(r) 查看当前用量报表
 -------
 以下命令只能指定人员在指定群组执行
 1. c <表号> <增量> [<金额> <起点>]
@@ -86,7 +86,7 @@ const report_cmd_tpl = `
 | 商铺名称 | 预警 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
 | :------: |:---: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{.PosName}} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} ({{tian .DiffEng .Alarm}}天) |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
+| {{ .PosName }} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} ({{tian .DiffEng .Alarm}}天) |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
@@ -94,7 +94,6 @@ const (
 	template_help   = "help"
 	template_pos    = "pos"
 	template_charge = "charge"
-	template_top    = "top"
 	template_usage  = "usage"
 	template_report = "report"
 )
