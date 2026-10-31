@@ -175,14 +175,6 @@ func (s *ChargeServer) Charge(ctx context.Context, md Meter) error {
 		return err
 	}
 
-	// 当前限额的业务状态
-	// 这里有个问题要注意，找个状态是记录在当前限额记录上的，记录必须有效
-	// 这里是最后一次人为阻止
-	if vc.Status < STATUS_BEGIN {
-		s.Logger.DebugContext(ctx, "人为指定 status < 0 强制不计费", slog.Any("meter", md), slog.Int("status", vc.Status))
-		return nil
-	}
-
 	// 注意： 即便状态为 STATUS_END 也是要继续执行的
 	// 是否开关，完全由限额决定
 	switch md.Data.OptStatus {
