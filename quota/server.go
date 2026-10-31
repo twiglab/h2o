@@ -44,16 +44,16 @@ func (s *ChargeServer) msgHandle() mqtt.MessageHandler {
 		defer msg.Ack()
 
 		// 协程处理
-		go func(data []byte) {
+		go func(m mqtt.Message) {
 			var em Meter
-			if err := em.UnmarshalBinary(data); err != nil {
+			if err := em.UnmarshalBinary(m.Payload()); err != nil {
 				s.Logger.Error("unmarshal error", slog.Any("error", err))
 				return
 			}
 			if err := s.charge(context.Background(), em); err != nil {
 				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
 			}
-		}(msg.Payload())
+		}(msg)
 
 	}
 }

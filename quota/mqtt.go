@@ -14,7 +14,6 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	opts.SetAutoReconnect(true)
 	opts.SetCleanSession(false)
 
-	opts.SetReconnectingHandler
 	opts.AddBroker(broker)
 	for _, b := range others {
 		opts.AddBroker(b)
