@@ -1,0 +1,80 @@
+package cmd
+
+import (
+	"cmp"
+	"log"
+	"log/slog"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/spf13/viper"
+	"github.com/twiglab/h2o/clog"
+	"github.com/twiglab/h2o/clog/wal"
+	"github.com/twiglab/h2o/dbcli"
+	"github.com/twiglab/h2o/dbcli/ent"
+	"github.com/twiglab/h2o/quota"
+)
+
+func rootLog() *slog.Logger {
+	rlogF := viper.GetString("chrgg.log.root.file")
+	rlogL := viper.GetString("chrgg.log.root.level")
+	logL := viper.GetString("chrgg.log.level")
+
+	level := clog.Level(cmp.Or(rlogL, logL))
+	log := clog.NewLog(rlogF, level)
+	slog.SetDefault(log)
+	return log
+}
+
+func serverLog() *slog.Logger {
+	sLogF := viper.GetString("chrgg.log.server.file")
+	sLogL := viper.GetString("chrgg.log.server.level")
+	logL := viper.GetString("chrgg.log.level")
+
+	level := clog.Level(cmp.Or(sLogL, logL))
+	l := clog.NewLog(sLogF, level)
+	return l
+}
+
+func cwal() *wal.WAL {
+	logF := viper.GetString("chrgg.wal.file")
+	if logF == "" {
+		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
+	}
+	log.Println("wal file:", logF)
+	return wal.New(wal.Conf{Filename: logF})
+}
+
+func mqttcli() mqtt.Client {
+	broker := viper.GetString("chrgg.mqtt.broker")
+	if broker == "" {
+		log.Fatalf("no broker")
+	}
+	cli, err := quota.NewMQTTClient(quota.CLIENT_ID, broker)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cli
+}
+
+func webaddr() string {
+	addr := cmp.Or(viper.GetString("chrgg.web.addr"), ":10003")
+	log.Println("web addr:", addr)
+	return addr
+}
+
+func entcli() *ent.Client {
+	name := viper.GetString("chrgg.db.name")
+	dsn := viper.GetString("chrgg.db.dsn")
+
+	cli, err := dbcli.OpenEntClient(name, dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return cli
+}
+
+func alarm() int64 {
+	a := viper.GetInt64("chrgg.alarm")
+	log.Println("alarm:", a)
+	return a
+}
