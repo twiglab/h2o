@@ -55,6 +55,8 @@ func (c *CmdMgr) Init() {
 	m["report"] = reportCmdFn
 	m["r"] = reportCmdFn
 
+	m["b"] = balanceCmdFn
+
 	c.m = m
 }
 

@@ -83,10 +83,10 @@ const usage_cmd_tpl = `
 
 const report_cmd_tpl = `
 ## 用量报告 时间：{{ .Now | datetime }}
-| 商铺名称 | 预警 | 铺位编号 |   表号  |   类型  |  剩余电量（度） |   预警电量（度）  |  采集时间 |
+| 商铺名称 | 预警 |   剩余电量（度） |   预警电量（度）  | 铺位编号 |   表号  |   类型  |  采集时间 |
 | :------: |:---: | :------: | :-----: | :-----: | :----: | :----: | :-----: |
 {{ range .Items -}}
-| {{ .PosName }} | {{ cui .DiffEng .Alarm }} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{eng .DiffEng 0 .Rate | du}} ({{tian .DiffEng .Alarm}}天) |{{eng .Alarm 0 .Rate | du}} | {{.DataTime | datetime}} |
+| {{ .PosName }} | {{ cui .DiffEng .Alarm }} | {{eng .DiffEng 0 .Rate | du}} ({{tian .DiffEng .Alarm}}天) |{{eng .Alarm 0 .Rate | du}} | {{.PosCode}} | {{.DeviceCode}} | {{.DeviceType | dt}} | {{.DataTime | datetime}} |
 {{ end }}
 `
 
