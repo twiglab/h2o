@@ -1,7 +1,6 @@
 package nab
 
 import (
-	"cmp"
 	"context"
 	"log/slog"
 	"time"
@@ -126,6 +125,35 @@ func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 	return dev, mcli, onoff, nil
 }
 
+func (a Agent) doOnOff(boxCode, devCode, op string) {
+	ctx := context.Background()
+
+	a.WAL.WriteLogContext(ctx,
+		wal.String("box", boxCode),
+		wal.String("device", devCode),
+		wal.String("op", op),
+	)
+
+	switch op {
+	case proto.ON:
+		if err := a.On(ctx, devCode); err != nil {
+			a.Logger.Error("onoff error", slog.String("code", devCode),
+				slog.String("op", op),
+				slog.Any("error", err),
+			)
+		}
+	case proto.OFF:
+		if err := a.Off(ctx, devCode); err != nil {
+			a.Logger.Error("onoff error", slog.String("code", devCode),
+				slog.String("op", op),
+				slog.Any("error", err),
+			)
+		}
+	default:
+		a.Logger.Error("onoff unknow op", slog.String("code", devCode), slog.String("op", op))
+	}
+}
+
 func (a Agent) msgHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
@@ -136,42 +164,7 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 
 		boxCode, devCode, op := topicPart(msg.Topic())
 
-		if cmp.Compare(boxCode, a.Global.Box) != 0 {
-			a.Logger.Error("onoff box code error",
-				slog.String("box", boxCode),
-				slog.String("code", devCode),
-				slog.String("global.Box", a.Global.Box),
-				slog.String("op", op),
-			)
+		go a.doOnOff(boxCode, devCode, op)
 
-			return
-		}
-
-		ctx := context.Background()
-
-		a.WAL.WriteLogContext(ctx,
-			wal.String("box", boxCode),
-			wal.String("device", devCode),
-			wal.String("op", op),
-		)
-
-		switch op {
-		case proto.ON:
-			if err := a.On(ctx, devCode); err != nil {
-				a.Logger.Error("onoff error", slog.String("code", devCode),
-					slog.String("op", op),
-					slog.Any("error", err),
-				)
-			}
-		case proto.OFF:
-			if err := a.Off(ctx, devCode); err != nil {
-				a.Logger.Error("onoff error", slog.String("code", devCode),
-					slog.String("op", op),
-					slog.Any("error", err),
-				)
-			}
-		default:
-			a.Logger.Error("onoff unknow op", slog.String("code", devCode), slog.String("op", op))
-		}
 	}
 }
