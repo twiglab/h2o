@@ -46,5 +46,5 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 }
 
 func ClientID(code string) string {
-	return code + "@" + NAB
+	return code + "@" + NAB + "-" + VERSION
 }
