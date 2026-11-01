@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/twiglab/h2o/nab"
 )
 
 // versionCmd represents the version command
@@ -17,7 +18,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("version 2026-10-24")
+		fmt.Println("version " + nab.VERSION)
 	},
 }
 
