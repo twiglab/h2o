@@ -11,8 +11,8 @@ const CLIENT_ID = "quota"
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)
-	opts.SetAutoReconnect(true)
-	opts.SetCleanSession(false)
+	// opts.SetAutoReconnect(true)
+	// opts.SetCleanSession(false)
 
 	opts.AddBroker(broker)
 	for _, b := range others {

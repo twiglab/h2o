@@ -69,7 +69,7 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 			wal.String("msg", "正常合闸"),
 		)
 
-		_ = vc.Update().SetStatus(STATUS_BEGIN).Exec(ctx)
+		_ = vc.Update().SetStatus(STATUS_BEGIN).SetStartTime(time.Now()).Exec(ctx)
 
 		ot := newOnOffMessage(md, vc, proto.ON)
 		return s.sender.SendData(ctx, ot)

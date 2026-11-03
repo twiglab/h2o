@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding"
 	"encoding/json/v2"
-	"time"
 
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/proto"
@@ -35,24 +34,6 @@ type Meter struct {
 
 func (d *Meter) UnmarshalBinary(data []byte) error {
 	return json.Unmarshal(data, d)
-}
-
-type Top struct {
-	Code      string `json:"code"`
-	Top       int64  `json:"top"`
-	Current   int64  `json:"current"`
-	Stock     int64  `json:"stock"`
-	Incr      int64  `json:"incr"`
-	Amount    int64  `json:"amount"`
-	UnitPrice int64  `json:"unit_price"`
-
-	ChargeTime time.Time `json:"charge_time"`
-
-	Alarm     int        `json:"alarm"`
-	AlarmTime *time.Time `json:"alarm_time,omitzero"`
-
-	Status  int        `json:"status"`
-	EndTime *time.Time `json:"end_time,omitzero"`
 }
 
 type OnOffMessage struct {
