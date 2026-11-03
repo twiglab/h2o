@@ -27,8 +27,12 @@ const (
 	FieldDeviceName = "device_name"
 	// FieldGatewayCode holds the string denoting the gateway_code field in the database.
 	FieldGatewayCode = "gateway_code"
+	// FieldUnitAddr holds the string denoting the unit_addr field in the database.
+	FieldUnitAddr = "unit_addr"
 	// FieldRate holds the string denoting the rate field in the database.
 	FieldRate = "rate"
+	// FieldRange holds the string denoting the range field in the database.
+	FieldRange = "range"
 	// FieldUnitPrice holds the string denoting the unit_price field in the database.
 	FieldUnitPrice = "unit_price"
 	// FieldAlarm holds the string denoting the alarm field in the database.
@@ -65,7 +69,9 @@ var Columns = []string{
 	FieldDeviceSn,
 	FieldDeviceName,
 	FieldGatewayCode,
+	FieldUnitAddr,
 	FieldRate,
+	FieldRange,
 	FieldUnitPrice,
 	FieldAlarm,
 	FieldProject,
@@ -161,9 +167,19 @@ func ByGatewayCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGatewayCode, opts...).ToFunc()
 }
 
+// ByUnitAddr orders the results by the unit_addr field.
+func ByUnitAddr(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUnitAddr, opts...).ToFunc()
+}
+
 // ByRate orders the results by the rate field.
 func ByRate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRate, opts...).ToFunc()
+}
+
+// ByRange orders the results by the range field.
+func ByRange(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRange, opts...).ToFunc()
 }
 
 // ByUnitPrice orders the results by the unit_price field.

@@ -51,6 +51,8 @@ const (
 	FieldAlarmStock = "alarm_stock"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
+	// FieldStartTime holds the string denoting the start_time field in the database.
+	FieldStartTime = "start_time"
 	// FieldEndTime holds the string denoting the end_time field in the database.
 	FieldEndTime = "end_time"
 	// FieldEndStock holds the string denoting the end_stock field in the database.
@@ -85,6 +87,7 @@ var Columns = []string{
 	FieldAlarmTime,
 	FieldAlarmStock,
 	FieldStatus,
+	FieldStartTime,
 	FieldEndTime,
 	FieldEndStock,
 	FieldMemo,
@@ -249,6 +252,11 @@ func ByAlarmStock(opts ...sql.OrderTermOption) OrderOption {
 // ByStatus orders the results by the status field.
 func ByStatus(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldStatus, opts...).ToFunc()
+}
+
+// ByStartTime orders the results by the start_time field.
+func ByStartTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStartTime, opts...).ToFunc()
 }
 
 // ByEndTime orders the results by the end_time field.

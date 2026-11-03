@@ -31,8 +31,12 @@ type Device struct {
 	DeviceName string `json:"device_name,omitempty"`
 	// 网关编号
 	GatewayCode string `json:"gateway_code,omitempty"`
+	// 设备在网关中的地址
+	UnitAddr int `json:"unit_addr,omitempty"`
 	// 倍率
 	Rate int64 `json:"rate,omitempty"`
+	// 量程
+	Range int64 `json:"range,omitempty"`
 	// 每度电的单价
 	UnitPrice int64 `json:"unit_price,omitempty"`
 	// 报警值
@@ -63,7 +67,7 @@ func (*Device) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case device.FieldRate, device.FieldUnitPrice, device.FieldAlarm, device.FieldStatus, device.FieldIsDel:
+		case device.FieldUnitAddr, device.FieldRate, device.FieldRange, device.FieldUnitPrice, device.FieldAlarm, device.FieldStatus, device.FieldIsDel:
 			values[i] = new(sql.NullInt64)
 		case device.FieldID, device.FieldDeviceCode, device.FieldDeviceType, device.FieldDeviceSn, device.FieldDeviceName, device.FieldGatewayCode, device.FieldProject, device.FieldPosCode, device.FieldPosName, device.FieldAreaCode, device.FieldPcode, device.FieldOutCode, device.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -132,11 +136,23 @@ func (_m *Device) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.GatewayCode = value.String
 			}
+		case device.FieldUnitAddr:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field unit_addr", values[i])
+			} else if value.Valid {
+				_m.UnitAddr = int(value.Int64)
+			}
 		case device.FieldRate:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field rate", values[i])
 			} else if value.Valid {
 				_m.Rate = value.Int64
+			}
+		case device.FieldRange:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field range", values[i])
+			} else if value.Valid {
+				_m.Range = value.Int64
 			}
 		case device.FieldUnitPrice:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -261,8 +277,14 @@ func (_m *Device) String() string {
 	builder.WriteString("gateway_code=")
 	builder.WriteString(_m.GatewayCode)
 	builder.WriteString(", ")
+	builder.WriteString("unit_addr=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UnitAddr))
+	builder.WriteString(", ")
 	builder.WriteString("rate=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Rate))
+	builder.WriteString(", ")
+	builder.WriteString("range=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Range))
 	builder.WriteString(", ")
 	builder.WriteString("unit_price=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UnitPrice))

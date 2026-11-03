@@ -44,8 +44,12 @@ type DeviceMutation struct {
 	device_sn     *string
 	device_name   *string
 	gateway_code  *string
+	unit_addr     *int
+	addunit_addr  *int
 	rate          *int64
 	addrate       *int64
+	_range        *int64
+	add_range     *int64
 	unit_price    *int64
 	addunit_price *int64
 	alarm         *int64
@@ -462,6 +466,76 @@ func (m *DeviceMutation) ResetGatewayCode() {
 	delete(m.clearedFields, device.FieldGatewayCode)
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (m *DeviceMutation) SetUnitAddr(i int) {
+	m.unit_addr = &i
+	m.addunit_addr = nil
+}
+
+// UnitAddr returns the value of the "unit_addr" field in the mutation.
+func (m *DeviceMutation) UnitAddr() (r int, exists bool) {
+	v := m.unit_addr
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUnitAddr returns the old "unit_addr" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldUnitAddr(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUnitAddr is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUnitAddr requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUnitAddr: %w", err)
+	}
+	return oldValue.UnitAddr, nil
+}
+
+// AddUnitAddr adds i to the "unit_addr" field.
+func (m *DeviceMutation) AddUnitAddr(i int) {
+	if m.addunit_addr != nil {
+		*m.addunit_addr += i
+	} else {
+		m.addunit_addr = &i
+	}
+}
+
+// AddedUnitAddr returns the value that was added to the "unit_addr" field in this mutation.
+func (m *DeviceMutation) AddedUnitAddr() (r int, exists bool) {
+	v := m.addunit_addr
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (m *DeviceMutation) ClearUnitAddr() {
+	m.unit_addr = nil
+	m.addunit_addr = nil
+	m.clearedFields[device.FieldUnitAddr] = struct{}{}
+}
+
+// UnitAddrCleared returns if the "unit_addr" field was cleared in this mutation.
+func (m *DeviceMutation) UnitAddrCleared() bool {
+	_, ok := m.clearedFields[device.FieldUnitAddr]
+	return ok
+}
+
+// ResetUnitAddr resets all changes to the "unit_addr" field.
+func (m *DeviceMutation) ResetUnitAddr() {
+	m.unit_addr = nil
+	m.addunit_addr = nil
+	delete(m.clearedFields, device.FieldUnitAddr)
+}
+
 // SetRate sets the "rate" field.
 func (m *DeviceMutation) SetRate(i int64) {
 	m.rate = &i
@@ -516,6 +590,76 @@ func (m *DeviceMutation) AddedRate() (r int64, exists bool) {
 func (m *DeviceMutation) ResetRate() {
 	m.rate = nil
 	m.addrate = nil
+}
+
+// SetRange sets the "range" field.
+func (m *DeviceMutation) SetRange(i int64) {
+	m._range = &i
+	m.add_range = nil
+}
+
+// Range returns the value of the "range" field in the mutation.
+func (m *DeviceMutation) Range() (r int64, exists bool) {
+	v := m._range
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRange returns the old "range" field's value of the Device entity.
+// If the Device object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *DeviceMutation) OldRange(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRange is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRange requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRange: %w", err)
+	}
+	return oldValue.Range, nil
+}
+
+// AddRange adds i to the "range" field.
+func (m *DeviceMutation) AddRange(i int64) {
+	if m.add_range != nil {
+		*m.add_range += i
+	} else {
+		m.add_range = &i
+	}
+}
+
+// AddedRange returns the value that was added to the "range" field in this mutation.
+func (m *DeviceMutation) AddedRange() (r int64, exists bool) {
+	v := m.add_range
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRange clears the value of the "range" field.
+func (m *DeviceMutation) ClearRange() {
+	m._range = nil
+	m.add_range = nil
+	m.clearedFields[device.FieldRange] = struct{}{}
+}
+
+// RangeCleared returns if the "range" field was cleared in this mutation.
+func (m *DeviceMutation) RangeCleared() bool {
+	_, ok := m.clearedFields[device.FieldRange]
+	return ok
+}
+
+// ResetRange resets all changes to the "range" field.
+func (m *DeviceMutation) ResetRange() {
+	m._range = nil
+	m.add_range = nil
+	delete(m.clearedFields, device.FieldRange)
 }
 
 // SetUnitPrice sets the "unit_price" field.
@@ -1106,7 +1250,7 @@ func (m *DeviceMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DeviceMutation) Fields() []string {
-	fields := make([]string, 0, 19)
+	fields := make([]string, 0, 21)
 	if m.create_time != nil {
 		fields = append(fields, device.FieldCreateTime)
 	}
@@ -1128,8 +1272,14 @@ func (m *DeviceMutation) Fields() []string {
 	if m.gateway_code != nil {
 		fields = append(fields, device.FieldGatewayCode)
 	}
+	if m.unit_addr != nil {
+		fields = append(fields, device.FieldUnitAddr)
+	}
 	if m.rate != nil {
 		fields = append(fields, device.FieldRate)
+	}
+	if m._range != nil {
+		fields = append(fields, device.FieldRange)
 	}
 	if m.unit_price != nil {
 		fields = append(fields, device.FieldUnitPrice)
@@ -1186,8 +1336,12 @@ func (m *DeviceMutation) Field(name string) (ent.Value, bool) {
 		return m.DeviceName()
 	case device.FieldGatewayCode:
 		return m.GatewayCode()
+	case device.FieldUnitAddr:
+		return m.UnitAddr()
 	case device.FieldRate:
 		return m.Rate()
+	case device.FieldRange:
+		return m.Range()
 	case device.FieldUnitPrice:
 		return m.UnitPrice()
 	case device.FieldAlarm:
@@ -1233,8 +1387,12 @@ func (m *DeviceMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDeviceName(ctx)
 	case device.FieldGatewayCode:
 		return m.OldGatewayCode(ctx)
+	case device.FieldUnitAddr:
+		return m.OldUnitAddr(ctx)
 	case device.FieldRate:
 		return m.OldRate(ctx)
+	case device.FieldRange:
+		return m.OldRange(ctx)
 	case device.FieldUnitPrice:
 		return m.OldUnitPrice(ctx)
 	case device.FieldAlarm:
@@ -1315,12 +1473,26 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGatewayCode(v)
 		return nil
+	case device.FieldUnitAddr:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUnitAddr(v)
+		return nil
 	case device.FieldRate:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetRate(v)
+		return nil
+	case device.FieldRange:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRange(v)
 		return nil
 	case device.FieldUnitPrice:
 		v, ok := value.(int64)
@@ -1407,8 +1579,14 @@ func (m *DeviceMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *DeviceMutation) AddedFields() []string {
 	var fields []string
+	if m.addunit_addr != nil {
+		fields = append(fields, device.FieldUnitAddr)
+	}
 	if m.addrate != nil {
 		fields = append(fields, device.FieldRate)
+	}
+	if m.add_range != nil {
+		fields = append(fields, device.FieldRange)
 	}
 	if m.addunit_price != nil {
 		fields = append(fields, device.FieldUnitPrice)
@@ -1430,8 +1608,12 @@ func (m *DeviceMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case device.FieldUnitAddr:
+		return m.AddedUnitAddr()
 	case device.FieldRate:
 		return m.AddedRate()
+	case device.FieldRange:
+		return m.AddedRange()
 	case device.FieldUnitPrice:
 		return m.AddedUnitPrice()
 	case device.FieldAlarm:
@@ -1449,12 +1631,26 @@ func (m *DeviceMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *DeviceMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case device.FieldUnitAddr:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUnitAddr(v)
+		return nil
 	case device.FieldRate:
 		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddRate(v)
+		return nil
+	case device.FieldRange:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRange(v)
 		return nil
 	case device.FieldUnitPrice:
 		v, ok := value.(int64)
@@ -1501,6 +1697,12 @@ func (m *DeviceMutation) ClearedFields() []string {
 	if m.FieldCleared(device.FieldGatewayCode) {
 		fields = append(fields, device.FieldGatewayCode)
 	}
+	if m.FieldCleared(device.FieldUnitAddr) {
+		fields = append(fields, device.FieldUnitAddr)
+	}
+	if m.FieldCleared(device.FieldRange) {
+		fields = append(fields, device.FieldRange)
+	}
 	if m.FieldCleared(device.FieldPosCode) {
 		fields = append(fields, device.FieldPosCode)
 	}
@@ -1541,6 +1743,12 @@ func (m *DeviceMutation) ClearField(name string) error {
 		return nil
 	case device.FieldGatewayCode:
 		m.ClearGatewayCode()
+		return nil
+	case device.FieldUnitAddr:
+		m.ClearUnitAddr()
+		return nil
+	case device.FieldRange:
+		m.ClearRange()
 		return nil
 	case device.FieldPosCode:
 		m.ClearPosCode()
@@ -1589,8 +1797,14 @@ func (m *DeviceMutation) ResetField(name string) error {
 	case device.FieldGatewayCode:
 		m.ResetGatewayCode()
 		return nil
+	case device.FieldUnitAddr:
+		m.ResetUnitAddr()
+		return nil
 	case device.FieldRate:
 		m.ResetRate()
+		return nil
+	case device.FieldRange:
+		m.ResetRange()
 		return nil
 	case device.FieldUnitPrice:
 		m.ResetUnitPrice()
@@ -2605,6 +2819,7 @@ type TopMutation struct {
 	addalarm_stock *int64
 	status         *int
 	addstatus      *int
+	start_time     *time.Time
 	end_time       *time.Time
 	end_stock      *int64
 	addend_stock   *int64
@@ -3604,6 +3819,55 @@ func (m *TopMutation) ResetStatus() {
 	m.addstatus = nil
 }
 
+// SetStartTime sets the "start_time" field.
+func (m *TopMutation) SetStartTime(t time.Time) {
+	m.start_time = &t
+}
+
+// StartTime returns the value of the "start_time" field in the mutation.
+func (m *TopMutation) StartTime() (r time.Time, exists bool) {
+	v := m.start_time
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStartTime returns the old "start_time" field's value of the Top entity.
+// If the Top object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TopMutation) OldStartTime(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStartTime is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStartTime requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStartTime: %w", err)
+	}
+	return oldValue.StartTime, nil
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (m *TopMutation) ClearStartTime() {
+	m.start_time = nil
+	m.clearedFields[top.FieldStartTime] = struct{}{}
+}
+
+// StartTimeCleared returns if the "start_time" field was cleared in this mutation.
+func (m *TopMutation) StartTimeCleared() bool {
+	_, ok := m.clearedFields[top.FieldStartTime]
+	return ok
+}
+
+// ResetStartTime resets all changes to the "start_time" field.
+func (m *TopMutation) ResetStartTime() {
+	m.start_time = nil
+	delete(m.clearedFields, top.FieldStartTime)
+}
+
 // SetEndTime sets the "end_time" field.
 func (m *TopMutation) SetEndTime(t time.Time) {
 	m.end_time = &t
@@ -3848,7 +4112,7 @@ func (m *TopMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TopMutation) Fields() []string {
-	fields := make([]string, 0, 23)
+	fields := make([]string, 0, 24)
 	if m.create_time != nil {
 		fields = append(fields, top.FieldCreateTime)
 	}
@@ -3905,6 +4169,9 @@ func (m *TopMutation) Fields() []string {
 	}
 	if m.status != nil {
 		fields = append(fields, top.FieldStatus)
+	}
+	if m.start_time != nil {
+		fields = append(fields, top.FieldStartTime)
 	}
 	if m.end_time != nil {
 		fields = append(fields, top.FieldEndTime)
@@ -3964,6 +4231,8 @@ func (m *TopMutation) Field(name string) (ent.Value, bool) {
 		return m.AlarmStock()
 	case top.FieldStatus:
 		return m.Status()
+	case top.FieldStartTime:
+		return m.StartTime()
 	case top.FieldEndTime:
 		return m.EndTime()
 	case top.FieldEndStock:
@@ -4019,6 +4288,8 @@ func (m *TopMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldAlarmStock(ctx)
 	case top.FieldStatus:
 		return m.OldStatus(ctx)
+	case top.FieldStartTime:
+		return m.OldStartTime(ctx)
 	case top.FieldEndTime:
 		return m.OldEndTime(ctx)
 	case top.FieldEndStock:
@@ -4168,6 +4439,13 @@ func (m *TopMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStatus(v)
+		return nil
+	case top.FieldStartTime:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStartTime(v)
 		return nil
 	case top.FieldEndTime:
 		v, ok := value.(time.Time)
@@ -4359,6 +4637,9 @@ func (m *TopMutation) ClearedFields() []string {
 	if m.FieldCleared(top.FieldAlarmTime) {
 		fields = append(fields, top.FieldAlarmTime)
 	}
+	if m.FieldCleared(top.FieldStartTime) {
+		fields = append(fields, top.FieldStartTime)
+	}
 	if m.FieldCleared(top.FieldEndTime) {
 		fields = append(fields, top.FieldEndTime)
 	}
@@ -4387,6 +4668,9 @@ func (m *TopMutation) ClearField(name string) error {
 		return nil
 	case top.FieldAlarmTime:
 		m.ClearAlarmTime()
+		return nil
+	case top.FieldStartTime:
+		m.ClearStartTime()
 		return nil
 	case top.FieldEndTime:
 		m.ClearEndTime()
@@ -4458,6 +4742,9 @@ func (m *TopMutation) ResetField(name string) error {
 		return nil
 	case top.FieldStatus:
 		m.ResetStatus()
+		return nil
+	case top.FieldStartTime:
+		m.ResetStartTime()
 		return nil
 	case top.FieldEndTime:
 		m.ResetEndTime()

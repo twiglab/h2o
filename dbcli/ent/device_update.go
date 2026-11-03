@@ -122,6 +122,33 @@ func (_u *DeviceUpdate) ClearGatewayCode() *DeviceUpdate {
 	return _u
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (_u *DeviceUpdate) SetUnitAddr(v int) *DeviceUpdate {
+	_u.mutation.ResetUnitAddr()
+	_u.mutation.SetUnitAddr(v)
+	return _u
+}
+
+// SetNillableUnitAddr sets the "unit_addr" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableUnitAddr(v *int) *DeviceUpdate {
+	if v != nil {
+		_u.SetUnitAddr(*v)
+	}
+	return _u
+}
+
+// AddUnitAddr adds value to the "unit_addr" field.
+func (_u *DeviceUpdate) AddUnitAddr(v int) *DeviceUpdate {
+	_u.mutation.AddUnitAddr(v)
+	return _u
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (_u *DeviceUpdate) ClearUnitAddr() *DeviceUpdate {
+	_u.mutation.ClearUnitAddr()
+	return _u
+}
+
 // SetRate sets the "rate" field.
 func (_u *DeviceUpdate) SetRate(v int64) *DeviceUpdate {
 	_u.mutation.ResetRate()
@@ -140,6 +167,33 @@ func (_u *DeviceUpdate) SetNillableRate(v *int64) *DeviceUpdate {
 // AddRate adds value to the "rate" field.
 func (_u *DeviceUpdate) AddRate(v int64) *DeviceUpdate {
 	_u.mutation.AddRate(v)
+	return _u
+}
+
+// SetRange sets the "range" field.
+func (_u *DeviceUpdate) SetRange(v int64) *DeviceUpdate {
+	_u.mutation.ResetRange()
+	_u.mutation.SetRange(v)
+	return _u
+}
+
+// SetNillableRange sets the "range" field if the given value is not nil.
+func (_u *DeviceUpdate) SetNillableRange(v *int64) *DeviceUpdate {
+	if v != nil {
+		_u.SetRange(*v)
+	}
+	return _u
+}
+
+// AddRange adds value to the "range" field.
+func (_u *DeviceUpdate) AddRange(v int64) *DeviceUpdate {
+	_u.mutation.AddRange(v)
+	return _u
+}
+
+// ClearRange clears the value of the "range" field.
+func (_u *DeviceUpdate) ClearRange() *DeviceUpdate {
+	_u.mutation.ClearRange()
 	return _u
 }
 
@@ -442,11 +496,29 @@ func (_u *DeviceUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.GatewayCodeCleared() {
 		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
 	}
+	if value, ok := _u.mutation.UnitAddr(); ok {
+		_spec.SetField(device.FieldUnitAddr, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUnitAddr(); ok {
+		_spec.AddField(device.FieldUnitAddr, field.TypeInt, value)
+	}
+	if _u.mutation.UnitAddrCleared() {
+		_spec.ClearField(device.FieldUnitAddr, field.TypeInt)
+	}
 	if value, ok := _u.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRate(); ok {
 		_spec.AddField(device.FieldRate, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.Range(); ok {
+		_spec.SetField(device.FieldRange, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedRange(); ok {
+		_spec.AddField(device.FieldRange, field.TypeInt64, value)
+	}
+	if _u.mutation.RangeCleared() {
+		_spec.ClearField(device.FieldRange, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UnitPrice(); ok {
 		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
@@ -622,6 +694,33 @@ func (_u *DeviceUpdateOne) ClearGatewayCode() *DeviceUpdateOne {
 	return _u
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (_u *DeviceUpdateOne) SetUnitAddr(v int) *DeviceUpdateOne {
+	_u.mutation.ResetUnitAddr()
+	_u.mutation.SetUnitAddr(v)
+	return _u
+}
+
+// SetNillableUnitAddr sets the "unit_addr" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableUnitAddr(v *int) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetUnitAddr(*v)
+	}
+	return _u
+}
+
+// AddUnitAddr adds value to the "unit_addr" field.
+func (_u *DeviceUpdateOne) AddUnitAddr(v int) *DeviceUpdateOne {
+	_u.mutation.AddUnitAddr(v)
+	return _u
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (_u *DeviceUpdateOne) ClearUnitAddr() *DeviceUpdateOne {
+	_u.mutation.ClearUnitAddr()
+	return _u
+}
+
 // SetRate sets the "rate" field.
 func (_u *DeviceUpdateOne) SetRate(v int64) *DeviceUpdateOne {
 	_u.mutation.ResetRate()
@@ -640,6 +739,33 @@ func (_u *DeviceUpdateOne) SetNillableRate(v *int64) *DeviceUpdateOne {
 // AddRate adds value to the "rate" field.
 func (_u *DeviceUpdateOne) AddRate(v int64) *DeviceUpdateOne {
 	_u.mutation.AddRate(v)
+	return _u
+}
+
+// SetRange sets the "range" field.
+func (_u *DeviceUpdateOne) SetRange(v int64) *DeviceUpdateOne {
+	_u.mutation.ResetRange()
+	_u.mutation.SetRange(v)
+	return _u
+}
+
+// SetNillableRange sets the "range" field if the given value is not nil.
+func (_u *DeviceUpdateOne) SetNillableRange(v *int64) *DeviceUpdateOne {
+	if v != nil {
+		_u.SetRange(*v)
+	}
+	return _u
+}
+
+// AddRange adds value to the "range" field.
+func (_u *DeviceUpdateOne) AddRange(v int64) *DeviceUpdateOne {
+	_u.mutation.AddRange(v)
+	return _u
+}
+
+// ClearRange clears the value of the "range" field.
+func (_u *DeviceUpdateOne) ClearRange() *DeviceUpdateOne {
+	_u.mutation.ClearRange()
 	return _u
 }
 
@@ -972,11 +1098,29 @@ func (_u *DeviceUpdateOne) sqlSave(ctx context.Context) (_node *Device, err erro
 	if _u.mutation.GatewayCodeCleared() {
 		_spec.ClearField(device.FieldGatewayCode, field.TypeString)
 	}
+	if value, ok := _u.mutation.UnitAddr(); ok {
+		_spec.SetField(device.FieldUnitAddr, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.AddedUnitAddr(); ok {
+		_spec.AddField(device.FieldUnitAddr, field.TypeInt, value)
+	}
+	if _u.mutation.UnitAddrCleared() {
+		_spec.ClearField(device.FieldUnitAddr, field.TypeInt)
+	}
 	if value, ok := _u.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.AddedRate(); ok {
 		_spec.AddField(device.FieldRate, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.Range(); ok {
+		_spec.SetField(device.FieldRange, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedRange(); ok {
+		_spec.AddField(device.FieldRange, field.TypeInt64, value)
+	}
+	if _u.mutation.RangeCleared() {
+		_spec.ClearField(device.FieldRange, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UnitPrice(); ok {
 		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)

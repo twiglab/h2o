@@ -39,27 +39,27 @@ func init() {
 	// device.DeviceTypeValidator is a validator for the "device_type" field. It is called by the builders before save.
 	device.DeviceTypeValidator = deviceDescDeviceType.Validators[0].(func(string) error)
 	// deviceDescRate is the schema descriptor for rate field.
-	deviceDescRate := deviceFields[6].Descriptor()
+	deviceDescRate := deviceFields[7].Descriptor()
 	// device.DefaultRate holds the default value on creation for the rate field.
 	device.DefaultRate = deviceDescRate.Default.(int64)
 	// deviceDescUnitPrice is the schema descriptor for unit_price field.
-	deviceDescUnitPrice := deviceFields[7].Descriptor()
+	deviceDescUnitPrice := deviceFields[9].Descriptor()
 	// device.DefaultUnitPrice holds the default value on creation for the unit_price field.
 	device.DefaultUnitPrice = deviceDescUnitPrice.Default.(int64)
 	// deviceDescAlarm is the schema descriptor for alarm field.
-	deviceDescAlarm := deviceFields[8].Descriptor()
+	deviceDescAlarm := deviceFields[10].Descriptor()
 	// device.DefaultAlarm holds the default value on creation for the alarm field.
 	device.DefaultAlarm = deviceDescAlarm.Default.(int64)
 	// deviceDescProject is the schema descriptor for project field.
-	deviceDescProject := deviceFields[9].Descriptor()
+	deviceDescProject := deviceFields[11].Descriptor()
 	// device.ProjectValidator is a validator for the "project" field. It is called by the builders before save.
 	device.ProjectValidator = deviceDescProject.Validators[0].(func(string) error)
 	// deviceDescStatus is the schema descriptor for status field.
-	deviceDescStatus := deviceFields[15].Descriptor()
+	deviceDescStatus := deviceFields[17].Descriptor()
 	// device.DefaultStatus holds the default value on creation for the status field.
 	device.DefaultStatus = deviceDescStatus.Default.(int)
 	// deviceDescIsDel is the schema descriptor for is_del field.
-	deviceDescIsDel := deviceFields[17].Descriptor()
+	deviceDescIsDel := deviceFields[19].Descriptor()
 	// device.DefaultIsDel holds the default value on creation for the is_del field.
 	device.DefaultIsDel = deviceDescIsDel.Default.(int)
 	// deviceDescID is the schema descriptor for id field.
@@ -183,11 +183,11 @@ func init() {
 	// top.DefaultStatus holds the default value on creation for the status field.
 	top.DefaultStatus = topDescStatus.Default.(int)
 	// topDescEndStock is the schema descriptor for end_stock field.
-	topDescEndStock := topFields[19].Descriptor()
+	topDescEndStock := topFields[20].Descriptor()
 	// top.DefaultEndStock holds the default value on creation for the end_stock field.
 	top.DefaultEndStock = topDescEndStock.Default.(int64)
 	// topDescIsDel is the schema descriptor for is_del field.
-	topDescIsDel := topFields[21].Descriptor()
+	topDescIsDel := topFields[22].Descriptor()
 	// top.DefaultIsDel holds the default value on creation for the is_del field.
 	top.DefaultIsDel = topDescIsDel.Default.(int)
 	// topDescID is the schema descriptor for id field.

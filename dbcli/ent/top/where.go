@@ -159,6 +159,11 @@ func Status(v int) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldStatus, v))
 }
 
+// StartTime applies equality check predicate on the "start_time" field. It's identical to StartTimeEQ.
+func StartTime(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldStartTime, v))
+}
+
 // EndTime applies equality check predicate on the "end_time" field. It's identical to EndTimeEQ.
 func EndTime(v time.Time) predicate.Top {
 	return predicate.Top(sql.FieldEQ(FieldEndTime, v))
@@ -1142,6 +1147,56 @@ func StatusLT(v int) predicate.Top {
 // StatusLTE applies the LTE predicate on the "status" field.
 func StatusLTE(v int) predicate.Top {
 	return predicate.Top(sql.FieldLTE(FieldStatus, v))
+}
+
+// StartTimeEQ applies the EQ predicate on the "start_time" field.
+func StartTimeEQ(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldEQ(FieldStartTime, v))
+}
+
+// StartTimeNEQ applies the NEQ predicate on the "start_time" field.
+func StartTimeNEQ(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldNEQ(FieldStartTime, v))
+}
+
+// StartTimeIn applies the In predicate on the "start_time" field.
+func StartTimeIn(vs ...time.Time) predicate.Top {
+	return predicate.Top(sql.FieldIn(FieldStartTime, vs...))
+}
+
+// StartTimeNotIn applies the NotIn predicate on the "start_time" field.
+func StartTimeNotIn(vs ...time.Time) predicate.Top {
+	return predicate.Top(sql.FieldNotIn(FieldStartTime, vs...))
+}
+
+// StartTimeGT applies the GT predicate on the "start_time" field.
+func StartTimeGT(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldGT(FieldStartTime, v))
+}
+
+// StartTimeGTE applies the GTE predicate on the "start_time" field.
+func StartTimeGTE(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldGTE(FieldStartTime, v))
+}
+
+// StartTimeLT applies the LT predicate on the "start_time" field.
+func StartTimeLT(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldLT(FieldStartTime, v))
+}
+
+// StartTimeLTE applies the LTE predicate on the "start_time" field.
+func StartTimeLTE(v time.Time) predicate.Top {
+	return predicate.Top(sql.FieldLTE(FieldStartTime, v))
+}
+
+// StartTimeIsNil applies the IsNil predicate on the "start_time" field.
+func StartTimeIsNil() predicate.Top {
+	return predicate.Top(sql.FieldIsNull(FieldStartTime))
+}
+
+// StartTimeNotNil applies the NotNil predicate on the "start_time" field.
+func StartTimeNotNil() predicate.Top {
+	return predicate.Top(sql.FieldNotNull(FieldStartTime))
 }
 
 // EndTimeEQ applies the EQ predicate on the "end_time" field.

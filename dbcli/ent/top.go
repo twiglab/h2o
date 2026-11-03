@@ -55,7 +55,9 @@ type Top struct {
 	AlarmStock int64 `json:"alarm_stock,omitempty"`
 	// 当前限额状态
 	Status int `json:"status,omitempty"`
-	// 充值时间
+	// 限额开始时间
+	StartTime *time.Time `json:"start_time,omitempty"`
+	// 限额结束时间
 	EndTime *time.Time `json:"end_time,omitempty"`
 	// 限额结束时表显数值
 	EndStock int64 `json:"end_stock,omitempty"`
@@ -75,7 +77,7 @@ func (*Top) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case top.FieldID, top.FieldCode, top.FieldNo, top.FieldDeviceCode, top.FieldDeviceType, top.FieldPosCode, top.FieldProject, top.FieldOutCode, top.FieldMemo:
 			values[i] = new(sql.NullString)
-		case top.FieldCreateTime, top.FieldUpdateTime, top.FieldChargeTime, top.FieldAlarmTime, top.FieldEndTime:
+		case top.FieldCreateTime, top.FieldUpdateTime, top.FieldChargeTime, top.FieldAlarmTime, top.FieldStartTime, top.FieldEndTime:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -213,6 +215,13 @@ func (_m *Top) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Status = int(value.Int64)
 			}
+		case top.FieldStartTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field start_time", values[i])
+			} else if value.Valid {
+				_m.StartTime = new(time.Time)
+				*_m.StartTime = value.Time
+			}
 		case top.FieldEndTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field end_time", values[i])
@@ -332,6 +341,11 @@ func (_m *Top) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
+	builder.WriteString(", ")
+	if v := _m.StartTime; v != nil {
+		builder.WriteString("start_time=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteString(", ")
 	if v := _m.EndTime; v != nil {
 		builder.WriteString("end_time=")

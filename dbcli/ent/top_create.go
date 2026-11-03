@@ -257,6 +257,20 @@ func (_c *TopCreate) SetNillableStatus(v *int) *TopCreate {
 	return _c
 }
 
+// SetStartTime sets the "start_time" field.
+func (_c *TopCreate) SetStartTime(v time.Time) *TopCreate {
+	_c.mutation.SetStartTime(v)
+	return _c
+}
+
+// SetNillableStartTime sets the "start_time" field if the given value is not nil.
+func (_c *TopCreate) SetNillableStartTime(v *time.Time) *TopCreate {
+	if v != nil {
+		_c.SetStartTime(*v)
+	}
+	return _c
+}
+
 // SetEndTime sets the "end_time" field.
 func (_c *TopCreate) SetEndTime(v time.Time) *TopCreate {
 	_c.mutation.SetEndTime(v)
@@ -622,6 +636,10 @@ func (_c *TopCreate) createSpec() (*Top, *sqlgraph.CreateSpec) {
 		_spec.SetField(top.FieldStatus, field.TypeInt, value)
 		_node.Status = value
 	}
+	if value, ok := _c.mutation.StartTime(); ok {
+		_spec.SetField(top.FieldStartTime, field.TypeTime, value)
+		_node.StartTime = &value
+	}
 	if value, ok := _c.mutation.EndTime(); ok {
 		_spec.SetField(top.FieldEndTime, field.TypeTime, value)
 		_node.EndTime = &value
@@ -771,6 +789,24 @@ func (u *TopUpsert) UpdateStatus() *TopUpsert {
 // AddStatus adds v to the "status" field.
 func (u *TopUpsert) AddStatus(v int) *TopUpsert {
 	u.Add(top.FieldStatus, v)
+	return u
+}
+
+// SetStartTime sets the "start_time" field.
+func (u *TopUpsert) SetStartTime(v time.Time) *TopUpsert {
+	u.Set(top.FieldStartTime, v)
+	return u
+}
+
+// UpdateStartTime sets the "start_time" field to the value that was provided on create.
+func (u *TopUpsert) UpdateStartTime() *TopUpsert {
+	u.SetExcluded(top.FieldStartTime)
+	return u
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (u *TopUpsert) ClearStartTime() *TopUpsert {
+	u.SetNull(top.FieldStartTime)
 	return u
 }
 
@@ -1031,6 +1067,27 @@ func (u *TopUpsertOne) AddStatus(v int) *TopUpsertOne {
 func (u *TopUpsertOne) UpdateStatus() *TopUpsertOne {
 	return u.Update(func(s *TopUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetStartTime sets the "start_time" field.
+func (u *TopUpsertOne) SetStartTime(v time.Time) *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.SetStartTime(v)
+	})
+}
+
+// UpdateStartTime sets the "start_time" field to the value that was provided on create.
+func (u *TopUpsertOne) UpdateStartTime() *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateStartTime()
+	})
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (u *TopUpsertOne) ClearStartTime() *TopUpsertOne {
+	return u.Update(func(s *TopUpsert) {
+		s.ClearStartTime()
 	})
 }
 
@@ -1470,6 +1527,27 @@ func (u *TopUpsertBulk) AddStatus(v int) *TopUpsertBulk {
 func (u *TopUpsertBulk) UpdateStatus() *TopUpsertBulk {
 	return u.Update(func(s *TopUpsert) {
 		s.UpdateStatus()
+	})
+}
+
+// SetStartTime sets the "start_time" field.
+func (u *TopUpsertBulk) SetStartTime(v time.Time) *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.SetStartTime(v)
+	})
+}
+
+// UpdateStartTime sets the "start_time" field to the value that was provided on create.
+func (u *TopUpsertBulk) UpdateStartTime() *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.UpdateStartTime()
+	})
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (u *TopUpsertBulk) ClearStartTime() *TopUpsertBulk {
+	return u.Update(func(s *TopUpsert) {
+		s.ClearStartTime()
 	})
 }
 

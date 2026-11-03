@@ -117,6 +117,26 @@ func (_u *TopUpdate) AddStatus(v int) *TopUpdate {
 	return _u
 }
 
+// SetStartTime sets the "start_time" field.
+func (_u *TopUpdate) SetStartTime(v time.Time) *TopUpdate {
+	_u.mutation.SetStartTime(v)
+	return _u
+}
+
+// SetNillableStartTime sets the "start_time" field if the given value is not nil.
+func (_u *TopUpdate) SetNillableStartTime(v *time.Time) *TopUpdate {
+	if v != nil {
+		_u.SetStartTime(*v)
+	}
+	return _u
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (_u *TopUpdate) ClearStartTime() *TopUpdate {
+	_u.mutation.ClearStartTime()
+	return _u
+}
+
 // SetEndTime sets the "end_time" field.
 func (_u *TopUpdate) SetEndTime(v time.Time) *TopUpdate {
 	_u.mutation.SetEndTime(v)
@@ -282,6 +302,12 @@ func (_u *TopUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(top.FieldStatus, field.TypeInt, value)
 	}
+	if value, ok := _u.mutation.StartTime(); ok {
+		_spec.SetField(top.FieldStartTime, field.TypeTime, value)
+	}
+	if _u.mutation.StartTimeCleared() {
+		_spec.ClearField(top.FieldStartTime, field.TypeTime)
+	}
 	if value, ok := _u.mutation.EndTime(); ok {
 		_spec.SetField(top.FieldEndTime, field.TypeTime, value)
 	}
@@ -412,6 +438,26 @@ func (_u *TopUpdateOne) SetNillableStatus(v *int) *TopUpdateOne {
 // AddStatus adds value to the "status" field.
 func (_u *TopUpdateOne) AddStatus(v int) *TopUpdateOne {
 	_u.mutation.AddStatus(v)
+	return _u
+}
+
+// SetStartTime sets the "start_time" field.
+func (_u *TopUpdateOne) SetStartTime(v time.Time) *TopUpdateOne {
+	_u.mutation.SetStartTime(v)
+	return _u
+}
+
+// SetNillableStartTime sets the "start_time" field if the given value is not nil.
+func (_u *TopUpdateOne) SetNillableStartTime(v *time.Time) *TopUpdateOne {
+	if v != nil {
+		_u.SetStartTime(*v)
+	}
+	return _u
+}
+
+// ClearStartTime clears the value of the "start_time" field.
+func (_u *TopUpdateOne) ClearStartTime() *TopUpdateOne {
+	_u.mutation.ClearStartTime()
 	return _u
 }
 
@@ -609,6 +655,12 @@ func (_u *TopUpdateOne) sqlSave(ctx context.Context) (_node *Top, err error) {
 	}
 	if value, ok := _u.mutation.AddedStatus(); ok {
 		_spec.AddField(top.FieldStatus, field.TypeInt, value)
+	}
+	if value, ok := _u.mutation.StartTime(); ok {
+		_spec.SetField(top.FieldStartTime, field.TypeTime, value)
+	}
+	if _u.mutation.StartTimeCleared() {
+		_spec.ClearField(top.FieldStartTime, field.TypeTime)
 	}
 	if value, ok := _u.mutation.EndTime(); ok {
 		_spec.SetField(top.FieldEndTime, field.TypeTime, value)

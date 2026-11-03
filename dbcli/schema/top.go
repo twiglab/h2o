@@ -65,7 +65,8 @@ func (Top) Fields() []ent.Field {
 		field.Int64("alarm_stock").Default(0).Comment("报警时刻表显示"),
 
 		field.Int("status").Default(0).Comment("当前限额状态"),
-		field.Time("end_time").Optional().Nillable().Comment("充值时间"),
+		field.Time("start_time").Optional().Nillable().Comment("限额开始时间"),
+		field.Time("end_time").Optional().Nillable().Comment("限额结束时间"),
 		field.Int64("end_stock").Default(0).Comment("限额结束时表显数值"),
 
 		field.String("memo").Optional().SchemaType(varchar(128)).Comment("备注"),

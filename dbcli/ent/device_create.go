@@ -105,6 +105,20 @@ func (_c *DeviceCreate) SetNillableGatewayCode(v *string) *DeviceCreate {
 	return _c
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (_c *DeviceCreate) SetUnitAddr(v int) *DeviceCreate {
+	_c.mutation.SetUnitAddr(v)
+	return _c
+}
+
+// SetNillableUnitAddr sets the "unit_addr" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableUnitAddr(v *int) *DeviceCreate {
+	if v != nil {
+		_c.SetUnitAddr(*v)
+	}
+	return _c
+}
+
 // SetRate sets the "rate" field.
 func (_c *DeviceCreate) SetRate(v int64) *DeviceCreate {
 	_c.mutation.SetRate(v)
@@ -115,6 +129,20 @@ func (_c *DeviceCreate) SetRate(v int64) *DeviceCreate {
 func (_c *DeviceCreate) SetNillableRate(v *int64) *DeviceCreate {
 	if v != nil {
 		_c.SetRate(*v)
+	}
+	return _c
+}
+
+// SetRange sets the "range" field.
+func (_c *DeviceCreate) SetRange(v int64) *DeviceCreate {
+	_c.mutation.SetRange(v)
+	return _c
+}
+
+// SetNillableRange sets the "range" field if the given value is not nil.
+func (_c *DeviceCreate) SetNillableRange(v *int64) *DeviceCreate {
+	if v != nil {
+		_c.SetRange(*v)
 	}
 	return _c
 }
@@ -464,9 +492,17 @@ func (_c *DeviceCreate) createSpec() (*Device, *sqlgraph.CreateSpec) {
 		_spec.SetField(device.FieldGatewayCode, field.TypeString, value)
 		_node.GatewayCode = value
 	}
+	if value, ok := _c.mutation.UnitAddr(); ok {
+		_spec.SetField(device.FieldUnitAddr, field.TypeInt, value)
+		_node.UnitAddr = value
+	}
 	if value, ok := _c.mutation.Rate(); ok {
 		_spec.SetField(device.FieldRate, field.TypeInt64, value)
 		_node.Rate = value
+	}
+	if value, ok := _c.mutation.Range(); ok {
+		_spec.SetField(device.FieldRange, field.TypeInt64, value)
+		_node.Range = value
 	}
 	if value, ok := _c.mutation.UnitPrice(); ok {
 		_spec.SetField(device.FieldUnitPrice, field.TypeInt64, value)
@@ -654,6 +690,30 @@ func (u *DeviceUpsert) ClearGatewayCode() *DeviceUpsert {
 	return u
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (u *DeviceUpsert) SetUnitAddr(v int) *DeviceUpsert {
+	u.Set(device.FieldUnitAddr, v)
+	return u
+}
+
+// UpdateUnitAddr sets the "unit_addr" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateUnitAddr() *DeviceUpsert {
+	u.SetExcluded(device.FieldUnitAddr)
+	return u
+}
+
+// AddUnitAddr adds v to the "unit_addr" field.
+func (u *DeviceUpsert) AddUnitAddr(v int) *DeviceUpsert {
+	u.Add(device.FieldUnitAddr, v)
+	return u
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (u *DeviceUpsert) ClearUnitAddr() *DeviceUpsert {
+	u.SetNull(device.FieldUnitAddr)
+	return u
+}
+
 // SetRate sets the "rate" field.
 func (u *DeviceUpsert) SetRate(v int64) *DeviceUpsert {
 	u.Set(device.FieldRate, v)
@@ -669,6 +729,30 @@ func (u *DeviceUpsert) UpdateRate() *DeviceUpsert {
 // AddRate adds v to the "rate" field.
 func (u *DeviceUpsert) AddRate(v int64) *DeviceUpsert {
 	u.Add(device.FieldRate, v)
+	return u
+}
+
+// SetRange sets the "range" field.
+func (u *DeviceUpsert) SetRange(v int64) *DeviceUpsert {
+	u.Set(device.FieldRange, v)
+	return u
+}
+
+// UpdateRange sets the "range" field to the value that was provided on create.
+func (u *DeviceUpsert) UpdateRange() *DeviceUpsert {
+	u.SetExcluded(device.FieldRange)
+	return u
+}
+
+// AddRange adds v to the "range" field.
+func (u *DeviceUpsert) AddRange(v int64) *DeviceUpsert {
+	u.Add(device.FieldRange, v)
+	return u
+}
+
+// ClearRange clears the value of the "range" field.
+func (u *DeviceUpsert) ClearRange() *DeviceUpsert {
+	u.SetNull(device.FieldRange)
 	return u
 }
 
@@ -1011,6 +1095,34 @@ func (u *DeviceUpsertOne) ClearGatewayCode() *DeviceUpsertOne {
 	})
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (u *DeviceUpsertOne) SetUnitAddr(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetUnitAddr(v)
+	})
+}
+
+// AddUnitAddr adds v to the "unit_addr" field.
+func (u *DeviceUpsertOne) AddUnitAddr(v int) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddUnitAddr(v)
+	})
+}
+
+// UpdateUnitAddr sets the "unit_addr" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateUnitAddr() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateUnitAddr()
+	})
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (u *DeviceUpsertOne) ClearUnitAddr() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearUnitAddr()
+	})
+}
+
 // SetRate sets the "rate" field.
 func (u *DeviceUpsertOne) SetRate(v int64) *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1029,6 +1141,34 @@ func (u *DeviceUpsertOne) AddRate(v int64) *DeviceUpsertOne {
 func (u *DeviceUpsertOne) UpdateRate() *DeviceUpsertOne {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateRate()
+	})
+}
+
+// SetRange sets the "range" field.
+func (u *DeviceUpsertOne) SetRange(v int64) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetRange(v)
+	})
+}
+
+// AddRange adds v to the "range" field.
+func (u *DeviceUpsertOne) AddRange(v int64) *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddRange(v)
+	})
+}
+
+// UpdateRange sets the "range" field to the value that was provided on create.
+func (u *DeviceUpsertOne) UpdateRange() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateRange()
+	})
+}
+
+// ClearRange clears the value of the "range" field.
+func (u *DeviceUpsertOne) ClearRange() *DeviceUpsertOne {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearRange()
 	})
 }
 
@@ -1568,6 +1708,34 @@ func (u *DeviceUpsertBulk) ClearGatewayCode() *DeviceUpsertBulk {
 	})
 }
 
+// SetUnitAddr sets the "unit_addr" field.
+func (u *DeviceUpsertBulk) SetUnitAddr(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetUnitAddr(v)
+	})
+}
+
+// AddUnitAddr adds v to the "unit_addr" field.
+func (u *DeviceUpsertBulk) AddUnitAddr(v int) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddUnitAddr(v)
+	})
+}
+
+// UpdateUnitAddr sets the "unit_addr" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateUnitAddr() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateUnitAddr()
+	})
+}
+
+// ClearUnitAddr clears the value of the "unit_addr" field.
+func (u *DeviceUpsertBulk) ClearUnitAddr() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearUnitAddr()
+	})
+}
+
 // SetRate sets the "rate" field.
 func (u *DeviceUpsertBulk) SetRate(v int64) *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
@@ -1586,6 +1754,34 @@ func (u *DeviceUpsertBulk) AddRate(v int64) *DeviceUpsertBulk {
 func (u *DeviceUpsertBulk) UpdateRate() *DeviceUpsertBulk {
 	return u.Update(func(s *DeviceUpsert) {
 		s.UpdateRate()
+	})
+}
+
+// SetRange sets the "range" field.
+func (u *DeviceUpsertBulk) SetRange(v int64) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.SetRange(v)
+	})
+}
+
+// AddRange adds v to the "range" field.
+func (u *DeviceUpsertBulk) AddRange(v int64) *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.AddRange(v)
+	})
+}
+
+// UpdateRange sets the "range" field to the value that was provided on create.
+func (u *DeviceUpsertBulk) UpdateRange() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.UpdateRange()
+	})
+}
+
+// ClearRange clears the value of the "range" field.
+func (u *DeviceUpsertBulk) ClearRange() *DeviceUpsertBulk {
+	return u.Update(func(s *DeviceUpsert) {
+		s.ClearRange()
 	})
 }
 

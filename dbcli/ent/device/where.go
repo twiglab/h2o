@@ -99,9 +99,19 @@ func GatewayCode(v string) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldGatewayCode, v))
 }
 
+// UnitAddr applies equality check predicate on the "unit_addr" field. It's identical to UnitAddrEQ.
+func UnitAddr(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldUnitAddr, v))
+}
+
 // Rate applies equality check predicate on the "rate" field. It's identical to RateEQ.
 func Rate(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
+}
+
+// Range applies equality check predicate on the "range" field. It's identical to RangeEQ.
+func Range(v int64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldRange, v))
 }
 
 // UnitPrice applies equality check predicate on the "unit_price" field. It's identical to UnitPriceEQ.
@@ -594,6 +604,56 @@ func GatewayCodeContainsFold(v string) predicate.Device {
 	return predicate.Device(sql.FieldContainsFold(FieldGatewayCode, v))
 }
 
+// UnitAddrEQ applies the EQ predicate on the "unit_addr" field.
+func UnitAddrEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldUnitAddr, v))
+}
+
+// UnitAddrNEQ applies the NEQ predicate on the "unit_addr" field.
+func UnitAddrNEQ(v int) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldUnitAddr, v))
+}
+
+// UnitAddrIn applies the In predicate on the "unit_addr" field.
+func UnitAddrIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldUnitAddr, vs...))
+}
+
+// UnitAddrNotIn applies the NotIn predicate on the "unit_addr" field.
+func UnitAddrNotIn(vs ...int) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldUnitAddr, vs...))
+}
+
+// UnitAddrGT applies the GT predicate on the "unit_addr" field.
+func UnitAddrGT(v int) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldUnitAddr, v))
+}
+
+// UnitAddrGTE applies the GTE predicate on the "unit_addr" field.
+func UnitAddrGTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldUnitAddr, v))
+}
+
+// UnitAddrLT applies the LT predicate on the "unit_addr" field.
+func UnitAddrLT(v int) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldUnitAddr, v))
+}
+
+// UnitAddrLTE applies the LTE predicate on the "unit_addr" field.
+func UnitAddrLTE(v int) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldUnitAddr, v))
+}
+
+// UnitAddrIsNil applies the IsNil predicate on the "unit_addr" field.
+func UnitAddrIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldUnitAddr))
+}
+
+// UnitAddrNotNil applies the NotNil predicate on the "unit_addr" field.
+func UnitAddrNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldUnitAddr))
+}
+
 // RateEQ applies the EQ predicate on the "rate" field.
 func RateEQ(v int64) predicate.Device {
 	return predicate.Device(sql.FieldEQ(FieldRate, v))
@@ -632,6 +692,56 @@ func RateLT(v int64) predicate.Device {
 // RateLTE applies the LTE predicate on the "rate" field.
 func RateLTE(v int64) predicate.Device {
 	return predicate.Device(sql.FieldLTE(FieldRate, v))
+}
+
+// RangeEQ applies the EQ predicate on the "range" field.
+func RangeEQ(v int64) predicate.Device {
+	return predicate.Device(sql.FieldEQ(FieldRange, v))
+}
+
+// RangeNEQ applies the NEQ predicate on the "range" field.
+func RangeNEQ(v int64) predicate.Device {
+	return predicate.Device(sql.FieldNEQ(FieldRange, v))
+}
+
+// RangeIn applies the In predicate on the "range" field.
+func RangeIn(vs ...int64) predicate.Device {
+	return predicate.Device(sql.FieldIn(FieldRange, vs...))
+}
+
+// RangeNotIn applies the NotIn predicate on the "range" field.
+func RangeNotIn(vs ...int64) predicate.Device {
+	return predicate.Device(sql.FieldNotIn(FieldRange, vs...))
+}
+
+// RangeGT applies the GT predicate on the "range" field.
+func RangeGT(v int64) predicate.Device {
+	return predicate.Device(sql.FieldGT(FieldRange, v))
+}
+
+// RangeGTE applies the GTE predicate on the "range" field.
+func RangeGTE(v int64) predicate.Device {
+	return predicate.Device(sql.FieldGTE(FieldRange, v))
+}
+
+// RangeLT applies the LT predicate on the "range" field.
+func RangeLT(v int64) predicate.Device {
+	return predicate.Device(sql.FieldLT(FieldRange, v))
+}
+
+// RangeLTE applies the LTE predicate on the "range" field.
+func RangeLTE(v int64) predicate.Device {
+	return predicate.Device(sql.FieldLTE(FieldRange, v))
+}
+
+// RangeIsNil applies the IsNil predicate on the "range" field.
+func RangeIsNil() predicate.Device {
+	return predicate.Device(sql.FieldIsNull(FieldRange))
+}
+
+// RangeNotNil applies the NotNil predicate on the "range" field.
+func RangeNotNil() predicate.Device {
+	return predicate.Device(sql.FieldNotNull(FieldRange))
 }
 
 // UnitPriceEQ applies the EQ predicate on the "unit_price" field.

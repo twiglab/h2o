@@ -19,7 +19,9 @@ var (
 		{Name: "device_sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "device_name", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "gateway_code", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "unit_addr", Type: field.TypeInt, Nullable: true},
 		{Name: "rate", Type: field.TypeInt64, Default: 1},
+		{Name: "range", Type: field.TypeInt64, Nullable: true},
 		{Name: "unit_price", Type: field.TypeInt64, Default: 0},
 		{Name: "alarm", Type: field.TypeInt64, Default: 0},
 		{Name: "project", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
@@ -56,17 +58,17 @@ var (
 			{
 				Name:    "device_pos_code",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[12]},
+				Columns: []*schema.Column{DeviceColumns[14]},
 			},
 			{
 				Name:    "device_project",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[11]},
+				Columns: []*schema.Column{DeviceColumns[13]},
 			},
 			{
 				Name:    "device_pcode",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceColumns[15]},
+				Columns: []*schema.Column{DeviceColumns[17]},
 			},
 		},
 	}
@@ -144,6 +146,7 @@ var (
 		{Name: "alarm_time", Type: field.TypeTime, Nullable: true},
 		{Name: "alarm_stock", Type: field.TypeInt64, Default: 0},
 		{Name: "status", Type: field.TypeInt, Default: 0},
+		{Name: "start_time", Type: field.TypeTime, Nullable: true},
 		{Name: "end_time", Type: field.TypeTime, Nullable: true},
 		{Name: "end_stock", Type: field.TypeInt64, Default: 0},
 		{Name: "memo", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(128)", "postgres": "varchar(128)", "sqlite3": "varchar(128)"}},
@@ -183,7 +186,7 @@ var (
 			{
 				Name:    "top_is_del",
 				Unique:  false,
-				Columns: []*schema.Column{DeviceTopColumns[23]},
+				Columns: []*schema.Column{DeviceTopColumns[24]},
 			},
 		},
 	}
