@@ -46,7 +46,6 @@ func run() error {
 		Logger: sl,
 		WAL:    cwal(),
 		MCli:   mcli,
-		Alarm:  alarm(),
 	}
 
 	if err := svr.Run(); err != nil {
