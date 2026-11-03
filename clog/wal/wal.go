@@ -1,27 +1,22 @@
 package wal
 
 import (
+	"cmp"
 	"context"
 	"log/slog"
 
 	"github.com/twiglab/h2o/clog"
 )
 
-type Conf struct {
-	Filename string
-}
-
 type WAL struct {
 	inner *slog.Logger
-
-	c Conf
 }
 
-func New(c Conf) *WAL {
-	l := clog.NewLog(c.Filename, slog.LevelInfo)
+func New(file string, opts ...clog.LogOpt) *WAL {
+	f := cmp.Or(file, "wal.log")
+	l := clog.NewLog(f, slog.LevelInfo, opts...)
 	return &WAL{
 		inner: l,
-		c:     c,
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"path"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -32,19 +33,10 @@ func Level(s string) slog.Level {
 }
 
 func isConsole(logFile string) bool {
-	if logFile == "" || logFile == "console" {
+	if logFile == "" || logFile == CONSOLE {
 		return true
 	}
 	return false
-}
-
-func NewLog(logFile string, level slog.Level) *slog.Logger {
-	var out io.Writer = os.Stdout
-	if !isConsole(logFile) {
-		out = NewLogWriter(logFile)
-	}
-	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
-	return slog.New(h)
 }
 
 func ConsoleLog(level slog.Level) *slog.Logger {
@@ -62,4 +54,38 @@ func NewLogWriter(logf string) io.Writer {
 		MaxBackups: 100, // 最多100个
 		LocalTime:  true,
 	}
+}
+
+type LogOpts struct {
+	Root string
+	Dir  string
+}
+
+type LogOpt func(o *LogOpts)
+
+func LogRoot(root string) LogOpt {
+	return func(o *LogOpts) {
+		o.Root = root
+	}
+}
+
+func LogDir(dir string) LogOpt {
+	return func(o *LogOpts) {
+		o.Dir = dir
+	}
+}
+
+func NewLog(logFile string, level slog.Level, opts ...LogOpt) *slog.Logger {
+	lo := &LogOpts{}
+	for _, f := range opts {
+		f(lo)
+	}
+
+	var out io.Writer = os.Stdout
+	if !isConsole(logFile) {
+		logF := path.Join(lo.Root, lo.Dir, logFile)
+		out = NewLogWriter(logF)
+	}
+	h := slog.NewJSONHandler(out, &slog.HandlerOptions{Level: level})
+	return slog.New(h)
 }
