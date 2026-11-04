@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/simonvetter/modbus"
-	"github.com/twiglab/h2o/bak/pkg/common"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/proto"
 )
@@ -18,7 +17,7 @@ type Fake struct {
 
 func New(alwaysOpen bool) *Fake {
 	return &Fake{
-		optStatus:  common.OPT_STATUS_ON,
+		optStatus:  proto.OPT_STATUS_ON,
 		alwaysOpen: alwaysOpen,
 	}
 }
