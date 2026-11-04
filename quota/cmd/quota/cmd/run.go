@@ -41,11 +41,12 @@ func run() error {
 	db := &quota.DBx{Cli: entc}
 
 	svr := &quota.ChargeServer{
-		Sender: act,
 		DBx:    db,
-		Logger: sl,
-		WAL:    cwal(),
 		MCli:   mcli,
+		Sender: act,
+
+		WAL:    cwal(),
+		Logger: sl,
 	}
 
 	if err := svr.Run(); err != nil {

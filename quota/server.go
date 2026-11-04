@@ -16,16 +16,24 @@ import (
 const GeneralDataTopic = "h2o/data/#"
 
 type ChargeServer struct {
-	DBx    *DBx
-	Logger *slog.Logger
-	WAL    *wal.WAL
+	DBx *DBx
 
-	sender Sender
+	MCli   mqtt.Client
+	Sender Sender
+
+	WAL    *wal.WAL
+	Logger *slog.Logger
 }
 
-func (s *ChargeServer) Run() mqtt.OnConnectHandler {
+func (s *ChargeServer) Run() error {
+	t := s.MCli.Subscribe(GeneralDataTopic, 0x01, s.msgHandle())
+	t.Wait()
+	return t.Error()
+}
+
+func (s *ChargeServer) Run2() mqtt.OnConnectHandler {
 	return func(client mqtt.Client) {
-		s.sender = NewMQTTAction(client)
+		s.Sender = NewMQTTAction(client)
 
 		tok := client.Subscribe(GeneralDataTopic, 0x01, s.msgHandle())
 		if !tok.WaitTimeout(10*time.Second) || tok.Error() != nil {
@@ -72,7 +80,7 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 		_ = vc.Update().SetStatus(STATUS_BEGIN).SetStartTime(time.Now()).Exec(ctx)
 
 		ot := newOnOffMessage(md, vc, proto.ON)
-		return s.sender.SendData(ctx, ot)
+		return s.Sender.SendData(ctx, ot)
 	}
 	return nil
 }
@@ -98,7 +106,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 
 			// 断开
 			ot := newOnOffMessage(md, vc, proto.OFF)
-			return s.sender.SendData(ctx, ot)
+			return s.Sender.SendData(ctx, ot)
 		} else {
 			// 非正常状态，疑似数据有非法修改
 			s.Logger.WarnContext(ctx, "illegal status",

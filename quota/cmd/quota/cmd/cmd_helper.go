@@ -15,37 +15,31 @@ import (
 )
 
 func rootLog() *slog.Logger {
-	rlogF := viper.GetString("chrgg.log.root.file")
-	rlogL := viper.GetString("chrgg.log.root.level")
-	logL := viper.GetString("chrgg.log.level")
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
 
-	level := clog.Level(cmp.Or(rlogL, logL))
-	log := clog.NewLog(rlogF, level)
+	log := clog.NewLog("root.log", level, clog.LogRoot(root), clog.LogDir(quota.CLIENT_ID))
+
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	sLogF := viper.GetString("chrgg.log.server.file")
-	sLogL := viper.GetString("chrgg.log.server.level")
-	logL := viper.GetString("chrgg.log.level")
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
 
-	level := clog.Level(cmp.Or(sLogL, logL))
-	l := clog.NewLog(sLogF, level)
-	return l
+	log := clog.NewLog("server.log", level, clog.LogRoot(root), clog.LogDir(quota.CLIENT_ID))
+	return log
 }
 
 func cwal() *wal.WAL {
-	logF := viper.GetString("chrgg.wal.file")
-	if logF == "" {
-		log.Fatalln("cdr file is null. ***MUST*** set chrgg.wal.file")
-	}
-	log.Println("wal file:", logF)
-	return wal.New(wal.Conf{Filename: logF})
+	root := cmp.Or(viper.GetString("h2o.log.wal.root"), "wal")
+	log.Println("wal file:", root, "wal.log")
+	return wal.New("wal.log", clog.LogRoot(root), clog.LogDir(quota.CLIENT_ID))
 }
 
 func mqttcli() mqtt.Client {
-	broker := viper.GetString("chrgg.mqtt.broker")
+	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
@@ -57,14 +51,14 @@ func mqttcli() mqtt.Client {
 }
 
 func webaddr() string {
-	addr := cmp.Or(viper.GetString("chrgg.web.addr"), ":10003")
+	addr := cmp.Or(viper.GetString("h2o.web.quota"), ":10003")
 	log.Println("web addr:", addr)
 	return addr
 }
 
 func entcli() *ent.Client {
-	name := viper.GetString("chrgg.db.name")
-	dsn := viper.GetString("chrgg.db.dsn")
+	name := viper.GetString("h2o.db.name")
+	dsn := viper.GetString("ho2.db.dsn")
 
 	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
