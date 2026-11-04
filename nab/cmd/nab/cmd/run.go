@@ -52,7 +52,7 @@ func run() error {
 
 	interval := taskInterval()
 
-	wl := wallog()
+	wl := cwal()
 
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{
