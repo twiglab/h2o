@@ -62,6 +62,9 @@ const usage_cmd_tpl = `
 >表具：**{{.Device.DeviceSn}}**
 >倍率：**{{.Device.Rate}}**
 >最后一次采集时间：{{.Record.DataTime | datetime}}
+{{- if .Record.DataTime | since12h }}
+>**最后一次采集大于12小时，表具可能存在错误**
+{{ end }}
 {{ if .Top }}
 >可用电量 [(限额 - 当前表显) * 倍率]：**{{ eng .Top.Top .Record.DataValue .Device.Rate | du}}** 度，供电状态 **{{ .Top.Status | usage }}**
 {{else}}
@@ -111,6 +114,8 @@ func buildTemplate() *template.Template {
 			"eng":      eng,
 			"cui":      cui,
 			"tian":     tian,
+
+			"since12h": since12h,
 		},
 	)
 	template.Must(t.New(template_help).Parse(help_cmd_tpl))
@@ -183,4 +188,8 @@ func tian(a, b int64) int64 {
 		return 0
 	}
 	return a / (b / 30)
+}
+
+func since12h(t time.Time) bool {
+	return time.Since(t) > 12*time.Hour
 }
