@@ -128,6 +128,7 @@ func rootLog() *slog.Logger {
 	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
 	level := clog.Level(viper.GetString("nab.log.level"))
 
+	log.Println("root log:", root, "root.log", level)
 	log := clog.NewLog("root.log", level, clog.LogRoot(root))
 
 	slog.SetDefault(log)
@@ -138,6 +139,7 @@ func serverLog() *slog.Logger {
 	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
 	level := clog.Level(viper.GetString("nab.log.level"))
 
+	log.Println("server log:", root, "server.log", level)
 	log := clog.NewLog("server.log", level, clog.LogRoot(root))
 	return log
 }
