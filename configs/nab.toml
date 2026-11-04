@@ -31,15 +31,8 @@ project = "888"
 # broker = "127.0.0.1:1883"
 
 [nab.log]
-level = "debug"
-
-[nab.log.root]
-# file = "logs/root.log" # empty is console
-# level = "debug"
-
-[nab.log.server]
-# file = "logs/server.log"
-# level = "debug"
+# level = "info"
+# root = "logs"
 
 [nab.wal]
-file = "wal/wal.log"
+# root = "wal"
