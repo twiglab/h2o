@@ -125,31 +125,25 @@ func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
 }
 
 func rootLog() *slog.Logger {
-	rlogF := viper.GetString("nab.log.root.file")
-	rlogL := viper.GetString("nab.log.root.level")
-	logL := viper.GetString("nab.log.level")
+	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
+	level := clog.Level(viper.GetString("nab.log.level"))
 
-	level := clog.Level(cmp.Or(rlogL, logL))
-	log := clog.NewLog(rlogF, level)
+	log := clog.NewLog("root.log", level, clog.LogRoot(root))
+
 	slog.SetDefault(log)
 	return log
 }
 
 func serverLog() *slog.Logger {
-	sLogF := viper.GetString("nab.log.server.file")
-	sLogL := viper.GetString("nab.log.server.level")
-	logL := viper.GetString("nab.log.level")
+	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
+	level := clog.Level(viper.GetString("nab.log.level"))
 
-	level := clog.Level(cmp.Or(sLogL, logL))
-	l := clog.NewLog(sLogF, level)
-	return l
+	log := clog.NewLog("server.log", level, clog.LogRoot(root))
+	return log
 }
 
-func wallog() *wal.WAL {
-	logf := viper.GetString("nab.wal.file")
-	if logf == "" {
-		log.Fatalln("wal file is null. ***MUST*** set nab.wal.file")
-	}
-	log.Println("wal file:", logf)
-	return wal.New(wal.Conf{Filename: logf})
+func cwal() *wal.WAL {
+	root := cmp.Or(viper.GetString("nab.log.wal.root"), "wal")
+	log.Println("wal file:", root, "wal.log")
+	return wal.New("wal.log", clog.LogRoot(root))
 }
