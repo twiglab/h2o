@@ -4,12 +4,9 @@ import (
 	"cmp"
 	"fmt"
 	"log"
-	"log/slog"
 
 	"github.com/go-sphere/wecom-aibot-go-sdk/aibot"
 	"github.com/spf13/viper"
-	"github.com/twiglab/h2o/clog"
-	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/dbcli"
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/topup/wecom"
@@ -48,34 +45,4 @@ func fixGroup() *wecom.FixUserGroup {
 		Users:  users,
 		ChatID: chatID,
 	}
-}
-
-func rootLog() *slog.Logger {
-	rlogF := viper.GetString("vigil.log.root.file")
-	rlogL := viper.GetString("vigil.log.root.level")
-	logL := viper.GetString("vigil.log.level")
-
-	level := clog.Level(cmp.Or(rlogL, logL))
-	log := clog.NewLog(rlogF, level)
-	slog.SetDefault(log)
-	return log
-}
-
-func serverLog() *slog.Logger {
-	sLogF := viper.GetString("vigil.log.server.file")
-	sLogL := viper.GetString("vigil.log.server.level")
-	logL := viper.GetString("vigil.log.level")
-
-	level := clog.Level(cmp.Or(sLogL, logL))
-	l := clog.NewLog(sLogF, level)
-	return l
-}
-
-func wallog() *wal.WAL {
-	logf := viper.GetString("vigil.wal.file")
-	if logf == "" {
-		log.Fatalln("wal file is null. ***MUST*** set vigil.wal.file")
-	}
-	log.Println("wal file:", logf)
-	return wal.New(wal.Conf{Filename: logf})
 }
