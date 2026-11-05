@@ -45,7 +45,6 @@ func run() error {
 		Sender: act,
 		DBx:    db,
 		Logger: sl,
-		WAL:    cwal(),
 		MCli:   mcli,
 		Alarm:  alarm(),
 	}

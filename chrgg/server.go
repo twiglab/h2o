@@ -8,25 +8,17 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/chrgg/orm"
-	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/proto"
 )
 
-const no_alarm = 0
-
 const GeneralDataTopic = "h2o/data/#"
-
-func isAlarm(vc *ent.Top) bool {
-	return vc.Alarm != no_alarm
-}
 
 type ChargeServer struct {
 	DBx    *orm.DBx
 	Sender Sender
 
 	Logger *slog.Logger
-	WAL    *wal.WAL
 
 	Alarm int64
 
@@ -79,13 +71,6 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 	//  拉闸状态，断开
 	if cmp.Less(md.Data.DataValue, vc.Top) {
 		// 在断开状态，小于限额，发送合闸消息，开
-		s.WAL.WriteLogContext(ctx,
-			wal.String("top.code", vc.Code),
-			wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
-			wal.String("code", md.Code), wal.String("type", md.Type),
-			wal.String("onoffType", "on"), // 超出限额，正常合闸操作
-			wal.String("msg", "正常合闸"),
-		)
 
 		ot := newOnOffMessage(md, vc, proto.ON)
 		return s.Sender.SendData(ctx, ot)
@@ -99,13 +84,6 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 		// 超额, 拉闸断开
 		if vc.Status == STATUS_BEGIN {
 			// 限额记录正常，执行拉闸操作
-			s.WAL.WriteLogContext(ctx,
-				wal.String("top.code", vc.Code),
-				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
-				wal.String("code", md.Code), wal.String("type", md.Type),
-				wal.String("onoffType", "off"), // 超出限额，正常拉闸操作
-				wal.String("msg", "超出限额"),
-			)
 
 			_ = vc.Update().
 				SetStatus(STATUS_END).
@@ -124,32 +102,6 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 				slog.Int64("dataValue", md.Data.DataValue),
 				slog.Int("status", vc.Status),
 				slog.Any("meter", md), slog.Any("topRec", vc))
-		}
-	}
-
-	// 以下是报警逻辑， 如果alarm 为 0 不报警
-	if s.Alarm == 0 {
-		return nil
-	}
-
-	if (vc.Top - md.Data.DataValue) < s.Alarm {
-		if !isAlarm(vc) { // 没拉闸报警过
-			// 拉闸报警一次
-			s.WAL.WriteLogContext(ctx,
-				wal.String("top.code", vc.Code),
-				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
-				wal.String("code", md.Code), wal.String("type", md.Type),
-				wal.String("onoffType", "alarm"), // 超出限额，正常拉闸操作
-				wal.String("msg", "报警拉闸"),
-			)
-			_ = vc.Update().
-				SetAlarm(1).
-				SetAlarmStock(md.Data.DataValue).
-				SetAlarmTime(time.Now()).
-				Exec(ctx) // 设置报警状态
-
-			ot := newOnOffMessage(md, vc, proto.OFF)
-			return s.Sender.SendData(ctx, ot)
 		}
 	}
 
