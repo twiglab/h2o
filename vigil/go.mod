@@ -4,7 +4,6 @@ go 1.27.0
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.1
-	github.com/influxdata/line-protocol/v2 v2.2.1
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/taosdata/driver-go/v3 v3.8.2
@@ -13,7 +12,7 @@ require (
 )
 
 require (
-	ariga.io/atlas v1.2.2 // indirect
+	ariga.io/atlas v1.3.0 // indirect
 	entgo.io/ent v0.14.6 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
@@ -32,8 +31,8 @@ require (
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.11.0 // indirect
-	github.com/jackc/puddle/v2 v2.2.2 // indirect
+	github.com/jackc/pgx/v5 v5.12.0 // indirect
+	github.com/jackc/puddle/v2 v2.2.3 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.21 // indirect
