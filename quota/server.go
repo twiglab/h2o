@@ -64,7 +64,7 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 			wal.String("code", md.Code), wal.String("type", md.Type),
 			wal.String("onoff", proto.ON), // 超出限额，正常合闸操作
 			wal.String("msg", "合闸"),
-			wal.Int("sttus", vc.Status),
+			wal.Int("status", vc.Status),
 			wal.Int64("opt", md.Data.OptStatus),
 		)
 
@@ -96,7 +96,7 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 				wal.String("code", md.Code), wal.String("type", md.Type),
 				wal.String("onoff", proto.OFF), // 超出限额，正常拉闸操作
 				wal.String("msg", "拉闸"),
-				wal.Int("sttus", vc.Status),
+				wal.Int("status", vc.Status),
 				wal.Int64("opt", md.Data.OptStatus),
 			)
 
