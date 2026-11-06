@@ -167,9 +167,9 @@ func deviceType(t string) string {
 
 func usageStatus(status int) string {
 	switch status {
-	case 0:
+	case 3:
 		return "正常"
-	case 1:
+	case 9:
 		return "结束"
 	}
 
