@@ -41,7 +41,8 @@ func run() error {
 	db := &quota.DBx{Cli: entc}
 
 	svr := &quota.ChargeServer{
-		DBx:    db,
+		DBx: db,
+
 		MCli:   mcli,
 		Sender: act,
 

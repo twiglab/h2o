@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	STATUS_END     = 9
-	STATUS_BEGIN   = 1
+	STATUS_END   = 9
+	STATUS_BEGIN = 3
+	// 1, 2 保留，不允许使用
 	STATUS_ZERO    = 0
 	STATUS_INVALID = -1
 )

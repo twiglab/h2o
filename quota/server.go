@@ -3,7 +3,6 @@ package quota
 import (
 	"cmp"
 	"context"
-	"log"
 	"log/slog"
 	"time"
 
@@ -26,20 +25,9 @@ type ChargeServer struct {
 }
 
 func (s *ChargeServer) Run() error {
-	t := s.MCli.Subscribe(GeneralDataTopic, 0x01, s.msgHandle())
+	t := s.MCli.Subscribe(GeneralDataTopic, 0x00, s.msgHandle())
 	t.Wait()
 	return t.Error()
-}
-
-func (s *ChargeServer) Run2() mqtt.OnConnectHandler {
-	return func(client mqtt.Client) {
-		s.Sender = NewMQTTAction(client)
-
-		tok := client.Subscribe(GeneralDataTopic, 0x01, s.msgHandle())
-		if !tok.WaitTimeout(10*time.Second) || tok.Error() != nil {
-			log.Printf("resubscribe failed: %v", tok.Error())
-		}
-	}
 }
 
 func (s *ChargeServer) msgHandle() mqtt.MessageHandler {
@@ -51,17 +39,18 @@ func (s *ChargeServer) msgHandle() mqtt.MessageHandler {
 
 		defer msg.Ack()
 
+		var em Meter
+		if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+			s.Logger.Error("unmarshal error", slog.Any("error", err))
+			return
+		}
+
 		// 协程处理
-		go func(m mqtt.Message) {
-			var em Meter
-			if err := em.UnmarshalBinary(m.Payload()); err != nil {
-				s.Logger.Error("unmarshal error", slog.Any("error", err))
-				return
+		go func(meter Meter) {
+			if err := s.charge(context.Background(), meter); err != nil {
+				s.Logger.Error("quota error", slog.Any("raw", meter), slog.Any("error", err))
 			}
-			if err := s.charge(context.Background(), em); err != nil {
-				s.Logger.Error("charge error", slog.Any("raw", em), slog.Any("error", err))
-			}
-		}(msg)
+		}(em)
 
 	}
 }
@@ -73,29 +62,42 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 			wal.String("top.code", vc.Code),
 			wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
 			wal.String("code", md.Code), wal.String("type", md.Type),
-			wal.String("onoff", "on"), // 超出限额，正常合闸操作
-			wal.String("msg", "正常合闸"),
+			wal.String("onoff", proto.ON), // 超出限额，正常合闸操作
+			wal.String("msg", "合闸"),
+			wal.Int("sttus", vc.Status),
+			wal.Int64("opt", md.Data.OptStatus),
 		)
 
 		_ = vc.Update().SetStatus(STATUS_BEGIN).SetStartTime(time.Now()).Exec(ctx)
 
 		ot := newOnOffMessage(md, vc, proto.ON)
 		return s.Sender.SendData(ctx, ot)
+	} else {
+		// 强制同步状态
+		if vc.Status != STATUS_END {
+			return vc.Update().
+				SetStatus(STATUS_END).
+				SetEndTime(time.Now()).
+				Exec(ctx)
+		}
 	}
+
 	return nil
 }
 
 func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) error {
 	if cmp.Less(vc.Top, md.Data.DataValue) {
-		// 超额, 拉闸断开
+		// 超额, 拉闸断开，关
 		if vc.Status == STATUS_BEGIN {
 			// 限额记录正常，执行拉闸操作
 			s.WAL.WriteLogContext(ctx,
 				wal.String("top.code", vc.Code),
 				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
 				wal.String("code", md.Code), wal.String("type", md.Type),
-				wal.String("onoff", "off"), // 超出限额，正常拉闸操作
-				wal.String("msg", "超出限额"),
+				wal.String("onoff", proto.OFF), // 超出限额，正常拉闸操作
+				wal.String("msg", "拉闸"),
+				wal.Int("sttus", vc.Status),
+				wal.Int64("opt", md.Data.OptStatus),
 			)
 
 			_ = vc.Update().
@@ -107,17 +109,14 @@ func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) er
 			// 断开
 			ot := newOnOffMessage(md, vc, proto.OFF)
 			return s.Sender.SendData(ctx, ot)
-		} else {
-			// 非正常状态，疑似数据有非法修改
-			s.Logger.WarnContext(ctx, "illegal status",
-				slog.String("top.code", vc.Code),
-				slog.Int64("top", vc.Top),
-				slog.Int64("dataValue", md.Data.DataValue),
-				slog.Int("status", vc.Status),
-				slog.Any("meter", md), slog.Any("topRec", vc))
-
-			// 把状态改成 begin 等待下一轮判断
-			_ = vc.Update().SetStatus(STATUS_BEGIN).Exec(ctx)
+		}
+	} else {
+		// 未到限额，且合闸送电状态， 修复状态
+		if vc.Status != STATUS_BEGIN {
+			return vc.Update().
+				SetStatus(STATUS_BEGIN).
+				SetStartTime(time.Now()).
+				Exec(ctx)
 		}
 	}
 
