@@ -22,10 +22,8 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 		return err
 	}
 
-	pubToken := c.client.Publish(obj.Topic(), 0x00, false, bb)
-	pubToken.Wait()
-
-	return pubToken.Error()
+	c.client.Publish(obj.Topic(), 0x00, false, bb)
+	return nil
 }
 
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
