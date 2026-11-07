@@ -13,9 +13,6 @@ func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Clien
 	opts.SetClientID(clientID)
 	opts.SetOrderMatters(false)
 
-	// opts.SetAutoReconnect(true)
-	// opts.SetCleanSession(false)
-
 	opts.AddBroker(broker)
 	for _, b := range others {
 		opts.AddBroker(b)
@@ -42,9 +39,6 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 	if err != nil {
 		return err
 	}
-
-	pubToken := c.client.Publish(obj.Topic(), 0x00, false, bb)
-	pubToken.Wait()
-
-	return pubToken.Error()
+	c.client.Publish(obj.Topic(), 0x00, false, bb)
+	return nil
 }

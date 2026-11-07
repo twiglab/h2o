@@ -1,7 +1,6 @@
 package quota
 
 import (
-	"cmp"
 	"context"
 	"log/slog"
 	"time"
@@ -56,7 +55,7 @@ func (s *ChargeServer) msgHandle() mqtt.MessageHandler {
 }
 
 func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) error {
-	if cmp.Less(md.Data.DataValue, vc.Top) {
+	if md.Data.DataValue < vc.Top {
 		// 在断开状态，小于限额，发送合闸消息，开
 		s.WAL.WriteLogContext(ctx,
 			wal.String("top.code", vc.Code),
@@ -72,55 +71,49 @@ func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) e
 
 		ot := newOnOffMessage(md, vc, proto.ON)
 		return s.Sender.SendData(ctx, ot)
-	} else {
-		// 强制同步状态
-		if vc.Status != STATUS_END {
-			return vc.Update().
-				SetStatus(STATUS_END).
-				SetEndTime(time.Now()).
-				Exec(ctx)
-		}
 	}
 
-	return nil
+	if vc.Status == STATUS_END {
+		return nil
+	}
+
+	// 强制同步状态
+	return vc.Update().
+		SetStatus(STATUS_END).
+		SetEndStock(md.Data.DataValue).
+		SetEndTime(time.Now()).
+		Exec(ctx)
 }
 
 func (s *ChargeServer) doStatusOn(ctx context.Context, md Meter, vc *ent.Top) error {
-	if cmp.Less(vc.Top, md.Data.DataValue) {
+	if vc.Top < md.Data.DataValue {
 		// 超额, 拉闸断开，关
-		if vc.Status == STATUS_BEGIN {
-			// 限额记录正常，执行拉闸操作
-			s.WAL.WriteLogContext(ctx,
-				wal.String("top.code", vc.Code),
-				wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
-				wal.String("code", md.Code), wal.String("type", md.Type),
-				wal.String("onoff", proto.OFF), // 超出限额，正常拉闸操作
-				wal.String("msg", "拉闸"),
-				wal.Int("status", vc.Status),
-				wal.Int64("opt", md.Data.OptStatus),
-			)
+		s.WAL.WriteLogContext(ctx,
+			wal.String("top.code", vc.Code),
+			wal.Int64("top", vc.Top), wal.Int64("dataValue", md.Data.DataValue),
+			wal.String("code", md.Code), wal.String("type", md.Type),
+			wal.String("onoff", proto.OFF), // 超出限额，正常拉闸操作
+			wal.String("msg", "拉闸"),
+			wal.Int("status", vc.Status),
+			wal.Int64("opt", md.Data.OptStatus),
+		)
 
-			_ = vc.Update().
-				SetStatus(STATUS_END).
-				SetEndTime(time.Now()).         // 计费结束时间
-				SetEndStock(md.Data.DataValue). // 计费结束的表显
-				Exec(ctx)                       // 计费结束
+		_ = vc.Update().SetStatus(STATUS_END).SetEndTime(time.Now()).SetEndStock(md.Data.DataValue).Exec(ctx)
 
-			// 断开
-			ot := newOnOffMessage(md, vc, proto.OFF)
-			return s.Sender.SendData(ctx, ot)
-		}
-	} else {
-		// 未到限额，且合闸送电状态， 修复状态
-		if vc.Status != STATUS_BEGIN {
-			return vc.Update().
-				SetStatus(STATUS_BEGIN).
-				SetStartTime(time.Now()).
-				Exec(ctx)
-		}
+		// 断开
+		ot := newOnOffMessage(md, vc, proto.OFF)
+		return s.Sender.SendData(ctx, ot)
 	}
 
-	return nil
+	if vc.Status == STATUS_BEGIN {
+		return nil
+	}
+
+	// 强制同步状态
+	return vc.Update().
+		SetStatus(STATUS_BEGIN).
+		SetStartTime(time.Now()).
+		Exec(ctx)
 }
 
 func (s *ChargeServer) charge(ctx context.Context, md Meter) error {
