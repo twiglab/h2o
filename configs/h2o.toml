@@ -1,0 +1,26 @@
+[h2o.mqtt]
+broker = "127.0.0.1:1883"
+
+[h2o.db]
+name = "pgx"
+dsn = "postgres://h2o:h2o@127.0.0.1:5432/h2o"
+
+[h2o.web]
+# quota   = ":10003"
+# vigil   = ":10007"
+# archon  = ":10008"
+
+[h2o.log]
+# root = "logs"
+# level = "info"
+
+[h2o.log.wal]
+# root = "wal"
+
+[quota]
+# alarm = 0 # 百分比报警设置， 0-100，预留
+
+[vigil.tsdb]
+name = "taos"
+dsn = "h2o:h2o@ws(127.0.0.1:6041)/h2o"
+
