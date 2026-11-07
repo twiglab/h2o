@@ -26,12 +26,16 @@ type moneyCmd struct {
 	Top      *ent.Top
 	TopAfter *ent.Top
 
-	cli  *ent.Client
 	tmpl *template.Template
 	dbx  *DBx
 }
 
 func (c *moneyCmd) Args(args ...string) error {
+	if len(args) < 3 {
+		return errors.New("m 命令必须提供表号和金额")
+	}
+
+	// 表号
 	c.Code = args[1]
 
 	// 金额
@@ -41,7 +45,7 @@ func (c *moneyCmd) Args(args ...string) error {
 	}
 	c.Amount = int64(amount * 100) // 截断，钱支持到分
 
-	if len(args) >= 4 {
+	if len(args) > 3 {
 		// 起点
 		stock, err := strconv.ParseFloat(args[3], 64)
 		if err != nil {
@@ -80,8 +84,8 @@ func (x *moneyCmd) Do(ctx context.Context) (err error) {
 		return err
 	}
 
-	if time.Since(x.Top.ChargeTime) < 5*time.Minute {
-		err = errors.New("充值间隔必须大于5分钟")
+	if time.Since(x.Top.ChargeTime) < 2*time.Minute {
+		err = errors.New("充值间隔必须大于2分钟")
 		return
 	}
 
@@ -98,19 +102,20 @@ func (x *moneyCmd) Do(ctx context.Context) (err error) {
 	x.Incr = calcIncr(x.Amount, x.Device.Rate, x.Device.UnitPrice)
 	x.TopVal = x.Stock + x.Incr
 
-	cr := x.cli.Top.Create()
-	cr.SetDeviceCode(x.Device.DeviceCode)
-	cr.SetDeviceType(x.Device.DeviceType)
-	cr.SetPosCode(x.Device.PosCode)
-	cr.SetProject(x.Device.Project)
+	x.TopAfter, err = x.dbx.Save(ctx, TopRecord{
+		DeviceCode: x.Device.DeviceCode,
+		DeviceType: x.Device.DeviceType,
+		PosCode:    x.Device.PosCode,
+		Project:    x.Device.Project,
 
-	cr.SetTop(x.TopVal)
-	cr.SetStock(x.Stock)
-	cr.SetIncr(x.Incr)
+		Top:   x.TopVal,
+		Stock: x.Stock,
+		Incr:  x.Incr,
 
-	cr.SetAmount(x.Amount)
+		Amount:    x.Amount,
+		UnitPrice: x.Device.UnitPrice,
+	})
 
-	x.TopAfter, err = cr.Save(ctx)
 	return
 }
 
@@ -134,7 +139,6 @@ func moneyCmdFn(cfg Global, args ...string) (Commander, error) {
 	}
 
 	c := &moneyCmd{
-		cli:  cfg.Client,
 		tmpl: cfg.Template,
 		dbx:  &DBx{cli: cfg.Client},
 	}
@@ -143,6 +147,11 @@ func moneyCmdFn(cfg Global, args ...string) (Commander, error) {
 
 func calcIncr(a, r, u int64) int64 {
 	//var a, r, u int64 = 10000, 1, 121
+
+	// a 金额
+	// r 倍率
+	// u 单价
+	// 返回为金额对应增量，单位是0.01 ，所以需要乘以100
 	if r == 0 || u == 0 {
 		return 0
 	}

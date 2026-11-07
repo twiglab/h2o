@@ -45,17 +45,19 @@ func (c *CmdMgr) Init() {
 	m["h"] = helpCmdFn
 	m["?"] = helpCmdFn
 
-	m["u"] = usageCmdFn
-	m["t"] = usageCmdFn
 	m["p"] = posQueryCmdFn
-
-	m["c"] = chargeCmdFn
-	m["m"] = moneyCmdFn
-
-	m["report"] = reportCmdFn
 	m["r"] = reportCmdFn
 
+	m["u"] = usageCmdFn
+
+	m["m"] = moneyCmdFn
+	m["t"] = topCmdFn
+
 	m["b"] = balanceCmdFn
+
+	// 下列命令后续版本将删除
+	m["c"] = chrggCmdFn
+	m["report"] = repCmdFn
 
 	c.m = m
 }

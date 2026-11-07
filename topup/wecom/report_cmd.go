@@ -100,8 +100,7 @@ from
 		select
 			*,
 			row_number() over(partition by device_code order by charge_time desc) as num
-		from
-			device_top
+		from device_top
 ) t
 	where
 		t.num = 1
@@ -112,11 +111,9 @@ join
 		device_code,
 		max(data_value) as dv ,
 		max(data_time) as dt
-	from
-		nh_record
-		where data_time >= CURRENT_DATE - INTERVAL '7 day'
-	group by
-		device_code
+	from nh_record
+	where data_time >= CURRENT_DATE - INTERVAL '7 day'
+	group by device_code
 ) b on
 	(a.device_code = b.device_code)
 join device c on

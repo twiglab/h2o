@@ -27,8 +27,11 @@ type UsageCmd struct {
 }
 
 func (c *UsageCmd) Args(args ...string) error {
-	c.Code = args[1]
-	return nil
+	if len(args) >= 2 {
+		c.Code = args[1]
+		return nil
+	}
+	return errors.New("u 命令必须提供表号")
 }
 
 func (c *UsageCmd) Do(ctx context.Context) (err error) {
