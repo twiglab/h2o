@@ -58,3 +58,11 @@ func mcli() mqtt.Client {
 	}
 	return cli
 }
+
+const GeneralDataTopic = "h2o/data/#"
+
+const f = "20060102150405"
+
+func Ts(now time.Time) string {
+	return now.Format(f)
+}

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
-	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/viper"
@@ -18,11 +17,11 @@ import (
 )
 
 func mqttcli() mqtt.Client {
-	broker := viper.GetString("vigil.mqtt.broker")
+	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
-	cli, err := vigil.NewMQTTClient(vigil.CLIENT_ID, broker)
+	cli, err := vigil.NewMQTTClient(vigil.APP_ID, broker)
 	if err != nil {
 		log.Fatal(fmt.Errorf("mqttcli err: %w", err))
 	}
@@ -30,17 +29,17 @@ func mqttcli() mqtt.Client {
 }
 
 func webaddr() string {
-	addr := viper.GetString("vigil.web.addr")
+	addr := viper.GetString("h2o.web.vigil")
 	return cmp.Or(addr, ":10007")
 }
 
 func entcli() *ent.Client {
-	name := viper.GetString("vigil.db.name")
-	dsn := viper.GetString("vigil.db.dsn")
+	name := viper.GetString("h2o.db.name")
+	dsn := viper.GetString("h2o.db.dsn")
 
 	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
-		log.Fatal(fmt.Errorf("ent err: %w", err))
+		log.Fatal(err)
 	}
 	return cli
 }
@@ -50,50 +49,37 @@ func dbx(c *ent.Client) *orm.DBx {
 }
 
 /*
-func tdb() *tsdb.Schemaless {
-	dsn := viper.GetString("vigil.tsdb.dsn")
-	sch, err := tsdb.NewSchLe(dsn)
-	if err != nil {
-		log.Fatal(fmt.Errorf("SchLe err: %w", err))
+	func tdb() *tsdb.Schemaless {
+		dsn := viper.GetString("vigil.tsdb.dsn")
+		sch, err := tsdb.NewSchLe(dsn)
+		if err != nil {
+			log.Fatal(fmt.Errorf("SchLe err: %w", err))
+		}
+		return sch
 	}
-	return sch
-}
 */
 
-func rootLog() *slog.Logger {
-	rlogF := viper.GetString("vigil.log.root.file")
-	rlogL := viper.GetString("vigil.log.root.level")
-	logL := viper.GetString("vigil.log.level")
+func cwal() *wal.WAL {
+	root := cmp.Or(viper.GetString("h2o.log.wal.root"), "wal")
+	log.Println("wal file:", root, "wal.log")
+	return wal.New("wal.log", clog.LogRoot(root), clog.LogDir(vigil.APP_ID))
+}
 
-	level := clog.Level(cmp.Or(rlogL, logL))
-	log := clog.NewLog(rlogF, level)
-	slog.SetDefault(log)
-	return log
+func rootLog() *slog.Logger {
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
+
+	logL := clog.NewLog("root.log", level, clog.LogRoot(root), clog.LogDir(vigil.APP_ID))
+	slog.SetDefault(logL)
+	log.Println("root log:", root, "root.log", level)
+	return logL
 }
 
 func serverLog() *slog.Logger {
-	sLogF := viper.GetString("vigil.log.server.file")
-	sLogL := viper.GetString("vigil.log.server.level")
-	logL := viper.GetString("vigil.log.level")
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
 
-	level := clog.Level(cmp.Or(sLogL, logL))
-	l := clog.NewLog(sLogF, level)
-	return l
-}
-
-func wallog() *wal.WAL {
-	logf := viper.GetString("vigil.wal.file")
-	if logf == "" {
-		log.Fatalln("wal file is null. ***MUST*** set vigil.wal.file")
-	}
-	log.Println("wal file:", logf)
-	return wal.New(wal.Conf{Filename: logf})
-}
-
-const GeneralDataTopic = "h2o/data/#"
-
-const f = "20060102150405"
-
-func Ts(now time.Time) string {
-	return now.Format(f)
+	logL := clog.NewLog("server.log", level, clog.LogRoot(root), clog.LogDir(vigil.APP_ID))
+	log.Println("server log:", root, "server.log", level)
+	return logL
 }

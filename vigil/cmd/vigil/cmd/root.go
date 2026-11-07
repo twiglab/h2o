@@ -36,7 +36,7 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is vigil.toml)")
+	rootCmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "config file (default is h2o.toml)")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -47,7 +47,7 @@ func initConfig() {
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigType("toml")
-		viper.SetConfigName("vigil")
+		viper.SetConfigName("h2o")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
