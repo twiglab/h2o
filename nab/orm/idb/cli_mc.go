@@ -68,7 +68,8 @@ func (r CliRec) Column(i int) (vtab.Value, error) {
 	case 11:
 		return r.Memo, nil
 	}
-	panic(fmt.Errorf("no field %d", i))
+
+	return nil, fmt.Errorf("no field %d", i)
 }
 
 func (c CliRec) RowID() int64 {

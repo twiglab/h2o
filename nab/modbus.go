@@ -91,15 +91,14 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
+
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
 		if err := c.cli.SetEncoding(modbus.Endianness(data.Record.Endian), modbus.WordOrder(data.Record.WordOrder)); err != nil {
 			return err
 		}
 	}
-	if err := c.cli.SetUnitId(data.Record.UnitID); err != nil {
-		return err
-	}
-	return nil
+
+	return c.cli.SetUnitId(data.Record.UnitID)
 }
 
 func (c *ModbusCli) reset() error {
