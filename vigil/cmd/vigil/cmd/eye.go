@@ -47,7 +47,7 @@ func eye(cmd *cobra.Command, args []string) error {
 }
 
 func mcli() mqtt.Client {
-	broker := viper.GetString("vigil.mqtt.broker")
+	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
