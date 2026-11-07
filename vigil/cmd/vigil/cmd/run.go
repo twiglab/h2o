@@ -41,7 +41,7 @@ func run() {
 		WAL:    cwal(),
 	}
 	mcli := mqttcli()
-	token := mcli.Subscribe(GeneralDataTopic, 0x01, vigil.Handle(hub))
+	token := mcli.Subscribe(GeneralDataTopic, 0x00, vigil.Handle(hub))
 	token.Wait()
 
 	http.ListenAndServe(webaddr(), nil)
