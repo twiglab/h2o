@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"path"
+	"strings"
 
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -13,20 +14,20 @@ const (
 	DEBUG = "debug"
 	INFO  = "info"
 	ERROR = "error"
-	WARN  = "warm"
+	WARN  = "warn"
 )
 
 const CONSOLE = "console"
 
 func Level(s string) slog.Level {
-	switch s {
-	case DEBUG, "DEBUG":
+	switch strings.ToLower(s) {
+	case DEBUG:
 		return slog.LevelDebug
-	case INFO, "INFO":
+	case INFO:
 		return slog.LevelInfo
-	case ERROR, "ERROR":
+	case ERROR:
 		return slog.LevelError
-	case WARN, "WARN":
+	case WARN:
 		return slog.LevelWarn
 	}
 	return slog.LevelInfo
