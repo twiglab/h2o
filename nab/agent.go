@@ -3,7 +3,6 @@ package nab
 import (
 	"context"
 	"log/slog"
-	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/clog/wal"
@@ -29,7 +28,7 @@ type Agent struct {
 }
 
 func (a Agent) Start() error {
-	t := a.MCli.Subscribe(SubscriptTopic(a.Global.Box), 0x01, a.msgHandle())
+	t := a.MCli.Subscribe(SubscriptTopic(a.Global.Box), 0x00, a.msgHandle())
 	t.Wait()
 	return t.Error()
 }
@@ -40,7 +39,7 @@ func (a Agent) On(ctx context.Context, code string) error {
 		return err
 	}
 
-	err = mcli.DoOn(ctx, onoff,
+	return mcli.DoOn(ctx, onoff,
 		DeviceData{
 			Record: dev,
 			Sender: a.Sender,
@@ -49,20 +48,6 @@ func (a Agent) On(ctx context.Context, code string) error {
 			Logger: a.Logger,
 		},
 	)
-	if err != nil {
-		return err
-	}
-
-	oc := OptChange{
-		Box:       a.Global.Box,
-		Code:      dev.Code,
-		Type:      dev.Typ,
-		DataCode:  proto.NewDataCode(),
-		Op:        proto.ON,
-		OptStatus: proto.OPT_STATUS_ON,
-		DataTime:  time.Now(),
-	}
-	return a.Sender.SendData(ctx, oc)
 }
 
 func (a Agent) Off(ctx context.Context, code string) error {
@@ -71,7 +56,7 @@ func (a Agent) Off(ctx context.Context, code string) error {
 		return err
 	}
 
-	err = mcli.DoOff(ctx, onoff,
+	return mcli.DoOff(ctx, onoff,
 		DeviceData{
 			Record: dev,
 			Sender: a.Sender,
@@ -80,19 +65,6 @@ func (a Agent) Off(ctx context.Context, code string) error {
 			Logger: a.Logger,
 		},
 	)
-	if err != nil {
-		return err
-	}
-	oc := OptChange{
-		Box:       a.Global.Box,
-		Code:      dev.Code,
-		Type:      dev.Typ,
-		DataCode:  proto.NewDataCode(),
-		Op:        proto.OFF,
-		OptStatus: proto.OPT_STATUS_OFF,
-		DataTime:  time.Now(),
-	}
-	return a.Sender.SendData(ctx, oc)
 }
 
 func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {

@@ -3,7 +3,6 @@ package nab
 import (
 	"context"
 	"errors"
-	"time"
 
 	"encoding/json/v2"
 
@@ -79,23 +78,5 @@ func (m OnOffLite) MarshalBinary() (data []byte, err error) {
 }
 
 func (o OnOffLite) Topic() string {
-	return proto.H2O + "/onoff/" + o.Box + "/" + o.Code + "/" + o.Op
-}
-
-type OptChange struct {
-	Box       string    `json:"box,omitempty"`
-	Code      string    `json:"code,omitempty"`
-	Type      string    `json:"type,omitempty"`
-	DataCode  string    `json:"data_code,omitempty"`
-	Op        string    `json:"op,omitempty"`
-	OptStatus int64     `json:"opt_status,omitempty"`
-	DataTime  time.Time `json:"data_time,omitzero"`
-}
-
-func (m OptChange) MarshalBinary() (data []byte, err error) {
-	return json.Marshal(m)
-}
-
-func (o OptChange) Topic() string {
-	return proto.H2O + "/opt/" + o.Box + "/" + o.Code + "/" + o.Op
+	return proto.MakeTopic(proto.ONOFF, o.Box, o.Code, o.Op)
 }

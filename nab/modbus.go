@@ -91,8 +91,6 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
-	c.glock.Lock()
-
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
 		if err := c.cli.SetEncoding(modbus.Endianness(data.Record.Endian), modbus.WordOrder(data.Record.WordOrder)); err != nil {
 			return err
@@ -103,42 +101,51 @@ func (c *ModbusCli) setup(data DeviceData) error {
 	}
 	return nil
 }
+
 func (c *ModbusCli) reset() error {
-	defer c.glock.Unlock()
 	_ = c.cli.SetEncoding(c.endina, c.wordorder)
 	_ = c.cli.SetUnitId(1)
 	return nil
 }
 
-func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) error {
-	if err := c.setup(data); err != nil {
-		return err
-	}
-	defer c.reset()
+func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error) {
+	c.glock.Lock()
+	defer c.glock.Unlock()
 
-	return coll.Collect(ctx, c.cli, data)
+	if err = c.setup(data); err != nil {
+		return
+	}
+
+	err = coll.Collect(ctx, c.cli, data)
+	_ = c.reset()
+	return
 }
 
-func (c *ModbusCli) DoOn(ctx context.Context, on DeviceOn, data DeviceData) error {
-	if err := c.setup(data); err != nil {
+func (c *ModbusCli) DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error) {
+	c.glock.Lock()
+	defer c.glock.Unlock()
+
+	if err = c.setup(data); err != nil {
 		return err
 	}
-	defer c.reset()
 
-	return on.On(ctx, c.cli, data)
+	err = on.On(ctx, c.cli, data)
+	_ = c.reset()
+	return
 }
 
-func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) error {
-	if err := c.setup(data); err != nil {
+func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error) {
+	c.glock.Lock()
+	defer c.glock.Unlock()
+
+	if err = c.setup(data); err != nil {
 		return err
 	}
-	defer c.reset()
 
-	return off.Off(ctx, c.cli, data)
-}
+	err = off.Off(ctx, c.cli, data)
+	_ = c.reset()
+	return
 
-func (c *ModbusCli) DoFunc(ctx context.Context, data DeviceData, f func(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error) error {
-	return f(ctx, c.cli, data)
 }
 
 type DeviceData struct {

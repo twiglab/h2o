@@ -1,3 +1,3 @@
 package nab
 
-const VERSION = "2026-11-04"
+const VERSION = "v0.0.3"

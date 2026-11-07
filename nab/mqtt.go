@@ -22,7 +22,7 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 		return err
 	}
 
-	pubToken := c.client.Publish(obj.Topic(), 0x01, false, bb)
+	pubToken := c.client.Publish(obj.Topic(), 0x00, false, bb)
 	pubToken.Wait()
 
 	return pubToken.Error()
@@ -31,6 +31,7 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)
+	opts.SetOrderMatters(false)
 
 	opts.AddBroker(broker)
 	for _, b := range others {
