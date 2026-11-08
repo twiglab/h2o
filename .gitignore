@@ -35,6 +35,3 @@ frontend/node_modules
 
 # log
 *.log
-
-# plugins
-plugins.go
