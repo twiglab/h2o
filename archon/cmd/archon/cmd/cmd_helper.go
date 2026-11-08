@@ -12,14 +12,34 @@ import (
 	"github.com/twiglab/h2o/dbcli/ent"
 )
 
+func rootLog() *slog.Logger {
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
+
+	logL := clog.NewLog("root.log", level, clog.LogRoot(root), clog.LogDir("archon"))
+	slog.SetDefault(logL)
+	log.Println("root log:", root, "root.log", level)
+	return logL
+}
+
+func serverLog() *slog.Logger {
+	root := cmp.Or(viper.GetString("h2o.log.root"), "logs")
+	level := clog.Level(viper.GetString("h2o.log.level"))
+
+	logL := clog.NewLog("server.log", level, clog.LogRoot(root), clog.LogDir("archon"))
+	log.Println("server log:", root, "server.log", level)
+	return logL
+}
+
 func webaddr() string {
-	addr := viper.GetString("archon.web.addr")
-	return cmp.Or(addr, ":10008")
+	addr := cmp.Or(viper.GetString("h2o.web.quota"), ":10008")
+	log.Println("web addr:", addr)
+	return addr
 }
 
 func entcli() *ent.Client {
-	name := viper.GetString("archon.db.name")
-	dsn := viper.GetString("archon.db.dsn")
+	name := viper.GetString("h2o.db.name")
+	dsn := viper.GetString("h2o.db.dsn")
 
 	cli, err := dbcli.OpenEntClient(name, dsn)
 	if err != nil {
@@ -30,25 +50,4 @@ func entcli() *ent.Client {
 
 func dbx(c *ent.Client) *orm.DBx {
 	return &orm.DBx{Client: c}
-}
-
-func rootLog() *slog.Logger {
-	rlogF := viper.GetString("archon.log.root.file")
-	rlogL := viper.GetString("archon.log.root.level")
-	logL := viper.GetString("archon.log.level")
-
-	level := clog.Level(cmp.Or(rlogL, logL))
-	log := clog.NewLog(rlogF, level)
-	slog.SetDefault(log)
-	return log
-}
-
-func serverLog() *slog.Logger {
-	sLogF := viper.GetString("archon.log.server.file")
-	sLogL := viper.GetString("archon.log.server.level")
-	logL := viper.GetString("archon.log.level")
-
-	level := clog.Level(cmp.Or(sLogL, logL))
-	l := clog.NewLog(sLogF, level)
-	return l
 }

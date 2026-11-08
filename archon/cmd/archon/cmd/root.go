@@ -47,7 +47,7 @@ func initConfig() {
 	} else {
 		viper.AddConfigPath(".")
 		viper.SetConfigType("toml")
-		viper.SetConfigName("archon")
+		viper.SetConfigName("h2o")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
