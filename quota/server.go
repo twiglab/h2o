@@ -122,7 +122,7 @@ func (s *ChargeServer) charge(ctx context.Context, md Meter) error {
 		return nil
 	}
 
-	vc, err := s.DBx.LoadLast(ctx, md.Code, md.Type)
+	vc, err := s.DBx.LoadLast(ctx, md.Code)
 	if ent.IsNotFound(err) {
 		// 没找到限额，默认不计费
 		s.Logger.DebugContext(ctx, "record not found", slog.Any("meter", md))

@@ -11,12 +11,11 @@ type DBx struct {
 	Cli *ent.Client
 }
 
-func (d *DBx) LoadLast(ctx context.Context, code, typ string) (r *ent.Top, err error) {
+func (d *DBx) LoadLast(ctx context.Context, code string) (r *ent.Top, err error) {
 	q := d.Cli.Top.Query()
 
 	q.Where(
 		top.DeviceCodeEQ(code),
-		top.DeviceTypeEQ(typ),
 		top.IsDelEQ(0),
 	)
 
