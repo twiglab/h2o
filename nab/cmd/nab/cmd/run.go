@@ -1,18 +1,19 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
+	"os/signal"
+	"syscall"
 
 	"time"
 
 	"github.com/spf13/cobra"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/twiglab/h2o/nab"
-	"github.com/twiglab/h2o/nab/gql"
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
@@ -84,9 +85,12 @@ func run() error {
 		log.Fatal(err)
 	}
 
-	root := chi.NewMux()
-	root.Use(middleware.Recoverer, middleware.RequestID)
-	root.Mount("/gql", gql.Handle(agent, gql.WithPath("/gql")))
+	go http.ListenAndServe(webaddr(), nil)
 
-	return http.ListenAndServe(webaddr(), root)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	<-ctx.Done()
+	fmt.Println("quit...")
+	return nil
 }
