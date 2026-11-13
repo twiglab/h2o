@@ -8,6 +8,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
 	github.com/twiglab/h2o/dbcli v0.0.0-00010101000000-000000000000
+	golang.org/x/exp/collection v0.0.0-20261112173441-d10d3b464990
 )
 
 require (

@@ -19,39 +19,10 @@ type ChargeServer struct {
 	MCli   mqtt.Client
 	Sender Sender
 
+	WhiteList WhiteList
+
 	WAL    *wal.WAL
 	Logger *slog.Logger
-}
-
-func (s *ChargeServer) Run() error {
-	t := s.MCli.Subscribe(GeneralDataTopic, 0x00, s.msgHandle())
-	t.Wait()
-	return t.Error()
-}
-
-func (s *ChargeServer) msgHandle() mqtt.MessageHandler {
-	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-
-		defer msg.Ack()
-
-		var em Meter
-		if err := em.UnmarshalBinary(msg.Payload()); err != nil {
-			s.Logger.Error("unmarshal error", slog.Any("error", err))
-			return
-		}
-
-		// 协程处理
-		go func(meter Meter) {
-			if err := s.charge(context.Background(), meter); err != nil {
-				s.Logger.Error("quota error", slog.Any("raw", meter), slog.Any("error", err))
-			}
-		}(em)
-
-	}
 }
 
 func (s *ChargeServer) doStatusOff(ctx context.Context, md Meter, vc *ent.Top) error {
@@ -149,4 +120,40 @@ func (s *ChargeServer) charge(ctx context.Context, md Meter) error {
 	// 程序不应该运行到这里
 	s.Logger.ErrorContext(ctx, "unknow status", slog.Any("meter", md))
 	return nil
+}
+
+func MsgHandle(s *ChargeServer) mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		if msg.Duplicate() {
+			msg.Ack()
+			return
+		}
+
+		defer msg.Ack()
+
+		// h2o/data/909/909_32/E
+		// 0    1   2    3     4
+		parts, err := proto.TopicPart(msg.Topic())
+		if err != nil {
+			return
+		}
+
+		if !s.WhiteList.AllowLite(parts[3], parts[4]) {
+			return
+		}
+
+		var em Meter
+		if err := em.UnmarshalBinary(msg.Payload()); err != nil {
+			s.Logger.Error("unmarshal error", slog.Any("error", err))
+			return
+		}
+
+		// 协程处理
+		go func(meter Meter) {
+			if err := s.charge(context.Background(), meter); err != nil {
+				s.Logger.Error("quota error", slog.Any("raw", meter), slog.Any("error", err))
+			}
+		}(em)
+
+	}
 }

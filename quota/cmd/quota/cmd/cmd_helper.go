@@ -39,17 +39,22 @@ func cwal() *wal.WAL {
 	return wal.New("wal.log", clog.LogRoot(root), clog.LogDir(quota.APP_ID))
 }
 
-func mqttcli() mqtt.Client {
+func mqttcli(h mqtt.OnConnectHandler) mqtt.Client {
 	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
-	cli, err := quota.NewMQTTClient(quota.APP_ID, broker)
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	opts := mqtt.NewClientOptions()
+	opts.SetClientID(quota.APP_ID)
+	opts.SetOrderMatters(false)
+	opts.AddBroker(broker)
+
+	opts.SetOnConnectHandler(h)
+
+	client := mqtt.NewClient(opts)
 	log.Printf("mqtt - broker: %s, clientID: %s\n", broker, quota.APP_ID)
-	return cli
+	return client
 }
 
 func webaddr() string {
@@ -67,4 +72,10 @@ func entcli() *ent.Client {
 		log.Fatal(err)
 	}
 	return cli
+}
+
+func whiteList() quota.WhiteList {
+	types := viper.GetStringSlice("quota.whitelist.types")
+	codes := viper.GetStringSlice("quota.whitelist.codes")
+	return quota.NewWhiteList(types, codes)
 }

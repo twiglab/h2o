@@ -5,6 +5,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/cobra"
 	"github.com/twiglab/h2o/quota"
 )
@@ -34,24 +35,39 @@ func run() error {
 
 	sl := serverLog()
 
-	mcli := mqttcli()
 	entc := entcli()
 
-	act := quota.NewMQTTAction(mcli)
+	defer func() { _ = entc.Close() }()
+
 	db := &quota.DBx{Cli: entc}
 
-	svr := &quota.ChargeServer{
-		DBx: db,
+	wl := whiteList()
 
-		MCli:   mcli,
-		Sender: act,
+	mcli := mqttcli(func(cli mqtt.Client) {
+		log.Println("mqtt - onConnect")
 
-		WAL:    cwal(),
-		Logger: sl,
-	}
+		svr := &quota.ChargeServer{
+			DBx: db,
 
-	if err := svr.Run(); err != nil {
-		log.Fatal(err)
+			MCli:   cli,
+			Sender: quota.NewMQTTAction(cli),
+
+			WhiteList: wl,
+
+			WAL:    cwal(),
+			Logger: sl,
+		}
+
+		token := cli.Subscribe(quota.GeneralDataTopic, 0x00, quota.MsgHandle(svr))
+		if token.Wait() && token.Error() != nil {
+			log.Fatal("mqtt - 订阅失败", token.Error())
+		}
+
+	})
+
+	token := mcli.Connect()
+	if token.Wait() && token.Error() != nil {
+		log.Fatal("mqtt - connect error", token.Error())
 	}
 
 	return http.ListenAndServe(webaddr(), nil)
