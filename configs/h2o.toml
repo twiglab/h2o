@@ -20,6 +20,10 @@ dsn = "postgres://h2o:h2o@127.0.0.1:5432/h2o"
 [quota]
 # alarm = 0 # 百分比报警设置， 0-100，预留
 
+[quota.whitelist]
+# types = []
+# codes = []
+
 [vigil.tsdb]
 name = "taos"
 dsn = "h2o:h2o@ws(127.0.0.1:6041)/h2o"
