@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	entgo.io/ent v0.14.6
-	github.com/avast/retry-go/v5 v5.1.0
+	github.com/avast/retry-go/v5 v5.1.1
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/gocarina/gocsv v0.0.0-20261101205459-d0dd027dcbfa
 	github.com/olekukonko/tablewriter v1.1.5
@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
-	modernc.org/sqlite v1.61.1
+	modernc.org/sqlite v1.62.0
 )
 
 require (
@@ -63,7 +63,7 @@ require (
 	golang.org/x/tools/go/packages/packagestest v0.1.1-deprecated // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	modernc.org/libc v1.79.0 // indirect
+	modernc.org/libc v1.80.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.12.1 // indirect
 )

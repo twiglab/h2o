@@ -26,6 +26,18 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 	return nil
 }
 
+func NewMQTTClient2(clientID string, broker string) mqtt.Client {
+	opts := mqtt.NewClientOptions()
+	opts.SetClientID(clientID)
+	opts.SetOrderMatters(false)
+
+	opts.AddBroker(broker)
+
+	client := mqtt.NewClient(opts)
+
+	return client
+}
+
 func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)

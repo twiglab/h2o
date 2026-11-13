@@ -29,7 +29,7 @@ func sender(cli mqtt.Client) nab.Sender {
 	return nab.LogAction{}
 }
 
-func mqttcli() mqtt.Client {
+func mqttcli2(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	broker := viper.GetString("nab.sender.mqtt.broker")
 
 	if broker == "" {
@@ -38,12 +38,23 @@ func mqttcli() mqtt.Client {
 
 	box := viper.GetString("nab.box")
 	clientID := nab.ClientID(box)
-	cli, err := nab.NewMQTTClient(clientID, broker)
-	if err != nil {
-		log.Fatal(fmt.Errorf("mqttcli err: %w", err))
-	}
-	log.Printf("mqtt - nab.box: %s, broker: %s, clientID: %s\n", box, broker, clientID)
-	return cli
+
+	opts := mqtt.NewClientOptions()
+	opts.SetClientID(clientID)
+	opts.SetOrderMatters(false)
+
+	opts.SetOnConnectHandler(func(mc mqtt.Client) {
+		log.Println("mqtt - onConnect")
+		token := mc.Subscribe(topic, 0x00, h)
+		if token.Wait() && token.Error() != nil {
+			log.Fatal("mqtt - 订阅失败")
+		}
+	})
+
+	opts.AddBroker(broker)
+
+	client := mqtt.NewClient(opts)
+	return client, nab.NewMQTTAction(client)
 }
 
 func global() nab.Global {

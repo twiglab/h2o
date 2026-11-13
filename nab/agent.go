@@ -18,20 +18,34 @@ type OnOffer interface {
 }
 
 type Agent struct {
-	Sender Sender
 	Global Global
 	Logger *slog.Logger
 	IDB    *orm.IDB
 	CliMgr *ClientMgr
-	MCli   mqtt.Client
 	WAL    *wal.WAL
 }
 
+func AgentHandle(a *Agent) mqtt.MessageHandler {
+	return func(cli mqtt.Client, msg mqtt.Message) {
+		if msg.Duplicate() {
+			msg.Ack()
+			return
+		}
+		defer msg.Ack()
+
+		boxCode, devCode, op := topicPart(msg.Topic())
+
+		go a.doOnOff(boxCode, devCode, op)
+	}
+}
+
+/*
 func (a Agent) Start() error {
 	t := a.MCli.Subscribe(SubscriptTopic(a.Global.Box), 0x00, a.msgHandle())
 	t.Wait()
 	return t.Error()
 }
+*/
 
 func (a Agent) On(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
@@ -42,7 +56,6 @@ func (a Agent) On(ctx context.Context, code string) error {
 	return mcli.DoOn(ctx, onoff,
 		DeviceData{
 			Record: dev,
-			Sender: a.Sender,
 			Global: a.Global,
 			IDB:    a.IDB,
 			Logger: a.Logger,
@@ -59,7 +72,6 @@ func (a Agent) Off(ctx context.Context, code string) error {
 	return mcli.DoOff(ctx, onoff,
 		DeviceData{
 			Record: dev,
-			Sender: a.Sender,
 			Global: a.Global,
 			IDB:    a.IDB,
 			Logger: a.Logger,
@@ -126,6 +138,7 @@ func (a Agent) doOnOff(boxCode, devCode, op string) {
 	}
 }
 
+/*
 func (a Agent) msgHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		if msg.Duplicate() {
@@ -140,3 +153,4 @@ func (a Agent) msgHandle() mqtt.MessageHandler {
 
 	}
 }
+*/

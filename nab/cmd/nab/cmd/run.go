@@ -2,14 +2,11 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"os/signal"
 	"syscall"
-
-	"time"
 
 	"github.com/spf13/cobra"
 
@@ -20,7 +17,7 @@ import (
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
+	Short: "运行采集服务",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -45,15 +42,21 @@ func run() error {
 	g := global()
 
 	db := db(g)
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 
-	mcli := mqttcli()
-	act := sender(mcli)
 	cliMgr := clientMgr(db)
-
 	interval := taskInterval()
-
 	wl := cwal()
+
+	agent := &nab.Agent{
+		Global: g,
+		IDB:    db,
+		CliMgr: cliMgr,
+		Logger: logger,
+		WAL:    wl,
+	}
+
+	mcli, act := mqttcli2(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
 
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{
@@ -67,23 +70,12 @@ func run() error {
 		}
 	})
 
-	agent := &nab.Agent{
-		Global: g,
-		Sender: act,
-		IDB:    db,
-		CliMgr: cliMgr,
-		MCli:   mcli,
-		Logger: logger,
-		WAL:    wl,
+	token := mcli.Connect()
+	if token.Wait() && token.Error() != nil {
+		log.Fatal("mqtt - connect error")
 	}
-
-	log.Println("run after 5s")
-	time.Sleep(5 * time.Second)
 
 	lps.Run()
-	if err := agent.Start(); err != nil {
-		log.Fatal(err)
-	}
 
 	go http.ListenAndServe(webaddr(), nil)
 
@@ -91,6 +83,6 @@ func run() error {
 	defer stop()
 
 	<-ctx.Done()
-	fmt.Println("quit...")
+	log.Println("quit...")
 	return nil
 }
