@@ -9,7 +9,7 @@ import (
 // showCmd represents the csv command
 var showCmd = &cobra.Command{
 	Use:   "show",
-	Short: "A brief description of your command",
+	Short: "显示设备和端口列表",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
