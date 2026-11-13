@@ -36,7 +36,7 @@ func mqttcli2(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 		log.Println("mqtt - onConnect")
 		token := mc.Subscribe(topic, 0x00, h)
 		if token.Wait() && token.Error() != nil {
-			log.Fatal("mqtt - 订阅失败")
+			log.Fatal("mqtt - 订阅失败", token.Error())
 		}
 	})
 
