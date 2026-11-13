@@ -18,17 +18,6 @@ import (
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
-func sender(cli mqtt.Client) nab.Sender {
-	use := viper.GetString("nab.sender.use")
-	switch use {
-	case "mqtt":
-		log.Println("sender - using mqtt")
-		return nab.NewMQTTAction(cli)
-	}
-	log.Println("sender - using logAction")
-	return nab.LogAction{}
-}
-
 func mqttcli2(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	broker := viper.GetString("nab.sender.mqtt.broker")
 

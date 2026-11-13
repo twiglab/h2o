@@ -77,6 +77,8 @@ func run() error {
 
 	lps.Run()
 
+	defer mcli.Disconnect(500)
+
 	go http.ListenAndServe(webaddr(), nil)
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
