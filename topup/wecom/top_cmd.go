@@ -86,6 +86,9 @@ func (x *topCmd) Do(ctx context.Context) (err error) {
 	// 没有输入存量，存量就是上一次的top
 	if x.Stock == 0 {
 		x.Stock = x.Top.Top
+	} else if x.Stock < 0 {
+		// 输入是负数，取当前表显示
+		x.Stock = x.Nh.DataValue
 	}
 
 	// 当前限额 永远等于存量+incr
