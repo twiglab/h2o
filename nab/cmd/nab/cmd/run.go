@@ -72,7 +72,7 @@ func run() error {
 
 	token := mcli.Connect()
 	if token.Wait() && token.Error() != nil {
-		log.Fatal("mqtt - connect error")
+		log.Fatal("mqtt - connect error", token.Error())
 	}
 
 	lps.Run()
