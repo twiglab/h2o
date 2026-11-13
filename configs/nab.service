@@ -1,0 +1,14 @@
+[Unit]
+Description=nab service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/nab
+ExecStart=/opt/nab/bin/nab run -c /opt/nab/conf/nab.toml
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
