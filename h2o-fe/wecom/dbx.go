@@ -2,6 +2,7 @@ package wecom
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/twiglab/h2o/dbcli/ent"
 	"github.com/twiglab/h2o/dbcli/ent/device"
@@ -88,4 +89,31 @@ func (d *DBx) Save(ctx context.Context, record TopRecord) (*ent.Top, error) {
 	cr.SetStatus(0)
 
 	return cr.Save(ctx)
+}
+
+func (d *DBx) WithTx(ctx context.Context, fns ...func(tx *ent.Tx) error) error {
+	tx, err := d.cli.Tx(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if v := recover(); v != nil {
+			tx.Rollback()
+			panic(v)
+		}
+	}()
+
+	for _, fn := range fns {
+		if err := fn(tx); err != nil {
+			if rerr := tx.Rollback(); rerr != nil {
+				err = fmt.Errorf("%w: rolling back transaction: %v", err, rerr)
+			}
+			return err
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("committing transaction: %w", err)
+	}
+	return nil
 }

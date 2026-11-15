@@ -35,6 +35,13 @@ const help_cmd_tpl = `
             t 909_32 0 0   增量为0，起点为0，限额为0，相当于**强制拉闸**
             t 909_32 100 -1   增量为100，起点为负数，限额为当前**表显加增量100**
   **t 命令，不受 2 分钟限制，即用即效**
+
+3. b <表号1> <表号2> <电量>
+  用于将表号1指定电量转移到表号2
+  例如：b 909_32 909_36 100
+        从909_32转移100度电至909_36
+  此命令要求两个表号的铺位号必须相同，否则报错。
+  **转移的电量必须大于表1的可有度数，否则会导致表1断电**
 `
 
 const charge_cmd_tpl = `
@@ -100,12 +107,19 @@ const report_cmd_tpl = `
 {{ end }}
 `
 
+const balance_cmd_tpl = `
+{{ .Value | du }}度，已从 {{.Device1.DeviceCode}} 转移到 {{.Device2.DeviceCode}}
+请用u指令查看使用详情
+请用**u {{ .Device1.DeviceCode }}** 和 **u {{ .Device2.DevcieCode }}**命令查看详情
+`
+
 const (
-	template_help   = "help"
-	template_pos    = "pos"
-	template_charge = "charge"
-	template_usage  = "usage"
-	template_report = "report"
+	template_help    = "help"
+	template_pos     = "pos"
+	template_charge  = "charge"
+	template_usage   = "usage"
+	template_report  = "report"
+	template_balance = "balance"
 )
 
 func buildTemplate() *template.Template {
@@ -130,6 +144,7 @@ func buildTemplate() *template.Template {
 	template.Must(t.New(template_pos).Parse(pos_cmd_tpl))
 	template.Must(t.New(template_usage).Parse(usage_cmd_tpl))
 	template.Must(t.New(template_report).Parse(report_cmd_tpl))
+	template.Must(t.New(template_balance).Parse(balance_cmd_tpl))
 	return t
 }
 
