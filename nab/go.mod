@@ -8,6 +8,7 @@ require (
 	github.com/eclipse/paho.mqtt.golang v1.5.1
 	github.com/gocarina/gocsv v0.0.0-20261101205459-d0dd027dcbfa
 	github.com/olekukonko/tablewriter v1.1.5
+	github.com/panjf2000/ants/v2 v2.12.1
 	github.com/simonvetter/modbus v1.6.4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0

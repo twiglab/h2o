@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 
-	"encoding/json/v2"
-
 	"github.com/twiglab/h2o/proto"
 
 	"github.com/twiglab/h2o/nab/orm"
@@ -56,27 +54,24 @@ func SubscriptTopic(boxCode string) string {
 	return proto.H2O + "/onoff/" + boxCode + "/#"
 }
 
-func topicPart(t string) (string, string, string) {
-	ss, _ := proto.TopicPart(t)
-	_ = ss[4]
-
-	if ss[1] != "onoff" {
-		panic("not h2o onoff")
+func onoffTopicPart(t string) (box string, code string, op string, err error) {
+	// h2o/onoff/836/836_11/ON
+	//  1   2     3    4    5
+	var parts []string
+	if parts, err = proto.TopicPart(t); err != nil {
+		return
 	}
 
-	return ss[2], ss[3], ss[4]
-}
+	if len(parts) < 5 {
+		err = errors.New("topic error")
+		return
+	}
 
-type OnOffLite struct {
-	Box  string
-	Code string
-	Op   string
-}
+	if parts[1] != "onoff" {
+		err = errors.New("not h2o onoff")
+		return
+	}
 
-func (m OnOffLite) MarshalBinary() (data []byte, err error) {
-	return json.Marshal(m)
-}
-
-func (o OnOffLite) Topic() string {
-	return proto.MakeTopic(proto.ONOFF, o.Box, o.Code, o.Op)
+	box, code, op = parts[2], parts[3], parts[4]
+	return
 }

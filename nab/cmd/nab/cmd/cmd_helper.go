@@ -10,6 +10,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/panjf2000/ants/v2"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/clog/wal"
@@ -149,4 +150,12 @@ func cwal() *wal.WAL {
 	root := cmp.Or(viper.GetString("nab.log.wal.root"), "wal")
 	log.Println("wal file:", root, "wal.log")
 	return wal.New("wal.log", clog.LogRoot(root))
+}
+
+func pool() *ants.Pool {
+	p, err := ants.NewPool(10)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return p
 }

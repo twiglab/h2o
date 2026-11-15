@@ -48,12 +48,15 @@ func run() error {
 	interval := taskInterval()
 	wl := cwal()
 
+	p := pool()
+
 	agent := &nab.Agent{
 		Global: g,
 		IDB:    db,
 		CliMgr: cliMgr,
 		Logger: logger,
 		WAL:    wl,
+		Pool:   p,
 	}
 
 	mcli, act := mqttcli2(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))

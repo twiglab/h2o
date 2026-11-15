@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/panjf2000/ants/v2"
 	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
@@ -23,6 +24,8 @@ type Agent struct {
 	IDB    *orm.IDB
 	CliMgr *ClientMgr
 	WAL    *wal.WAL
+
+	Pool *ants.Pool
 }
 
 func AgentHandle(a *Agent) mqtt.MessageHandler {
@@ -33,19 +36,20 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 		}
 		defer msg.Ack()
 
-		boxCode, devCode, op := topicPart(msg.Topic())
+		boxCode, devCode, op, err := onoffTopicPart(msg.Topic())
+		if err != nil {
+			return
+		}
 
-		go a.doOnOff(boxCode, devCode, op)
+		if err := a.Pool.Submit(func() { a.doOnOff(boxCode, devCode, op) }); err != nil {
+			a.Logger.Error("submit errorr",
+				slog.String("box", boxCode),
+				slog.String("code", devCode),
+				slog.Any("error", err),
+			)
+		}
 	}
 }
-
-/*
-func (a Agent) Start() error {
-	t := a.MCli.Subscribe(SubscriptTopic(a.Global.Box), 0x00, a.msgHandle())
-	t.Wait()
-	return t.Error()
-}
-*/
 
 func (a Agent) On(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
