@@ -58,7 +58,7 @@ func (c *balanceCmd) Do(ctx context.Context) (err error) {
 	if c.Top1, err = c.dbx.LoadTopLast(ctx, c.Code1); err != nil {
 		return err
 	}
-	if c.Top2, err = c.dbx.LoadTopLast(ctx, c.Code1); err != nil {
+	if c.Top2, err = c.dbx.LoadTopLast(ctx, c.Code2); err != nil {
 		return err
 	}
 
