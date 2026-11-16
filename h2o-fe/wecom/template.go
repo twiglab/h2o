@@ -108,7 +108,7 @@ const report_cmd_tpl = `
 `
 
 const balance_cmd_tpl = `
-铺位{{ .Device1.PosCode }} {{ .Value | du }}度，已从 {{.Device1.DeviceCode}} 转移到 {{.Device2.DeviceCode}}
+铺位{{ .Device1.PosCode }}（{{.Device1.PosName}}） {{ .Value | du }}度，已从 {{.Device1.DeviceCode}} 转移到 {{.Device2.DeviceCode}}
 请用**u {{ .Device1.DeviceCode }}** 和 **u {{ .Device2.DeviceCode }}**命令查看详情
 `
 
