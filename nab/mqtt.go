@@ -22,10 +22,10 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 		return err
 	}
 
-	c.client.Publish(obj.Topic(), 0x00, false, bb)
-	return nil
+	token := c.client.Publish(obj.Topic(), 0x00, false, bb)
+	return token.Error()
 }
 
 func ClientID(code string) string {
-	return code + "@" + NAB + "-" + VERSION
+	return code + "@" + NAB
 }

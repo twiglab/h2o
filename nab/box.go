@@ -51,7 +51,8 @@ func (g ClientMgr) ClientByCode(code string) (*ModbusCli, error) {
 }
 
 func SubscriptTopic(boxCode string) string {
-	return proto.H2O + "/onoff/" + boxCode + "/#"
+	return proto.MakeTopic(proto.ONOFF, boxCode, "#")
+	// return proto.H2O + "/onoff/" + boxCode + "/#"
 }
 
 func onoffTopicPart(t string) (box string, code string, op string, err error) {
@@ -62,12 +63,12 @@ func onoffTopicPart(t string) (box string, code string, op string, err error) {
 		return
 	}
 
-	if len(parts) < 5 {
+	if len(parts) != 5 {
 		err = errors.New("topic error")
 		return
 	}
 
-	if parts[1] != "onoff" {
+	if parts[1] != proto.ONOFF {
 		err = errors.New("not h2o onoff")
 		return
 	}

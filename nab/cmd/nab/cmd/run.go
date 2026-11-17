@@ -59,7 +59,7 @@ func run() error {
 		Pool:   p,
 	}
 
-	mcli, act := mqttcli2(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
+	mcli, act := mqttcli(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
 
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{

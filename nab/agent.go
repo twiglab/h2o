@@ -30,12 +30,6 @@ type Agent struct {
 
 func AgentHandle(a *Agent) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-		defer msg.Ack()
-
 		boxCode, devCode, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {
 			return
@@ -141,20 +135,3 @@ func (a Agent) doOnOff(boxCode, devCode, op string) {
 		a.Logger.Error("onoff unknow op", slog.String("code", devCode), slog.String("op", op))
 	}
 }
-
-/*
-func (a Agent) msgHandle() mqtt.MessageHandler {
-	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-		defer msg.Ack()
-
-		boxCode, devCode, op := topicPart(msg.Topic())
-
-		go a.doOnOff(boxCode, devCode, op)
-
-	}
-}
-*/
