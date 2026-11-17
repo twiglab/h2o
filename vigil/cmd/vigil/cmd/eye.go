@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"log/slog"
-	"net/http"
+	"os/signal"
+	"syscall"
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -39,24 +41,18 @@ func eye(cmd *cobra.Command, args []string) error {
 
 	clog.ConsoleLog(slog.LevelDebug)
 
-	mcli := mcli()
-	token := mcli.Subscribe(topic, 0x0, vigil.RawHandle())
-	token.Wait()
+	mcli := mcli2(vigil.RawHandle())
 
-	return http.ListenAndServe(":10020", nil)
-}
+	token := mcli.Connect()
+	if token.Wait() && token.Error() != nil {
+		log.Fatal("mqtt - connect error", token.Error())
+	}
 
-func mcli() mqtt.Client {
-	broker := viper.GetString("h2o.mqtt.broker")
-	if broker == "" {
-		log.Fatalf("no broker")
-	}
-	ts := Ts(time.Now())
-	cli, err := vigil.NewMQTTClient("eye@"+ts, broker)
-	if err != nil {
-		log.Fatal(fmt.Errorf("mc err: %w", err))
-	}
-	return cli
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+	<-ctx.Done()
+	log.Println("quit...")
+	return nil
 }
 
 const GeneralDataTopic = "h2o/data/#"
@@ -65,4 +61,34 @@ const f = "20060102150405"
 
 func Ts(now time.Time) string {
 	return now.Format(f)
+}
+
+func mcli2(h mqtt.MessageHandler) mqtt.Client {
+	broker := viper.GetString("h2o.mqtt.broker")
+	if broker == "" {
+		log.Fatalf("no broker")
+	}
+	ts := Ts(time.Now())
+	clientID := "eye@" + ts
+
+	opts := mqtt.NewClientOptions()
+	opts.SetClientID(clientID)
+	opts.AddBroker(broker)
+	opts.SetOrderMatters(false)
+	opts.SetAutoReconnect(true)
+
+	opts.SetOnConnectHandler(func(mc mqtt.Client) {
+		token := mc.Subscribe(topic, 0x00, h)
+		if token.Wait() && token.Error() != nil {
+			slog.Error("mqtt - subscribe error", slog.Any("error", token.Error()))
+		}
+	})
+
+	opts.SetConnectionLostHandler(func(_ mqtt.Client, err error) {
+		slog.Error("mqtt - connect lost", slog.Any("error", err))
+	})
+
+	client := mqtt.NewClient(opts)
+	log.Printf("mqtt - broker: %s, clientID: %s\n", broker, vigil.APP_ID)
+	return client
 }

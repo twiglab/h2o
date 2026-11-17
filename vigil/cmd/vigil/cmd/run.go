@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"syscall"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/twiglab/h2o/vigil"
 
 	"github.com/spf13/cobra"
@@ -46,12 +45,8 @@ func run() error {
 		Logger: serverLog(),
 		WAL:    cwal(),
 	}
-	mcli := mqttcli2(func(mc mqtt.Client) {
-		token := mc.Subscribe(GeneralDataTopic, 0x00, vigil.Handle(hub))
-		if token.Wait() && token.Error() != nil {
-			log.Fatal("mqtt - 订阅失败", token.Error())
-		}
-	})
+
+	mcli := mqttcli(vigil.Handle(hub))
 
 	token := mcli.Connect()
 	if token.Wait() && token.Error() != nil {

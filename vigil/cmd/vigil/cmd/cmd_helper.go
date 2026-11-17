@@ -15,7 +15,7 @@ import (
 	"github.com/twiglab/h2o/vigil/orm"
 )
 
-func mqttcli2(h mqtt.OnConnectHandler) mqtt.Client {
+func mqttcli(h mqtt.MessageHandler) mqtt.Client {
 	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
@@ -23,10 +23,20 @@ func mqttcli2(h mqtt.OnConnectHandler) mqtt.Client {
 
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(vigil.APP_ID)
-	opts.SetOrderMatters(false)
 	opts.AddBroker(broker)
+	opts.SetOrderMatters(false)
+	opts.SetAutoReconnect(true)
 
-	opts.SetOnConnectHandler(h)
+	opts.SetOnConnectHandler(func(mc mqtt.Client) {
+		token := mc.Subscribe(GeneralDataTopic, 0x00, h)
+		if token.Wait() && token.Error() != nil {
+			slog.Error("mqtt - subscribe error", slog.Any("error", token.Error()))
+		}
+	})
+
+	opts.SetConnectionLostHandler(func(_ mqtt.Client, err error) {
+		slog.Error("mqtt - connect lost", slog.Any("error", err))
+	})
 
 	client := mqtt.NewClient(opts)
 	log.Printf("mqtt - broker: %s, clientID: %s\n", broker, vigil.APP_ID)

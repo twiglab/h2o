@@ -17,13 +17,6 @@ func Handle(s *Hub) mqtt.MessageHandler {
 	}
 
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-
-		defer msg.Ack()
-
 		var wm Meter
 		if err := wm.UnmarshalBinary(msg.Payload()); err != nil {
 			s.Logger.ErrorContext(ctx, "unmarshal error", slog.Any("err", err))
@@ -36,33 +29,8 @@ func Handle(s *Hub) mqtt.MessageHandler {
 	}
 }
 
-func NewMQTTClient(clientID string, broker string, others ...string) (mqtt.Client, error) {
-	opts := mqtt.NewClientOptions()
-	opts.SetClientID(clientID)
-	opts.SetOrderMatters(false)
-
-	opts.AddBroker(broker)
-	for _, b := range others {
-		opts.AddBroker(b)
-	}
-
-	client := mqtt.NewClient(opts)
-
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		return nil, token.Error()
-	}
-
-	return client, nil
-}
-
 func RawHandle() mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-		defer msg.Ack()
-
 		fmt.Println(string(msg.Payload()))
 		//slog.Info("raw", slog.Any("raw", md))
 	}
