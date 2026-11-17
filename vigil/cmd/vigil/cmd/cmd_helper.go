@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"cmp"
-	"fmt"
 	"log"
 	"log/slog"
 
@@ -16,16 +15,22 @@ import (
 	"github.com/twiglab/h2o/vigil/orm"
 )
 
-func mqttcli() mqtt.Client {
+func mqttcli2(h mqtt.OnConnectHandler) mqtt.Client {
 	broker := viper.GetString("h2o.mqtt.broker")
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
-	cli, err := vigil.NewMQTTClient(vigil.APP_ID, broker)
-	if err != nil {
-		log.Fatal(fmt.Errorf("mqttcli err: %w", err))
-	}
-	return cli
+
+	opts := mqtt.NewClientOptions()
+	opts.SetClientID(vigil.APP_ID)
+	opts.SetOrderMatters(false)
+	opts.AddBroker(broker)
+
+	opts.SetOnConnectHandler(h)
+
+	client := mqtt.NewClient(opts)
+	log.Printf("mqtt - broker: %s, clientID: %s\n", broker, vigil.APP_ID)
+	return client
 }
 
 func webaddr() string {

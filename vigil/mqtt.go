@@ -33,7 +33,6 @@ func Handle(s *Hub) mqtt.MessageHandler {
 			s.Logger.ErrorContext(ctx, "handle error", slog.Any("err", err))
 			return
 		}
-
 	}
 }
 
