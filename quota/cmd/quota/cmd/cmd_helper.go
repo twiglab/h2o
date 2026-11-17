@@ -49,6 +49,7 @@ func mqttcli(h mqtt.OnConnectHandler) mqtt.Client {
 	opts.SetClientID(quota.APP_ID)
 	opts.SetOrderMatters(false)
 	opts.AddBroker(broker)
+	opts.SetConnectRetry(true)
 
 	opts.SetOnConnectHandler(h)
 
