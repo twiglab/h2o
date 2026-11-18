@@ -30,15 +30,23 @@ type Agent struct {
 
 func AgentHandle(a Agent) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		boxCode, devCode, op, err := onoffTopicPart(msg.Topic())
+		box, code, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {
 			return
 		}
 
-		if err := a.Pool.Submit(func() { a.doOnOff(boxCode, devCode, op) }); err != nil {
+		if box != a.Global.Box {
+			a.Logger.Warn("onoff box mismatch",
+				slog.String("expect", a.Global.Box),
+				slog.String("got", box),
+				slog.String("code", code))
+			return
+		}
+
+		if err := a.Pool.Submit(func() { a.doOnOff(box, code, op) }); err != nil {
 			a.Logger.Error("submit errorr",
-				slog.String("box", boxCode),
-				slog.String("code", devCode),
+				slog.String("box", box),
+				slog.String("code", code),
 				slog.Any("error", err),
 			)
 		}

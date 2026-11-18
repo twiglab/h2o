@@ -1,6 +1,6 @@
 package equlib
 
-import "errors"
+import "fmt"
 
 var libmap = make(map[string]any)
 
@@ -10,25 +10,21 @@ func MustHas() {
 	}
 }
 
-func Register(s string, a any) {
-	libmap[s] = a
-}
+func Register(s string, a any) { libmap[s] = a }
+
+// RegisterAs 注册设备实现
+// 配合 `var _ nab.DeviceCollector = DTZY{}` 之类的断言，让遗漏在编译期暴露。
+// 后期用此方法取代Register
+func RegisterAs[T any](s string, a T) { libmap[s] = a }
 
 func From[T any](key string) (v T, err error) {
-	var (
-		a  any
-		ok bool
-	)
-
-	a, ok = libmap[key]
+	a, ok := libmap[key]
 	if !ok {
-		err = errors.New("key no found: " + key)
-		return
+		return v, fmt.Errorf("key no found: %s", key)
 	}
-
 	v, ok = a.(T)
 	if !ok {
-		err = errors.New("type error")
+		return v, fmt.Errorf("key %s does not implement %T", key, v)
 	}
-	return
+	return v, nil
 }

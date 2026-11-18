@@ -36,7 +36,8 @@ func (t CollectTask) Run() {
 		client, err := t.ClientMgr.ClientByCode(dev.Cli)
 		if err != nil {
 			t.Logger.Error("CollectTask.NotFoundClient", slog.String("code", dev.Code),
-				slog.String("cli", dev.Clazz),
+				slog.String("cli", dev.Cli),
+				slog.String("clazz", dev.Clazz),
 				slog.String("box", t.Global.Box),
 				slog.Any("record", dev))
 

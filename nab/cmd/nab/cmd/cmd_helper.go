@@ -33,12 +33,15 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	opts.SetClientID(clientID)
 	opts.AddBroker(broker)
 	opts.SetOrderMatters(false)
-	opts.SetAutoReconnect(true)
+	// AutoReconnect 默认是true
+	// opts.SetAutoReconnect(true)
+	opts.SetConnectRetry(true)
+	opts.SetWriteTimeout(10 * time.Second)
 
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
 		log.Println("mqtt - onConnect")
 		token := mc.Subscribe(topic, 0x00, h)
-		if token.Wait() && token.Error() != nil {
+		if token.WaitTimeout(5*time.Second) && token.Error() != nil {
 			log.Println("mqtt - 订阅失败", token.Error())
 		}
 	})
