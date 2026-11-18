@@ -28,7 +28,7 @@ type Agent struct {
 	Pool *ants.Pool
 }
 
-func AgentHandle(a *Agent) mqtt.MessageHandler {
+func AgentHandle(a Agent) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		boxCode, devCode, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {

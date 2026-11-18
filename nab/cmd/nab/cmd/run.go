@@ -50,7 +50,7 @@ func run() error {
 
 	p := pool()
 
-	agent := &nab.Agent{
+	agent := nab.Agent{
 		Global: g,
 		IDB:    db,
 		CliMgr: cliMgr,
