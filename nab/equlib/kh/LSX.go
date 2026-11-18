@@ -11,13 +11,7 @@ import (
 
 const KH_LXS_40_MI = "KH-LXS-40-MI"
 
-func optStatus(op uint16) int64 {
-	if op == 0x00 {
-		return proto.OPT_STATUS_OFF
-	}
-	return proto.OPT_STATUS_ON
-}
-
+// LXS 水表，0x00地址读取用量（即表显）
 type LXSNoValve struct {
 }
 
@@ -31,6 +25,8 @@ func (e LXSNoValve) Collect(ctx context.Context, cli *modbus.ModbusClient, data 
 
 	var meter nab.Meter
 	meter.Data.DataValue = int64(dataVal)
+
+	// 无电磁阀水表，状态为常开
 	meter.Data.OptStatus = proto.OPT_STATUS_ON
 
 	meter.Code = data.Record.Code
@@ -49,9 +45,11 @@ func (e LXSNoValve) Collect(ctx context.Context, cli *modbus.ModbusClient, data 
 }
 
 func (e LXSNoValve) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
+	// 无电磁阀水表，不支持开关操作
 	return nil
 }
 
 func (e LXSNoValve) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
+	// 无电磁阀水表，不支持开关操作
 	return nil
 }
