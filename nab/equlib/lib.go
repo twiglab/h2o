@@ -26,6 +26,9 @@ func From[T any](key string) (v T, err error) {
 		return
 	}
 
-	v = a.(T)
+	v, ok = a.(T)
+	if !ok {
+		err = errors.New("type error")
+	}
 	return
 }
