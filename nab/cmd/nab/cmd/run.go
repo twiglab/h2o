@@ -2,11 +2,14 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"log"
+	"log/slog"
 	"net/http"
 	_ "net/http/pprof"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -50,7 +53,10 @@ func run() error {
 
 	p := pool()
 
-	agent := nab.Agent{
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	agent := &nab.Agent{
 		Global: g,
 		IDB:    db,
 		CliMgr: cliMgr,
@@ -74,19 +80,20 @@ func run() error {
 	})
 
 	token := mcli.Connect()
-	if token.Wait() && token.Error() != nil {
-		log.Println("mqtt - connect error", token.Error())
-		return token.Error()
+	if !token.WaitTimeout(60 * time.Second) {
+		slog.ErrorContext(ctx, "mqtt connect timeout")
+		return errors.New("mqtt connect timeout")
 	}
-
-	lps.Run()
+	if err := token.Error(); err != nil {
+		slog.ErrorContext(ctx, "mqtt connect error", slog.Any("error", err))
+		return err
+	}
 
 	defer mcli.Disconnect(500)
 
-	go http.ListenAndServe(webaddr(), nil)
+	lps.Run()
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	go http.ListenAndServe(webaddr(), nil)
 
 	<-ctx.Done()
 	log.Println("quit...")

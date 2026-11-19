@@ -28,7 +28,7 @@ type Agent struct {
 	Pool *ants.Pool
 }
 
-func AgentHandle(a Agent) mqtt.MessageHandler {
+func AgentHandle(a *Agent) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
 		box, code, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {
@@ -43,7 +43,13 @@ func AgentHandle(a Agent) mqtt.MessageHandler {
 			return
 		}
 
-		if err := a.Pool.Submit(func() { a.doOnOff(box, code, op) }); err != nil {
+		if err := a.Pool.Submit(func() {
+			// 从严谨角度考虑，无聊Qos如何设置，无聊是否自动确认，都显示ack消息
+			defer msg.Ack()
+			a.doOnOff(box, code, op)
+		}); err != nil {
+			// 如果失败也首先ack消息
+			msg.Ack()
 			a.Logger.Error("submit errorr",
 				slog.String("box", box),
 				slog.String("code", code),
@@ -53,7 +59,7 @@ func AgentHandle(a Agent) mqtt.MessageHandler {
 	}
 }
 
-func (a Agent) On(ctx context.Context, code string) error {
+func (a *Agent) On(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
 	if err != nil {
 		return err
@@ -69,7 +75,7 @@ func (a Agent) On(ctx context.Context, code string) error {
 	)
 }
 
-func (a Agent) Off(ctx context.Context, code string) error {
+func (a *Agent) Off(ctx context.Context, code string) error {
 	dev, mcli, onoff, err := a.get(code)
 	if err != nil {
 		return err
@@ -85,7 +91,7 @@ func (a Agent) Off(ctx context.Context, code string) error {
 	)
 }
 
-func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
+func (a *Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 	dev, err := a.IDB.GetDev(context.Background(), devCode)
 	if err != nil {
 		a.Logger.Error("OnOff.GetDev.Error",
@@ -115,7 +121,7 @@ func (a Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 	return dev, mcli, onoff, nil
 }
 
-func (a Agent) doOnOff(boxCode, devCode, op string) {
+func (a *Agent) doOnOff(boxCode, devCode, op string) {
 	ctx := context.Background()
 
 	a.WAL.WriteLogContext(ctx,

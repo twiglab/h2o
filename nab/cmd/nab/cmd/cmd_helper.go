@@ -33,9 +33,12 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	opts.SetClientID(clientID)
 	opts.AddBroker(broker)
 	opts.SetOrderMatters(false)
-	// AutoReconnect 默认是true
-	// opts.SetAutoReconnect(true)
+
 	opts.SetConnectRetry(true)
+	opts.SetConnectRetryInterval(5 * time.Second)
+	opts.SetConnectTimeout(10 * time.Second)
+	opts.SetMaxReconnectInterval(2 * time.Minute)
+
 	opts.SetWriteTimeout(10 * time.Second)
 
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
