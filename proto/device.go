@@ -5,6 +5,13 @@ import (
 	"uuid"
 )
 
+const (
+	// 设备状态能使定义, unknow 必须是保证为0
+	STATUS_DISABLE = 1
+	STATUS_ENABLE  = 2
+	STATUS_UNKNOW  = 0
+)
+
 type Device struct {
 	Code string `json:"code"` // 设备code,业务全局唯一
 	Type string `json:"type"` // 设备类型
@@ -14,7 +21,7 @@ type Device struct {
 	DataTime time.Time `json:"data_time"` // 采集时间
 	DataCode string    `json:"data_code"` // 采集的唯一标识,全局唯一单调递增
 
-	Status int `json:"status"` // 设备业务状态, 网关,采集程序或设备自定义, 0表示正常
+	Status int `json:"status"` // 设备业务状态, 网关,采集程序或设备自定义, 参考设备状态能使定义
 }
 
 func NewDataCode() string {
