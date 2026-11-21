@@ -32,6 +32,9 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)
 	opts.AddBroker(broker)
+
+	// 开关指令允许丢失且无顺序要求（README），故关闭 paho 的报文顺序保证；
+	// 注意 order=false 时每条消息独立 goroutine，handler 内不得阻塞。
 	opts.SetOrderMatters(false)
 
 	opts.SetConnectRetry(true)
@@ -44,9 +47,18 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
 		slog.Debug("mqtt - onConnect")
 		token := mc.Subscribe(topic, 0x00, h)
-		if token.WaitTimeout(5*time.Second) && token.Error() != nil {
-			slog.Error("mqtt - 订阅失败", slog.Any("error", token.Error()))
+		if !token.WaitTimeout(5 * time.Second) {
+			slog.Error("mqtt 订阅超时", slog.String("topic", topic))
+			return
 		}
+		if err := token.Error(); err != nil {
+			slog.Error("mqtt 订阅失败", slog.Any("error", err))
+			return
+		}
+	})
+
+	opts.SetConnectionLostHandler(func(client mqtt.Client, err error) {
+		slog.Error("mqtt - Connect lost")
 	})
 
 	client := mqtt.NewClient(opts)
@@ -159,7 +171,7 @@ func cwal() *wal.WAL {
 }
 
 func pool() *ants.Pool {
-	p, err := ants.NewPool(10)
+	p, err := ants.NewPool(32, ants.WithNonblocking(true))
 	if err != nil {
 		log.Fatal(err)
 	}

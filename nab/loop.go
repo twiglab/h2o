@@ -8,11 +8,12 @@ import (
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
+// 原地排序
 func SplitByCli(list []*ent.Dev) [][]*ent.Dev {
 	slices.SortFunc(list, func(a, b *ent.Dev) int { return cmp.Compare(a.Cli, b.Cli) })
 	returnData := make([][]*ent.Dev, 0)
-	i := 0
-	var j int
+
+	var i, j int
 	for {
 		if i >= len(list) {
 			break

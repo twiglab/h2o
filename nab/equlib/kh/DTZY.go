@@ -24,6 +24,10 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 		return err
 	}
 
+	// 这里阻塞了循环采集，但在实际项目中验证，无影响
+	// 后续根据程序实际运行情况，考虑减少休眠时间
+	// 堵塞问题留存到v2 版本中解决，目前此逻辑维持不变
+	// TODO
 	time.Sleep(300 * time.Millisecond)
 
 	opt, err := cli.ReadRegister(0x22, modbus.INPUT_REGISTER)
@@ -53,7 +57,12 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 }
 
 func (e DTZY) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	err := retry.New(retry.Attempts(3)).Do(
+	err := retry.New(
+		retry.Attempts(3),
+		retry.Delay(300*time.Millisecond), // 给串口留出帧间隔 retry.DelayType(retry.CombineDelay(retry.BackOffDelay, retry.RandomDelay)),
+		retry.Context(ctx),                // 支持取消
+		retry.LastErrorOnly(true),         // 只返回最后一次错误，日志更干净
+	).Do(
 		func() error {
 			return cli.WriteRegisters(0x22, []uint16{0x02})
 		},
@@ -62,8 +71,14 @@ func (e DTZY) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceD
 }
 
 func (e DTZY) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	err := retry.New(retry.Attempts(3)).Do(
+	err := retry.New(
+		retry.Attempts(3),
+		retry.Delay(300*time.Millisecond), // 给串口留出帧间隔 retry.DelayType(retry.CombineDelay(retry.BackOffDelay, retry.RandomDelay)),
+		retry.Context(ctx),                // 支持取消
+		retry.LastErrorOnly(true),         // 只返回最后一次错误，日志更干净
+	).Do(
 		func() error {
+			// 宽厚公司电表文档明确要求写操作必须用FC16
 			return cli.WriteRegisters(0x22, []uint16{0x01})
 		},
 	)

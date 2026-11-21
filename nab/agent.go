@@ -30,8 +30,20 @@ type Agent struct {
 
 func AgentHandle(a *Agent) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
+		// 如果是retained消息，不在处理，直接返回
+		if msg.Retained() {
+			a.Logger.Warn("onoff retained message ignored",
+				slog.String("topic", msg.Topic()))
+			return
+		}
+
 		box, code, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {
+			return
+		}
+
+		if op != proto.ON && op != proto.OFF {
+			a.Logger.Error("onoff unknown op")
 			return
 		}
 
@@ -44,12 +56,9 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 		}
 
 		if err := a.Pool.Submit(func() {
-			// 从严谨角度考虑，无聊Qos如何设置，无聊是否自动确认，都显示ack消息
-			defer msg.Ack()
 			a.doOnOff(box, code, op)
 		}); err != nil {
-			// 如果失败也首先ack消息
-			msg.Ack()
+			// pool size为32，如果pool满了，记录日志，直接丢弃，等上游程序发送下一轮指令
 			a.Logger.Error("submit errorr",
 				slog.String("box", box),
 				slog.String("code", code),
@@ -124,6 +133,7 @@ func (a *Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 func (a *Agent) doOnOff(boxCode, devCode, op string) {
 	ctx := context.Background()
 
+	// 无论执行是否成功，都先记录
 	a.WAL.WriteLogContext(ctx,
 		wal.String("box", boxCode),
 		wal.String("device", devCode),

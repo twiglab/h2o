@@ -24,7 +24,7 @@ func From[T any](key string) (v T, err error) {
 	}
 	v, ok = a.(T)
 	if !ok {
-		return v, fmt.Errorf("key %s does not implement %T", key, v)
+		return v, fmt.Errorf("key %s: registered type %T does not implement %T", key, a, v)
 	}
 	return v, nil
 }

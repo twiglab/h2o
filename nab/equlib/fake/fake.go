@@ -10,6 +10,8 @@ import (
 	"github.com/twiglab/h2o/proto"
 )
 
+// 假设备只是返回当前时间，用于测试
+// 目前已知的问题，1 只能有一个假设备, 2 假设备也需要一个client虽然没有用到
 type Fake struct {
 	optStatus  int64
 	alwaysOpen bool

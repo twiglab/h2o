@@ -66,6 +66,7 @@ func run() error {
 	}
 
 	mcli, act := mqttcli(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
+	defer mcli.Disconnect(500)
 
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
 		return nab.CollectTask{
@@ -89,11 +90,13 @@ func run() error {
 		return err
 	}
 
-	defer mcli.Disconnect(500)
-
 	lps.Run()
 
-	go http.ListenAndServe(webaddr(), nil)
+	go func() {
+		if err := http.ListenAndServe(webaddr(), nil); err != nil {
+			slog.Error("http server error", slog.Any("error", err))
+		}
+	}()
 
 	<-ctx.Done()
 	log.Println("quit...")
