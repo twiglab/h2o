@@ -15,11 +15,11 @@ func (Dev) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id"),
 
-		field.String("code").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
+		field.String("code").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("设备号"),
 		field.String("typ").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类型"),
 		field.String("sn").Immutable().Optional().SchemaType(varchar(64)).Comment("设备序列号"),
 
-		field.String("clazz").Immutable().Unique().NotEmpty().SchemaType(varchar(64)).Comment("设备类别"),
+		field.String("clazz").Immutable().NotEmpty().SchemaType(varchar(64)).Comment("设备类别"),
 
 		field.String("cli").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("终端号"),
 
