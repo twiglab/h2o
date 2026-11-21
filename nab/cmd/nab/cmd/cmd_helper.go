@@ -42,10 +42,10 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	opts.SetWriteTimeout(10 * time.Second)
 
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
-		log.Println("mqtt - onConnect")
+		slog.Debug("mqtt - onConnect")
 		token := mc.Subscribe(topic, 0x00, h)
 		if token.WaitTimeout(5*time.Second) && token.Error() != nil {
-			log.Println("mqtt - 订阅失败", token.Error())
+			slog.Error("mqtt - 订阅失败", slog.Any("error", token.Error()))
 		}
 	})
 
