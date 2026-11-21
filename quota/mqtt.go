@@ -2,6 +2,7 @@ package quota
 
 import (
 	"context"
+	"errors"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -39,6 +40,10 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 	if err != nil {
 		return err
 	}
-	c.client.Publish(obj.Topic(), 0x00, false, bb)
-	return nil
+
+	if !c.client.IsConnectionOpen() {
+		return errors.New("mqtt not connected")
+	}
+	token := c.client.Publish(obj.Topic(), 0x00, false, bb)
+	return token.Error()
 }

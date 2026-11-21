@@ -124,13 +124,6 @@ func (s *ChargeServer) charge(ctx context.Context, md Meter) error {
 
 func MsgHandle(s *ChargeServer) mqtt.MessageHandler {
 	return func(cli mqtt.Client, msg mqtt.Message) {
-		if msg.Duplicate() {
-			msg.Ack()
-			return
-		}
-
-		defer msg.Ack()
-
 		// h2o/data/909/909_32/E
 		// 0    1   2    3     4
 		parts, err := proto.TopicPart(msg.Topic())
