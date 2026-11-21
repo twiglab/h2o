@@ -33,10 +33,10 @@ var (
 	// DevColumns holds the columns for the "dev" table.
 	DevColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "code", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "code", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "typ", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "sn", Type: field.TypeString, Nullable: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
-		{Name: "clazz", Type: field.TypeString, Unique: true, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
+		{Name: "clazz", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "cli", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "unit_id", Type: field.TypeUint8, Default: 0},
 		{Name: "addr", Type: field.TypeUint16, Default: 0},
