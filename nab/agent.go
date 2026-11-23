@@ -6,7 +6,6 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/panjf2000/ants/v2"
-	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
@@ -23,7 +22,8 @@ type Agent struct {
 	Logger *slog.Logger
 	IDB    *orm.IDB
 	CliMgr *ClientMgr
-	WAL    *wal.WAL
+
+	OnoffLogger *slog.Logger
 
 	Pool *ants.Pool
 }
@@ -104,7 +104,7 @@ func (a *Agent) Off(ctx context.Context, code string) error {
 	)
 }
 
-func (a *Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
+func (a *Agent) get(devCode string) (*ent.Dev, PortOperator, OnOffer, error) {
 	dev, err := a.IDB.GetDev(context.Background(), devCode)
 	if err != nil {
 		a.Logger.Error("OnOff.GetDev.Error",
@@ -134,32 +134,32 @@ func (a *Agent) get(devCode string) (*ent.Dev, *ModbusCli, OnOffer, error) {
 	return dev, mcli, onoff, nil
 }
 
-func (a *Agent) doOnOff(boxCode, devCode, op string) {
+func (a *Agent) doOnOff(box, code, op string) {
 	ctx := context.Background()
 
 	// 无论执行是否成功，都先记录
-	a.WAL.WriteLogContext(ctx,
-		wal.String("box", boxCode),
-		wal.String("device", devCode),
-		wal.String("op", op),
+	a.OnoffLogger.InfoContext(ctx, "onoff",
+		slog.String("box", box),
+		slog.String("device", code),
+		slog.String("op", op),
 	)
 
 	switch op {
 	case proto.ON:
-		if err := a.On(ctx, devCode); err != nil {
-			a.Logger.Error("onoff error", slog.String("code", devCode),
+		if err := a.On(ctx, code); err != nil {
+			a.Logger.Error("onoff error", slog.String("code", code),
 				slog.String("op", op),
 				slog.Any("error", err),
 			)
 		}
 	case proto.OFF:
-		if err := a.Off(ctx, devCode); err != nil {
-			a.Logger.Error("onoff error", slog.String("code", devCode),
+		if err := a.Off(ctx, code); err != nil {
+			a.Logger.Error("onoff error", slog.String("code", code),
 				slog.String("op", op),
 				slog.Any("error", err),
 			)
 		}
 	default:
-		a.Logger.Error("onoff unknow op", slog.String("code", devCode), slog.String("op", op))
+		a.Logger.Error("onoff unknow op", slog.String("code", code), slog.String("op", op))
 	}
 }

@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/twiglab/h2o/proto"
 
@@ -15,13 +16,13 @@ type Global struct {
 }
 
 type ClientMgr struct {
-	clientMap map[string]*ModbusCli
+	clientMap map[string]PortOperator
 	IDB       *orm.IDB
 }
 
 func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	ctx := context.Background()
-	clientMap := make(map[string]*ModbusCli)
+	clientMap := make(map[string]PortOperator)
 
 	clients, err := db.AllCli(ctx)
 	if err != nil {
@@ -42,7 +43,19 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	}, nil
 }
 
-func (g ClientMgr) ClientByCode(code string) (*ModbusCli, error) {
+func isNullPort(code string) bool {
+	switch strings.ToLower(code) {
+	case "null", "nil", "zero":
+		return true
+	}
+	return false
+}
+
+func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
+	if isNullPort(code) {
+		return nullOpt, nil
+	}
+
 	cli, ok := g.clientMap[code]
 	if !ok {
 		return nil, errors.New("not found code " + code)
@@ -50,8 +63,8 @@ func (g ClientMgr) ClientByCode(code string) (*ModbusCli, error) {
 	return cli, nil
 }
 
-func SubscriptTopic(boxCode string) string {
-	return proto.MakeTopic(proto.ONOFF, boxCode, "#")
+func SubscriptTopic(box string) string {
+	return proto.MakeTopic(proto.ONOFF, box, "#")
 	// return proto.H2O + "/onoff/" + boxCode + "/#"
 }
 

@@ -6,14 +6,14 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/avast/retry-go/v5 v5.1.1
 	github.com/eclipse/paho.mqtt.golang v1.5.1
-	github.com/gocarina/gocsv v0.0.0-20261101205459-d0dd027dcbfa
+	github.com/gocarina/gocsv v0.0.0-20261121203658-07c44a65ffb9
 	github.com/olekukonko/tablewriter v1.1.5
 	github.com/panjf2000/ants/v2 v2.12.1
 	github.com/simonvetter/modbus v1.6.4
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/viper v1.21.0
 	github.com/twiglab/h2o v0.0.0-00010101000000-000000000000
-	modernc.org/sqlite v1.62.0
+	modernc.org/sqlite v1.63.0
 )
 
 require (

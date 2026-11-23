@@ -3,6 +3,8 @@ package nab
 import (
 	"context"
 	"errors"
+	"io"
+	"log"
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -37,4 +39,9 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 
 func ClientID(code string) string {
 	return code + "@" + NAB
+}
+
+func MqttLog(w io.Writer) *log.Logger {
+	l := log.New(w, "mqtt", log.LstdFlags)
+	return l
 }

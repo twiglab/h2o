@@ -154,3 +154,26 @@ type DeviceData struct {
 	IDB    *orm.IDB
 	Logger *slog.Logger
 }
+
+type PortOperator interface {
+	DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error)
+	DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error)
+	DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error)
+}
+
+type nullOptx struct {
+}
+
+func (c nullOptx) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) error {
+	return coll.Collect(ctx, nil, data)
+}
+
+func (c nullOptx) DoOn(ctx context.Context, on DeviceOn, data DeviceData) error {
+	return on.On(ctx, nil, data)
+}
+
+func (c nullOptx) DoOff(ctx context.Context, off DeviceOff, data DeviceData) error {
+	return off.Off(ctx, nil, data)
+}
+
+var nullOpt nullOptx

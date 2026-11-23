@@ -13,11 +13,17 @@ import (
 	"github.com/panjf2000/ants/v2"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
-	"github.com/twiglab/h2o/clog/wal"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
+
+func mqttLog() {
+	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
+	logF := path.Join(root, "mqtt.log")
+	out := clog.NewLogWriter(logF)
+	mqtt.DEBUG = log.New(out, "mqtt", log.LstdFlags)
+}
 
 func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	broker := viper.GetString("nab.sender.mqtt.broker")
@@ -164,10 +170,11 @@ func serverLog() *slog.Logger {
 	return logL
 }
 
-func cwal() *wal.WAL {
-	root := cmp.Or(viper.GetString("nab.log.wal.root"), "wal")
-	log.Println("wal file:", root, "wal.log")
-	return wal.New("wal.log", clog.LogRoot(root))
+func onoffLog() *slog.Logger {
+	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
+	logL := clog.NewLog("server.log", slog.LevelInfo, clog.LogRoot(root))
+	log.Println("onoff log:", root, "onoff.log", slog.LevelInfo)
+	return logL
 }
 
 func pool() *ants.Pool {

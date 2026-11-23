@@ -49,7 +49,9 @@ func run() error {
 
 	cliMgr := clientMgr(db)
 	interval := taskInterval()
-	wl := cwal()
+	onofflog := onoffLog()
+
+	mqttLog()
 
 	p := pool()
 
@@ -57,12 +59,12 @@ func run() error {
 	defer stop()
 
 	agent := &nab.Agent{
-		Global: g,
-		IDB:    db,
-		CliMgr: cliMgr,
-		Logger: logger,
-		WAL:    wl,
-		Pool:   p,
+		Global:      g,
+		IDB:         db,
+		CliMgr:      cliMgr,
+		Logger:      logger,
+		OnoffLogger: onofflog,
+		Pool:        p,
 	}
 
 	mcli, act := mqttcli(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
