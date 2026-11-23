@@ -6,9 +6,18 @@ import (
 	"log/slog"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/twiglab/h2o/proto"
 )
 
 const APP_ID = "vigil"
+
+func canRecord(typ string) bool {
+	switch typ {
+	case proto.TYPE_ELECTRICITY, proto.TYPE_GAS, proto.TYPE_WATER:
+		return true
+	}
+	return false
+}
 
 func Handle(s *Hub) mqtt.MessageHandler {
 	ctx := context.Background()
@@ -22,6 +31,11 @@ func Handle(s *Hub) mqtt.MessageHandler {
 			s.Logger.ErrorContext(ctx, "unmarshal error", slog.Any("err", err))
 			return
 		}
+
+		if !canRecord(wm.Type) {
+			return
+		}
+
 		if err := s.Handle(ctx, wm); err != nil {
 			s.Logger.ErrorContext(ctx, "handle error", slog.Any("err", err))
 			return

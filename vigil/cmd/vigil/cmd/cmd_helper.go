@@ -25,7 +25,7 @@ func mqttcli(h mqtt.MessageHandler) mqtt.Client {
 	opts.SetClientID(vigil.APP_ID)
 	opts.AddBroker(broker)
 	opts.SetOrderMatters(false)
-	opts.SetAutoReconnect(true)
+	opts.SetConnectRetry(true)
 
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
 		token := mc.Subscribe(GeneralDataTopic, 0x00, h)
