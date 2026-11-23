@@ -58,7 +58,7 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	})
 
 	opts.SetConnectionLostHandler(func(client mqtt.Client, err error) {
-		slog.Error("mqtt - Connect lost")
+		slog.Error("mqtt - Connect lost", slog.Any("error", err))
 	})
 
 	client := mqtt.NewClient(opts)

@@ -55,6 +55,10 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 			return
 		}
 
+		// 这里用到了线程池
+		// 主要作用是防止设备大范围的开合操作
+		// topic已经提供了操作所需的所有字段，payload不做解析，直接忽略
+		// 所以这里即便ack早于执行，也不会有影响
 		if err := a.Pool.Submit(func() {
 			a.doOnOff(box, code, op)
 		}); err != nil {
