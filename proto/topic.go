@@ -24,6 +24,7 @@ const (
 	TYPE_ELECTRICITY = "E"
 	TYPE_WATER       = "W"
 	TYPE_GAS         = "G"
+	TYPE_TIME_TICK   = "TIME_TICK"
 )
 
 func TopicPart(topic string) ([]string, error) {
