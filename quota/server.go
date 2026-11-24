@@ -93,7 +93,7 @@ func (s *ChargeServer) charge(ctx context.Context, md Meter) error {
 		return nil
 	}
 
-	vc, err := s.DBx.LoadLast(ctx, md.Code)
+	vc, err := s.DBx.LoadLast(ctx, md.Code, md.Pos.Project)
 	if ent.IsNotFound(err) {
 		// 没找到限额，默认不计费
 		s.Logger.DebugContext(ctx, "record not found", slog.Any("meter", md))
@@ -138,6 +138,16 @@ func MsgHandle(s *ChargeServer) mqtt.MessageHandler {
 		var em Meter
 		if err := em.UnmarshalBinary(msg.Payload()); err != nil {
 			s.Logger.Error("unmarshal error", slog.Any("error", err))
+			return
+		}
+
+		// topic 的 box/code/type 必须与 payload 一致
+		if parts[2] != em.Gateway.Code || parts[3] != em.Code || parts[4] != em.Type {
+			s.Logger.Error("topic/payload mismatch",
+				slog.String("topic", msg.Topic()),
+				slog.String("p.code", em.Code),
+				slog.String("p.type", em.Type),
+				slog.String("p.gateway", em.Gateway.Code))
 			return
 		}
 
