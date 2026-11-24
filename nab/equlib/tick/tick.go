@@ -33,7 +33,7 @@ func (e *TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab
 
 	now := time.Now()
 
-	var meter nab.Meter
+	meter := nab.NewMeter()
 	meter.Data.DataValue = now.Unix()
 	meter.Data.OptStatus = e.getOpt()
 
@@ -47,6 +47,8 @@ func (e *TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab
 	meter.Gateway.Code = data.Global.Box
 	meter.Gateway.Type = proto.GATEWAY_NH
 	meter.Gateway.UnitID = 0
+
+	meter.Data.Extra["ts"] = now.Unix()
 
 	return data.Sender.SendData(ctx, meter)
 }

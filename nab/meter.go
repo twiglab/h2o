@@ -21,3 +21,11 @@ func (m Meter) Topic() string {
 	return proto.MakeTopic(proto.DATA, m.Gateway.Code, m.Code, m.Type)
 
 }
+
+func NewMeter() Meter {
+	return Meter{
+		Data: proto.MeterValue{
+			Extra: make(map[string]int64),
+		},
+	}
+}

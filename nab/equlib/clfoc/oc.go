@@ -23,7 +23,7 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 
 	now := time.Now()
 
-	var meter nab.Meter
+	meter := nab.NewMeter()
 	meter.Data.DataValue = int64(dataVal)
 	meter.Data.OptStatus = proto.OPT_STATUS_ON
 

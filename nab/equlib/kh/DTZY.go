@@ -37,7 +37,7 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 
 	now := time.Now()
 
-	var meter nab.Meter
+	meter := nab.NewMeter()
 	meter.Data.DataValue = int64(dataVal)
 	meter.Data.OptStatus = optStatus(opt)
 

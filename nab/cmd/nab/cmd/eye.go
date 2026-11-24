@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"crypto/rand"
 	"errors"
 	"fmt"
 	"log"
@@ -39,7 +38,6 @@ func toolEey() error {
 	g := global()
 	topic := proto.MakeTopic(proto.DATA, g.Box, deviceCode, "#")
 	log.Println(topic)
-	log.Println(rand.Text())
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 

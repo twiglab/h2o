@@ -23,7 +23,7 @@ func (e LXSNoValve) Collect(ctx context.Context, cli *modbus.ModbusClient, data 
 
 	now := time.Now()
 
-	var meter nab.Meter
+	meter := nab.NewMeter()
 	meter.Data.DataValue = int64(dataVal)
 
 	// 无电磁阀水表，状态为常开
