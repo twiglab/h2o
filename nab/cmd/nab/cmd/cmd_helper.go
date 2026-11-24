@@ -39,15 +39,12 @@ func mqttLog() {
 	}
 }
 
-func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
+func mqttcli(clientID, topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	broker := viper.GetString("nab.sender.mqtt.broker")
 
 	if broker == "" {
 		log.Fatalf("no broker")
 	}
-
-	box := viper.GetString("nab.box")
-	clientID := nab.ClientID(box)
 
 	opts := mqtt.NewClientOptions()
 	opts.SetClientID(clientID)
@@ -201,3 +198,10 @@ func pool() *ants.Pool {
 	}
 	return p
 }
+
+func randText() string {
+	now := time.Now()
+	return now.Format(f)
+}
+
+const f = "20060102150405"

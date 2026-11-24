@@ -2,6 +2,7 @@ package nab
 
 import (
 	"context"
+	"encoding/json/v2"
 	"errors"
 	"log/slog"
 	"strings"
@@ -70,7 +71,6 @@ func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
 
 func SubscriptTopic(box string) string {
 	return proto.MakeTopic(proto.ONOFF, box, "#")
-	// return proto.H2O + "/onoff/" + boxCode + "/#"
 }
 
 func onoffTopicPart(t string) (box string, code string, op string, err error) {
@@ -93,4 +93,18 @@ func onoffTopicPart(t string) (box string, code string, op string, err error) {
 
 	box, code, op = parts[2], parts[3], parts[4]
 	return
+}
+
+type OnoffLite struct {
+	Box  string `json:"box"`
+	Code string `json:"code"`
+	Op   string `json:"op"`
+}
+
+func (o OnoffLite) Topic() string {
+	return proto.MakeTopic(proto.ONOFF, o.Box, o.Code, o.Op)
+}
+
+func (d OnoffLite) MarshalBinary() ([]byte, error) {
+	return json.Marshal(d)
 }

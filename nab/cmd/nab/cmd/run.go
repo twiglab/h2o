@@ -67,7 +67,11 @@ func run() error {
 		Pool:        p,
 	}
 
-	mcli, act := mqttcli(nab.SubscriptTopic(g.Box), nab.AgentHandle(agent))
+	mcli, act := mqttcli(
+		nab.ClientID(g.Box, nab.NAB),
+		nab.SubscriptTopic(g.Box),
+		nab.AgentHandle(agent),
+	)
 	defer mcli.Disconnect(500)
 
 	lps := loops(db, func(data []*ent.Dev) nab.Job {
