@@ -1,6 +1,8 @@
 package equlib
 
-import "fmt"
+import (
+	"fmt"
+)
 
 var libmap = make(map[string]any)
 

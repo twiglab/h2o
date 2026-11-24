@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/avast/retry-go/v5"
 	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
+	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/proto"
 )
 
@@ -57,30 +57,17 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 }
 
 func (e DTZY) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	err := retry.New(
-		retry.Attempts(3),
-		retry.Delay(300*time.Millisecond), // 给串口留出帧间隔 retry.DelayType(retry.CombineDelay(retry.BackOffDelay, retry.RandomDelay)),
-		retry.Context(ctx),                // 支持取消
-		retry.LastErrorOnly(true),         // 只返回最后一次错误，日志更干净
-	).Do(
+	return equlib.TryDo(ctx, 3, 300*time.Millisecond,
 		func() error {
 			return cli.WriteRegisters(0x22, []uint16{0x02})
 		},
 	)
-	return err
 }
 
 func (e DTZY) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	err := retry.New(
-		retry.Attempts(3),
-		retry.Delay(300*time.Millisecond), // 给串口留出帧间隔 retry.DelayType(retry.CombineDelay(retry.BackOffDelay, retry.RandomDelay)),
-		retry.Context(ctx),                // 支持取消
-		retry.LastErrorOnly(true),         // 只返回最后一次错误，日志更干净
-	).Do(
+	return equlib.TryDo(ctx, 3, 300*time.Millisecond,
 		func() error {
-			// 宽厚公司电表文档明确要求写操作必须用FC16
 			return cli.WriteRegisters(0x22, []uint16{0x01})
 		},
 	)
-	return err
 }

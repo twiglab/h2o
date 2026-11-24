@@ -161,6 +161,9 @@ type PortOperator interface {
 	DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error)
 }
 
+// nullOptx 终端仅用于无需客户端的设备
+// 例如 TimeTick设备
+// 如果配置问题，导致错误使用的nullOptx，直接panic，没有也无需任他任何保证
 type nullOptx struct {
 }
 

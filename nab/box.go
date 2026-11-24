@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"strings"
 
 	"github.com/twiglab/h2o/proto"
@@ -43,9 +44,13 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	}, nil
 }
 
+// isNullPort 判断是否为空端口
+// 空端口的作用为设备不需要client 即可正常工作
+// 目前为空端口为 null，nil，zero， 空端口不区分大小写
 func isNullPort(code string) bool {
 	switch strings.ToLower(code) {
 	case "null", "nil", "zero":
+		slog.Info("null port substituted", slog.String("code", code))
 		return true
 	}
 	return false
