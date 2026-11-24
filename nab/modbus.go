@@ -2,6 +2,7 @@ package nab
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"sync"
 	"time"
@@ -38,6 +39,10 @@ type ModbusCli struct {
 
 	endina    modbus.Endianness
 	wordorder modbus.WordOrder
+
+	cfg *modbus.ClientConfiguration
+
+	isOpen bool
 }
 
 func endian(v uint) modbus.Endianness {
@@ -54,7 +59,7 @@ func wordorder(v uint) modbus.WordOrder {
 	return modbus.HIGH_WORD_FIRST
 }
 
-func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
+func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 	cfg := &modbus.ClientConfiguration{
 		URL:      record.URL,
 		Speed:    record.Speed,
@@ -64,34 +69,56 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli, err error) {
 		Timeout:  time.Second,
 	}
 
-	cli, err := modbus.NewClient(cfg)
-	if err != nil {
-		return nil, err
-	}
-
 	e := endian(record.Endian)
 	wo := wordorder(record.WordOrder)
-
-	if err = cli.SetEncoding(e, wo); err != nil {
-		return nil, err
-	}
-
-	if err = cli.Open(); err != nil {
-		return nil, err
-	}
-
 	return &ModbusCli{
 		Record: record,
-		cli:    cli,
 		Code:   record.Code,
 
 		endina:    e,
 		wordorder: wo,
-	}, nil
+
+		cfg: cfg,
+
+		isOpen: false,
+	}
+
+}
+
+func (c *ModbusCli) Open() error {
+	if c.isOpen {
+		return nil
+	}
+
+	cli, err := modbus.NewClient(c.cfg)
+	if err != nil {
+		return err
+	}
+	if err = cli.SetEncoding(c.endina, c.wordorder); err != nil {
+		return err
+	}
+	if err = cli.Open(); err != nil {
+		return err
+	}
+	c.cli = cli // 这里设置ModbusClient
+	c.isOpen = true
+	return nil
+}
+
+func (c *ModbusCli) Close() error {
+	c.isOpen = false
+	return c.cli.Open()
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
+	// open 方法会判断isOpen条件
+	if err := c.Open(); err != nil {
+		return err
+	}
 
+	// 必须两者都为0才设置，如果只有一个为0，那就不设置，最大容忍配置错误
+	// 此问题已经被记录，留到v2版本中去解决
+	// TODO
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
 		if err := c.cli.SetEncoding(modbus.Endianness(data.Record.Endian), modbus.WordOrder(data.Record.WordOrder)); err != nil {
 			return err
@@ -115,7 +142,16 @@ func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data De
 		return
 	}
 
-	err = coll.Collect(ctx, c.cli, data)
+	if err = coll.Collect(ctx, c.cli, data); err != nil {
+		//  底层库只提供的这个错误用于判断modbus连接是否有问题
+		if errors.Is(err, modbus.ErrRequestTimedOut) {
+			// 这里就直接认为modbus连接除了问题，直接关闭
+			// 其余的事情交给setup方法去处理
+			_ = c.Close()
+		}
+	}
+
+	// 即便连接是关闭的，调用reset代码也不会有影响
 	_ = c.reset()
 	return
 }

@@ -62,7 +62,9 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 		if err := a.Pool.Submit(func() {
 			a.doOnOff(box, code, op)
 		}); err != nil {
-			// pool size为32，如果pool满了，记录日志，直接丢弃，等上游程序发送下一轮指令
+			// pool size为32，如果pool满了，记录日志，直接丢弃
+			// optStatus是水平出发的，即便丢弃，下一轮上报上游程序仍然能够获取正确值
+			// 上游程序会保证再次下发正确的指令
 			a.Logger.Error("submit errorr",
 				slog.String("box", box),
 				slog.String("code", code),

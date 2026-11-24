@@ -32,8 +32,8 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	}
 
 	for _, cli := range clients {
-		cli, err := NewModbusCli(cli)
-		if err != nil {
+		cli := NewModbusCli(cli)
+		if err := cli.Open(); err != nil {
 			return nil, err
 		}
 		clientMap[cli.Code] = cli
