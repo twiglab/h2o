@@ -22,8 +22,8 @@ github.com/fsnotify/fsnotify v1.9.0 h1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S
 github.com/fsnotify/fsnotify v1.9.0/go.mod h1:8jBTzvmWwFyi3Pb8djgCCO5IBqzKJ/Jwo8TRcHyHii0=
 github.com/go-openapi/inflect v0.19.0 h1:9jCH9scKIbHeV9m12SmPilScz6krDxKRasNNSNPXu/4=
 github.com/go-openapi/inflect v0.19.0/go.mod h1:lHpZVlpIQqLyKwJ4N+YSc9hchQy/i12fJykb83CRBH4=
-github.com/go-sphere/wecom-aibot-go-sdk v1.0.5 h1:M/T4PROt6rEnV8pLljJm5XNQdmxGA7vBGytWix1Evo0=
-github.com/go-sphere/wecom-aibot-go-sdk v1.0.5/go.mod h1:MULp3kxPQqjy68/lqSxTVJooTmWpflcB4GEC2mVTULk=
+github.com/go-sphere/wecom-aibot-go-sdk v1.0.6 h1:XE622jJsClAzzpGUPUpV1UT71bERQdvdhbYTtqMJCsM=
+github.com/go-sphere/wecom-aibot-go-sdk v1.0.6/go.mod h1:MULp3kxPQqjy68/lqSxTVJooTmWpflcB4GEC2mVTULk=
 github.com/go-sql-driver/mysql v1.8.1 h1:LedoTUt/eveggdHS9qUFC1EFSa8bU2+1pZjSRpvNJ1Y=
 github.com/go-sql-driver/mysql v1.8.1/go.mod h1:wEBSXgmK//2ZFJyE+qWnIsVGmvmEKlqwuVSjsCm7DZg=
 github.com/go-test/deep v1.0.3 h1:ZrJSEWsXzPOxaZnFteGEfooLba+ju3FYIbOrS+rQd68=
