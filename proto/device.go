@@ -21,7 +21,7 @@ type Device struct {
 	DataTime time.Time `json:"data_time"` // 采集时间
 	DataCode string    `json:"data_code"` // 采集的唯一标识,全局唯一单调递增
 
-	Status int `json:"status"` // 设备业务状态, 网关,采集程序或设备自定义, 参考设备状态能使定义
+	Status int `json:"status,omitempty"` // 设备业务状态, 网关,采集程序或设备自定义
 }
 
 func NewDataCode() string {
