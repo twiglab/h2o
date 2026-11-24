@@ -2,6 +2,7 @@ package fake
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/simonvetter/modbus"
@@ -18,6 +19,7 @@ func init() {
 // 滴答设备不需要client
 // 滴答设备类型固定为 proto.TYPE_TIME_TICK
 type TimeTick struct {
+	mu        sync.RWMutex
 	optStatus int64
 }
 
@@ -27,13 +29,13 @@ func newTimeTick() *TimeTick {
 	}
 }
 
-func (e TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab.DeviceData) error {
+func (e *TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab.DeviceData) error {
 
 	now := time.Now()
 
 	var meter nab.Meter
 	meter.Data.DataValue = now.Unix()
-	meter.Data.OptStatus = e.optStatus
+	meter.Data.OptStatus = e.getOpt()
 
 	meter.Code = data.Record.Code
 	meter.Type = proto.TYPE_TIME_TICK
@@ -50,11 +52,22 @@ func (e TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab.
 }
 
 func (e *TimeTick) On(_ context.Context, _ *modbus.ModbusClient, _ nab.DeviceData) error {
-	e.optStatus = proto.OPT_STATUS_ON
+	e.setOpt(proto.OPT_STATUS_ON)
 	return nil
 }
 
 func (e *TimeTick) Off(_ context.Context, _ *modbus.ModbusClient, _ nab.DeviceData) error {
-	e.optStatus = proto.OPT_STATUS_OFF
+	e.setOpt(proto.OPT_STATUS_OFF)
 	return nil
+}
+
+func (e *TimeTick) setOpt(s int64) {
+	e.mu.Lock()
+	defer e.mu.Unlock()
+	e.optStatus = s
+}
+func (e *TimeTick) getOpt() int64 {
+	e.mu.RLock()
+	defer e.mu.RUnlock()
+	return e.optStatus
 }

@@ -20,9 +20,23 @@ import (
 
 func mqttLog() {
 	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
+	level := clog.Level(viper.GetString("nab.log.level"))
+
 	logF := path.Join(root, "mqtt.log")
 	out := clog.NewLogWriter(logF)
-	mqtt.DEBUG = log.New(out, "mqtt", log.LstdFlags)
+	switch level {
+	case slog.LevelDebug:
+		mqtt.DEBUG = log.New(out, "mqtt - ", log.LstdFlags)
+		fallthrough
+	case slog.LevelInfo:
+		mqtt.CRITICAL = log.New(out, "mqtt - ", log.LstdFlags)
+		fallthrough
+	case slog.LevelWarn:
+		mqtt.WARN = log.New(out, "mqtt - ", log.LstdFlags)
+		fallthrough
+	case slog.LevelError:
+		mqtt.ERROR = log.New(out, "mqtt - ", log.LstdFlags)
+	}
 }
 
 func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
@@ -42,6 +56,9 @@ func mqttcli(topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
 	// 开关指令允许丢失且无顺序要求（README），故关闭 paho 的报文顺序保证；
 	// 注意 order=false 时每条消息独立 goroutine，handler 内不得阻塞。
 	opts.SetOrderMatters(false)
+
+	// 允许丢失消息，每次链接都用新session
+	opts.SetCleanSession(true)
 
 	opts.SetConnectRetry(true)
 	opts.SetConnectRetryInterval(5 * time.Second)
@@ -172,7 +189,7 @@ func serverLog() *slog.Logger {
 
 func onoffLog() *slog.Logger {
 	root := cmp.Or(viper.GetString("nab.log.root"), "logs")
-	logL := clog.NewLog("server.log", slog.LevelInfo, clog.LogRoot(root))
+	logL := clog.NewLog("onoff.log", slog.LevelInfo, clog.LogRoot(root))
 	log.Println("onoff log:", root, "onoff.log", slog.LevelInfo)
 	return logL
 }
