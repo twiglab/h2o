@@ -112,7 +112,7 @@ func (c *ModbusCli) Open() error {
 
 func (c *ModbusCli) Close() error {
 	c.isOpen = false
-	return c.cli.Open()
+	return c.cli.Close()
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {

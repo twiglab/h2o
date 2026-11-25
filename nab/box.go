@@ -31,10 +31,8 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	}
 
 	for _, cli := range clients {
+		// 这里只是创建，Open操作交给setup方法
 		cli := NewModbusCli(cli)
-		if err := cli.Open(); err != nil {
-			return nil, err
-		}
 		clientMap[cli.Code] = cli
 	}
 
@@ -48,7 +46,7 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 // 空端口的作用为设备不需要client 即可正常工作
 // 目前为空端口为 null，nil，zero， 空端口不区分大小写
 func isNullPort(code string) bool {
-	switch strings.ToLower(code) {
+	switch strings.ToLower(code) { // 保留端口不区分大小写
 	case "null", "nil", "zero":
 		return true
 	}
