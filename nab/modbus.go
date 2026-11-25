@@ -60,13 +60,18 @@ func wordorder(v uint) modbus.WordOrder {
 }
 
 func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
+	timeout := time.Second
+	if record.Timeout > 0 && record.Timeout <= 10000 { // 最大10秒
+		timeout = time.Duration(record.Timeout) * time.Millisecond
+	}
+
 	cfg := &modbus.ClientConfiguration{
 		URL:      record.URL,
 		Speed:    record.Speed,
 		DataBits: record.DataBits,
 		Parity:   record.Parity,
 		StopBits: record.StopBits,
-		Timeout:  time.Second,
+		Timeout:  timeout,
 	}
 
 	e := endian(record.Endian)

@@ -24,6 +24,10 @@ func (m Meter) Topic() string {
 
 func NewMeter() Meter {
 	return Meter{
+		// status 为业务状态，这个状态在当前v1版本中无法获取
+		// 在v1 版本中，所有的设备都是上线状态
+		// 留到v2版本中解决此问题
+		Status: proto.STATUS_ENABLE,
 		Data: proto.MeterValue{
 			Extra: make(map[string]int64),
 		},

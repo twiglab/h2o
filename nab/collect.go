@@ -23,6 +23,8 @@ type CollectTask struct {
 
 func (t CollectTask) Run() {
 	for _, dev := range t.Data {
+		// 先延时在采集
+		time.Sleep(t.Delay)
 		coltor, err := equlib.From[DeviceCollector](dev.Clazz)
 		if err != nil {
 			t.Logger.Error("CollectTask.NotFoundClazz", slog.String("code", dev.Code),
@@ -52,6 +54,5 @@ func (t CollectTask) Run() {
 		}); err != nil {
 			t.Logger.Error("CollectTask.CollectError", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
 		}
-		time.Sleep(t.Delay)
 	}
 }

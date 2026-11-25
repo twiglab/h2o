@@ -28,7 +28,7 @@ func (e DTZY) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.De
 	// 后续根据程序实际运行情况，考虑减少休眠时间
 	// 堵塞问题留存到v2 版本中解决，目前此逻辑维持不变
 	// TODO
-	time.Sleep(300 * time.Millisecond)
+	time.Sleep(100 * time.Millisecond)
 
 	opt, err := cli.ReadRegister(0x22, modbus.INPUT_REGISTER)
 	if err != nil {
