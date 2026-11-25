@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"log/slog"
+	"net/http"
 	"path"
 	"time"
 
@@ -201,3 +202,11 @@ func randText() string {
 }
 
 const f = "20060102150405"
+
+func httpserver(h http.Handler) *http.Server {
+	srv := &http.Server{
+		Addr:    webaddr(),
+		Handler: h,
+	}
+	return srv
+}

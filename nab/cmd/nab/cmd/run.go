@@ -5,12 +5,12 @@ import (
 	"errors"
 	"log"
 	"log/slog"
-	"net/http"
-	_ "net/http/pprof"
 	"os/signal"
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/spf13/cobra"
 
 	"github.com/twiglab/h2o/nab"
@@ -98,13 +98,24 @@ func run() error {
 
 	lps.Run()
 
+	mux := chi.NewMux()
+	mux.Mount("/debug", middleware.Profiler())
+	mux.HandleFunc("/version", nab.VersionHandle)
+
+	srv := httpserver(mux)
+
 	go func() {
-		if err := http.ListenAndServe(webaddr(), nil); err != nil {
+		if err := srv.ListenAndServe(); err != nil {
 			slog.Error("http server error", slog.Any("error", err))
 		}
 	}()
 
 	<-ctx.Done()
+
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Server shutdown failed: %v\n", err)
+	}
+
 	log.Println("quit...")
 	return nil
 }

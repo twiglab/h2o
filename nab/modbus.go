@@ -134,8 +134,8 @@ func (c *ModbusCli) setup(data DeviceData) error {
 }
 
 func (c *ModbusCli) reset() error {
+	// 恢复client设置
 	_ = c.cli.SetEncoding(c.endina, c.wordorder)
-	_ = c.cli.SetUnitId(1)
 	return nil
 }
 
