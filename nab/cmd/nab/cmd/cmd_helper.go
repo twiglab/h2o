@@ -67,11 +67,7 @@ func mqttcli(clientID, topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Se
 	opts.SetOnConnectHandler(func(mc mqtt.Client) {
 		slog.Debug("mqtt - onConnect")
 		token := mc.Subscribe(topic, 0x00, h)
-		if !token.WaitTimeout(5 * time.Second) {
-			slog.Error("mqtt 订阅超时", slog.String("topic", topic))
-			return
-		}
-		if err := token.Error(); err != nil {
+		if err := mqtt.WaitTokenTimeout(token, 5*time.Second); err != nil {
 			slog.Error("mqtt 订阅失败", slog.Any("error", err))
 			return
 		}

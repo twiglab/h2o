@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -32,7 +33,17 @@ func (c *MQTTAction) SendData(ctx context.Context, obj SendObject) error {
 		return errors.New("mqtt not connected")
 	}
 	token := c.client.Publish(obj.Topic(), 0x00, false, bb)
-	return token.Error()
+	go func() {
+		// 异步非阻塞处理返回结果
+		// 对于pub失败情况直接记录日志
+		// 可观测性问题留到v2版本解决
+		// TODO
+		if err := mqtt.WaitTokenTimeout(token, 5*time.Second); err != nil {
+			slog.ErrorContext(ctx, "mqtt Publish 失败", slog.Any("error", err))
+			return
+		}
+	}()
+	return nil
 }
 
 func ClientID(code, typ string) string {

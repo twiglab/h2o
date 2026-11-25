@@ -14,11 +14,6 @@ func MustHas() {
 
 func Register(s string, a any) { libmap[s] = a }
 
-// RegisterAs 注册设备实现
-// 配合 `var _ nab.DeviceCollector = DTZY{}` 之类的断言，让遗漏在编译期暴露。
-// 后期用此方法取代Register
-func RegisterAs[T any](s string, a T) { libmap[s] = a }
-
 func From[T any](key string) (v T, err error) {
 	a, ok := libmap[key]
 	if !ok {
