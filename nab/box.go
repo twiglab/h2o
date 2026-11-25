@@ -42,17 +42,6 @@ func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
 	}, nil
 }
 
-// isNullPort 判断是否为空端口
-// 空端口的作用为设备不需要client 即可正常工作
-// 目前为空端口为 null，nil，zero， 空端口不区分大小写
-func isNullPort(code string) bool {
-	switch strings.ToLower(code) { // 保留端口不区分大小写
-	case "null", "nil", "zero":
-		return true
-	}
-	return false
-}
-
 func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
 	if isNullPort(code) {
 		return nullOpt, nil
@@ -63,6 +52,24 @@ func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
 		return nil, errors.New("not found code " + code)
 	}
 	return cli, nil
+}
+
+func (g ClientMgr) Close() error {
+	for _, cli := range g.clientMap {
+		_ = cli.Close()
+	}
+	return nil
+}
+
+// isNullPort 判断是否为空端口
+// 空端口的作用为设备不需要client 即可正常工作
+// 目前为空端口为 null，nil，zero， 空端口不区分大小写
+func isNullPort(code string) bool {
+	switch strings.ToLower(code) { // 保留端口不区分大小写
+	case "null", "nil", "zero":
+		return true
+	}
+	return false
 }
 
 func SubscriptTopic(box string) string {

@@ -48,12 +48,15 @@ func run() error {
 	defer func() { _ = db.Close() }()
 
 	cliMgr := clientMgr(db)
+	defer cliMgr.Close()
+
 	interval := taskInterval()
 	onofflog := onoffLog()
 
 	mqttLog()
 
 	p := pool()
+	defer p.Release()
 
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -103,6 +106,8 @@ func run() error {
 	mux.HandleFunc("/version", nab.VersionHandle)
 
 	srv := httpserver(mux)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
@@ -112,7 +117,7 @@ func run() error {
 
 	<-ctx.Done()
 
-	if err := srv.Shutdown(ctx); err != nil {
+	if err := srv.Shutdown(shutdownCtx); err != nil {
 		log.Fatalf("Server shutdown failed: %v\n", err)
 	}
 

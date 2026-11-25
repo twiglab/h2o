@@ -3,9 +3,9 @@
 ## 要求  
 采集器需要支持linux，且运行内存1Gb或以上  
 要求下游水电表必须支持表显采集和设备能使（开合状态） 
-对于仅支持表显采集的设备，设备能使`optStatus`必须正确设置为 `OPT_STATUS_ON` / `OPT_STATUS_OFF` 之一  
+对于支持采集和控制的设备，设备能使`optStatus`必须正确设置为 `OPT_STATUS_ON` / `OPT_STATUS_OFF` 之一  
+若设备不支开合状态，必须上报 `OPT_STATUS_UNKNOW`  
 `OPT_STATUS_UNKNOW` 表示"采集侧无法确定"，下游应用自行处理此状态，例如直接跳过该设备的所有限额逻辑  
-若设备确实不支开合状态，必须上报 `OPT_STATUS_ON` 而非 `OPT_STATUS_UNKNOW`。  
 目前仅支持MQTT数据上报，协议实现位于`h2o/proto`  
 设备使用状态由`Device.Status`表示，位于`proto/device.go`，如果设备支持，需正确设置，默认为STATUS_UNKNOW  
 

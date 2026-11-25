@@ -14,6 +14,7 @@ const KH_DTZY2851_CD7_1 = "KH-DTZY2851-CD7-1"
 
 // DTZY 电表，0x60地址读取有功总电能（即表显）
 // 0x22 地址读取开合状态，写入执行对应的操作（0x01拉闸, 0x02合闸）
+// 文档要求 开合状态读取和写入均为0x22
 // 注意，对接文档要求，写入必须用modbus 0x10 （WriteRegisters）写入
 type DTZY struct {
 }

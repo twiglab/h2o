@@ -112,6 +112,9 @@ func (c *ModbusCli) Open() error {
 
 func (c *ModbusCli) Close() error {
 	c.isOpen = false
+	if c.cli == nil {
+		return nil
+	}
 	return c.cli.Close()
 }
 
@@ -200,6 +203,7 @@ type PortOperator interface {
 	DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error)
 	DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error)
 	DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error)
+	Close() error
 }
 
 // nullOptx 终端仅用于无需客户端的设备
@@ -219,5 +223,6 @@ func (c nullOptx) DoOn(ctx context.Context, on DeviceOn, data DeviceData) error 
 func (c nullOptx) DoOff(ctx context.Context, off DeviceOff, data DeviceData) error {
 	return off.Off(ctx, nil, data)
 }
+func (c nullOptx) Close() error { return nil }
 
 var nullOpt nullOptx

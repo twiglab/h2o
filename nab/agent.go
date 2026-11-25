@@ -39,6 +39,7 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 
 		box, code, op, err := onoffTopicPart(msg.Topic())
 		if err != nil {
+			a.Logger.Error("topic error", slog.String("topic", msg.Topic()), slog.Any("error", err))
 			return
 		}
 

@@ -25,7 +25,9 @@ func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.D
 
 	meter := nab.NewMeter()
 	meter.Data.DataValue = int64(dataVal)
-	meter.Data.OptStatus = proto.OPT_STATUS_ON
+
+	// 不支持开合控制
+	meter.Data.OptStatus = proto.OPT_STATUS_UNKNOW
 
 	meter.Code = data.Record.Code
 	meter.Type = data.Record.Typ
