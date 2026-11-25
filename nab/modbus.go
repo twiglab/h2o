@@ -3,8 +3,10 @@ package nab
 import (
 	"context"
 	"errors"
+	"io"
 	"log/slog"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/simonvetter/modbus"
@@ -91,6 +93,7 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 }
 
 func (c *ModbusCli) Open() error {
+	// 已经打开，直接返回, 避免产生新连接
 	if c.isOpen {
 		return nil
 	}
@@ -105,17 +108,22 @@ func (c *ModbusCli) Open() error {
 	if err = cli.Open(); err != nil {
 		return err
 	}
-	c.cli = cli // 这里设置ModbusClient
+
+	// 这里设置ModbusClient
+	// Close 中 cli已经被设置成nil
+	c.cli = cli
 	c.isOpen = true
 	return nil
 }
 
-func (c *ModbusCli) Close() error {
+func (c *ModbusCli) Close() (err error) {
 	c.isOpen = false
 	if c.cli == nil {
-		return nil
+		return
 	}
-	return c.cli.Close()
+	err = c.cli.Close()
+	c.cli = nil // 释放 cli
+	return
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
@@ -151,8 +159,12 @@ func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data De
 	}
 
 	if err = coll.Collect(ctx, c.cli, data); err != nil {
-		//  底层库只提供的这个错误用于判断modbus连接是否有问题
-		if errors.Is(err, modbus.ErrRequestTimedOut) {
+		// 底层库只提供的这个错误用于判断modbus连接是否有问题
+		// 此问题以被记录，后续根据日志判断是否还有其他类型的错误
+		// TODO
+		if errors.Is(err, modbus.ErrRequestTimedOut) ||
+			errors.Is(err, io.EOF) ||
+			errors.Is(err, syscall.ECONNRESET) {
 			// 这里就直接认为modbus连接除了问题，直接关闭
 			// 其余的事情交给setup方法去处理
 			_ = c.Close()
@@ -184,7 +196,6 @@ func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) (
 	if err = c.setup(data); err != nil {
 		return err
 	}
-
 	err = off.Off(ctx, c.cli, data)
 	_ = c.reset()
 	return
