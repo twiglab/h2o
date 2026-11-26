@@ -11,12 +11,12 @@ project = "888"
 #cli = "cli.csv"
 
 [nab.loops]
-# 每个loop结束后的延时时间, 默认1000 (毫秒)
-# delay = 1000 
+# 每轮采集之间的间隔 单位毫秒
+# delay = 1000 # 默认1000 (毫秒)
 
 [nab.loop.task]
-# 每个task之间延, 默认1000 (毫秒)
-# interval = 1000 
+# 每台设备之间的间隔 单位毫秒
+# interval = 1000 # 默认1000 (毫秒)
 
 [nab.web]
 # nab web address，默认 :10008
@@ -29,6 +29,3 @@ project = "888"
 [nab.log]
 # level = "info"
 # root = "logs"
-
-[nab.wal]
-# root = "wal"
