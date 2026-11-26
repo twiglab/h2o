@@ -1,11 +1,7 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"context"
-	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -52,20 +48,18 @@ func showDev() error {
 	ctx := context.Background()
 
 	table := tablewriter.NewTable(os.Stdout,
-		// tablewriter.WithStringer(toTable),
 		tablewriter.WithConfig(tablewriter.Config{
 			Header: tw.CellConfig{
 				Formatting: tw.CellFormatting{AutoFormat: tw.On},
 				Alignment:  tw.CellAlignment{Global: tw.AlignCenter},
 			},
-			Row:   tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}},
-			Debug: true,
+			Row: tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}},
 		}),
 	)
 
 	rs, err := db.AllDev(ctx)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	table.Header(idb.DEVICE_TABLE_COLUMNS)

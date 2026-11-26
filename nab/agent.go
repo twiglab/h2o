@@ -3,6 +3,7 @@ package nab
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/panjf2000/ants/v2"
@@ -43,8 +44,13 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 			return
 		}
 
+		if box == "" || code == "" {
+			a.Logger.Error("box or code is empty", slog.String("box", box), slog.String("code", code))
+			return
+		}
+
 		if op != proto.ON && op != proto.OFF {
-			a.Logger.Error("onoff unknown op")
+			a.Logger.Error("onoff unknown op", slog.String("op", op))
 			return
 		}
 
@@ -76,7 +82,7 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 }
 
 func (a *Agent) On(ctx context.Context, code string) error {
-	dev, mcli, onoff, err := a.get(code)
+	dev, mcli, onoff, err := a.get(ctx, code)
 	if err != nil {
 		return err
 	}
@@ -92,7 +98,7 @@ func (a *Agent) On(ctx context.Context, code string) error {
 }
 
 func (a *Agent) Off(ctx context.Context, code string) error {
-	dev, mcli, onoff, err := a.get(code)
+	dev, mcli, onoff, err := a.get(ctx, code)
 	if err != nil {
 		return err
 	}
@@ -107,8 +113,8 @@ func (a *Agent) Off(ctx context.Context, code string) error {
 	)
 }
 
-func (a *Agent) get(devCode string) (*ent.Dev, PortOperator, OnOffer, error) {
-	dev, err := a.IDB.GetDev(context.Background(), devCode)
+func (a *Agent) get(ctx context.Context, devCode string) (*ent.Dev, PortOperator, OnOffer, error) {
+	dev, err := a.IDB.GetDev(ctx, devCode)
 	if err != nil {
 		a.Logger.Error("OnOff.GetDev.Error",
 			slog.String("code", devCode),
@@ -138,7 +144,8 @@ func (a *Agent) get(devCode string) (*ent.Dev, PortOperator, OnOffer, error) {
 }
 
 func (a *Agent) doOnOff(box, code, op string) {
-	ctx := context.Background()
+	ctx, cancalFn := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancalFn()
 
 	// 无论执行是否成功，都先记录
 	a.OnoffLogger.InfoContext(ctx, "onoff",

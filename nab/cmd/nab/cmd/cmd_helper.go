@@ -25,18 +25,22 @@ func mqttLog() {
 
 	logF := path.Join(root, "mqtt.log")
 	out := clog.NewLogWriter(logF)
+	l := log.New(out, "mqtt - ", log.LstdFlags)
 	switch level {
 	case slog.LevelDebug:
-		mqtt.DEBUG = log.New(out, "mqtt - ", log.LstdFlags)
-		fallthrough
+		mqtt.DEBUG = l
+		mqtt.CRITICAL = l
+		mqtt.WARN = l
+		mqtt.ERROR = l
 	case slog.LevelInfo:
-		mqtt.CRITICAL = log.New(out, "mqtt - ", log.LstdFlags)
-		fallthrough
+		mqtt.CRITICAL = l
+		mqtt.WARN = l
+		mqtt.ERROR = l
 	case slog.LevelWarn:
-		mqtt.WARN = log.New(out, "mqtt - ", log.LstdFlags)
-		fallthrough
+		mqtt.WARN = l
+		mqtt.ERROR = l
 	case slog.LevelError:
-		mqtt.ERROR = log.New(out, "mqtt - ", log.LstdFlags)
+		mqtt.ERROR = l
 	}
 }
 

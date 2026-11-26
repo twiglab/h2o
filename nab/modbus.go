@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"log/slog"
+	"net"
 	"sync"
 	"syscall"
 	"time"
@@ -39,7 +40,7 @@ type ModbusCli struct {
 
 	Code string
 
-	endina    modbus.Endianness
+	endian    modbus.Endianness
 	wordorder modbus.WordOrder
 
 	cfg *modbus.ClientConfiguration
@@ -82,7 +83,7 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 		Record: record,
 		Code:   record.Code,
 
-		endina:    e,
+		endian:    e,
 		wordorder: wo,
 
 		cfg: cfg,
@@ -102,7 +103,7 @@ func (c *ModbusCli) Open() error {
 	if err != nil {
 		return err
 	}
-	if err = cli.SetEncoding(c.endina, c.wordorder); err != nil {
+	if err = cli.SetEncoding(c.endian, c.wordorder); err != nil {
 		return err
 	}
 	if err = cli.Open(); err != nil {
@@ -116,18 +117,20 @@ func (c *ModbusCli) Open() error {
 	return nil
 }
 
-func (c *ModbusCli) Close() (err error) {
-	c.isOpen = false
+func (c *ModbusCli) Close() error {
+	defer func() {
+		c.isOpen = false
+		c.cli = nil // 释放 cli
+	}()
+
 	if c.cli == nil {
-		return
+		return nil
 	}
-	err = c.cli.Close()
-	c.cli = nil // 释放 cli
-	return
+	return c.cli.Close()
 }
 
 func (c *ModbusCli) setup(data DeviceData) error {
-	// open 方法会判断isOpen条件
+	// Open方法会判断isOpen条件
 	if err := c.Open(); err != nil {
 		return err
 	}
@@ -136,7 +139,7 @@ func (c *ModbusCli) setup(data DeviceData) error {
 	// 此问题已经被记录，留到v2版本中去解决
 	// TODO
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
-		if err := c.cli.SetEncoding(modbus.Endianness(data.Record.Endian), modbus.WordOrder(data.Record.WordOrder)); err != nil {
+		if err := c.cli.SetEncoding(endian(data.Record.Endian), wordorder(data.Record.WordOrder)); err != nil {
 			return err
 		}
 	}
@@ -145,8 +148,10 @@ func (c *ModbusCli) setup(data DeviceData) error {
 }
 
 func (c *ModbusCli) reset() error {
-	// 恢复client设置
-	_ = c.cli.SetEncoding(c.endina, c.wordorder)
+	if c.isOpen {
+		// 恢复client设置
+		_ = c.cli.SetEncoding(c.endian, c.wordorder)
+	}
 	return nil
 }
 
@@ -159,19 +164,10 @@ func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data De
 	}
 
 	if err = coll.Collect(ctx, c.cli, data); err != nil {
-		// 底层库只提供的这个错误用于判断modbus连接是否有问题
-		// 此问题以被记录，后续根据日志判断是否还有其他类型的错误
-		// TODO
-		if errors.Is(err, modbus.ErrRequestTimedOut) ||
-			errors.Is(err, io.EOF) ||
-			errors.Is(err, syscall.ECONNRESET) {
-			// 这里就直接认为modbus连接除了问题，直接关闭
-			// 其余的事情交给setup方法去处理
+		if _, ok := isConnErr(err); ok {
 			_ = c.Close()
 		}
 	}
-
-	// 即便连接是关闭的，调用reset代码也不会有影响
 	_ = c.reset()
 	return
 }
@@ -184,7 +180,11 @@ func (c *ModbusCli) DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err
 		return err
 	}
 
-	err = on.On(ctx, c.cli, data)
+	if err = on.On(ctx, c.cli, data); err != nil {
+		if _, ok := isConnErr(err); ok {
+			_ = c.Close()
+		}
+	}
 	_ = c.reset()
 	return
 }
@@ -196,10 +196,27 @@ func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) (
 	if err = c.setup(data); err != nil {
 		return err
 	}
-	err = off.Off(ctx, c.cli, data)
+	if err = off.Off(ctx, c.cli, data); err != nil {
+		if _, ok := isConnErr(err); ok {
+			_ = c.Close()
+		}
+	}
 	_ = c.reset()
 	return
 
+}
+
+func isConnErr(err error) (error, bool) {
+	if err == nil {
+		return err, false
+	}
+	if neterr, ok := err.(net.Error); ok {
+		return neterr, ok
+	}
+	return err,
+		errors.Is(err, modbus.ErrRequestTimedOut) ||
+			errors.Is(err, io.EOF) ||
+			errors.Is(err, syscall.ECONNRESET)
 }
 
 type DeviceData struct {

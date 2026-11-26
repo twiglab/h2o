@@ -6,6 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/avast/retry-go/v5 v5.1.1
 	github.com/eclipse/paho.mqtt.golang v1.5.1
+	github.com/go-chi/chi/v5 v5.5.0
 	github.com/gocarina/gocsv v0.0.0-20261121203658-07c44a65ffb9
 	github.com/olekukonko/tablewriter v1.1.5
 	github.com/panjf2000/ants/v2 v2.12.1
@@ -28,7 +29,6 @@ require (
 	github.com/dustin/go-humanize v1.1.0 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
-	github.com/go-chi/chi/v5 v5.5.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.5.0 // indirect
 	github.com/goburrow/serial v0.1.0 // indirect

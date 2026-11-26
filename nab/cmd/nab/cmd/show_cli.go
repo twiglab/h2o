@@ -1,11 +1,7 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"context"
-	"log"
 	"os"
 
 	"github.com/olekukonko/tablewriter"
@@ -31,16 +27,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	showCmd.AddCommand(cliCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// cliCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// cliCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func showCli() error {
@@ -52,20 +38,18 @@ func showCli() error {
 	ctx := context.Background()
 
 	table := tablewriter.NewTable(os.Stdout,
-		// tablewriter.WithStringer(toTable),
 		tablewriter.WithConfig(tablewriter.Config{
 			Header: tw.CellConfig{
 				Formatting: tw.CellFormatting{AutoFormat: tw.On},
 				Alignment:  tw.CellAlignment{Global: tw.AlignCenter},
 			},
-			Row:   tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}},
-			Debug: true,
+			Row: tw.CellConfig{Alignment: tw.CellAlignment{Global: tw.AlignCenter}},
 		}),
 	)
 
 	rs, err := db.AllCli(ctx)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	table.Header(idb.CLIENT_TABLE_COLUMNS)

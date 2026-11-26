@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 	"log/slog"
+	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
@@ -106,17 +107,19 @@ func run() error {
 	mux.HandleFunc("/version", nab.VersionHandle)
 
 	srv := httpserver(mux)
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
 	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			slog.Error("http server error", slog.Any("error", err))
+		if err := srv.ListenAndServe(); err != nil &&
+			!errors.Is(err, http.ErrServerClosed) {
+			// 直接停止进程
+			log.Fatal(err)
 		}
 	}()
 
 	<-ctx.Done()
 
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 	if err := srv.Shutdown(shutdownCtx); err != nil {
 		log.Fatalf("Server shutdown failed: %v\n", err)
 	}

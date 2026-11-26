@@ -58,16 +58,19 @@ func NewIDB(dev, cli string, ops ...ent.Option) (*IDB, error) {
 	db.SetMaxOpenConns(1)
 
 	if err := vtab.RegisterModule(db, "csv", &idb.IDBModule{}); err != nil {
+		_ = db.Close()
 		return nil, err
 	}
 
 	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE dev USING csv(filename=%q)`, cmp.Or(dev, "dev.csv")))
 	if err != nil {
+		_ = db.Close()
 		return nil, err
 	}
 
 	_, err = db.Exec(fmt.Sprintf(`CREATE VIRTUAL TABLE cli USING csv(filename=%q)`, cmp.Or(cli, "cli.csv")))
 	if err != nil {
+		_ = db.Close()
 		return nil, err
 	}
 
@@ -88,10 +91,11 @@ func DevToStrings(v *ent.Dev) []string {
 		v.Clazz,
 		v.Cli,
 
-		strconv.FormatInt(int64(v.UnitID), 10),
-		strconv.FormatInt(int64(v.Addr), 10),
-		strconv.FormatInt(int64(v.Endian), 10),
-		strconv.FormatInt(int64(v.WordOrder), 10),
+		strconv.FormatUint(uint64(v.UnitID), 10),
+		strconv.FormatUint(uint64(v.Addr), 10),
+
+		strconv.FormatUint(uint64(v.Endian), 10),
+		strconv.FormatUint(uint64(v.WordOrder), 10),
 
 		v.Memo,
 	}
@@ -104,14 +108,15 @@ func CliToStrings(v *ent.Cli) []string {
 		v.Typ,
 		v.URL,
 
-		strconv.FormatInt(int64(v.Speed), 10),
-		strconv.FormatInt(int64(v.DataBits), 10),
-		strconv.FormatInt(int64(v.Parity), 10),
-		strconv.FormatInt(int64(v.StopBits), 10),
+		strconv.FormatUint(uint64(v.Speed), 10),
+		strconv.FormatUint(uint64(v.DataBits), 10),
+		strconv.FormatUint(uint64(v.Parity), 10),
+		strconv.FormatUint(uint64(v.StopBits), 10),
+
 		strconv.FormatInt(int64(v.Timeout), 10),
 
-		strconv.FormatInt(int64(v.Endian), 10),
-		strconv.FormatInt(int64(v.WordOrder), 10),
+		strconv.FormatUint(uint64(v.Endian), 10),
+		strconv.FormatUint(uint64(v.WordOrder), 10),
 
 		v.Memo,
 	}

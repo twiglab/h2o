@@ -29,5 +29,5 @@ func toTable(e any) []string {
 	case *ent.Cli:
 		return orm.CliToStrings(v)
 	}
-	panic("no t")
+	return []string{}
 }

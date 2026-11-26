@@ -35,6 +35,10 @@ func init() {
 }
 
 func toolEey() error {
+	if deviceCode == "" {
+		return errors.New("code is nil")
+	}
+
 	g := global()
 	topic := proto.MakeTopic(proto.DATA, g.Box, deviceCode, "#")
 	log.Println(topic)
@@ -42,7 +46,7 @@ func toolEey() error {
 	defer stop()
 
 	mcli, _ := mqttcli(
-		nab.ClientID(g.Box, "eye"),
+		nab.ClientID(g.Box, randText()),
 		topic,
 		func(cli mqtt.Client, msg mqtt.Message) {
 			fmt.Println(string(msg.Payload()))

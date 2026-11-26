@@ -54,6 +54,12 @@ func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
 	return cli, nil
 }
 
+// Close方法会导致竞争问题
+// 其原因是目前v1 版本loop不支持context，导致无法从外部停止
+// 目前只在nab停止时，才会关闭关闭ClientMgr
+// 所以竞争问题不会对程序造成影响
+// 此问题要被记录，在v2版本中解决
+// TODO
 func (g ClientMgr) Close() error {
 	for _, cli := range g.clientMap {
 		_ = cli.Close()

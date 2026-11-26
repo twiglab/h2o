@@ -11,7 +11,7 @@ const fname = "filename"
 
 func parseCSVArgs(args []string) (file string) {
 	for _, s := range args {
-		ss := strings.Split(s, "=")
+		ss := strings.SplitN(s, "=", 2)
 		if len(ss) == 2 {
 			switch ss[0] {
 			case fname:
