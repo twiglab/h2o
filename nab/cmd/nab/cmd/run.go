@@ -107,6 +107,7 @@ func run() error {
 
 	srv := httpserver(mux)
 
+	errCh := make(chan error, 1)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil &&
 			!errors.Is(err, http.ErrServerClosed) {
@@ -114,8 +115,11 @@ func run() error {
 			log.Fatal(err)
 		}
 	}()
-
-	<-ctx.Done()
+	select {
+	case <-ctx.Done():
+	case err := <-errCh:
+		return err // 走正常的 defer 链退出
+	}
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
