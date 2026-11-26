@@ -8,15 +8,15 @@
 `OPT_STATUS_UNKNOW` 表示"采集侧无法确定"，下游应用自行处理此状态，例如直接跳过该设备的所有限额逻辑  
 目前仅支持MQTT数据上报，协议实现位于`h2o/proto`  
 设备使用状态由`Device.Status`表示，位于`proto/device.go`，如果设备支持，需正确设置，默认为STATUS_UNKNOW  
-目前v1版本不支持vtable热加载，需改 CSV 文件，必须重启nab
+目前v1版本不支持热加载，CSV 文件，toml文件改动，均必须重启nab
 
 ## 结构与设计  
 采集程序目前分为2个部分，采集部分`collect.go`和控制能使部分`agent.go`  
 采集部分目前v1 版本只支持轮询采集，实现代码位于`loop.go`，定时任务位于`cron.go`v1版本暂不支持  
-采集网关上报的topic为`h2o/data/{box}/{code}/{type}`，box代码由nab.toml中设置，code，type位于idb中指定  
+采集网关采集(collect)发布topic为`h2o/data/{box}/{code}/{type}`，box代码由nab.toml中设置，code，type位于idb中指定  
 mqtt上报采用Qos 0，且不保证数据丢失，注意：**这是设计要求**，对于采集而言轮询失败几次是常态，上游系统也必须容忍数据丢失情况  
 下游设备必须保证开合状态为水平触发，即设备本身能够记住开合状态，并在保证每次采集开合状态都是当前值  
-采集器控制的topic为`h2o/onoff/{box}/{code}/{ON | OFF}`，box代码有nab.toml中设置  
+采集器控制部分(agent)订阅 topic为`h2o/onoff/{box}/{code}/{ON | OFF}`，box代码在nab.toml中设置，且保证业务唯一，采集器只会订阅自身box的消息  
 考虑到采集器cpu和内存有限，当前版本对消息payload直接忽略，不做解析  
 正常情况下对于设备的开合操作属于少量操作，且无顺序要求，同一采集器下的不同设备开和操作也**无顺序要求**  
 开合操作**允许丢失**，采集器也**无需保证**顺序执行  
@@ -24,3 +24,4 @@ mqtt上报采用Qos 0，且不保证数据丢失，注意：**这是设计要求
 如果应用自身出现问题，必须保证自身业务状态和`optStatus`同步，必须无条件信任 `optStatus`   
 `optStatus`是指设备是否开合（可以立即为设备的开关）`Status`是指这个设备的业务状态，例如是否使用
 当前版本采集以设备为单位，设备中所有地址采集正确，则采集正确，否则采集失败  
+开合状态读取失败时该设备本轮不上报，optStatus 恒为 UNKNOW，v1版本不支持降级上报  
