@@ -49,7 +49,6 @@ func run() error {
 	defer func() { _ = db.Close() }()
 
 	cliMgr := clientMgr(db)
-	defer cliMgr.Close()
 
 	interval := taskInterval()
 	onofflog := onoffLog()

@@ -144,7 +144,7 @@ func (a *Agent) get(ctx context.Context, devCode string) (*ent.Dev, PortOperator
 }
 
 func (a *Agent) doOnOff(box, code, op string) {
-	ctx, cancalFn := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancalFn := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancalFn()
 
 	// 无论执行是否成功，都先记录

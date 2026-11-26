@@ -29,18 +29,20 @@ func mqttLog() {
 	switch level {
 	case slog.LevelDebug:
 		mqtt.DEBUG = l
-		mqtt.CRITICAL = l
 		mqtt.WARN = l
 		mqtt.ERROR = l
+		mqtt.CRITICAL = l
 	case slog.LevelInfo:
-		mqtt.CRITICAL = l
 		mqtt.WARN = l
 		mqtt.ERROR = l
+		mqtt.CRITICAL = l
 	case slog.LevelWarn:
 		mqtt.WARN = l
 		mqtt.ERROR = l
+		mqtt.CRITICAL = l
 	case slog.LevelError:
 		mqtt.ERROR = l
+		mqtt.CRITICAL = l
 	}
 }
 

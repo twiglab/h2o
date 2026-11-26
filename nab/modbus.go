@@ -93,7 +93,7 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 
 }
 
-func (c *ModbusCli) Open() error {
+func (c *ModbusCli) open() error {
 	// 已经打开，直接返回, 避免产生新连接
 	if c.isOpen {
 		return nil
@@ -117,7 +117,7 @@ func (c *ModbusCli) Open() error {
 	return nil
 }
 
-func (c *ModbusCli) Close() error {
+func (c *ModbusCli) close() error {
 	defer func() {
 		c.isOpen = false
 		c.cli = nil // 释放 cli
@@ -131,11 +131,11 @@ func (c *ModbusCli) Close() error {
 
 func (c *ModbusCli) setup(data DeviceData) error {
 	// Open方法会判断isOpen条件
-	if err := c.Open(); err != nil {
+	if err := c.open(); err != nil {
 		return err
 	}
 
-	// 必须两者都为0才设置，如果只有一个为0，那就不设置，最大容忍配置错误
+	// 必须两者都不为0才设置，如果只有一个为0，那就不设置，最大容忍配置错误
 	// 此问题已经被记录，留到v2版本中去解决
 	// TODO
 	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
@@ -165,7 +165,7 @@ func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data De
 
 	if err = coll.Collect(ctx, c.cli, data); err != nil {
 		if _, ok := isConnErr(err); ok {
-			_ = c.Close()
+			_ = c.close()
 		}
 	}
 	_ = c.reset()
@@ -182,7 +182,7 @@ func (c *ModbusCli) DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err
 
 	if err = on.On(ctx, c.cli, data); err != nil {
 		if _, ok := isConnErr(err); ok {
-			_ = c.Close()
+			_ = c.close()
 		}
 	}
 	_ = c.reset()
@@ -198,7 +198,7 @@ func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) (
 	}
 	if err = off.Off(ctx, c.cli, data); err != nil {
 		if _, ok := isConnErr(err); ok {
-			_ = c.Close()
+			_ = c.close()
 		}
 	}
 	_ = c.reset()
@@ -231,7 +231,6 @@ type PortOperator interface {
 	DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error)
 	DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error)
 	DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error)
-	Close() error
 }
 
 // nullOptx 终端仅用于无需客户端的设备
@@ -251,6 +250,5 @@ func (c nullOptx) DoOn(ctx context.Context, on DeviceOn, data DeviceData) error 
 func (c nullOptx) DoOff(ctx context.Context, off DeviceOff, data DeviceData) error {
 	return off.Off(ctx, nil, data)
 }
-func (c nullOptx) Close() error { return nil }
 
 var nullOpt nullOptx
