@@ -10,13 +10,8 @@ project = "888"
 #dev = "dev.csv"
 #cli = "cli.csv"
 
-[nab.loops]
-# 每轮采集之间的间隔 单位毫秒
-# delay = 1000 # 默认1000 (毫秒)
-
 [nab.loop.task]
-# 每台设备之间的间隔 单位毫秒
-# interval = 1000 # 默认1000 (毫秒)
+# interval = 1s
 
 [nab.web]
 # nab web address，默认 :10008
