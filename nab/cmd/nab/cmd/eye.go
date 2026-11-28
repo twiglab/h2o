@@ -26,7 +26,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return toolEey()
+		return toolEye()
 	},
 }
 
@@ -34,13 +34,13 @@ func init() {
 	toolCmd.AddCommand(eyeCmd)
 }
 
-func toolEey() error {
+func toolEye() error {
 	if deviceCode == "" {
 		return errors.New("code is nil")
 	}
 
 	box, _ := boxData()
-	topic := proto.MakeTopic(proto.DATA, box, deviceCode, "#")
+	topic := proto.MakeTopic(proto.DATA, box, deviceCode, "+")
 	log.Println(topic)
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
@@ -54,10 +54,7 @@ func toolEey() error {
 	)
 	defer mcli.Disconnect(500)
 	token := mcli.Connect()
-	if !token.WaitTimeout(60 * time.Second) {
-		return errors.New("mqtt connect timeout")
-	}
-	if err := token.Error(); err != nil {
+	if err := mqtt.WaitTokenTimeout(token, 60*time.Second); err != nil {
 		return err
 	}
 

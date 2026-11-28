@@ -41,7 +41,7 @@ func toolOnoff(onoff string) error {
 	}
 
 	box, _ := boxData()
-	topic := proto.MakeTopic(proto.ONOFF, box, deviceCode, "#")
+	topic := proto.MakeTopic(proto.ONOFF, box, deviceCode, "+")
 	log.Println(topic)
 	log.Println(rand.Text())
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)

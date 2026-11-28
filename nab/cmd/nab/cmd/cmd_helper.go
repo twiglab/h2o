@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"cmp"
+	"crypto/rand"
 	"fmt"
 	"log"
 	"log/slog"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/panjf2000/ants/v2"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/nab"
@@ -171,11 +173,8 @@ func onoffLog() *slog.Logger {
 }
 
 func randText() string {
-	now := time.Now()
-	return now.Format(f)
+	return rand.Text()[:7]
 }
-
-const f = "20060102150405"
 
 func httpserver(h http.Handler) *http.Server {
 	srv := &http.Server{
@@ -183,4 +182,12 @@ func httpserver(h http.Handler) *http.Server {
 		Handler: h,
 	}
 	return srv
+}
+
+func pool() *ants.Pool {
+	p, err := ants.NewPool(32, ants.WithNonblocking(true))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return p
 }

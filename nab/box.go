@@ -46,6 +46,8 @@ func (b *Box) loadDev(ctx context.Context) error {
 	return nil
 }
 
+// Load只在启动时候调用移除
+// nab目前版本不支持热更新
 func (b *Box) Load() error {
 	clear(b.cliMap)
 	clear(b.devMap)
@@ -63,11 +65,11 @@ func (b *Box) Load() error {
 	return nil
 }
 
-func (b *Box) Close() error {
+func (b *Box) Disconnect() {
 	for _, cli := range b.cliMap {
 		_ = cli.Close()
 	}
-	return b.DB.Close()
+	_ = b.DB.Close()
 }
 
 func (b *Box) GetCli(code string) (PortOperator, error) {

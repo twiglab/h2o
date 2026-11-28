@@ -59,5 +59,8 @@ func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
 		return
 	}
 
-	_ = t.Pipeline.SendData(ctx, MakeMeter(t.Box, dev, mv))
+	err = t.Pipeline.SendData(ctx, MakeMeter(t.Box, dev, mv))
+	if err != nil {
+		t.Logger.ErrorContext(ctx, "Collect send error", slog.String("code", dev.Code), slog.Any("error", err))
+	}
 }

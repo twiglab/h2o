@@ -6,6 +6,7 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/panjf2000/ants/v2"
 	"github.com/twiglab/h2o/proto"
 )
 
@@ -19,6 +20,8 @@ type Agent struct {
 	Logger *slog.Logger
 
 	OnoffLogger *slog.Logger
+
+	Pool *ants.Pool
 }
 
 func AgentHandle(a *Agent) mqtt.MessageHandler {
@@ -44,7 +47,22 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 			return
 		}
 
-		a.doOnOff(code, op)
+		// 这里用到了线程池
+		// 主要作用是防止设备大范围的开合操作
+		// topic已经提供了操作所需的所有字段，payload不做解析，直接忽略
+		// 所以这里即便ack早于执行，也不会有影响
+		if err := a.Pool.Submit(func() {
+			a.doOnOff(code, op)
+		}); err != nil {
+			// pool size为32，如果pool满了，记录日志，直接丢弃
+			// optStatus是水平出发的，即便丢弃，下一轮上报上游程序仍然能够获取正确值
+			// 上游程序会保证再次下发正确的指令
+			a.Logger.Error("submit errorr",
+				slog.String("box", box),
+				slog.String("code", code),
+				slog.Any("error", err),
+			)
+		}
 	}
 }
 

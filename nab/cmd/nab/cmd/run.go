@@ -41,6 +41,9 @@ func run() error {
 	mqttLog()
 	onofflog := onoffLog()
 
+	p := pool()
+	p.Release()
+
 	boxCode, project := boxData()
 
 	box := &nab.Box{
@@ -52,12 +55,13 @@ func run() error {
 	if err := box.Load(); err != nil {
 		return err
 	}
-	defer box.Close()
+	defer box.Disconnect()
 
 	agent := &nab.Agent{
 		Box:         box,
 		Logger:      logger,
 		OnoffLogger: onofflog,
+		Pool:        p,
 	}
 
 	mcli := mqttcli(
