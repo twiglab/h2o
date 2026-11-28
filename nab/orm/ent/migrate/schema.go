@@ -39,6 +39,7 @@ var (
 		{Name: "clazz", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},
 		{Name: "cli", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(36)", "postgres": "varchar(36)", "sqlite3": "varchar(36)"}},
 		{Name: "unit_id", Type: field.TypeUint8, Default: 0},
+		{Name: "addr", Type: field.TypeUint16, Default: 0},
 		{Name: "endian", Type: field.TypeUint, Default: 0},
 		{Name: "word_order", Type: field.TypeUint, Default: 0},
 		{Name: "memo", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(64)", "postgres": "varchar(64)", "sqlite3": "varchar(64)"}},

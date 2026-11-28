@@ -28,6 +28,8 @@ type Dev struct {
 	Cli string `json:"cli,omitempty"`
 	// 设备号
 	UnitID uint8 `json:"unit_id,omitempty"`
+	// 地址
+	Addr uint16 `json:"addr,omitempty"`
 	// 大小端
 	Endian uint `json:"endian,omitempty"`
 	// 字节顺序
@@ -42,7 +44,7 @@ func (*Dev) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case dev.FieldID, dev.FieldUnitID, dev.FieldEndian, dev.FieldWordOrder:
+		case dev.FieldID, dev.FieldUnitID, dev.FieldAddr, dev.FieldEndian, dev.FieldWordOrder:
 			values[i] = new(sql.NullInt64)
 		case dev.FieldCode, dev.FieldTyp, dev.FieldSn, dev.FieldClazz, dev.FieldCli, dev.FieldMemo:
 			values[i] = new(sql.NullString)
@@ -102,6 +104,12 @@ func (_m *Dev) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field unit_id", values[i])
 			} else if value.Valid {
 				_m.UnitID = uint8(value.Int64)
+			}
+		case dev.FieldAddr:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field addr", values[i])
+			} else if value.Valid {
+				_m.Addr = uint16(value.Int64)
 			}
 		case dev.FieldEndian:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -174,6 +182,9 @@ func (_m *Dev) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("unit_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.UnitID))
+	builder.WriteString(", ")
+	builder.WriteString("addr=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Addr))
 	builder.WriteString(", ")
 	builder.WriteString("endian=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Endian))

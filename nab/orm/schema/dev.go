@@ -24,6 +24,9 @@ func (Dev) Fields() []ent.Field {
 		field.String("cli").Immutable().NotEmpty().SchemaType(varchar(36)).Comment("终端号"),
 
 		field.Uint8("unit_id").Immutable().Default(0).Comment("设备号"),
+
+		// addr 废弃，后续删除
+		field.Uint16("addr").Immutable().Default(0).Comment("地址"),
 		field.Uint("endian").Immutable().Default(0).Comment("大小端"),
 		field.Uint("word_order").Immutable().Default(0).Comment("字节顺序"),
 

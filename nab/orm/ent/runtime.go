@@ -72,12 +72,16 @@ func init() {
 	devDescUnitID := devFields[6].Descriptor()
 	// dev.DefaultUnitID holds the default value on creation for the unit_id field.
 	dev.DefaultUnitID = devDescUnitID.Default.(uint8)
+	// devDescAddr is the schema descriptor for addr field.
+	devDescAddr := devFields[7].Descriptor()
+	// dev.DefaultAddr holds the default value on creation for the addr field.
+	dev.DefaultAddr = devDescAddr.Default.(uint16)
 	// devDescEndian is the schema descriptor for endian field.
-	devDescEndian := devFields[7].Descriptor()
+	devDescEndian := devFields[8].Descriptor()
 	// dev.DefaultEndian holds the default value on creation for the endian field.
 	dev.DefaultEndian = devDescEndian.Default.(uint)
 	// devDescWordOrder is the schema descriptor for word_order field.
-	devDescWordOrder := devFields[8].Descriptor()
+	devDescWordOrder := devFields[9].Descriptor()
 	// dev.DefaultWordOrder holds the default value on creation for the word_order field.
 	dev.DefaultWordOrder = devDescWordOrder.Default.(uint)
 }
