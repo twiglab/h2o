@@ -12,6 +12,9 @@ const (
 	KEY_OPT_STATUS = "opt_status" // 开合状态
 )
 
+// MeterValue 采集结果
+// Extra中的key不能为data_value, opt_status，否则报错
+// 这是已知问题，也是明确的设计要求
 type MeterValue struct {
 	DataValue int64            `json:"data_value"`
 	OptStatus int64            `json:"opt_status"`
