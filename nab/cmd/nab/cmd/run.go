@@ -42,7 +42,7 @@ func run() error {
 	onofflog := onoffLog()
 
 	p := pool()
-	p.Release()
+	defer p.Release()
 
 	boxCode, project := boxData()
 
