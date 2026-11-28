@@ -28,7 +28,7 @@ func newTimeTick() *TimeTick {
 	}
 }
 
-func (e *TimeTick) Collect(ctx context.Context, _ nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
+func (e *TimeTick) Collect(ctx context.Context, _ nab.ModbusOperator) (proto.MeterValue, error) {
 
 	now := time.Now()
 	ts := now.Unix()
@@ -41,12 +41,12 @@ func (e *TimeTick) Collect(ctx context.Context, _ nab.ModbusOperator, data nab.D
 	return m, nil
 }
 
-func (e *TimeTick) On(_ context.Context, _ nab.ModbusOperator, _ nab.DeviceData) error {
+func (e *TimeTick) On(_ context.Context, _ nab.ModbusOperator) error {
 	e.setOpt(proto.OPT_STATUS_ON)
 	return nil
 }
 
-func (e *TimeTick) Off(_ context.Context, _ nab.ModbusOperator, _ nab.DeviceData) error {
+func (e *TimeTick) Off(_ context.Context, _ nab.ModbusOperator) error {
 	e.setOpt(proto.OPT_STATUS_OFF)
 	return nil
 }

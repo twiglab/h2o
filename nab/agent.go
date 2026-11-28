@@ -54,13 +54,13 @@ func (a *Agent) On(ctx context.Context, code string) error {
 		return err
 	}
 
-	return cli.Do(dev, func(op ModbusOperator) error {
-		return on.On(ctx, op, DeviceData{
-			Box:    a.Box,
-			Record: dev,
-			Logger: a.Logger,
+	_, err = cli.Do(dev,
+		func(op ModbusOperator) (mv proto.MeterValue, err error) {
+			err = on.On(ctx, op)
+			return
 		})
-	})
+
+	return err
 }
 
 func (a *Agent) Off(ctx context.Context, code string) error {
@@ -69,13 +69,13 @@ func (a *Agent) Off(ctx context.Context, code string) error {
 		return err
 	}
 
-	return cli.Do(dev, func(op ModbusOperator) error {
-		return off.Off(ctx, op, DeviceData{
-			Box:    a.Box,
-			Record: dev,
-			Logger: a.Logger,
+	_, err = cli.Do(dev,
+		func(op ModbusOperator) (mv proto.MeterValue, err error) {
+			err = off.Off(ctx, op)
+			return
 		})
-	})
+
+	return err
 }
 
 func (a *Agent) doOnOff(code, op string) {

@@ -18,7 +18,7 @@ const KH_DTZY2851_CD7_1 = "KH-DTZY2851-CD7-1"
 type DTZY struct {
 }
 
-func (e DTZY) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
+func (e DTZY) Collect(ctx context.Context, cli nab.ModbusOperator) (proto.MeterValue, error) {
 	mv := proto.NewMeterValue()
 
 	v, err := cli.FC04Uint32(0x60)
@@ -37,7 +37,7 @@ func (e DTZY) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.Devi
 	return mv, nil
 }
 
-func (e DTZY) On(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) error {
+func (e DTZY) On(ctx context.Context, cli nab.ModbusOperator) error {
 	return equlib.TryDo(ctx, 3, 300*time.Millisecond,
 		func() error {
 			return cli.FC16(0x22, []uint16{0x02})
@@ -45,7 +45,7 @@ func (e DTZY) On(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceDat
 	)
 }
 
-func (e DTZY) Off(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) error {
+func (e DTZY) Off(ctx context.Context, cli nab.ModbusOperator) error {
 	return equlib.TryDo(ctx, 3, 300*time.Millisecond,
 		func() error {
 			return cli.FC16(0x22, []uint16{0x01})

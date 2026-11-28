@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/twiglab/h2o/nab/orm/ent"
+	"github.com/twiglab/h2o/proto"
 )
 
 type CollectTask struct {
@@ -41,17 +42,18 @@ func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
 		t.Logger.ErrorContext(ctx, "GetDevCliEqu error", slog.String("code", dev.Code), slog.Any("error", err))
 		return
 	}
-	err = cli.Do(dev,
-		func(op ModbusOperator) error {
-			mv, err := coll.Collect(ctx, op, DeviceData{Box: t.Box, Record: dev, Logger: t.Logger})
-			if err != nil {
-				return err
-			}
-			return t.Pipeline.SendData(ctx, MakeMeter(t.Box, dev, mv))
+
+	mv, err := cli.Do(dev,
+		func(op ModbusOperator) (mv proto.MeterValue, err error) {
+			mv, err = coll.Collect(ctx, op)
+			return
 		},
 	)
 
 	if err != nil {
 		t.Logger.ErrorContext(ctx, "CollectTask error", slog.String("code", dev.Code), slog.Any("error", err))
+		return
 	}
+
+	_ = t.Pipeline.SendData(ctx, MakeMeter(t.Box, dev, mv))
 }

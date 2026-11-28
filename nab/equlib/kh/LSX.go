@@ -13,7 +13,7 @@ const KH_LXS_40_MI = "KH-LXS-40-MI"
 type LXSNoValve struct {
 }
 
-func (e LXSNoValve) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
+func (e LXSNoValve) Collect(ctx context.Context, cli nab.ModbusOperator) (proto.MeterValue, error) {
 	mv := proto.NewMeterValue()
 	mv.OptStatus = proto.OPT_STATUS_UNKNOW
 

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"io"
-	"log/slog"
 	"net"
 	"sync"
 	"syscall"
@@ -16,15 +15,25 @@ import (
 )
 
 type DeviceCollector interface {
-	Collect(ctx context.Context, op ModbusOperator, data DeviceData) (proto.MeterValue, error)
+	Collect(ctx context.Context, op ModbusOperator) (proto.MeterValue, error)
 }
 
 type DeviceOn interface {
-	On(ctx context.Context, op ModbusOperator, data DeviceData) error
+	On(ctx context.Context, op ModbusOperator) error
 }
 
 type DeviceOff interface {
-	Off(ctx context.Context, op ModbusOperator, data DeviceData) error
+	Off(ctx context.Context, op ModbusOperator) error
+}
+
+// 初始化设备地址，字节顺序，大小端
+func initDev(cli *modbus.ModbusClient, e uint, o uint, u uint8) error {
+	if e != 0 && o != 0 {
+		if err := cli.SetEncoding(Endian(e), WordOrder(o)); err != nil {
+			return err
+		}
+	}
+	return cli.SetUnitId(u)
 }
 
 /*
@@ -60,16 +69,6 @@ func WordOrder(v uint) modbus.WordOrder {
 		return modbus.LOW_WORD_FIRST
 	}
 	return modbus.HIGH_WORD_FIRST
-}
-
-// 初始化设备地址，字节顺序，大小端
-func initDev(cli *modbus.ModbusClient, e uint, o uint, u uint8) error {
-	if e != 0 && o != 0 {
-		if err := cli.SetEncoding(Endian(e), WordOrder(o)); err != nil {
-			return err
-		}
-	}
-	return cli.SetUnitId(u)
 }
 
 func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
@@ -153,20 +152,21 @@ func (c *ModbusCli) reset() {
 	}
 }
 
-func (c *ModbusCli) Do(record *ent.Dev, f func(ModbusOperator) error) (err error) {
+func (c *ModbusCli) Do(data *ent.Dev, f MBFunc) (mv proto.MeterValue, err error) {
 	c.glock.Lock()
 	defer c.glock.Unlock()
 
 	if err = c.setup(); err != nil {
-		return err
+		return
 	}
 	defer c.reset()
 
-	if err := initDev(c.cli, record.Endian, record.WordOrder, record.UnitID); err != nil {
-		return err
+	if err = initDev(c.cli, data.Endian, data.WordOrder, data.UnitID); err != nil {
+		return
 	}
 
-	if err = f(mbcli{c.cli}); err != nil {
+	mv, err = f(mbcli{c.cli})
+	if err != nil {
 		if _, ok := isConnErr(err); ok {
 			_ = c.close()
 		}
@@ -174,48 +174,7 @@ func (c *ModbusCli) Do(record *ent.Dev, f func(ModbusOperator) error) (err error
 	return
 }
 
-type ModbusOperator interface {
-	FC03(addr uint16) (uint16, error)
-	FC04(addr uint16) (uint16, error)
-
-	FC03Uint32(addr uint16) (uint32, error)
-	FC04Uint32(addr uint16) (uint32, error)
-
-	FC16(addr uint16, values []uint16) error
-	FC06(addr uint16, value uint16) error
-}
-
-type mbcli struct {
-	cli *modbus.ModbusClient
-}
-
-func (c mbcli) FC03(addr uint16) (v uint16, err error) {
-	v, err = c.cli.ReadRegister(addr, modbus.HOLDING_REGISTER)
-	return
-}
-
-func (c mbcli) FC04(addr uint16) (v uint16, err error) {
-	v, err = c.cli.ReadRegister(addr, modbus.INPUT_REGISTER)
-	return
-}
-
-func (c mbcli) FC03Uint32(addr uint16) (v uint32, err error) {
-	v, err = c.cli.ReadUint32(addr, modbus.HOLDING_REGISTER)
-	return
-}
-
-func (c mbcli) FC04Uint32(addr uint16) (v uint32, err error) {
-	v, err = c.cli.ReadUint32(addr, modbus.INPUT_REGISTER)
-	return
-}
-
-func (c mbcli) FC06(addr uint16, value uint16) error {
-	return c.cli.WriteRegister(addr, value)
-}
-
-func (c mbcli) FC16(addr uint16, values []uint16) error {
-	return c.cli.WriteRegisters(addr, values)
-}
+type MBFunc func(ModbusOperator) (proto.MeterValue, error)
 
 func isConnErr(err error) (error, bool) {
 	if err == nil {
@@ -230,26 +189,7 @@ func isConnErr(err error) (error, bool) {
 			errors.Is(err, syscall.ECONNRESET)
 }
 
-type DeviceData struct {
-	Box    *Box
-	Record *ent.Dev
-	Logger *slog.Logger
-}
-
 type PortOperator interface {
-	Do(*ent.Dev, func(ModbusOperator) error) error
+	Do(*ent.Dev, MBFunc) (proto.MeterValue, error)
 	Close() error
 }
-
-// nullOptx 终端仅用于无需客户端的设备
-// 例如 TimeTick设备
-// 如果配置问题，导致错误使用的nullOptx，直接panic，没有也无需任他任何保证
-type nullOptx struct {
-}
-
-func (c nullOptx) Close() error { return nil }
-func (c nullOptx) Do(_ *ent.Dev, f func(ModbusOperator) error) error {
-	return f(nil)
-}
-
-var nullOpt nullOptx
