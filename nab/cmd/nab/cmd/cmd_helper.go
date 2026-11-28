@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"cmp"
-	"context"
 	"fmt"
 	"log"
 	"log/slog"
@@ -46,7 +45,7 @@ func mqttLog() {
 	}
 }
 
-func mqttcli(clientID, topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Sender) {
+func mqttcli(clientID, topic string, h mqtt.MessageHandler) mqtt.Client {
 	broker := viper.GetString("nab.sender.mqtt.broker")
 
 	if broker == "" {
@@ -85,10 +84,10 @@ func mqttcli(clientID, topic string, h mqtt.MessageHandler) (mqtt.Client, nab.Se
 	})
 
 	client := mqtt.NewClient(opts)
-	return client, nab.NewMQTTAction(client)
+	return client
 }
 
-func global() nab.Global {
+func boxData() (string, string) {
 	box := viper.GetString("nab.box")
 	if box == "" {
 		log.Fatal("nab.box is nil")
@@ -99,21 +98,8 @@ func global() nab.Global {
 		log.Fatal("nab.project is nil")
 	}
 
-	g := nab.Global{
-		Box:     box,
-		Project: project,
-	}
-
 	log.Printf("global - nab.box: %s, nab.project: %s\n", box, project)
-	return g
-}
-
-func clientMgr(db *orm.IDB) *nab.ClientMgr {
-	m, err := nab.NewClientMgr(db)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return m
+	return box, project
 }
 
 func webaddr() string {
@@ -121,15 +107,15 @@ func webaddr() string {
 	return cmp.Or(addr, ":10008")
 }
 
-func dbfile(g nab.Global) (df, cf string) {
+func dbfile(box string) (df, cf string) {
 	p := cmp.Or(viper.GetString("nab.idb.dir"), "idb")
-	dev := cmp.Or(viper.GetString("nab.idb.dev"), g.Box+"_dev.csv")
-	cli := cmp.Or(viper.GetString("nab.idb.cli"), g.Box+"_cli.csv")
+	dev := cmp.Or(viper.GetString("nab.idb.dev"), box+"_dev.csv")
+	cli := cmp.Or(viper.GetString("nab.idb.cli"), box+"_cli.csv")
 	return path.Join(p, dev), path.Join(p, cli)
 }
 
-func db(g nab.Global) *orm.IDB {
-	dev, cli := dbfile(g)
+func db(box string) *orm.IDB {
+	dev, cli := dbfile(box)
 
 	db, err := orm.NewIDB(dev, cli)
 	if err != nil {
@@ -140,27 +126,18 @@ func db(g nab.Global) *orm.IDB {
 }
 
 func taskInterval() time.Duration {
-	i := cmp.Or(viper.GetDuration("nab.loop.task.interval"), 1000) * time.Millisecond
+	i := cmp.Or(viper.GetDuration("nab.loop.task.interval"), time.Second)
 	log.Println("nab.loop.task.interval:", i)
 	return i
 }
 
-func loops(db *orm.IDB, f func([]*ent.Dev) nab.Job) nab.Job {
-	delay := cmp.Or(viper.GetDuration("nab.loops.delay"), 1000) * time.Millisecond
+func loops(box *nab.Box, f func([]*ent.Dev) nab.JobV2) *nab.Loops2 {
+	lps := nab.NewLoopsV2()
 
-	log.Println("nab.loops.delay:", delay)
-
-	lps := nab.NewLoops()
-
-	devs, err := db.AllDev(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	a := nab.SplitByCli(devs)
+	a := box.GroupByCli()
 
 	for _, s := range a {
-		lps.AddToNewLoop(delay, f(s))
+		lps.AddToNewLoop(f(s))
 	}
 
 	return lps

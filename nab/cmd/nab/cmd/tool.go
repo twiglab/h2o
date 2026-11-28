@@ -40,15 +40,15 @@ func toolOnoff(onoff string) error {
 		return errors.New("code is nil")
 	}
 
-	g := global()
-	topic := proto.MakeTopic(proto.ONOFF, g.Box, deviceCode, "#")
+	box, _ := boxData()
+	topic := proto.MakeTopic(proto.ONOFF, box, deviceCode, "#")
 	log.Println(topic)
 	log.Println(rand.Text())
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	mcli, act := mqttcli(
-		nab.ClientID(g.Box, randText()),
+	mcli := mqttcli(
+		nab.ClientID(box, randText()),
 		topic,
 		func(cli mqtt.Client, msg mqtt.Message) {
 			fmt.Println(msg.Topic())
@@ -63,8 +63,10 @@ func toolOnoff(onoff string) error {
 		return err
 	}
 
+	act := nab.NewMQTTAction(mcli)
+
 	err := act.SendData(ctx, nab.OnoffLite{
-		Box:  g.Box,
+		Box:  box,
 		Code: deviceCode,
 		Op:   onoff,
 	})

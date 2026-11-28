@@ -2,16 +2,13 @@ package cmd
 
 import (
 	"context"
-	"errors"
 	"log"
 	"log/slog"
-	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/spf13/cobra"
 
 	"github.com/twiglab/h2o/nab"
@@ -40,92 +37,62 @@ func init() {
 func run() error {
 
 	_ = rootLog()
-
 	logger := serverLog()
-
-	g := global()
-
-	db := db(g)
-	defer func() { _ = db.Close() }()
-
-	cliMgr := clientMgr(db)
-
-	interval := taskInterval()
-	onofflog := onoffLog()
-
 	mqttLog()
+	onofflog := onoffLog()
 
 	p := pool()
 	defer p.Release()
 
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
-	defer stop()
+	boxCode, project := boxData()
+
+	box := &nab.Box{
+		Code:    boxCode,
+		Project: project,
+		DB:      db(boxCode),
+		Log:     logger,
+	}
+	box.Reload()
+	defer box.Close()
 
 	agent := &nab.Agent{
-		Global:      g,
-		IDB:         db,
-		CliMgr:      cliMgr,
+		Box:         box,
 		Logger:      logger,
 		OnoffLogger: onofflog,
 		Pool:        p,
 	}
 
-	mcli, act := mqttcli(
-		nab.ClientID(g.Box, nab.NAB),
-		nab.SubscriptTopic(g.Box),
+	mcli := mqttcli(
+		nab.ClientID(boxCode, nab.NAB),
+		nab.SubscriptTopic(boxCode),
 		nab.AgentHandle(agent),
 	)
-	defer mcli.Disconnect(500)
 
-	lps := loops(db, func(data []*ent.Dev) nab.Job {
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	lps := loops(box, func(data []*ent.Dev) nab.JobV2 {
 		return nab.CollectTask{
-			Global:    g,
-			Data:      data,
-			Sender:    act,
-			IDB:       db,
-			ClientMgr: cliMgr,
-			Logger:    logger,
-			Delay:     interval,
+			Box:      box,
+			Data:     data,
+			Logger:   logger,
+			Pipeline: nab.NewMQTTAction(mcli),
+			Delay:    taskInterval(),
 		}
 	})
 
 	token := mcli.Connect()
-	if !token.WaitTimeout(60 * time.Second) {
-		slog.ErrorContext(ctx, "mqtt connect timeout")
-		return errors.New("mqtt connect timeout")
-	}
-	if err := token.Error(); err != nil {
-		slog.ErrorContext(ctx, "mqtt connect error", slog.Any("error", err))
+	if err := mqtt.WaitTokenTimeout(token, 60*time.Second); err != nil {
+		slog.Error("mqtt connect error", slog.Any("error", err))
 		return err
 	}
+	defer mcli.Disconnect(500)
 
-	lps.Run()
+	lspCtx, cancelFn := context.WithCancel(context.Background())
+	defer cancelFn()
+	lps.Run(lspCtx)
 
-	mux := chi.NewMux()
-	mux.Mount("/debug", middleware.Profiler())
-	mux.HandleFunc("/version", nab.VersionHandle)
-
-	srv := httpserver(mux)
-
-	errCh := make(chan error, 1)
-	go func() {
-		if err := srv.ListenAndServe(); err != nil &&
-			!errors.Is(err, http.ErrServerClosed) {
-			// 直接停止进程
-			log.Fatal(err)
-		}
-	}()
-	select {
-	case <-ctx.Done():
-	case err := <-errCh:
-		return err // 走正常的 defer 链退出
-	}
-
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Fatalf("Server shutdown failed: %v\n", err)
-	}
+	<-ctx.Done()
 
 	log.Println("quit...")
 	return nil

@@ -2,111 +2,113 @@ package nab
 
 import (
 	"context"
-	"encoding/json/v2"
 	"errors"
-	"strings"
+	"log/slog"
 
-	"github.com/twiglab/h2o/proto"
-
+	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
+	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
-type Global struct {
+type Box struct {
 	Project string
-	Box     string
+	Code    string
+
+	Log *slog.Logger
+
+	DB *orm.IDB
+
+	cliMap map[string]PortOperator
+	devMap map[string]*ent.Dev
 }
 
-// 当前确实存在clientMap中的Client无法关闭问题
-// 其原因是目前v1 版本loop不支持context，导致无法从外部停止
-// 如果提供关闭方法，则必然导致竞争
-// 目前只在nab停止时，才有关闭的需求，但实际上，nab停止了，进程就停止了
-// 此问题要被记录，在v2版本中解决
-// TODO
-type ClientMgr struct {
-	clientMap map[string]PortOperator
-	IDB       *orm.IDB
-}
-
-func NewClientMgr(db *orm.IDB) (*ClientMgr, error) {
-	ctx := context.Background()
-	clientMap := make(map[string]PortOperator)
-
-	clients, err := db.AllCli(ctx)
+func (b *Box) loadCli(ctx context.Context) error {
+	clis, err := b.DB.AllCli(ctx)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	for _, cli := range clients {
-		// 这里只是创建，Open操作交给setup方法
-		cli := NewModbusCli(cli)
-		clientMap[cli.Code] = cli
+	b.cliMap = make(map[string]PortOperator)
+	for _, cli := range clis {
+		mc := NewModbusCli(cli)
+		b.cliMap[cli.Code] = mc
 	}
-
-	return &ClientMgr{
-		IDB:       db,
-		clientMap: clientMap,
-	}, nil
+	return nil
 }
 
-func (g ClientMgr) ClientByCode(code string) (PortOperator, error) {
+func (b *Box) loadDev(ctx context.Context) error {
+	devs, err := b.DB.AllDev(ctx)
+	if err != nil {
+		return err
+	}
+
+	b.devMap = make(map[string]*ent.Dev)
+	for _, dev := range devs {
+		b.devMap[dev.Code] = dev
+	}
+	return nil
+}
+
+func (b *Box) Reload() error {
+	clear(b.cliMap)
+	clear(b.devMap)
+
+	ctx := context.Background()
+
+	if err := b.loadCli(ctx); err != nil {
+		return err
+	}
+
+	if err := b.loadDev(ctx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (b *Box) Close() error {
+	for _, cli := range b.cliMap {
+		_ = cli.Close()
+	}
+	return b.DB.Close()
+}
+
+func (b *Box) GetCli(code string) (PortOperator, error) {
 	if isNullPort(code) {
 		return nullOpt, nil
 	}
 
-	cli, ok := g.clientMap[code]
+	cli, ok := b.cliMap[code]
 	if !ok {
 		return nil, errors.New("not found code " + code)
 	}
 	return cli, nil
 }
 
-// isNullPort 判断是否为空端口
-// 空端口的作用为设备不需要client 即可正常工作
-// 目前为空端口为 null，nil，zero， 空端口不区分大小写
-func isNullPort(code string) bool {
-	switch strings.ToLower(code) { // 保留端口不区分大小写
-	case "null", "nil", "zero":
-		return true
+func (b *Box) GetDev(code string) (*ent.Dev, error) {
+	cli, ok := b.devMap[code]
+	if !ok {
+		return nil, errors.New("not found code " + code)
 	}
-	return false
+	return cli, nil
 }
 
-func SubscriptTopic(box string) string {
-	return proto.MakeTopic(proto.ONOFF, box, "#")
-}
-
-func onoffTopicPart(t string) (box string, code string, op string, err error) {
-	// h2o/onoff/836/836_11/ON
-	//  1   2     3    4    5
-	var parts []string
-	if parts, err = proto.TopicPart(t); err != nil {
+func (b *Box) GetDevCliEqu[T any](devCode string) (d *ent.Dev, p PortOperator, c T, err error) {
+	if d, err = b.GetDev(devCode); err != nil {
 		return
 	}
-
-	if len(parts) != 5 {
-		err = errors.New("topic error")
+	if p, err = b.GetCli(d.Cli); err != nil {
 		return
 	}
+	c, err = equlib.From[T](d.Clazz)
 
-	if parts[1] != proto.ONOFF {
-		err = errors.New("not h2o onoff")
-		return
-	}
-
-	box, code, op = parts[2], parts[3], parts[4]
 	return
 }
 
-type OnoffLite struct {
-	Box  string `json:"box"`
-	Code string `json:"code"`
-	Op   string `json:"op"`
-}
-
-func (o OnoffLite) Topic() string {
-	return proto.MakeTopic(proto.ONOFF, o.Box, o.Code, o.Op)
-}
-
-func (d OnoffLite) MarshalBinary() ([]byte, error) {
-	return json.Marshal(d)
+func (b *Box) GroupByCli() map[string][]*ent.Dev {
+	group := make(map[string][]*ent.Dev)
+	for _, dev := range b.devMap {
+		group[dev.Cli] = append(group[dev.Cli], dev)
+	}
+	return group
 }

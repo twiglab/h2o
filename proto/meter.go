@@ -7,12 +7,26 @@ const (
 	OPT_STATUS_UNKNOW = 0
 )
 
-// 设备采集数据
-// extra中的key不得为data_value和opt_status
-// 这个限制将在v2版本中移除
-// 当前版本为兼容性保留现状
+const (
+	KEY_DATA_VALUE = "data_value" // 表显读数
+	KEY_OPT_STATUS = "opt_status" // 开合状态
+)
+
 type MeterValue struct {
-	DataValue int64            `json:"data_value,omitempty"` // 表显读数
-	OptStatus int64            `json:"opt_status,omitempty"` // 开合状态
-	Extra     map[string]int64 `json:",embed"`
+	Extra map[string]int64 `json:",embed"`
+}
+
+func (m *MeterValue) SetValue(key string, value int64) {
+	m.Extra[key] = value
+}
+
+func (m MeterValue) GetValue(key string) (v int64, ok bool) {
+	v, ok = m.Extra[key]
+	return
+}
+
+func NewMeterValue() MeterValue {
+	return MeterValue{
+		Extra: make(map[string]int64),
+	}
 }

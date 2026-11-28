@@ -30,9 +30,9 @@ func init() {
 }
 
 func showCli() error {
-	g := global()
+	box, _ := boxData()
 
-	db := db(g)
+	db := db(box)
 	defer db.Close()
 
 	ctx := context.Background()

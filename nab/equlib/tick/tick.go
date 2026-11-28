@@ -5,7 +5,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/proto"
@@ -29,36 +28,24 @@ func newTimeTick() *TimeTick {
 	}
 }
 
-func (e *TimeTick) Collect(ctx context.Context, _ *modbus.ModbusClient, data nab.DeviceData) error {
+func (e *TimeTick) Collect(ctx context.Context, _ nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
 
 	now := time.Now()
+	ts := now.Unix()
 
-	meter := nab.NewMeter()
-	meter.Data.DataValue = now.Unix()
-	meter.Data.OptStatus = e.getOpt()
+	m := proto.NewMeterValue()
+	m.SetValue(proto.KEY_DATA_VALUE, ts)
+	m.SetValue(proto.KEY_OPT_STATUS, e.getOpt())
 
-	meter.Code = data.Record.Code
-	meter.Type = proto.TYPE_TIME_TICK
-	meter.DataCode = proto.NewDataCode()
-	meter.DataTime = now
-
-	meter.Pos.Project = data.Global.Project
-
-	meter.Gateway.Code = data.Global.Box
-	meter.Gateway.Type = proto.GATEWAY_NH
-	meter.Gateway.UnitID = 0
-
-	meter.Data.Extra["ts"] = now.Unix()
-
-	return data.Sender.SendData(ctx, meter)
+	return m, nil
 }
 
-func (e *TimeTick) On(_ context.Context, _ *modbus.ModbusClient, _ nab.DeviceData) error {
+func (e *TimeTick) On(_ context.Context, _ nab.ModbusOperator, _ nab.DeviceData) error {
 	e.setOpt(proto.OPT_STATUS_ON)
 	return nil
 }
 
-func (e *TimeTick) Off(_ context.Context, _ *modbus.ModbusClient, _ nab.DeviceData) error {
+func (e *TimeTick) Off(_ context.Context, _ nab.ModbusOperator, _ nab.DeviceData) error {
 	e.setOpt(proto.OPT_STATUS_OFF)
 	return nil
 }
@@ -68,6 +55,7 @@ func (e *TimeTick) setOpt(s int64) {
 	defer e.mu.Unlock()
 	e.optStatus = s
 }
+
 func (e *TimeTick) getOpt() int64 {
 	e.mu.RLock()
 	defer e.mu.RUnlock()

@@ -2,9 +2,7 @@ package kh
 
 import (
 	"context"
-	"time"
 
-	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/proto"
 )
@@ -15,41 +13,15 @@ const KH_LXS_40_MI = "KH-LXS-40-MI"
 type LXSNoValve struct {
 }
 
-func (e LXSNoValve) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	dataVal, err := cli.ReadUint32(0x00, modbus.INPUT_REGISTER)
+func (e LXSNoValve) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
+	mv := proto.NewMeterValue()
+	mv.SetValue(proto.KEY_OPT_STATUS, proto.OPT_STATUS_UNKNOW)
+
+	dataVal, err := cli.FC04Uint32(0x00)
 	if err != nil {
-		return err
+		return mv, err
 	}
+	mv.SetValue(proto.KEY_DATA_VALUE, int64(dataVal))
 
-	now := time.Now()
-
-	meter := nab.NewMeter()
-	meter.Data.DataValue = int64(dataVal)
-
-	// 不支持开合控制
-	meter.Data.OptStatus = proto.OPT_STATUS_UNKNOW
-
-	meter.Code = data.Record.Code
-	meter.Type = data.Record.Typ
-	meter.SN = data.Record.Sn
-	meter.DataCode = proto.NewDataCode()
-	meter.DataTime = now
-
-	meter.Pos.Project = data.Global.Project
-
-	meter.Gateway.Code = data.Global.Box
-	meter.Gateway.Type = proto.GATEWAY_NH
-	meter.Gateway.UnitID = data.Record.UnitID
-
-	return data.Sender.SendData(ctx, meter)
-}
-
-func (e LXSNoValve) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	// 无电磁阀水表，不支持开关操作
-	return nil
-}
-
-func (e LXSNoValve) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	// 无电磁阀水表，不支持开关操作
-	return nil
+	return mv, nil
 }

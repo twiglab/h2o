@@ -11,20 +11,20 @@ import (
 	"time"
 
 	"github.com/simonvetter/modbus"
-	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
+	"github.com/twiglab/h2o/proto"
 )
 
 type DeviceCollector interface {
-	Collect(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error
+	Collect(ctx context.Context, op ModbusOperator, data DeviceData) (proto.MeterValue, error)
 }
 
 type DeviceOn interface {
-	On(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error
+	On(ctx context.Context, op ModbusOperator, data DeviceData) error
 }
 
 type DeviceOff interface {
-	Off(ctx context.Context, cli *modbus.ModbusClient, data DeviceData) error
+	Off(ctx context.Context, op ModbusOperator, data DeviceData) error
 }
 
 /*
@@ -48,14 +48,14 @@ type ModbusCli struct {
 	isOpen bool
 }
 
-func endian(v uint) modbus.Endianness {
+func Endian(v uint) modbus.Endianness {
 	if v == 2 {
 		return modbus.LITTLE_ENDIAN
 	}
 	return modbus.BIG_ENDIAN
 }
 
-func wordorder(v uint) modbus.WordOrder {
+func WordOrder(v uint) modbus.WordOrder {
 	if v == 2 {
 		return modbus.LOW_WORD_FIRST
 	}
@@ -77,8 +77,8 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 		Timeout:  timeout,
 	}
 
-	e := endian(record.Endian)
-	wo := wordorder(record.WordOrder)
+	e := Endian(record.Endian)
+	wo := WordOrder(record.WordOrder)
 	return &ModbusCli{
 		Record: record,
 		Code:   record.Code,
@@ -94,11 +94,6 @@ func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 }
 
 func (c *ModbusCli) open() error {
-	// 已经打开，直接返回, 避免产生新连接
-	if c.isOpen {
-		return nil
-	}
-
 	cli, err := modbus.NewClient(c.cfg)
 	if err != nil {
 		return err
@@ -129,81 +124,83 @@ func (c *ModbusCli) close() error {
 	return c.cli.Close()
 }
 
-func (c *ModbusCli) setup(data DeviceData) error {
-	// Open方法会判断isOpen条件
-	if err := c.open(); err != nil {
-		return err
-	}
-
-	// 必须两者都不为0才设置，如果只有一个为0，那就不设置，最大容忍配置错误
-	// 此问题已经被记录，留到v2版本中去解决
-	// TODO
-	if data.Record.Endian != 0 && data.Record.WordOrder != 0 {
-		if err := c.cli.SetEncoding(endian(data.Record.Endian), wordorder(data.Record.WordOrder)); err != nil {
-			return err
-		}
-	}
-
-	return c.cli.SetUnitId(data.Record.UnitID)
+func (c *ModbusCli) Close() error {
+	return c.close()
 }
 
-func (c *ModbusCli) reset() error {
+func (c *ModbusCli) setup() error {
+	// 已经打开，直接返回, 避免产生新连接
+	if c.isOpen {
+		return nil
+	}
+	return c.open()
+}
+
+func (c *ModbusCli) reset() {
 	if c.isOpen {
 		// 恢复client设置
 		_ = c.cli.SetEncoding(c.endian, c.wordorder)
 	}
-	return nil
 }
 
-func (c *ModbusCli) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error) {
+func (c *ModbusCli) Do(f func(ModbusOperator) error) (err error) {
 	c.glock.Lock()
 	defer c.glock.Unlock()
 
-	if err = c.setup(data); err != nil {
-		return
-	}
-
-	if err = coll.Collect(ctx, c.cli, data); err != nil {
-		if _, ok := isConnErr(err); ok {
-			_ = c.close()
-		}
-	}
-	_ = c.reset()
-	return
-}
-
-func (c *ModbusCli) DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error) {
-	c.glock.Lock()
-	defer c.glock.Unlock()
-
-	if err = c.setup(data); err != nil {
+	if err = c.setup(); err != nil {
 		return err
 	}
+	defer c.reset()
 
-	if err = on.On(ctx, c.cli, data); err != nil {
+	if err = f(mbcli{c.cli}); err != nil {
 		if _, ok := isConnErr(err); ok {
 			_ = c.close()
 		}
 	}
-	_ = c.reset()
 	return
 }
 
-func (c *ModbusCli) DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error) {
-	c.glock.Lock()
-	defer c.glock.Unlock()
+type ModbusOperator interface {
+	FC03(addr uint16) (uint16, error)
+	FC04(addr uint16) (uint16, error)
 
-	if err = c.setup(data); err != nil {
-		return err
-	}
-	if err = off.Off(ctx, c.cli, data); err != nil {
-		if _, ok := isConnErr(err); ok {
-			_ = c.close()
-		}
-	}
-	_ = c.reset()
+	FC03Uint32(addr uint16) (uint32, error)
+	FC04Uint32(addr uint16) (uint32, error)
+
+	FC16(addr uint16, values []uint16) error
+	FC06(addr uint16, value uint16) error
+}
+
+type mbcli struct {
+	cli *modbus.ModbusClient
+}
+
+func (c mbcli) FC03(addr uint16) (v uint16, err error) {
+	v, err = c.cli.ReadRegister(addr, modbus.HOLDING_REGISTER)
 	return
+}
 
+func (c mbcli) FC04(addr uint16) (v uint16, err error) {
+	v, err = c.cli.ReadRegister(addr, modbus.INPUT_REGISTER)
+	return
+}
+
+func (c mbcli) FC03Uint32(addr uint16) (v uint32, err error) {
+	v, err = c.cli.ReadUint32(addr, modbus.HOLDING_REGISTER)
+	return
+}
+
+func (c mbcli) FC04Uint32(addr uint16) (v uint32, err error) {
+	v, err = c.cli.ReadUint32(addr, modbus.INPUT_REGISTER)
+	return
+}
+
+func (c mbcli) FC06(addr uint16, value uint16) error {
+	return c.cli.WriteRegister(addr, value)
+}
+
+func (c mbcli) FC16(addr uint16, values []uint16) error {
+	return c.cli.WriteRegisters(addr, values)
 }
 
 func isConnErr(err error) (error, bool) {
@@ -220,17 +217,14 @@ func isConnErr(err error) (error, bool) {
 }
 
 type DeviceData struct {
-	Global Global
+	Box    *Box
 	Record *ent.Dev
-	Sender Sender
-	IDB    *orm.IDB
 	Logger *slog.Logger
 }
 
 type PortOperator interface {
-	DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) (err error)
-	DoOn(ctx context.Context, on DeviceOn, data DeviceData) (err error)
-	DoOff(ctx context.Context, off DeviceOff, data DeviceData) (err error)
+	Do(func(ModbusOperator) error) error
+	Close() error
 }
 
 // nullOptx 终端仅用于无需客户端的设备
@@ -239,16 +233,9 @@ type PortOperator interface {
 type nullOptx struct {
 }
 
-func (c nullOptx) DoCollect(ctx context.Context, coll DeviceCollector, data DeviceData) error {
-	return coll.Collect(ctx, nil, data)
-}
-
-func (c nullOptx) DoOn(ctx context.Context, on DeviceOn, data DeviceData) error {
-	return on.On(ctx, nil, data)
-}
-
-func (c nullOptx) DoOff(ctx context.Context, off DeviceOff, data DeviceData) error {
-	return off.Off(ctx, nil, data)
+func (c nullOptx) Close() error { return nil }
+func (c nullOptx) Do(f func(ModbusOperator) error) error {
+	return f(nil)
 }
 
 var nullOpt nullOptx

@@ -7,9 +7,6 @@ import (
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/panjf2000/ants/v2"
-	"github.com/twiglab/h2o/nab/equlib"
-	"github.com/twiglab/h2o/nab/orm"
-	"github.com/twiglab/h2o/nab/orm/ent"
 	"github.com/twiglab/h2o/proto"
 )
 
@@ -19,10 +16,8 @@ type OnOffer interface {
 }
 
 type Agent struct {
-	Global Global
+	Box    *Box
 	Logger *slog.Logger
-	IDB    *orm.IDB
-	CliMgr *ClientMgr
 
 	OnoffLogger *slog.Logger
 
@@ -54,9 +49,9 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 			return
 		}
 
-		if box != a.Global.Box {
+		if box != a.Box.Code {
 			a.Logger.Warn("onoff box mismatch",
-				slog.String("expect", a.Global.Box),
+				slog.String("expect", a.Box.Code),
 				slog.String("got", box),
 				slog.String("code", code))
 			return
@@ -82,69 +77,37 @@ func AgentHandle(a *Agent) mqtt.MessageHandler {
 }
 
 func (a *Agent) On(ctx context.Context, code string) error {
-	dev, mcli, onoff, err := a.get(ctx, code)
+	dev, cli, on, err := a.Box.GetDevCliEqu[DeviceOn](code)
 	if err != nil {
 		return err
 	}
 
-	return mcli.DoOn(ctx, onoff,
-		DeviceData{
+	return cli.Do(func(op ModbusOperator) error {
+		return on.On(ctx, op, DeviceData{
+			Box:    a.Box,
 			Record: dev,
-			Global: a.Global,
-			IDB:    a.IDB,
 			Logger: a.Logger,
-		},
-	)
+		})
+	})
 }
 
 func (a *Agent) Off(ctx context.Context, code string) error {
-	dev, mcli, onoff, err := a.get(ctx, code)
+	dev, cli, off, err := a.Box.GetDevCliEqu[DeviceOff](code)
 	if err != nil {
 		return err
 	}
 
-	return mcli.DoOff(ctx, onoff,
-		DeviceData{
+	return cli.Do(func(op ModbusOperator) error {
+		return off.Off(ctx, op, DeviceData{
+			Box:    a.Box,
 			Record: dev,
-			Global: a.Global,
-			IDB:    a.IDB,
 			Logger: a.Logger,
-		},
-	)
-}
-
-func (a *Agent) get(ctx context.Context, devCode string) (*ent.Dev, PortOperator, OnOffer, error) {
-	dev, err := a.IDB.GetDev(ctx, devCode)
-	if err != nil {
-		a.Logger.Error("OnOff.GetDev.Error",
-			slog.String("code", devCode),
-			slog.String("global.Box", a.Global.Box),
-		)
-		return nil, nil, nil, err
-	}
-
-	mcli, err := a.CliMgr.ClientByCode(dev.Cli)
-	if err != nil {
-		a.Logger.Error("OnOff.ClientByCode.Error",
-			slog.String("code", devCode),
-			slog.String("global.Box", a.Global.Box),
-			slog.Any("error", err),
-		)
-		return nil, nil, nil, err
-	}
-
-	onoff, err := equlib.From[OnOffer](dev.Clazz)
-	if err != nil {
-		a.Logger.Error("OnOff.Clazz.Error",
-			slog.Any("error", err),
-		)
-		return nil, nil, nil, err
-	}
-	return dev, mcli, onoff, nil
+		})
+	})
 }
 
 func (a *Agent) doOnOff(box, code, op string) {
-	ctx, cancalFn := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancalFn := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancalFn()
 
 	// 无论执行是否成功，都先记录

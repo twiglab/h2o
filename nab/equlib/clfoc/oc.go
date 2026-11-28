@@ -2,9 +2,7 @@ package clfoc
 
 import (
 	"context"
-	"time"
 
-	"github.com/simonvetter/modbus"
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/proto"
 )
@@ -14,39 +12,15 @@ const CLF_OC_PT = "CLF-OC-PT"
 type CLFOC struct {
 }
 
-func (e CLFOC) Collect(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
+func (e CLFOC) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
+	mv := proto.NewMeterValue()
+	mv.SetValue(proto.KEY_OPT_STATUS, proto.OPT_STATUS_UNKNOW)
 
-	dataVal, err := cli.ReadUint32(data.Record.Addr, modbus.INPUT_REGISTER)
+	dataVal, err := cli.FC04Uint32(data.Record.Addr)
 	if err != nil {
-		return err
+		return mv, err
 	}
+	mv.SetValue(proto.KEY_DATA_VALUE, int64(dataVal))
 
-	now := time.Now()
-
-	meter := nab.NewMeter()
-	meter.Data.DataValue = int64(dataVal)
-
-	// 不支持开合控制
-	meter.Data.OptStatus = proto.OPT_STATUS_UNKNOW
-
-	meter.Code = data.Record.Code
-	meter.Type = data.Record.Typ
-	meter.DataCode = proto.NewDataCode()
-	meter.DataTime = now
-
-	meter.Pos.Project = data.Global.Project
-
-	meter.Gateway.Code = data.Global.Box
-	meter.Gateway.Type = proto.GATEWAY_NH
-	meter.Gateway.UnitID = data.Record.UnitID
-
-	return data.Sender.SendData(ctx, meter)
-}
-
-func (e CLFOC) On(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	return nil
-}
-
-func (e CLFOC) Off(ctx context.Context, cli *modbus.ModbusClient, data nab.DeviceData) error {
-	return nil
+	return mv, nil
 }

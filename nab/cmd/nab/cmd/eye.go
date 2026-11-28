@@ -39,14 +39,14 @@ func toolEey() error {
 		return errors.New("code is nil")
 	}
 
-	g := global()
-	topic := proto.MakeTopic(proto.DATA, g.Box, deviceCode, "#")
+	box, _ := boxData()
+	topic := proto.MakeTopic(proto.DATA, box, deviceCode, "#")
 	log.Println(topic)
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	mcli, _ := mqttcli(
-		nab.ClientID(g.Box, randText()),
+	mcli := mqttcli(
+		nab.ClientID(box, randText()),
 		topic,
 		func(cli mqtt.Client, msg mqtt.Message) {
 			fmt.Println(string(msg.Payload()))

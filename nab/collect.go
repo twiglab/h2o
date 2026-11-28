@@ -2,57 +2,57 @@ package nab
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"time"
 
-	"github.com/twiglab/h2o/nab/equlib"
-	"github.com/twiglab/h2o/nab/orm"
 	"github.com/twiglab/h2o/nab/orm/ent"
 )
 
 type CollectTask struct {
-	Global    Global
-	IDB       *orm.IDB
-	ClientMgr *ClientMgr
-	Data      []*ent.Dev
-	Sender    Sender
-	Logger    *slog.Logger
+	Box    *Box
+	Logger *slog.Logger
+
+	Data []*ent.Dev
+
+	Pipeline Sender
 
 	Delay time.Duration
 }
 
-func (t CollectTask) Run() {
-	for _, dev := range t.Data {
-		// 先延时在采集
-		time.Sleep(t.Delay)
-		coltor, err := equlib.From[DeviceCollector](dev.Clazz)
-		if err != nil {
-			t.Logger.Error("CollectTask.NotFoundClazz", slog.String("code", dev.Code),
-				slog.String("clazz", dev.Clazz),
-				slog.String("box", t.Global.Box),
-				slog.Any("record", dev))
-
-			continue
+func (t CollectTask) Run(ctx context.Context) {
+	for {
+		for _, dev := range t.Data {
+			select {
+			case <-ctx.Done():
+				fmt.Println("qqq")
+				return
+			default:
+				t.doCollect(ctx, dev)
+			}
 		}
+	}
+}
 
-		client, err := t.ClientMgr.ClientByCode(dev.Cli)
-		if err != nil {
-			t.Logger.Error("CollectTask.NotFoundClient", slog.String("code", dev.Code),
-				slog.String("cli", dev.Cli),
-				slog.String("clazz", dev.Clazz),
-				slog.String("box", t.Global.Box),
-				slog.Any("record", dev))
+func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
+	time.Sleep(t.Delay)
 
-			continue
-		}
+	_, cli, coll, err := t.Box.GetDevCliEqu[DeviceCollector](dev.Code)
+	if err != nil {
+		t.Logger.Error("GetDevCliEqu error", slog.String("code", dev.Code), slog.Any("error", err))
+		return
+	}
+	err = cli.Do(
+		func(op ModbusOperator) error {
+			mv, err := coll.Collect(ctx, op, DeviceData{Box: t.Box, Record: dev, Logger: t.Logger})
+			if err != nil {
+				return err
+			}
+			return t.Pipeline.SendData(ctx, MakeMeter(t.Box, dev, mv))
+		},
+	)
 
-		if err = client.DoCollect(context.Background(), coltor, DeviceData{
-			Record: dev,
-			Global: t.Global,
-			Sender: t.Sender,
-			Logger: t.Logger,
-		}); err != nil {
-			t.Logger.Error("CollectTask.CollectError", slog.String("code", dev.Code), slog.Any("error", err), slog.Any("record", dev))
-		}
+	if err != nil {
+		t.Logger.Error("CollectTask error", slog.String("code", dev.Code), slog.Any("error", err))
 	}
 }

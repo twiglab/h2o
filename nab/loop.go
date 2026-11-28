@@ -1,76 +1,29 @@
 package nab
 
 import (
-	"cmp"
-	"slices"
-	"time"
-
-	"github.com/twiglab/h2o/nab/orm/ent"
+	"context"
 )
 
-// 原地排序
-func SplitByCli(list []*ent.Dev) [][]*ent.Dev {
-	slices.SortFunc(list, func(a, b *ent.Dev) int { return cmp.Compare(a.Cli, b.Cli) })
-	returnData := make([][]*ent.Dev, 0)
-
-	var i, j int
-	for {
-		if i >= len(list) {
-			break
-		}
-		for j = i + 1; j < len(list) && list[i].Cli == list[j].Cli; j++ {
-		}
-
-		returnData = append(returnData, list[i:j])
-		i = j
-	}
-	return returnData
+type JobV2 interface {
+	Run(ctx context.Context)
 }
 
-type Loops struct {
-	jobs []Job
+type Loops2 struct {
+	loops []JobV2
 }
 
-func NewLoops() Loops {
-	return Loops{
-		jobs: make([]Job, 0),
-	}
+func NewLoopsV2() *Loops2 {
+	return &Loops2{loops: make([]JobV2, 0)}
 }
 
-func (l *Loops) AddJob(j Job) *Loops {
-	l.jobs = append(l.jobs, j)
+func (l *Loops2) AddToNewLoop(job JobV2) *Loops2 {
+	l.loops = append(l.loops, job)
 	return l
 }
 
-func (l *Loops) AddToNewLoop(delay time.Duration, job Job) *Loops {
-	return l.AddJob(NewLoop(delay, job))
-}
-
-func (l Loops) Run() {
-	for _, j := range l.jobs {
-		j.Run()
+// Run 启动全部循环。
+func (l *Loops2) Run(ctx context.Context) {
+	for _, lp := range l.loops {
+		go lp.Run(ctx)
 	}
-}
-
-type Loop struct {
-	job      Job
-	interval time.Duration
-}
-
-func NewLoop(interval time.Duration, j Job) Loop {
-	return Loop{
-		job:      j,
-		interval: interval,
-	}
-}
-
-func (l Loop) loop() {
-	for {
-		l.job.Run()
-		time.Sleep(l.interval)
-	}
-}
-
-func (l Loop) Run() {
-	go l.loop()
 }
