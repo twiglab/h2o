@@ -31,8 +31,8 @@ func (e DTZY) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.Devi
 		return mv, err
 	}
 
-	mv.SetValue(proto.KEY_DATA_VALUE, int64(v))
-	mv.SetValue(proto.KEY_OPT_STATUS, int64(opt))
+	mv.DataValue = int64(v)
+	mv.OptStatus = optStatus(opt)
 
 	return mv, nil
 }

@@ -34,8 +34,9 @@ func (e *TimeTick) Collect(ctx context.Context, _ nab.ModbusOperator, data nab.D
 	ts := now.Unix()
 
 	m := proto.NewMeterValue()
-	m.SetValue(proto.KEY_DATA_VALUE, ts)
-	m.SetValue(proto.KEY_OPT_STATUS, e.getOpt())
+	m.DataValue = ts
+	m.OptStatus = e.getOpt()
+	m.SetValue("ts", ts)
 
 	return m, nil
 }

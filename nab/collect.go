@@ -2,7 +2,6 @@ package nab
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 	"time"
 
@@ -25,7 +24,7 @@ func (t CollectTask) Run(ctx context.Context) {
 		for _, dev := range t.Data {
 			select {
 			case <-ctx.Done():
-				fmt.Println("qqq")
+				t.Logger.DebugContext(ctx, "collect quit")
 				return
 			default:
 				t.doCollect(ctx, dev)
@@ -37,12 +36,12 @@ func (t CollectTask) Run(ctx context.Context) {
 func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
 	time.Sleep(t.Delay)
 
-	_, cli, coll, err := t.Box.GetDevCliEqu[DeviceCollector](dev.Code)
+	dev, cli, coll, err := t.Box.GetDevCliEqu[DeviceCollector](dev.Code)
 	if err != nil {
-		t.Logger.Error("GetDevCliEqu error", slog.String("code", dev.Code), slog.Any("error", err))
+		t.Logger.ErrorContext(ctx, "GetDevCliEqu error", slog.String("code", dev.Code), slog.Any("error", err))
 		return
 	}
-	err = cli.Do(
+	err = cli.Do(dev,
 		func(op ModbusOperator) error {
 			mv, err := coll.Collect(ctx, op, DeviceData{Box: t.Box, Record: dev, Logger: t.Logger})
 			if err != nil {
@@ -53,6 +52,6 @@ func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
 	)
 
 	if err != nil {
-		t.Logger.Error("CollectTask error", slog.String("code", dev.Code), slog.Any("error", err))
+		t.Logger.ErrorContext(ctx, "CollectTask error", slog.String("code", dev.Code), slog.Any("error", err))
 	}
 }

@@ -15,13 +15,13 @@ type LXSNoValve struct {
 
 func (e LXSNoValve) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.DeviceData) (proto.MeterValue, error) {
 	mv := proto.NewMeterValue()
-	mv.SetValue(proto.KEY_OPT_STATUS, proto.OPT_STATUS_UNKNOW)
+	mv.OptStatus = proto.OPT_STATUS_UNKNOW
 
-	dataVal, err := cli.FC04Uint32(0x00)
+	v, err := cli.FC04Uint32(0x00)
 	if err != nil {
 		return mv, err
 	}
-	mv.SetValue(proto.KEY_DATA_VALUE, int64(dataVal))
+	mv.DataValue = int64(v)
 
 	return mv, nil
 }

@@ -62,6 +62,16 @@ func WordOrder(v uint) modbus.WordOrder {
 	return modbus.HIGH_WORD_FIRST
 }
 
+// 初始化设备地址，字节顺序，大小端
+func initDev(cli *modbus.ModbusClient, e uint, o uint, u uint8) error {
+	if e != 0 && o != 0 {
+		if err := cli.SetEncoding(Endian(e), WordOrder(o)); err != nil {
+			return err
+		}
+	}
+	return cli.SetUnitId(u)
+}
+
 func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
 	timeout := time.Second
 	if record.Timeout > 0 && record.Timeout <= 10000 { // 最大10秒
@@ -143,7 +153,7 @@ func (c *ModbusCli) reset() {
 	}
 }
 
-func (c *ModbusCli) Do(f func(ModbusOperator) error) (err error) {
+func (c *ModbusCli) Do(record *ent.Dev, f func(ModbusOperator) error) (err error) {
 	c.glock.Lock()
 	defer c.glock.Unlock()
 
@@ -151,6 +161,10 @@ func (c *ModbusCli) Do(f func(ModbusOperator) error) (err error) {
 		return err
 	}
 	defer c.reset()
+
+	if err := initDev(c.cli, record.Endian, record.WordOrder, record.UnitID); err != nil {
+		return err
+	}
 
 	if err = f(mbcli{c.cli}); err != nil {
 		if _, ok := isConnErr(err); ok {
@@ -223,7 +237,7 @@ type DeviceData struct {
 }
 
 type PortOperator interface {
-	Do(func(ModbusOperator) error) error
+	Do(*ent.Dev, func(ModbusOperator) error) error
 	Close() error
 }
 
@@ -234,7 +248,7 @@ type nullOptx struct {
 }
 
 func (c nullOptx) Close() error { return nil }
-func (c nullOptx) Do(f func(ModbusOperator) error) error {
+func (c nullOptx) Do(_ *ent.Dev, f func(ModbusOperator) error) error {
 	return f(nil)
 }
 

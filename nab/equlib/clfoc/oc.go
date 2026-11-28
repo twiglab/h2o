@@ -16,11 +16,10 @@ func (e CLFOC) Collect(ctx context.Context, cli nab.ModbusOperator, data nab.Dev
 	mv := proto.NewMeterValue()
 	mv.SetValue(proto.KEY_OPT_STATUS, proto.OPT_STATUS_UNKNOW)
 
-	dataVal, err := cli.FC04Uint32(data.Record.Addr)
+	v, err := cli.FC04Uint32(data.Record.Addr)
 	if err != nil {
 		return mv, err
 	}
-	mv.SetValue(proto.KEY_DATA_VALUE, int64(dataVal))
-
+	mv.DataValue = int64(v)
 	return mv, nil
 }

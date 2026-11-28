@@ -6,6 +6,7 @@ import (
 	"entgo.io/ent/dialect"
 )
 
+/*
 func char(size int) map[string]string {
 	return map[string]string{
 		dialect.MySQL:    fmt.Sprintf("char(%d)", size),
@@ -13,6 +14,8 @@ func char(size int) map[string]string {
 		dialect.Postgres: fmt.Sprintf("char(%d)", size),
 	}
 }
+*/
+
 func varchar(size int) map[string]string {
 	return map[string]string{
 		dialect.MySQL:    fmt.Sprintf("varchar(%d)", size),

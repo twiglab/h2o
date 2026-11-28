@@ -10,7 +10,6 @@ import (
 	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/panjf2000/ants/v2"
 	"github.com/spf13/viper"
 	"github.com/twiglab/h2o/clog"
 	"github.com/twiglab/h2o/nab"
@@ -169,14 +168,6 @@ func onoffLog() *slog.Logger {
 	logL := clog.NewLog("onoff.log", slog.LevelInfo, clog.LogRoot(root))
 	log.Println("onoff log:", root, "onoff.log", slog.LevelInfo)
 	return logL
-}
-
-func pool() *ants.Pool {
-	p, err := ants.NewPool(32, ants.WithNonblocking(true))
-	if err != nil {
-		log.Fatal(err)
-	}
-	return p
 }
 
 func randText() string {

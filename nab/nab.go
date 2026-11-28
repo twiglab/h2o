@@ -1,13 +1,10 @@
 package nab
 
 import (
-	"cmp"
 	"encoding/json/v2"
 	"errors"
-	"slices"
 	"strings"
 
-	"github.com/twiglab/h2o/nab/orm/ent"
 	"github.com/twiglab/h2o/proto"
 )
 
@@ -26,7 +23,7 @@ func SubscriptTopic(box string) string {
 	return proto.MakeTopic(proto.ONOFF, box, "+", "+")
 }
 
-func onoffTopicPart(t string) (box string, code string, op string, err error) {
+func parseOnoffTopicPart(t string) (box string, code string, op string, err error) {
 	// h2o/onoff/836/836_11/ON
 	//	1   2     3    4    5
 	var parts []string
@@ -45,6 +42,10 @@ func onoffTopicPart(t string) (box string, code string, op string, err error) {
 	}
 
 	box, code, op = parts[2], parts[3], parts[4]
+	if box == "" || code == "" {
+		err = errors.New("box or code is nil")
+	}
+
 	return
 }
 
@@ -60,23 +61,4 @@ func (o OnoffLite) Topic() string {
 
 func (d OnoffLite) MarshalBinary() ([]byte, error) {
 	return json.Marshal(d)
-}
-
-// 原地排序
-func SplitByCli(list []*ent.Dev) [][]*ent.Dev {
-	slices.SortFunc(list, func(a, b *ent.Dev) int { return cmp.Compare(a.Cli, b.Cli) })
-	returnData := make([][]*ent.Dev, 0)
-
-	var i, j int
-	for {
-		if i >= len(list) {
-			break
-		}
-		for j = i + 1; j < len(list) && list[i].Cli == list[j].Cli; j++ {
-		}
-
-		returnData = append(returnData, list[i:j])
-		i = j
-	}
-	return returnData
 }
