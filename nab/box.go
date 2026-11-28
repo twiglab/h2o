@@ -3,7 +3,6 @@ package nab
 import (
 	"context"
 	"errors"
-	"log/slog"
 
 	"github.com/twiglab/h2o/nab/equlib"
 	"github.com/twiglab/h2o/nab/orm"
@@ -13,8 +12,6 @@ import (
 type Box struct {
 	Project string
 	Code    string
-
-	Log *slog.Logger
 
 	DB *orm.IDB
 
@@ -49,7 +46,7 @@ func (b *Box) loadDev(ctx context.Context) error {
 	return nil
 }
 
-func (b *Box) Reload() error {
+func (b *Box) Load() error {
 	clear(b.cliMap)
 	clear(b.devMap)
 

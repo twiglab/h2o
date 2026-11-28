@@ -56,6 +56,7 @@ func NewIDB(dev, cli string, ops ...ent.Option) (*IDB, error) {
 
 	// 防止产生新连接看不到虚拟表
 	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
 
 	if err := vtab.RegisterModule(db, "csv", &idb.IDBModule{}); err != nil {
 		_ = db.Close()

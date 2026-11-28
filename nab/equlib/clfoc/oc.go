@@ -2,6 +2,7 @@ package clfoc
 
 import (
 	"context"
+	"errors"
 
 	"github.com/twiglab/h2o/nab"
 	"github.com/twiglab/h2o/proto"
@@ -23,6 +24,6 @@ func (e CLFOC) Collect(ctx context.Context, cli nab.ModbusOperator) (proto.Meter
 		}
 		mv.DataValue = int64(v)
 	*/
-	return mv, nil
+	return mv, errors.New("not impl")
 
 }

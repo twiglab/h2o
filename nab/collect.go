@@ -35,9 +35,13 @@ func (t CollectTask) Run(ctx context.Context) {
 }
 
 func (t CollectTask) doCollect(ctx context.Context, dev *ent.Dev) {
-	time.Sleep(t.Delay)
+	select {
+	case <-ctx.Done():
+		return
+	case <-time.After(t.Delay):
+	}
 
-	dev, cli, coll, err := t.Box.GetDevCliEqu[DeviceCollector](dev.Code)
+	_, cli, coll, err := t.Box.GetDevCliEqu[DeviceCollector](dev.Code)
 	if err != nil {
 		t.Logger.ErrorContext(ctx, "GetDevCliEqu error", slog.String("code", dev.Code), slog.Any("error", err))
 		return

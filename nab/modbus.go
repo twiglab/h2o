@@ -28,6 +28,7 @@ type DeviceOff interface {
 
 // 初始化设备地址，字节顺序，大小端
 func initDev(cli *modbus.ModbusClient, e uint, o uint, u uint8) error {
+	// 必须都不为0，最大兼容配置错误
 	if e != 0 && o != 0 {
 		if err := cli.SetEncoding(Endian(e), WordOrder(o)); err != nil {
 			return err
@@ -72,18 +73,13 @@ func WordOrder(v uint) modbus.WordOrder {
 }
 
 func NewModbusCli(record *ent.Cli) (client *ModbusCli) {
-	timeout := time.Second
-	if record.Timeout > 0 && record.Timeout <= 10000 { // 最大10秒
-		timeout = time.Duration(record.Timeout) * time.Millisecond
-	}
-
 	cfg := &modbus.ClientConfiguration{
 		URL:      record.URL,
 		Speed:    record.Speed,
 		DataBits: record.DataBits,
 		Parity:   record.Parity,
 		StopBits: record.StopBits,
-		Timeout:  timeout,
+		Timeout:  3 * time.Second, // 固定3s，cli.timeout废弃
 	}
 
 	e := Endian(record.Endian)
@@ -134,6 +130,8 @@ func (c *ModbusCli) close() error {
 }
 
 func (c *ModbusCli) Close() error {
+	c.glock.Lock()
+	defer c.glock.Unlock()
 	return c.close()
 }
 
@@ -149,6 +147,7 @@ func (c *ModbusCli) reset() {
 	if c.isOpen {
 		// 恢复client设置
 		_ = c.cli.SetEncoding(c.endian, c.wordorder)
+		_ = c.cli.SetUnitId(1)
 	}
 }
 
@@ -180,12 +179,15 @@ func isConnErr(err error) (error, bool) {
 	if err == nil {
 		return err, false
 	}
-	if neterr, ok := err.(net.Error); ok {
-		return neterr, ok
+
+	if e, ok := errors.AsType[net.Error](err); ok {
+		return e, ok
 	}
+
 	return err,
 		errors.Is(err, modbus.ErrRequestTimedOut) ||
 			errors.Is(err, io.EOF) ||
+			errors.Is(err, io.ErrUnexpectedEOF) ||
 			errors.Is(err, syscall.ECONNRESET)
 }
 

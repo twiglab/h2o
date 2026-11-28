@@ -47,10 +47,9 @@ func run() error {
 		Code:    boxCode,
 		Project: project,
 		DB:      db(boxCode),
-		Log:     logger,
 	}
 
-	if err := box.Reload(); err != nil {
+	if err := box.Load(); err != nil {
 		return err
 	}
 	defer box.Close()
@@ -85,7 +84,7 @@ func run() error {
 		slog.Error("mqtt connect error", slog.Any("error", err))
 		return err
 	}
-	defer mcli.Disconnect(500)
+	defer mcli.Disconnect(10000) //10s
 
 	lspCtx, cancelFn := context.WithCancel(ctx)
 	defer cancelFn()
