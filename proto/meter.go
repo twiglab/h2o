@@ -13,11 +13,20 @@ const (
 )
 
 type MeterValue struct {
-	Extra map[string]int64 `json:",embed"`
+	DataValue int64            `json:"data_value"`
+	OptStatus int64            `json:"opt_status"`
+	Extra     map[string]int64 `json:",embed"`
 }
 
 func (m *MeterValue) SetValue(key string, value int64) {
-	m.Extra[key] = value
+	switch key {
+	case "":
+		return
+	case KEY_DATA_VALUE, KEY_OPT_STATUS:
+		m.Extra["x_"+key] = value
+	default:
+		m.Extra[key] = value
+	}
 }
 
 func (m MeterValue) GetValue(key string) (v int64, ok bool) {
