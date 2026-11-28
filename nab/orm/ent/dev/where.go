@@ -82,11 +82,6 @@ func UnitID(v uint8) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldUnitID, v))
 }
 
-// Addr applies equality check predicate on the "addr" field. It's identical to AddrEQ.
-func Addr(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldEQ(FieldAddr, v))
-}
-
 // Endian applies equality check predicate on the "endian" field. It's identical to EndianEQ.
 func Endian(v uint) predicate.Dev {
 	return predicate.Dev(sql.FieldEQ(FieldEndian, v))
@@ -475,46 +470,6 @@ func UnitIDLT(v uint8) predicate.Dev {
 // UnitIDLTE applies the LTE predicate on the "unit_id" field.
 func UnitIDLTE(v uint8) predicate.Dev {
 	return predicate.Dev(sql.FieldLTE(FieldUnitID, v))
-}
-
-// AddrEQ applies the EQ predicate on the "addr" field.
-func AddrEQ(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldEQ(FieldAddr, v))
-}
-
-// AddrNEQ applies the NEQ predicate on the "addr" field.
-func AddrNEQ(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldNEQ(FieldAddr, v))
-}
-
-// AddrIn applies the In predicate on the "addr" field.
-func AddrIn(vs ...uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldIn(FieldAddr, vs...))
-}
-
-// AddrNotIn applies the NotIn predicate on the "addr" field.
-func AddrNotIn(vs ...uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldNotIn(FieldAddr, vs...))
-}
-
-// AddrGT applies the GT predicate on the "addr" field.
-func AddrGT(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldGT(FieldAddr, v))
-}
-
-// AddrGTE applies the GTE predicate on the "addr" field.
-func AddrGTE(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldGTE(FieldAddr, v))
-}
-
-// AddrLT applies the LT predicate on the "addr" field.
-func AddrLT(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldLT(FieldAddr, v))
-}
-
-// AddrLTE applies the LTE predicate on the "addr" field.
-func AddrLTE(v uint16) predicate.Dev {
-	return predicate.Dev(sql.FieldLTE(FieldAddr, v))
 }
 
 // EndianEQ applies the EQ predicate on the "endian" field.

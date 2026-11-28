@@ -49,9 +49,6 @@ func (b *Box) loadDev(ctx context.Context) error {
 // Load只在启动时候调用移除
 // nab目前版本不支持热更新
 func (b *Box) Load() error {
-	clear(b.cliMap)
-	clear(b.devMap)
-
 	ctx := context.Background()
 
 	if err := b.loadCli(ctx); err != nil {

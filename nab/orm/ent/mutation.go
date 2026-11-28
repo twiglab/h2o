@@ -1169,8 +1169,6 @@ type DevMutation struct {
 	cli           *string
 	unit_id       *uint8
 	addunit_id    *int8
-	addr          *uint16
-	addaddr       *int16
 	endian        *uint
 	addendian     *int
 	word_order    *uint
@@ -1535,62 +1533,6 @@ func (m *DevMutation) ResetUnitID() {
 	m.addunit_id = nil
 }
 
-// SetAddr sets the "addr" field.
-func (m *DevMutation) SetAddr(u uint16) {
-	m.addr = &u
-	m.addaddr = nil
-}
-
-// Addr returns the value of the "addr" field in the mutation.
-func (m *DevMutation) Addr() (r uint16, exists bool) {
-	v := m.addr
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAddr returns the old "addr" field's value of the Dev entity.
-// If the Dev object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *DevMutation) OldAddr(ctx context.Context) (v uint16, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAddr is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAddr requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAddr: %w", err)
-	}
-	return oldValue.Addr, nil
-}
-
-// AddAddr adds u to the "addr" field.
-func (m *DevMutation) AddAddr(u int16) {
-	if m.addaddr != nil {
-		*m.addaddr += u
-	} else {
-		m.addaddr = &u
-	}
-}
-
-// AddedAddr returns the value that was added to the "addr" field in this mutation.
-func (m *DevMutation) AddedAddr() (r int16, exists bool) {
-	v := m.addaddr
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAddr resets all changes to the "addr" field.
-func (m *DevMutation) ResetAddr() {
-	m.addr = nil
-	m.addaddr = nil
-}
-
 // SetEndian sets the "endian" field.
 func (m *DevMutation) SetEndian(u uint) {
 	m.endian = &u
@@ -1773,7 +1715,7 @@ func (m *DevMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *DevMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 9)
 	if m.code != nil {
 		fields = append(fields, dev.FieldCode)
 	}
@@ -1791,9 +1733,6 @@ func (m *DevMutation) Fields() []string {
 	}
 	if m.unit_id != nil {
 		fields = append(fields, dev.FieldUnitID)
-	}
-	if m.addr != nil {
-		fields = append(fields, dev.FieldAddr)
 	}
 	if m.endian != nil {
 		fields = append(fields, dev.FieldEndian)
@@ -1824,8 +1763,6 @@ func (m *DevMutation) Field(name string) (ent.Value, bool) {
 		return m.Cli()
 	case dev.FieldUnitID:
 		return m.UnitID()
-	case dev.FieldAddr:
-		return m.Addr()
 	case dev.FieldEndian:
 		return m.Endian()
 	case dev.FieldWordOrder:
@@ -1853,8 +1790,6 @@ func (m *DevMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldCli(ctx)
 	case dev.FieldUnitID:
 		return m.OldUnitID(ctx)
-	case dev.FieldAddr:
-		return m.OldAddr(ctx)
 	case dev.FieldEndian:
 		return m.OldEndian(ctx)
 	case dev.FieldWordOrder:
@@ -1912,13 +1847,6 @@ func (m *DevMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUnitID(v)
 		return nil
-	case dev.FieldAddr:
-		v, ok := value.(uint16)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAddr(v)
-		return nil
 	case dev.FieldEndian:
 		v, ok := value.(uint)
 		if !ok {
@@ -1951,9 +1879,6 @@ func (m *DevMutation) AddedFields() []string {
 	if m.addunit_id != nil {
 		fields = append(fields, dev.FieldUnitID)
 	}
-	if m.addaddr != nil {
-		fields = append(fields, dev.FieldAddr)
-	}
 	if m.addendian != nil {
 		fields = append(fields, dev.FieldEndian)
 	}
@@ -1970,8 +1895,6 @@ func (m *DevMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case dev.FieldUnitID:
 		return m.AddedUnitID()
-	case dev.FieldAddr:
-		return m.AddedAddr()
 	case dev.FieldEndian:
 		return m.AddedEndian()
 	case dev.FieldWordOrder:
@@ -1991,13 +1914,6 @@ func (m *DevMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddUnitID(v)
-		return nil
-	case dev.FieldAddr:
-		v, ok := value.(int16)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAddr(v)
 		return nil
 	case dev.FieldEndian:
 		v, ok := value.(int)
@@ -2066,9 +1982,6 @@ func (m *DevMutation) ResetField(name string) error {
 		return nil
 	case dev.FieldUnitID:
 		m.ResetUnitID()
-		return nil
-	case dev.FieldAddr:
-		m.ResetAddr()
 		return nil
 	case dev.FieldEndian:
 		m.ResetEndian()

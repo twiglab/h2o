@@ -23,8 +23,6 @@ const (
 	FieldCli = "cli"
 	// FieldUnitID holds the string denoting the unit_id field in the database.
 	FieldUnitID = "unit_id"
-	// FieldAddr holds the string denoting the addr field in the database.
-	FieldAddr = "addr"
 	// FieldEndian holds the string denoting the endian field in the database.
 	FieldEndian = "endian"
 	// FieldWordOrder holds the string denoting the word_order field in the database.
@@ -44,7 +42,6 @@ var Columns = []string{
 	FieldClazz,
 	FieldCli,
 	FieldUnitID,
-	FieldAddr,
 	FieldEndian,
 	FieldWordOrder,
 	FieldMemo,
@@ -71,8 +68,6 @@ var (
 	CliValidator func(string) error
 	// DefaultUnitID holds the default value on creation for the "unit_id" field.
 	DefaultUnitID uint8
-	// DefaultAddr holds the default value on creation for the "addr" field.
-	DefaultAddr uint16
 	// DefaultEndian holds the default value on creation for the "endian" field.
 	DefaultEndian uint
 	// DefaultWordOrder holds the default value on creation for the "word_order" field.
@@ -115,11 +110,6 @@ func ByCli(opts ...sql.OrderTermOption) OrderOption {
 // ByUnitID orders the results by the unit_id field.
 func ByUnitID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUnitID, opts...).ToFunc()
-}
-
-// ByAddr orders the results by the addr field.
-func ByAddr(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAddr, opts...).ToFunc()
 }
 
 // ByEndian orders the results by the endian field.

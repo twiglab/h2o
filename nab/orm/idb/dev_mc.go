@@ -62,7 +62,7 @@ func (r DevRec) Column(i int) (vtab.Value, error) {
 	case 10:
 		return r.Memo, nil
 	}
-	panic(fmt.Errorf("no field %d", i))
+	return nil, fmt.Errorf("no field %d", i)
 }
 
 func (r DevRec) RowID() int64 {
